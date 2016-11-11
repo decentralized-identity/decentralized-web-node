@@ -12,19 +12,19 @@ Suggestions?
 
 ## Well-Known URI
 
-To enable both identity hubs and existing severs of Web content to interact with the world of identity via the Identity Hub APIs, we are using the IETF convention for globally defined resources that predictably reside at well known locations, as detailed in [RFC 5785 well-known URIs][13f07ee0] and the [well-known URI directory][6cc282d2]. The `well-known` URI suffix shall be `identity`, thus identity hubs are accessible via the path: `/.well-known/identity`.
+To enable both identity hubs and existing severs of Web content to interact with the world of identity via the Identity Hub APIs, we are using the IETF convention for globally defined resources that predictably reside at well known locations, as detailed in [RFC 5785 well-known URIs][13f07ee0] and the [well-known URI directory][6cc282d2]. The `well-known` URI suffix shall be `identity`, thus identity hubs are accessible via the path: `/.well-known/identity/:id`, wherein the last segment of the path is the target ID for the identity you wish to interact with. 
 
 ## API Routes
 
 There are a handful of default, top-level endpoints that have defined meaning within the system, those are:
 
-  `/.well-known/identity/`*`profile`* ➜ The owning entity's primary descriptor object, which can be an object from any schema.
+  `/.well-known/identity/:id/`*`profile`* ➜ The owning entity's primary descriptor object, which can be an object from any schema.
 
-  `/.well-known/identity/`*`permissions`* ➜ The access control JSON document
+  `/.well-known/identity/:id/`*`permissions`* ➜ The access control JSON document
 
-  `/.well-known/identity/`*`stores`* ➜ Scoped storage space for user-permitted external entities
+  `/.well-known/identity/:id/`*`stores`* ➜ Scoped storage space for user-permitted external entities
 
-  `/.well-known/identity/`*`data/@context`* ➜ The owning entity's identity data (access limited)
+  `/.well-known/identity/:id/`*`data/:context`* ➜ The owning entity's identity data (access limited)
 
 #### The Profile Object
 
@@ -59,29 +59,27 @@ These permissions are declared in a TBD, which you can read more about in the do
 
 Stores are areas of per-entity, scoped data storage in an identity hub provided to any entity the user wishes to allow. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
 
-`/.well-known/identity/stores/`*`ENTITY_ID`*
+`/.well-known/identity/:id/stores/`*`ENTITY_ID`*
 
 The data shall be a JSON object and should be limited in size, with the option to expand the storage limit based on user discretion. Stores are not unlike a user-sovereign, entity-scoped version of the W3C DOM's origin-scoped `window.localStorage` API.
 
 #### Data
 
-The full scope of an identity's data is accessible via the following path `/.well-known/identity/data/@context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The intent is to provide a known path for accessing standardized, semantic objects reliably across all hubs, but do so in way that asserts as little opinion as possible. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as *case insensitive*. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
+The full scope of an identity's data is accessible via the following path `/.well-known/identity/:id/data/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The intent is to provide a known path for accessing standardized, semantic objects reliably across all hubs, but do so in way that asserts as little opinion as possible. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as *case insensitive*. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
 
-`/.well-known/identity/data/schema.org/Thing/Event` ➜ http://schema.org/Event
+`/.well-known/identity/:id/data/schema.org/Thing/Event` ➜ http://schema.org/Event
 
-`/.well-known/identity/data/schema.org/Thing/Intangible/Invoice` ➜ http://schema.org/Invoice
+`/.well-known/identity/:id/data/schema.org/Thing/Intangible/Invoice` ➜ http://schema.org/Invoice
 
-`/.well-known/identity/data/schema.org/Thing/CreativeWork/Photograph` ➜ http://schema.org/Photograph
+`/.well-known/identity/:id/data/schema.org/Thing/CreativeWork/Photograph` ➜ http://schema.org/Photograph
 
 ## Request/Response
 
 To maximize reuse of existing standards and open source projects, The REST API uses [JSON API's specification][2773b365] for request, response, and query formats, and leverages standard schemas for encoding stored data and response objects. Requests should be formatted in accordance with the JSON API documentation: http://jsonapi.org/format/#fetching. The `Accept` header parameter for requests should be set to `application/vnd.api+json`.
 
-The following headers should be included depending on the use-case:
+The following header should be included for requesting any path that is access controlled:
 
 `X-Requesting-Identity` ➜ ID of the identity making the request to the hub instance. The hub may need to challenge the requester to prove the authenticity of the claim.
-
-`X-Target-Identity` ➜ ID corresponding with the identity the Requesting Identity would like to interface with. A hub may manage multiple identities, so this is required to distinguish which is being addressed.
 
 #### Authentication
 
@@ -91,14 +89,14 @@ The process of authenticating requests from the primary user or an agent shall f
 
 The REST routes for fetching and manipulating identity data should follow a common path format that maps 1:1 to the schema of data objects being transacted. Here is an example of how to send a `GET` request for an identity's Schema.org formatted music playlists:
 
-`/.well-know/identity/data/schema.org/CreativeWork/`*`MusicPlaylist`*
+`/.well-know/identity/jane.id/data/schema.org/CreativeWork/`*`MusicPlaylist`*
 
 Requests will always return an array of all objects - *the user has given you access to* - of the related Schema.org type, via the response object's `data` property, as shown here:
 
 ```json
 {
   "links": {
-    "self": "/.well-known/identity/data/schema.org/CreativeWork/MusicPlaylist"
+    "self": "/.well-known/identity/jane.id/data/schema.org/CreativeWork/MusicPlaylist"
   },
   "data": [{
   "@context": "http://schema.org",
@@ -111,7 +109,7 @@ Requests will always return an array of all objects - *the user has given you ac
       "duration": "PT4M45S",
       "inAlbum": "Second Helping",
       "name": "Sweet Home Alabama",
-      "permit": "/.well-known/identity/data/Intangible/Permit/ced043360b99"
+      "permit": "/.well-known/identity/jane.id/data/Intangible/Permit/ced043360b99"
     },
     {
       "@type": "MusicRecording",
@@ -119,7 +117,7 @@ Requests will always return an array of all objects - *the user has given you ac
       "duration": "PT3M12S",
       "inAlbum": "Stranger In Town",
       "name": "Old Time Rock and Roll",
-      "permit": "/.well-known/identity/data/Intangible/permit/aa9f3ac9eb7a"
+      "permit": "/.well-known/identity/jane.id/data/Intangible/permit/aa9f3ac9eb7a"
     }]
   }]
 }
