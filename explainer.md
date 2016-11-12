@@ -18,7 +18,7 @@ To enable both identity hubs and existing severs of Web content to interact with
 
 There are a handful of default, top-level endpoints that have defined meaning within the system, those are:
 
-  `/.well-known/identity/:id/`*`profile`* ➜ The owning entity's primary descriptor object, which can be an object from any schema.
+  `/.well-known/identity/:id/`*`profile`* ➜ The owning entity's primary descriptor object (schema agnostic).
 
   `/.well-known/identity/:id/`*`permissions`* ➜ The access control JSON document
 
