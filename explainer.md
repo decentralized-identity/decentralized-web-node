@@ -24,7 +24,7 @@ There are a handful of default, top-level endpoints that have defined meaning wi
 
   `/.well-known/identity/:id/`*`stores`* ➜ Scoped storage space for user-permitted external entities
 
-  `/.well-known/identity/:id/`*`data/:context`* ➜ The owning entity's identity data (access limited)
+  `/.well-known/identity/:id/`*`collections/:context`* ➜ The owning entity's identity collections (access limited)
 
 #### The Profile Object
 
@@ -35,7 +35,7 @@ One universal object you can expect nearly every hub to have is a `profile`. Thi
     "@context": "http://schema.org",
     "@type": "Person",
     "name": "Daniel Buchner",
-    "description": "Working on decentralize identity at Microsoft",
+    "description": "Working on decentralized identity at Microsoft",
     "website": [
       {
         "@type": "WebSite",
@@ -44,7 +44,7 @@ One universal object you can expect nearly every hub to have is a `profile`. Thi
     ],
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Los Gatos, CA"      
+      "addressLocality": "Los Gatos, CA"
     }
 }
 ```
@@ -63,23 +63,19 @@ Stores are areas of per-entity, scoped data storage in an identity hub provided 
 
 The data shall be a JSON object and should be limited in size, with the option to expand the storage limit based on user discretion. Stores are not unlike a user-sovereign, entity-scoped version of the W3C DOM's origin-scoped `window.localStorage` API.
 
-#### Data
+#### Collections
 
-The full scope of an identity's data is accessible via the following path `/.well-known/identity/:id/data/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The intent is to provide a known path for accessing standardized, semantic objects reliably across all hubs, but do so in way that asserts as little opinion as possible. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as *case insensitive*. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
+The full scope of an identity's data is accessible via the following path `/.well-known/identity/:id/collections/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The intent is to provide a known path for accessing standardized, semantic objects reliably across all hubs, but do so in way that asserts as little opinion as possible. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as *case insensitive*. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
 
-`/.well-known/identity/:id/data/schema.org/Thing/Event` ➜ http://schema.org/Event
+`/.well-known/identity/:id/collections/schema.org:Event` ➜ http://schema.org/Event
 
-`/.well-known/identity/:id/data/schema.org/Thing/Intangible/Invoice` ➜ http://schema.org/Invoice
+`/.well-known/identity/:id/collections/schema.org:Invoice` ➜ http://schema.org/Invoice
 
-`/.well-known/identity/:id/data/schema.org/Thing/CreativeWork/Photograph` ➜ http://schema.org/Photograph
+`/.well-known/identity/:id/collections/schema.org:Photograph` ➜ http://schema.org/Photograph
 
 ## Request/Response
 
 To maximize reuse of existing standards and open source projects, The REST API uses [JSON API's specification][2773b365] for request, response, and query formats, and leverages standard schemas for encoding stored data and response objects. Requests should be formatted in accordance with the JSON API documentation: http://jsonapi.org/format/#fetching. The `Accept` header parameter for requests should be set to `application/vnd.api+json`.
-
-The following header should be included for requesting any path that is access controlled:
-
-`X-Requesting-Identity` ➜ ID of the identity making the request to the hub instance. The hub may need to challenge the requester to prove the authenticity of the claim.
 
 #### Authentication
 
@@ -89,16 +85,16 @@ The process of authenticating requests from the primary user or an agent shall f
 
 The REST routes for fetching and manipulating identity data should follow a common path format that maps 1:1 to the schema of data objects being transacted. Here is an example of how to send a `GET` request for an identity's Schema.org formatted music playlists:
 
-`/.well-know/identity/jane.id/data/schema.org/CreativeWork/`*`MusicPlaylist`*
+`/.well-known/identity/jane.id/collections/schema.org:`*`MusicPlaylist`*
 
-Requests will always return an array of all objects - *the user has given you access to* - of the related Schema.org type, via the response object's `data` property, as shown here:
+Requests will always return an array of all objects - *the user has given you access to* - of the related Schema.org type, via the response object's `collections` property, as shown here:
 
 ```json
 {
   "links": {
-    "self": "/.well-known/identity/jane.id/data/schema.org/CreativeWork/MusicPlaylist"
+    "self": "/.well-known/identity/jane.id/collections/schema.org:MusicPlaylist"
   },
-  "data": [{
+  "collections": [{
   "@context": "http://schema.org",
   "@type": "MusicPlaylist",
   "name": "Classic Rock Playlist",
@@ -109,7 +105,7 @@ Requests will always return an array of all objects - *the user has given you ac
       "duration": "PT4M45S",
       "inAlbum": "Second Helping",
       "name": "Sweet Home Alabama",
-      "permit": "/.well-known/identity/jane.id/data/Intangible/Permit/ced043360b99"
+      "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/ced043360b99"
     },
     {
       "@type": "MusicRecording",
@@ -117,7 +113,7 @@ Requests will always return an array of all objects - *the user has given you ac
       "duration": "PT3M12S",
       "inAlbum": "Stranger In Town",
       "name": "Old Time Rock and Roll",
-      "permit": "/.well-known/identity/jane.id/data/Intangible/permit/aa9f3ac9eb7a"
+      "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/aa9f3ac9eb7a"
     }]
   }]
 }
