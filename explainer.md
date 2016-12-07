@@ -8,7 +8,7 @@ Thought the term Identity Hub is a singular, an entity may have multiple instanc
 
 Goal: and implementation agnostic protocol for syncing changes in data and settings to all of an identity's active hubs.
 
-Suggestions?
+A simpler path would be to choose an open torrent system, like bit-torrent-dht to provide the relays. If we wanted to remain agnostic, we would need to make updates transactional, and sync them via a more basic broadcast mechanism that ensured all the other instances of an identity's Hub were up to date. We could use an existing version control protocol that has an established mechanism for syncing to multiple, remote copies of a repo.
 
 ## Well-Known URI
 
@@ -28,7 +28,7 @@ There are a handful of default, top-level endpoints that have defined meaning wi
 
 #### The Profile Object
 
-One universal object you can expect nearly every hub to have is a `profile`. This is the owning entity's primary descriptor object. The object should be encoded in the format of whatever schema object best represents the entity. Here is an example of using the Schema.org `Person` schema to express that an identity belongs to a human being:
+One universal object you can expect nearly every hub to have is a `profile`. This is the owning entity's primary descriptor object. The object should be encoded in the format of whatever schema object best represents the entity. Here is an example of using the Schema.org `Person` schema to express that an identity belongs to a human:
 
 ```json
 {
@@ -85,7 +85,7 @@ The following header should be included for requesting any path that is access c
 
 The process of authenticating requests from the primary user or an agent shall follow the FIDO and Web Authentication specifications. These specifications may require modifications in order to support challenging globally known IDs with provably linked keys.
 
-#### Example Request
+#### GET Requests
 
 The REST routes for fetching and manipulating identity data should follow a common path format that maps 1:1 to the schema of data objects being transacted. Here is an example of how to send a `GET` request for an identity's Schema.org formatted music playlists:
 
@@ -122,6 +122,17 @@ Requests will always return an array of all objects - *the user has given you ac
   }]
 }
 ```
+
+#### POST Requests
+
+Just like any other request, POSTs are verified to ensure two things about the requesting party: 1) They are the decentralized identity they claim to be, and 2) They are authorized (as specified in the ACL JSON document) to write data to the route they are posting to.
+
+Addition of new data objects into a collection must follow a process for handling and insertion into storage:
+
+1. The object must be assigned a unique ID
+2. The object must be encrpyted with the asymetrical key of the entities that have read priviledges, as specified in the ACL JSON document.
+3. The object shall be inserted into the Hub instance that is handling the request.
+4. Upon completing the above steps, the change must be synced to the other Hub instances.
 
 #### Query Filter Syntax
 
