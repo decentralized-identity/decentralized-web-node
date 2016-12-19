@@ -8,7 +8,7 @@ Thought the term Identity Hub is a singular, an entity may have multiple instanc
 
 Goal: and implementation agnostic protocol for syncing changes in data and settings to all of an identity's active hubs.
 
-A simpler path would be to choose an open torrent system, like bit-torrent-dht to provide the relays. If we wanted to remain agnostic, we would need to make updates transactional, and sync them via a more basic broadcast mechanism that ensured all the other instances of an identity's Hub were up to date. We could use an existing version control protocol that has an established mechanism for syncing to multiple, remote copies of a repo.
+One route would be to use an open source, existing system, like bit-torrent-dht to provide the relay backbone to Hub instances. If we wanted to remain agnostic of any one technology, we would need to make updates transactional, and sync them via a more basic broadcast encoding/protocol that ensured all the other instances of an identity's Hubs could properly handle updates. We could use an existing version control protocol that has an established mechanism for syncing to multiple, remote copies of a repo. Or an open source, distributed database that features conflict management via a deterministic algorithm (ex: CouchDB)
 
 ## Well-Known URI
 
@@ -21,6 +21,9 @@ There are a handful of default, top-level endpoints that have defined meaning wi
   `/.well-known/identity/:id/`*`profile`* ➜ The owning entity's primary descriptor object (schema agnostic).
 
   `/.well-known/identity/:id/`*`permissions`* ➜ The access control JSON document
+
+  `/.well-known/identity/:id/`*`messages`* ➜ A known endpoint for the relay of messages/actions to the identity owner
+
 
   `/.well-known/identity/:id/`*`stores`* ➜ Scoped storage space for user-permitted external entities
 
@@ -54,6 +57,20 @@ One universal object you can expect nearly every hub to have is a `profile`. Thi
 All access and manipulation of identity data is subject to the permissions established by the owning entity. Because the identities are self-sovereign, all data associated with the identity must be portable. Transfer of a identity's contents and settings between environments and hosts should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
 These permissions are declared in a TBD, which you can read more about in the documentation here: TBD. This access control document dictates what data the owning entity publicly exposes, as well as the permissions for Connections the entity creates with other entities across the web of identity, whether they are humans, apps, services, devices, etc.
+
+#### Messages
+
+The `messages` an open endpoint that recieves objects signed by other identities. Message  are not constrained to the simple exchange of human-to-human communications, like textual conversations, they are intended to be a singular, known endpoint where identities can transact all manner of messaging, notifications, and prompts for action.
+
+Here is a list of examples to better understand the range of use-cases this endpoint is intended to support:
+
+- Human user contacts another with a textual messages
+- Service prompts a human to sign a document
+- IoT device sends a notification to a human user about its state
+
+The endpoint location for message objects shall be:
+
+`/.well-known/identity/:id/messages/`
 
 #### Stores
 
