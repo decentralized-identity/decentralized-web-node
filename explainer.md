@@ -72,6 +72,10 @@ The endpoint location for message objects shall be:
 
 `/.well-known/identity/:id/messages/`
 
+The encapsulating format for message payloads shall be:
+
+[http://schema.org/Message]()
+
 #### Stores
 
 Stores are areas of per-entity, scoped data storage in an identity hub provided to any entity the user wishes to allow. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
