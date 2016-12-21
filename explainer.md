@@ -74,7 +74,7 @@ The endpoint location for message objects shall be:
 
 The encapsulating format for message payloads shall be:
 
-[http://schema.org/Message]()
+[http://schema.org/Message](http://schema.org/Message)
 
 #### Stores
 
