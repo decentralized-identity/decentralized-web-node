@@ -1,6 +1,6 @@
 # Identity Hubs
 
-In order to maximize data interoperability and accessibility between identity hubs, and other systems that will interact with identity data (crawlers, apps, etc.), it is important to create a globally recognized API based on a recognized query format that explicitly maps to semantic, expected data objects.
+In order to maximize data interoperability and accessibility between identity hubs, and other systems that will interact with identity data (crawlers, apps, etc.), it is important to create a globally recognized API format that explicitly maps to semantic, expected data objects.
 
 Thought the term Identity Hub is a singular, an entity may have multiple instances of their identity hub active across different devices and cloud providers. These instances sync identity state changes amongst each other, ensuring that the owning entity has access to vital identity data and attestations everywhere they go, even when offline.
 
