@@ -2,13 +2,13 @@
 
 In order to maximize data interoperability and accessibility between identity hubs, and other systems that will interact with identity data (crawlers, apps, etc.), it is important to create a globally recognized API format that explicitly maps to semantic, expected data objects.
 
-Thought the term Identity Hub is a singular, an entity may have multiple instances of their identity hub active across different devices and cloud providers. These instances sync identity state changes amongst each other, ensuring that the owning entity has access to vital identity data and attestations everywhere they go, even when offline.
+Though the term Identity Hub is a singular, an entity may have multiple instances of their identity hub active across different devices and cloud providers. These instances sync identity state changes amongst each other, ensuring that the owning entity has access to vital identity data and attestations everywhere they go, even when offline.
 
 ## Syncing Data to Multiple Hubs
 
-Goal: and implementation agnostic protocol for syncing changes in data and settings to all of an identity's active hubs.
+Goal: an implementation agnostic protocol for syncing changes in data and settings to all of an identity's active hubs.
 
-One route would be to use an open source, existing system, like bit-torrent-dht to provide the relay backbone to Hub instances. If we wanted to remain agnostic of any one technology, we would need to make updates transactional, and sync them via a more basic broadcast encoding/protocol that ensured all the other instances of an identity's Hubs could properly handle updates. We could use an existing version control protocol that has an established mechanism for syncing to multiple, remote copies of a repo. Or an open source, distributed database that features conflict management via a deterministic algorithm (ex: CouchDB)
+One route would be to use an open source, existing system, like a bit-torrent-dht to provide the relay backbone to Hub instances. If we wanted to remain agnostic of any one technology, we would need to make updates transactional, and sync them via a more basic broadcast encoding/protocol that ensured all the other instances of an identity's Hubs could properly handle updates. We could use an existing version control protocol that has an established mechanism for syncing to multiple, remote copies of a repo or an open source, distributed database that features conflict management via a deterministic algorithm (ex: CouchDB)
 
 ## Well-Known URI
 
@@ -24,14 +24,13 @@ There are a handful of default, top-level endpoints that have defined meaning wi
 
   `/.well-known/identity/:id/`*`messages`* ➜ A known endpoint for the relay of messages/actions to the identity owner
 
-
   `/.well-known/identity/:id/`*`stores`* ➜ Scoped storage space for user-permitted external entities
 
   `/.well-known/identity/:id/`*`collections/:context`* ➜ The owning entity's identity collections (access limited)
 
 #### The Profile Object
 
-One universal object you can expect nearly every hub to have is a `profile`. This is the owning entity's primary descriptor object. The object should be encoded in the format of whatever schema object best represents the entity. Here is an example of using the Schema.org `Person` schema to express that an identity belongs to a human:
+One universal object you can expect nearly every hub to have is `profile`. This is the owning entity's primary descriptor object. The object should be encoded in the format of whatever schema object best represents the entity. Here is an example of using the Schema.org `Person` schema to express that an identity belongs to a human:
 
 ```json
 {
@@ -60,7 +59,7 @@ These permissions are declared in a TBD, which you can read more about in the do
 
 #### Messages
 
-The `messages` an open endpoint that recieves objects signed by other identities. Message  are not constrained to the simple exchange of human-to-human communications, like textual conversations, they are intended to be a singular, known endpoint where identities can transact all manner of messaging, notifications, and prompts for action.
+The `messages` open endpoint recieves objects signed by other identities. Messages are not constrained to the simple exchange of human-to-human communications like textual conversations, they are intended to be a singular, known endpoint where identities can transact all manner of messaging, notifications, and prompts for action.
 
 Here is a list of examples to better understand the range of use-cases this endpoint is intended to support:
 
@@ -82,7 +81,7 @@ Stores are areas of per-entity, scoped data storage in an identity hub provided 
 
 `/.well-known/identity/:id/stores/`*`ENTITY_ID`*
 
-The data shall be a JSON object and should be limited in size, with the option to expand the storage limit based on user discretion. Stores are not unlike a user-sovereign, entity-scoped version of the W3C DOM's origin-scoped `window.localStorage` API.
+The data shall be a JSON object and should be limited in size, with the option to expand the storage limit based on user or provider discretion. Stores are not unlike a user-sovereign entity-scoped version of the W3C DOM's origin-scoped `window.localStorage` API.
 
 #### Collections
 
