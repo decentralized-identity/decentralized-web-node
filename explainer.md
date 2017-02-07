@@ -6,9 +6,7 @@ Thought the term Identity Hub is a singular, an entity may have multiple instanc
 
 ## Syncing Data to Multiple Hubs
 
-Goal: and implementation agnostic protocol for syncing changes in data and settings to all of an identity's active hubs.
-
-One route would be to use an open source, existing system, like bit-torrent-dht to provide the relay backbone to Hub instances. If we wanted to remain agnostic of any one technology, we would need to make updates transactional, and sync them via a more basic broadcast encoding/protocol that ensured all the other instances of an identity's Hubs could properly handle updates. We could use an existing version control protocol that has an established mechanism for syncing to multiple, remote copies of a repo. Or an open source, distributed database that features conflict management via a deterministic algorithm (ex: CouchDB)
+An identity's Hub instances must understand how to sync data between them without requiring master-slave relationships, or forcing a singular, underlying implementation for storage or application logic. This demands a shared protocol for broadcasting and resolution of changes. We have selected [CouchDB](http://docs.couchdb.org/en/2.0.0/replication/protocol.html), an open source Apache project, as the replication protocol for Hubs.
 
 ## Well-Known URI
 
@@ -56,7 +54,11 @@ One universal object you can expect nearly every hub to have is a `profile`. Thi
 
 All access and manipulation of identity data is subject to the permissions established by the owning entity. Because the identities are self-sovereign, all data associated with the identity must be portable. Transfer of a identity's contents and settings between environments and hosts should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
-These permissions are declared in a TBD, which you can read more about in the documentation here: TBD. This access control document dictates what data the owning entity publicly exposes, as well as the permissions for Connections the entity creates with other entities across the web of identity, whether they are humans, apps, services, devices, etc.
+These permissions are declared in a ACL JSON document, which you can learn more about via the ACL documentation and [examples](https://github.com/decentralized-identity/acl/blob/master/examples/basic.json). This access control document is responsible for:
+
+- What factors can be used for authentication and modification of Hub data
+- What data Agents have access to
+- Which Agents are provided with a `store`
 
 #### Messages
 
@@ -76,6 +78,8 @@ The encapsulating format for message payloads shall be:
 
 [http://schema.org/Message](http://schema.org/Message)
 
+If the intent of your message is to prompt the recieving Hub to perform a certain semantic activity, you can pass an [Action](http://schema.org/Action) object via the Message's `potentialAction` property.
+
 #### Stores
 
 Stores are areas of per-entity, scoped data storage in an identity hub provided to any entity the user wishes to allow. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
@@ -90,7 +94,7 @@ The full scope of an identity's data is accessible via the following path `/.wel
 
 `/.well-known/identity/:id/collections/schema.org:Event` ➜ http://schema.org/Event
 
-`/.well-known/identity/:id/collections/schema.org:Invoice` ➜ http://schema.org/Invoice
+`/.well-known/identity/:id/collections/hl7.org:Device` ➜ https://www.hl7.org/fhir/device.html
 
 `/.well-known/identity/:id/collections/schema.org:Photograph` ➜ http://schema.org/Photograph
 
@@ -147,7 +151,7 @@ Just like any other request, POSTs are verified to ensure two things about the r
 Addition of new data objects into a collection must follow a process for handling and insertion into storage:
 
 1. The object must be assigned a unique ID
-2. The object must be encrpyted with the asymetrical key of the entities that have read priviledges, as specified in the ACL JSON document.
+2. The object must be encrpyted with the symetrical key of the entities that have read priviledges, as specified in the ACL JSON document.
 3. The object shall be inserted into the Hub instance that is handling the request.
 4. Upon completing the above steps, the change must be synced to the other Hub instances.
 
