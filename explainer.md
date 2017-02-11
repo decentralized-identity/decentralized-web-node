@@ -97,9 +97,9 @@ The full scope of an identity's data is accessible via the following path `/.wel
 
 `/.well-known/identity/:id/collections/schema.org:Photograph` ➜ http://schema.org/Photograph
 
-## Request/Response
+## Request/Response Format
 
-To maximize reuse of existing standards and open source projects, The REST API uses [JSON API's specification][2773b365] for request, response, and query formats, and leverages standard schemas for encoding stored data and response objects. Requests should be formatted in accordance with the JSON API documentation: http://jsonapi.org/format/#fetching. The `Accept` header parameter for requests should be set to `application/vnd.api+json`.
+To maximize reuse of existing standards and open source projects, The REST API uses [JSON API's specification][2773b365] for request, response, and query formats, and leverages standard schemas for encoding stored data and response objects. Given the nature of the responses, only the Top Level properties are in scope for this utilization. Requests should be formatted in accordance with the JSON API documentation: http://jsonapi.org/format/#fetching. The `Content-Type` and `Accept` header parameters must be set to `application/vnd.api+json`.
 
 #### Authentication
 
@@ -118,28 +118,47 @@ Requests will always return an array of all objects - *the user has given you ac
   "links": {
     "self": "/.well-known/identity/jane.id/collections/schema.org:MusicPlaylist"
   },
-  "collections": [{
-  "@context": "http://schema.org",
-  "@type": "MusicPlaylist",
-  "name": "Classic Rock Playlist",
-  "numTracks": 2,
-  "track": [{
-      "@type": "MusicRecording",
-      "byArtist": "Lynard Skynyrd",
-      "duration": "PT4M45S",
-      "inAlbum": "Second Helping",
-      "name": "Sweet Home Alabama",
-      "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/ced043360b99"
+  "data": {
+    "controls": {
+      "4n93v7a4xd67": {
+        "key": "...",
+        "cache-intent": "full"
+      },
+      "23fge3fwg34f": {
+        "key": "...",
+        "cache-intent": "full"
+      },
+      "7e2fg36y3c31": {
+        "key": "...",
+        "cache-intent": "full"
+      }
     },
-    {
-      "@type": "MusicRecording",
-      "byArtist": "Bob Seger",
-      "duration": "PT3M12S",
-      "inAlbum": "Stranger In Town",
-      "name": "Old Time Rock and Roll",
-      "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/aa9f3ac9eb7a"
+    "payload": [{
+      "@context": "http://schema.org",
+      "@type": "MusicPlaylist",
+      "@id": "4n93v7a4xd67",
+      "name": "Classic Rock Playlist",
+      "numTracks": 2,
+      "track": [{
+          "@type": "MusicRecording",
+          "@id": "23fge3fwg34f",
+          "byArtist": "Lynard Skynyrd",
+          "duration": "PT4M45S",
+          "inAlbum": "Second Helping",
+          "name": "Sweet Home Alabama",
+          "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/ced043360b99"
+        },
+        {
+          "@type": "MusicRecording",
+          "@id": "7e2fg36y3c31",
+          "byArtist": "Bob Seger",
+          "duration": "PT3M12S",
+          "inAlbum": "Stranger In Town",
+          "name": "Old Time Rock and Roll",
+          "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/aa9f3ac9eb7a"
+        }]
     }]
-  }]
+  }
 }
 ```
 
@@ -149,10 +168,13 @@ Just like any other request, POSTs are verified to ensure two things about the r
 
 Addition of new data objects into a collection must follow a process for handling and insertion into storage:
 
-1. The object must be assigned a unique ID
-2. The object must be encrpyted with the symetrical key of the entities that have read priviledges, as specified in the ACL JSON document.
-3. The object shall be inserted into the Hub instance that is handling the request.
-4. Upon completing the above steps, the change must be synced to the other Hub instances.
+1. The new objects must be assigned with an `@id` property
+2. The Hub instance must keep an associated record that maps object IDs to the controls set for each. These control properties include:
+- `key`: the symetrical public key used to encrypt the object, which Hubs and entities use to reencrypt 
+- `cache-intent`:  `full` | `light` | `min`
+3. The object must be encrpyted with the symetrical key of the entities that have read priviledges, as specified in the ACL JSON document.
+4. The object shall be inserted into the Hub instance that is handling the request.
+5. Upon completing the above steps, the change must be synced to the other Hub instances.
 
 #### Query Filter Syntax
 
