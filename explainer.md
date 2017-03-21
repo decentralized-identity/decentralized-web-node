@@ -53,7 +53,6 @@ Each Hub has a `profile` object that describes the owning entity.  The profile o
 
 #### Data Portability
 All Hub data associated with the identity must be portable. Transfer of a hub’s contents and settings between environments should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
-
 #### Permissions
 
 Agents are external parties that can access and modify Hub data. Hub owners can set permissions in a ACL JSON document, which you can learn more about via the ACL documentation and [examples](https://github.com/decentralized-identity/acl/blob/master/examples/basic.json). This access control document designates:
@@ -80,7 +79,7 @@ The encapsulating format for message payloads shall be:
 
 [http://schema.org/Message](http://schema.org/Message)
 
-If the intent of your message is to prompt the recieving Hub to perform a certain semantic activity, you can pass an [Action](http://schema.org/Action) object via the Message's `potentialAction` property.
+If the intent of your message is to prompt the receiving Hub to perform a certain semantic activity, you can pass an [Action](http://schema.org/Action) object via the Message's `potentialAction` property.
 
 #### Stores
 
@@ -175,9 +174,9 @@ Addition of new data objects into a collection must follow a process for handlin
 
 1. The new objects must be assigned with an `@id` property
 2. The Hub instance must keep an associated record that maps object IDs to the controls set for each. These control properties include:
-- `key`: the symetrical public key used to encrypt the object, which Hubs and entities use to reencrypt 
+- `key`: the symmetrical public key used to encrypt the object, which Hubs and entities use to reencrypt 
 - `cache-intent`:  `full` | `light` | `min`
-3. The object must be encrpyted with the symetrical key of the entities that have read priviledges, as specified in the ACL JSON document.
+3. The object must be encrypted with the symmetrical key of the entities that have read privileges, as specified in the ACL JSON document.
 4. The object shall be inserted into the Hub instance that is handling the request.
 5. Upon completing the above steps, the change must be synced to the other Hub instances.
 
