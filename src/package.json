@@ -1,0 +1,14 @@
+{
+  "name": "identity-hub",
+  "version": "0.1.0",
+  "description": "Decentralized identity hub.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Henry Tsai",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.2"
+  }
+}
