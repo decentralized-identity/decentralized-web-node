@@ -20,6 +20,7 @@
     <Compile Include="controllers\collectionController.js" />
     <Compile Include="controllers\index.js" />
     <Compile Include="controllers\profileController.js" />
+    <Content Include=".gitignore" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
   </ItemGroup>
