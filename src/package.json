@@ -9,6 +9,7 @@
   "author": "Henry Tsai",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.15.2"
+    "express": "^4.15.2",
+    "jsonwebtoken": "^7.3.0"
   }
 }
