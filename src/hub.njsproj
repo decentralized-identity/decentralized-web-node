@@ -20,6 +20,8 @@
     <Compile Include="controllers\collectionController.js" />
     <Compile Include="controllers\index.js" />
     <Compile Include="controllers\profileController.js" />
+    <Compile Include="data\ProfileService.js" />
+    <Compile Include="data\index.js" />
     <Content Include=".gitignore" />
     <Content Include="package.json" />
     <Compile Include="app.js" />
@@ -27,6 +29,7 @@
   <ItemGroup>
     <Folder Include="controllers\" />
     <Folder Include="auth\" />
+    <Folder Include="data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <!--Do not delete the following Import Project.  While this appears to do nothing it is a marker for setting TypeScript properties before our import that depends on them.-->

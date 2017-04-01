@@ -23,9 +23,9 @@ module.exports.authenticate = function (req, res, next) {
 
     let requesterId = unverifiedToken.sub;
 
-    GetPublicKeyAsync(requesterId)
+    getPublicKeyAsync(requesterId)
         .then(function (publicKey){
-            return VerifyTokenSignatureAsync(encodedToken, publicKey);
+            return verifyTokenSignatureAsync(encodedToken, publicKey);
         },
         // Failure handler
         function () {
@@ -67,7 +67,7 @@ function writeUnauthenticatedResponse(response) {
     response.status(401).send("Requester not authenticated.");
 }
 
-function VerifyTokenSignatureAsync(encodedToken, publicKey) {
+function verifyTokenSignatureAsync(encodedToken, publicKey) {
     let promise = new Promise(function (resolve, reject) {
 
         let jwtLib = require('jsonwebtoken');
@@ -85,7 +85,7 @@ function VerifyTokenSignatureAsync(encodedToken, publicKey) {
     return promise;
 }
 
-function GetPublicKeyAsync(id) {
+function getPublicKeyAsync(id) {
     let promise = new Promise(function (resolve, reject) {
 
         // TODO: get the public key from the correct identity provider based on the id.
