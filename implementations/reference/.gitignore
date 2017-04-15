@@ -1,0 +1,7 @@
+# Node.js dependency directories
+node_modules/
+
+# Visual studio directories
+.vs/
+bin/
+obj/
