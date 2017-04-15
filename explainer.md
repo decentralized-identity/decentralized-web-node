@@ -53,15 +53,12 @@ Each Hub has a `profile` object that describes the owning entity.  The profile o
 
 #### Data Portability
 All Hub data associated with the identity must be portable. Transfer of a hub’s contents and settings between environments should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
+
 #### Permissions
 
-<<<<<<< HEAD
 All access and manipulation of identity data is subject to the permissions established by the owning entity. Because the identities are self-sovereign, all data associated with the identity must be portable. Transfer of a identity's contents and settings between environments and hosts should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
 These permissions are segmented into the following paths and ACL object structures:
-=======
-Agents are external parties that can access and modify Hub data. Hub owners can set permissions in a ACL JSON document, which you can learn more about via the ACL documentation and [examples](https://github.com/decentralized-identity/acl/blob/master/examples/basic.json). This access control document designates:
->>>>>>> fa8e61b69accf7698670e1b78e1d7fc950fc7652
 
 ##### Factors
 
