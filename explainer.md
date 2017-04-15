@@ -53,11 +53,57 @@ One universal object you can expect nearly every hub to have is `profile`. This 
 
 All access and manipulation of identity data is subject to the permissions established by the owning entity. Because the identities are self-sovereign, all data associated with the identity must be portable. Transfer of a identity's contents and settings between environments and hosts should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
-These permissions are declared in a ACL JSON document, which you can learn more about via the ACL documentation and [examples](https://github.com/decentralized-identity/acl/blob/master/examples/basic.json). This access control document is responsible for:
+These permissions are segmented into the following paths and ACL object structures:
 
-- What factors can be used for authentication and modification of Hub data
-- What data Agents have access to
-- Which Agents are provided with a `store`
+##### Factors
+
+  `/.well-known/identity/:id/permissions/`*`factors`*
+
+This route represents the enteries for devices and other auth factors an entity associates with to enable them to sign, authenticate, and manipulate resources.
+
+An example entry for a personal laptop:
+
+```json
+{
+  "@id": "7e2fg36y3c31",
+  "name": "Home Laptop",
+  "key": "23fge3fwg34f..."
+}
+```
+
+A dongle-type factor example:
+
+```json
+{
+  "@id": "36y3c317e2fg",
+  "name": "My Yubikey",
+  "key": "fge3f23wg34f..."
+}
+```
+
+##### Agents
+
+  `/.well-known/identity/:id/permissions/`*`agents`*
+
+Agents are other entities the identity's owning entity allows to access and manipulate their data. Agents can be granted a `store` and '/collections' access to entire collections, specific collection object types, or individual objects under a collection type. 
+
+Here is an example of a human owning entity's primary care physician being granted access to the routes that correspond to their FHIR encoded medical data:
+
+```json
+{
+"did": "doctor_john.id",
+  "storeSettings": {
+    "maxSize": "default"
+  },
+  "collectionPermissions": [
+    {
+      "dataPath": "fhir.org:*",
+      "permission": "rwx---rwx",
+      "callbacks": [ "create", "modified" ]
+    }
+  ]
+}
+```
 
 #### Messages
 
