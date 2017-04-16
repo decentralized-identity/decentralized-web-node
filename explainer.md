@@ -114,21 +114,21 @@ Here is an example of a human owning entity's primary care physician being grant
 
 The `messages` open endpoint receives objects signed by other identities. Messages are not constrained to the simple exchange of human-to-human communications. Rather, they are intended to be a singular, known endpoint where identities can transact all manner of messaging, notifications, and prompts for action.
 
-Here is a list of examples to better understand the range of use-cases this endpoint is intended to support:
-
-- Human user contacts another with a textual messages
-- Service prompts a human to sign a document
-- IoT device sends a notification to a human user about its state
-
 The endpoint location for message objects shall be:
 
 `/.well-known/identity/:id/messages/`
 
-The encapsulating format for message payloads shall be:
+The required data format for message payloads shall be:
 
 [http://schema.org/Message](http://schema.org/Message)
 
 If the intent of your message is to prompt the receiving Hub to perform a certain semantic activity, you can pass an [Action](http://schema.org/Action) object via the Message's `potentialAction` property.
+
+Here is a list of examples to show the range of use-cases this endpoint is intended to support:
+
+- Human user contacts another with a textual message (Message with a [ReadAction](http://schema.org/ReadAction))
+- Bot identity prompts a human to sign a document (Message with an [EndorseAction](http://schema.org/EndorseAction))
+- IoT device sends a notification to one of its Agents (Message with an [UpdateAction](http://schema.org/UpdateAction))
 
 #### Stores
 
