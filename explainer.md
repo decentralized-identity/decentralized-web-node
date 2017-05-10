@@ -12,7 +12,7 @@ Hub instances must sync data without requiring master-slave relationships or for
 
 ## Well-Known URIs
 
-Existing web servers need to interact with Hubs.  We are using the IETF convention for globally defined resources that predictably reside at well know locations as detailed in [RFC 5785 well-known URIs][13f07ee0] and the [well-known URI directory][6cc282d2]. Hubs are accessible via the path: /.well-known/identity/:id, wherein the last segment of the path is the target ID for the identity you wish to interact with.
+Existing web servers need to interact with Hubs.  We are using the IETF convention for globally defined resources that predictably reside at well know locations as detailed in [RFC 5785 well-known URIs][13f07ee0] and the [well-known URI directory][6cc282d2]. Hubs are accessible via the path: /.well-known/identity/:id, wherein the last segment of the path is the target DID or global name for the identity you wish to interact with.
 
 ## API Routes
 
@@ -70,9 +70,12 @@ An example entry for a personal laptop:
 
 ```json
 {
-  "@id": "7e2fg36y3c31",
-  "name": "Home Laptop",
-  "key": "23fge3fwg34f..."
+  "factor": {
+    "@id": "7e2fg36y3c31",
+    "name": "Home Laptop",
+    "key": "23fge3fwg34f..."
+  },
+  "sig": "g34df2hgjh5..."
 }
 ```
 
@@ -80,9 +83,12 @@ A dongle-type factor example:
 
 ```json
 {
-  "@id": "36y3c317e2fg",
-  "name": "My Yubikey",
-  "key": "fge3f23wg34f..."
+  "factor": {
+    "@id": "36y3c317e2fg",
+    "name": "My Yubikey",
+    "key": "fge3f23wg34f..."
+  },
+  "sig": "65dfjkh32g3..."
 }
 ```
 
@@ -90,7 +96,7 @@ A dongle-type factor example:
 
   `/.well-known/identity/:id/permissions/`*`agents`*
 
-Agents are other entities the identity's owning entity allows to access and manipulate their data. Agents can be granted a `store` and '/collections' access to entire collections, specific collection object types, or individual objects under a collection type. 
+Agents are other entities the identity's owning entity allows to access and manipulate their data. Agents can be granted a `store` and '/collections' access to entire collections, specific object types, or individual objects under an object type. 
 
 Here is an example of a human owning entity's primary care physician being granted access to the routes that correspond to their FHIR encoded medical data:
 
@@ -104,7 +110,7 @@ Here is an example of a human owning entity's primary care physician being grant
     {
       "dataPath": "fhir.org:*",
       "permission": "rwx---rwx",
-      "callbacks": [ "create", "modified" ]
+      "callbacks": [ "created", "modified" ]
     }
   ]
 }
@@ -116,7 +122,7 @@ The `messages` open endpoint receives objects signed by other identities. Messag
 
 The endpoint location for message objects shall be:
 
-`/.well-known/identity/:id/messages/`
+  `/.well-known/identity/:id/messages/`
 
 The required data format for message payloads shall be:
 
@@ -224,7 +230,10 @@ Addition of new data objects into a collection must follow a process for handlin
 1. The new objects must be assigned with an `@id` property
 2. The Hub instance must keep an associated record that maps object IDs to the controls set for each. These control properties include:
 - `key`: the symmetrical public key used to encrypt the object, which Hubs and entities use to reencrypt 
-- `cache-intent`:  `full` | `light` | `min`
+- `cache-intent`:
+  - `min`: Just the ID and item record for an entry
+  - `desc`: The descriptor object for an item, without full source
+  - `full`: The entire object and source for an item
 3. The object must be encrypted with the symmetrical key of the entities that have read privileges, as specified in the ACL JSON document.
 4. The object shall be inserted into the Hub instance that is handling the request.
 5. Upon completing the above steps, the change must be synced to the other Hub instances.
