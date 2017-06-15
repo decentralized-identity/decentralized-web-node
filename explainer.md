@@ -108,7 +108,7 @@ Here is an example of a human owning entity's primary care physician being grant
   },
   "collectionPermissions": [
     {
-      "identifiers": ["dan.id", "danny.id"],
+      "identifiers": ["dan.id", "shifty_mcdanielson.id"],
       "dataPath": "fhir.org:*",
       "permission": "rwx---rwx",
       "callbacks": [ "created", "modified" ]
