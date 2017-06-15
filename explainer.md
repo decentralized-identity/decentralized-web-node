@@ -26,7 +26,7 @@ Each Hub has a set of top-level API routes:
 
   `/.well-known/identity/:id/`*`stores`* ➜ Scoped storage space for user-permitted external entities
 
-  `/.well-known/identity/:id/`*`collections/:context`* ➜ The owning entity's identity collections (access limited)
+  `/.well-known/identity/:id/`*`collections/:context/:objectType`* ➜ The owning entity's identity collections (access limited)
 
 #### Hub Profile Objects
 
@@ -108,6 +108,7 @@ Here is an example of a human owning entity's primary care physician being grant
   },
   "collectionPermissions": [
     {
+      "identifiers": ["dan.id", "danny.id"],
       "dataPath": "fhir.org:*",
       "permission": "rwx---rwx",
       "callbacks": [ "created", "modified" ]
@@ -150,11 +151,11 @@ Collections provide a known path for accessing standardized, semantic objects ac
 
 `/.well-known/identity/:id/collections/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as case insensitive. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
 
-`/.well-known/identity/:id/collections/schema.org:Event` ➜ http://schema.org/Event
+`/.well-known/identity/:id/collections/schema.org/Event` ➜ http://schema.org/Event
 
-`/.well-known/identity/:id/collections/hl7.org:Device` ➜ https://www.hl7.org/fhir/device.html
+`/.well-known/identity/:id/collections/hl7.org:fhir:v2/Device` ➜ https://www.hl7.org/fhir/device.html
 
-`/.well-known/identity/:id/collections/schema.org:Photograph` ➜ http://schema.org/Photograph
+`/.well-known/identity/:id/collections/schema.org/Photograph` ➜ http://schema.org/Photograph
 
 ## Request/Response Format
 
@@ -162,7 +163,7 @@ The REST API uses [JSON API's specification](http://jsonapi.org/format/) for req
 
 #### Authentication
 
-The process of authenticating requests from the primary user or an agent shall follow the FIDO and Web Authentication specifications. These specifications may require modifications in order to support challenging globally known IDs with provably linked keys.
+The process of authenticating requests from the primary user or an agent shall follow the FIDO and Web Authentication specifications (as closely as possible). These specifications may require modifications in order to support challenging globally known IDs with provably linked keys.
 
 #### GET Requests
 
@@ -178,44 +179,51 @@ Requests will always return an array of all objects - *the user has given you ac
     "self": "/.well-known/identity/jane.id/collections/schema.org:MusicPlaylist"
   },
   "data": {
-    "controls": {
-      "4n93v7a4xd67": {
-        "key": "...",
-        "cache-intent": "full"
-      },
-      "23fge3fwg34f": {
-        "key": "...",
-        "cache-intent": "full"
-      },
-      "7e2fg36y3c31": {
-        "key": "...",
-        "cache-intent": "full"
-      }
-    },
     "payload": [{
-      "@context": "http://schema.org",
-      "@type": "MusicPlaylist",
-      "@id": "4n93v7a4xd67",
-      "name": "Classic Rock Playlist",
-      "numTracks": 2,
-      "track": [{
-          "@type": "MusicRecording",
-          "@id": "23fge3fwg34f",
-          "byArtist": "Lynard Skynyrd",
-          "duration": "PT4M45S",
-          "inAlbum": "Second Helping",
-          "name": "Sweet Home Alabama",
-          "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/ced043360b99"
-        },
-        {
-          "@type": "MusicRecording",
-          "@id": "7e2fg36y3c31",
-          "byArtist": "Bob Seger",
-          "duration": "PT3M12S",
-          "inAlbum": "Stranger In Town",
-          "name": "Old Time Rock and Roll",
-          "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/aa9f3ac9eb7a"
-        }]
+      "settings": {
+        "id": "4n93v7a4xd67",
+        "key": "...",
+        "cache-intent": "full"
+      },
+      "descriptor": {
+        "@context": "http://schema.org",
+        "@type": "MusicPlaylist",
+        "@id": "4n93v7a4xd67",
+        "name": "Classic Rock Playlist",
+        "numTracks": 2,
+        "track": [
+          {
+            "settings": {
+              "id": "23fge3fwg34f",
+              "key": "...",
+              "cache-intent": "full"
+            },
+            "descriptor": {
+              "@type": "MusicRecording",
+              "byArtist": "Lynard Skynyrd",
+              "duration": "PT4M45S",
+              "inAlbum": "Second Helping",
+              "name": "Sweet Home Alabama",
+              "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/ced043360b99"
+            }
+          },
+          {
+            "settings": {
+              "id": "7e2fg36y3c31",
+              "key": "...",
+              "cache-intent": "full"
+            },
+            "descriptor": {
+              "@type": "MusicRecording",
+              "byArtist": "Bob Seger",
+              "duration": "PT3M12S",
+              "inAlbum": "Stranger In Town",
+              "name": "Old Time Rock and Roll",
+              "permit": "/.well-known/identity/jane.id/collections/schema.org:Permit/aa9f3ac9eb7a"
+            }
+          }
+        ]
+      }
     }]
   }
 }
@@ -229,7 +237,7 @@ Addition of new data objects into a collection must follow a process for handlin
 
 1. The new objects must be assigned with an `@id` property
 2. The Hub instance must keep an associated record that maps object IDs to the controls set for each. These control properties include:
-- `key`: the symmetrical public key used to encrypt the object, which Hubs and entities use to reencrypt 
+- `key`: the symmetrical public key used to encrypt the object, which Hubs and entities use to re-encrypt 
 - `cache-intent`:
   - `min`: Just the ID and item record for an entry
   - `desc`: The descriptor object for an item, without full source
