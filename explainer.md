@@ -28,6 +28,12 @@ Each Hub has a set of top-level API routes:
 
   `/.well-known/identity/:id/`*`collections/:context/:objectType`* ➜ The owning entity's identity collections (access limited)
 
+#### Route Handling
+
+If for whatever reason a Hub implementer decides not to support any endpoints of the top-level API (a rare but possible case), the Hub shall return the HTTP Error Code `501 Not Implemented`, regardless of the path depth of the inbound request.
+
+If the Hub provider wishes, for any reason, to relay the request to a different URI location, they must return the HTTP Status Code `303 See Other`.
+
 #### Hub Profile Objects
 
 Each Hub has a `profile` object that describes the owning entity.  The profile object should use the format of the schema object best represents the entity. Here is an example of using the Schema.org `Person` schema to express that a hub belongs to a person:
@@ -157,7 +163,7 @@ Collections provide a known path for accessing standardized, semantic objects ac
 
 `/.well-known/identity/:id/collections/schema.org/Photograph` ➜ http://schema.org/Photograph
 
-## Request/Response Format
+## Request/Response
 
 The REST API uses [JSON API's specification](http://jsonapi.org/format/) for request, response, and query formats, and leverages standard schemas for encoding stored data and response objects.  Given the nature of the responses, only the Top Level properties are in scope for this utilization. Requests should be formatted in accordance with the JSON API documentation: http://jsonapi.org/format/#fetching. The `Content-Type` and `Accept` header parameters must be set to `application/vnd.api+json`.  This approach maximizes the use of existing standards and open source projects.
 
