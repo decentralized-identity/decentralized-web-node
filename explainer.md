@@ -28,6 +28,8 @@ Each Hub has a set of top-level API routes:
 
   `/.well-known/identity/:id/`*`collections/:context/:objectType`* ➜ The owning entity's identity collections (access limited)
 
+  `/.well-known/identity/:id/`*`extensions`* ➜ any custom, service-based functionality the identity exposes
+
 #### Route Handling
 
 If for whatever reason a Hub implementer decides not to support any endpoints of the top-level API (a rare but possible case), the Hub shall return the HTTP Error Code `501 Not Implemented`, regardless of the path depth of the inbound request.
@@ -163,6 +165,16 @@ Collections provide a known path for accessing standardized, semantic objects ac
 
 `/.well-known/identity/:id/collections/schema.org/Photograph` ➜ http://schema.org/Photograph
 
+#### Extensions
+
+Extensions offer a means to surface custom API endpoints an identity wishes to expose publicly or in an access-limited fashion. Extensions should not require the Hub host to directly execute code the endpoints describe; service descriptions should link to a URI where execution takes place.
+
+Performing a `GET` request to the base `/extensions` endpoint will respond with an object that contains an entry for every service description the requesting entity is permitted to access.
+
+##### Service Descriptions
+
+All definitions shall conform to the [Swagger API descriptor format](http://swagger.io/specification).
+
 ## Request/Response
 
 The REST API uses [JSON API's specification](http://jsonapi.org/format/) for request, response, and query formats, and leverages standard schemas for encoding stored data and response objects.  Given the nature of the responses, only the Top Level properties are in scope for this utilization. Requests should be formatted in accordance with the JSON API documentation: http://jsonapi.org/format/#fetching. The `Content-Type` and `Accept` header parameters must be set to `application/vnd.api+json`.  This approach maximizes the use of existing standards and open source projects.
@@ -242,15 +254,19 @@ POSTs are verified to ensure two things about the requesting party: 1) They are 
 Addition of new data objects into a collection must follow a process for handling and insertion into storage:
 
 1. The new objects must be assigned with an `@id` property
-2. The Hub instance must keep an associated record that maps object IDs to the controls set for each. These control properties include:
-- `key`: the symmetrical public key used to encrypt the object, which Hubs and entities use to re-encrypt 
+2. The Hub instance must wrap the native data object with an object that contains the unique ID and item-specific controls. These control properties include:
+- `key`: the symmetrical public key used to encrypt the object, which Hubs and entities use to re-encrypt
 - `cache-intent`:
   - `min`: Just the ID and item record for an entry
   - `desc`: The descriptor object for an item, without full source
-  - `full`: The entire object and source for an item
+  - `full`: The descriptor object and full source for an item
 3. The object must be encrypted with the symmetrical key of the entities that have read privileges, as specified in the ACL JSON document.
 4. The object shall be inserted into the Hub instance that is handling the request.
-5. Upon completing the above steps, the change must be synced to the other Hub instances.
+5. Upon completing the above steps, the change must be synced to the other Hub instances via the Replication Process.
+
+#### Replication Process
+
+...
 
 #### Query Filter Syntax
 
