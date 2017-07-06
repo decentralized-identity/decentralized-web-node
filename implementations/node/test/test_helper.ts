@@ -1,5 +1,5 @@
-const app = require('../api');
-const axios = require('axios');
+import app from '../src/api';
+import axios from 'axios';
 const axiosInstance = axios.create({
   baseURL: 'http://localhost:3000'
 });
@@ -16,7 +16,4 @@ function integrationTestSetup() {
   });
 }
 
-module.exports = {
-  axios: axiosInstance,
-  integrationTestSetup
-};
+export { axiosInstance as axios, integrationTestSetup };

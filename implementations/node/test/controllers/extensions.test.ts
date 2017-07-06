@@ -1,4 +1,4 @@
-const { axios, integrationTestSetup } = require('../test_helper.js');
+import { axios, integrationTestSetup } from '../test_helper';
 
 integrationTestSetup();
 
