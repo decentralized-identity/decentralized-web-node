@@ -1,12 +1,12 @@
 Requirements:
-- Node v7 or greater (Use nvm for managing node versions: https://github.com/creationix/nvm)
-- yarn: npm install -g yarn
+- Node v8 (Use nvm for managing node versions: https://github.com/creationix/nvm)
+- npm v5 or greater
 
 Download the dependencies
-- `yarn install`
+- `npm install`
 
 Run the server
-- `yarn run dev`
+- `npm run dev`
 
 Run the tests
-- `yarn run test`
+- `npm run test`
