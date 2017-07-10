@@ -4,6 +4,9 @@
   "main": "index.js",
   "license": "Apache 2.0",
   "dependencies": {
+    "@types/jest": "^20.0.2",
+    "@types/koa": "^2.0.39",
+    "@types/koa-router": "^7.0.22",
     "axios": "^0.16.2",
     "koa": "^2.3.0",
     "koa-router": "^7.2.1"
@@ -13,17 +16,38 @@
     "jest": "^20.0.4",
     "lint-staged": "^4.0.0",
     "nodemon": "^1.11.0",
-    "prettier": "^1.5.2"
+    "prettier": "^1.5.2",
+    "source-map-loader": "^0.2.1",
+    "ts-loader": "^2.2.2",
+    "typescript": "^2.4.1",
+    "ts-jest": "^20.0.6",
+    "ts-node": "^3.2.0"
   },
   "scripts": {
-    "dev": "NODE_ENV=development nodemon --inspect server.js",
-    "test": "NODE_ENV=test jest test/**/*.test.js ",
+    "build": "tsc",
+    "dev": "NODE_ENV=development nodemon --inspect --ext js,json,ts --exec 'ts-node' src/server.ts",
+    "test": "NODE_ENV=test jest",
     "precommit": "lint-staged"
   },
   "lint-staged": {
-    "*.js": ["prettier --single-quote --write", "git add"]
+    "gitDir": "../..",
+    "linters": {
+      "*.ts": [
+        "prettier --single-quote --write",
+        "git add"
+      ]
+    }
   },
   "jest": {
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.ts$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|\\.(test))\\.(ts|js)$",
+    "moduleFileExtensions": [
+      "ts",
+      "js",
+      "json"
+    ]
   }
 }

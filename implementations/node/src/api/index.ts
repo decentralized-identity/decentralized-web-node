@@ -1,7 +1,7 @@
-const Koa = require('koa');
+import * as Koa from 'koa';
 const app = new Koa();
 
-const { indexRouter, extensionsRouter } = require('./controllers');
+import { indexRouter, extensionsRouter } from './controllers';
 
 app
   .use(indexRouter.routes())
@@ -9,4 +9,4 @@ app
   .use(extensionsRouter.routes())
   .use(extensionsRouter.allowedMethods());
 
-module.exports = app;
+export default app;

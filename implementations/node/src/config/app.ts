@@ -1,11 +1,11 @@
-const proccess = require('process');
+import * as proccess from 'process';
 const environment = proccess.env.NODE_ENV || 'development';
 
 let port = proccess.env.PORT;
 if (!port && environment === 'development') {
-  port = 3000;
+  port = '3000';
 } else if (!port && environment === 'test') {
-  port = 3000;
+  port = '3000';
 } else {
   throw 'You must set an environment variable for PORT';
 }
@@ -36,4 +36,4 @@ const appConfig = {
   baseURL: `${scheme}://${hostName}:${port}`
 };
 
-module.exports = appConfig;
+export default appConfig;

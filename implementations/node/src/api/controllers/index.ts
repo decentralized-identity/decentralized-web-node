@@ -1,9 +1,8 @@
-const Router = require('koa-router');
+import * as Router from 'koa-router';
 const indexRouter = new Router();
-const extensionsRouter = require('./extensions');
 const appConfig = require('../../config/app');
 
-indexRouter.get('/', (ctx, next) => {
+indexRouter.get('/', ctx => {
   ctx.body = JSON.stringify({
     routes: {
       extensions: {
@@ -22,7 +21,5 @@ indexRouter.get('/', (ctx, next) => {
   });
 });
 
-module.exports = {
-  indexRouter,
-  extensionsRouter
-};
+import extensionsRouter from './extensions';
+export { indexRouter, extensionsRouter };
