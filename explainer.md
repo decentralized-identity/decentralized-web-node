@@ -126,6 +126,8 @@ The REST API uses [JSON API's specification](http://jsonapi.org/format/) for req
 
 The process of authenticating requests from the primary user or an agent shall follow the FIDO and Web Authentication specifications (as closely as possible). These specifications may require modifications in order to support challenging globally known IDs with provably linked keys.
 
+See the [authentication.md](./docs/authentication.md) explainer for details.
+
 #### GET Requests
 
 The REST routes for fetching and manipulating identity data should follow a common path format that maps 1:1 to the schema of data objects being transacted. Here is an example of how to send a `GET` request for an identity's Schema.org formatted music playlists:
