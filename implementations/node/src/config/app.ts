@@ -28,12 +28,16 @@ if (!scheme && environment === 'development') {
   throw 'You must set an environment variable for SCHEME';
 }
 
+/*
+  I assume we need to specify the CouchDB instance location/settings somewhere in here?
+*/
+
 const appConfig = {
   environment,
   scheme,
   hostName,
   port,
-  baseURL: `${scheme}://${hostName}:${port}`
+  baseURL: `${scheme}://${hostName}:${port}/.identity`
 };
 
 export default appConfig;
