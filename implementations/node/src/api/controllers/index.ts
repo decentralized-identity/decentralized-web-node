@@ -3,6 +3,8 @@ import resolver from '../../resolver';
 const indexRouter = new Router();
 const appConfig = require('../../config/app');
 
+// consider a default ID token that directs to a designated identity's Hub data
+
 indexRouter.get('/:id', function(ctx) {
   // Ensure that there is an ID passed to the Hub
 
