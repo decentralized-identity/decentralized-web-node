@@ -8,7 +8,7 @@ A single entity may have one or more instances of a Hub, all of which are addres
 
 ## Syncing Data to Multiple Hubs
 
-Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic.  This requires a shared replication protocol for broadcasting and resolving changes. [CouchDB](http://docs.couchdb.org/en/2.0.0/replication/protocol.html), an open source Apache project, will be the data syncing protocol Hubs must implement. It features an eventually consistent, master-master replication protocol that can be decoupled from the default storage layer provided by CouchDB. 
+Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic.  This requires a shared replication protocol for broadcasting and resolving changes. [CouchDB](http://docs.couchdb.org/en/2.0.0/replication/protocol.html), an open source Apache project, will be the data syncing protocol Hubs must implement. It features an eventually consistent, master-master replication protocol that can be decoupled from the default storage layer provided by CouchDB.
 
 ## Well-Known URIs
 
@@ -66,64 +66,7 @@ All Hub data associated with the identity must be portable. Transfer of a hub’
 
 All access and manipulation of identity data is subject to the permissions established by the owning entity. Because the identities are self-sovereign, all data associated with the identity must be portable. Transfer of a identity's contents and settings between environments and hosts should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
-These permissions are segmented into the following paths and ACL object structures:
-
-##### Factors
-
-  `/.identity/:id/permissions/`*`factors`*
-
-This route represents the enteries for devices and other auth factors an entity associates with to enable them to sign, authenticate, and manipulate resources.
-
-An example entry for a personal laptop:
-
-```json
-{
-  "factor": {
-    "@id": "7e2fg36y3c31",
-    "name": "Home Laptop",
-    "key": "23fge3fwg34f..."
-  },
-  "sig": "g34df2hgjh5..."
-}
-```
-
-A dongle-type factor example:
-
-```json
-{
-  "factor": {
-    "@id": "36y3c317e2fg",
-    "name": "My Yubikey",
-    "key": "fge3f23wg34f..."
-  },
-  "sig": "65dfjkh32g3..."
-}
-```
-
-##### Agents
-
-  `/.identity/:id/permissions/`*`agents`*
-
-Agents are other entities the identity's owning entity allows to access and manipulate their data. Agents can be granted a `store` and '/collections' access to entire collections, specific object types, or individual objects under an object type. 
-
-Here is an example of a human owning entity's primary care physician being granted access to the routes that correspond to their FHIR encoded medical data:
-
-```json
-{
-"did": "doctor_john.id",
-  "storeSettings": {
-    "maxSize": "default"
-  },
-  "collectionPermissions": [
-    {
-      "identifiers": ["dan.id", "shifty_mcdanielson.id"],
-      "dataPath": "fhir.org:*",
-      "permission": "rwx---rwx",
-      "callbacks": [ "created", "modified" ]
-    }
-  ]
-}
-```
+See the [permissions.md](./docs/permissions.md) explainer for details.
 
 #### Messages
 
@@ -155,7 +98,7 @@ The data shall be a JSON object and should be limited in size, with the option t
 
 #### Collections
 
-Collections provide a known path for accessing standardized, semantic objects across all hubs, in way that asserts as little opinion as possible. The full scope of an identity's data is accessible via the following path 
+Collections provide a known path for accessing standardized, semantic objects across all hubs, in way that asserts as little opinion as possible. The full scope of an identity's data is accessible via the following path
 
 `/.identity/:id/collections/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as case insensitive. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
 
@@ -182,6 +125,8 @@ The REST API uses [JSON API's specification](http://jsonapi.org/format/) for req
 #### Authentication
 
 The process of authenticating requests from the primary user or an agent shall follow the FIDO and Web Authentication specifications (as closely as possible). These specifications may require modifications in order to support challenging globally known IDs with provably linked keys.
+
+See the [authentication.md](./docs/authentication.md) explainer for details.
 
 #### GET Requests
 
