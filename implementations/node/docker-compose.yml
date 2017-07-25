@@ -1,0 +1,10 @@
+version: '2'
+services:
+  hub:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - ENVIRONMENT=dev
+  couchdb:
+    image: "couchdb"
