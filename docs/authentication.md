@@ -7,13 +7,15 @@ There are two mechanisms for authentication to a hub:
  - The hub operator (i.e. the identity owner) authenticates by signing each request with a private key associated with one or more of their [Factors](#factor-authentication).
  - Other actors sign requests using the key material required to satisfy the control block from the DDO associated with their [DID](#did-authentication).
 
-## Factor Authentication
+## Factors
 
-`/.identity/:id/factors`*
+`/.identity/:id/factors`
 
-This route represents the enteries for devices and other auth factors an entity associates with to enable them to sign, authenticate, and manipulate resources.
+Factors are connected devices, dongles, and other items that are granted sudo-esque permission to act as an extension of the owning entity, via an association payload signed by the owning identity.
 
-An example entry for a personal laptop:
+### Examples
+
+Personal laptop factor:
 
 ```json
 {
@@ -26,18 +28,22 @@ An example entry for a personal laptop:
 }
 ```
 
-A dongle-type factor example:
+Yubi Key factor that requires a second factor, a smart watch:
 
 ```json
+
 {
-  "factor": {
-    "@id": "36y3c317e2fg",
-    "name": "My Yubikey",
-    "key": "fge3f23wg34f..."
-  },
-  "sig": "65dfjkh32g3..."
+  "@id": "7e2fg36y3c31",
+  "name": "Yubi Key",
+  "key": "23fge3fwg34f...",
+  "requiredFactors": [
+    {
+      "@id": "7e2fg36y3c31",
+      "name": "Smart Watch",
+      "key": "57fta3fwgsd456ferf..."
+    {
+  ]
 }
-```
 
 ## DID Authentication
 
