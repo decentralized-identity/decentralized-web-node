@@ -22,6 +22,8 @@ Each Hub has a set of top-level API routes:
 
   `/.identity/:id/`*`permissions`* ➜ The access control JSON document
 
+  `/.identity/:id/`*`factors`* ➜ Hub-associated factors that are authorized to act as the identity owner
+
   `/.identity/:id/`*`messages`* ➜ A known endpoint for the relay of messages/actions to the identity owner
 
   `/.identity/:id/`*`stores`* ➜ Scoped storage space for user-permitted external entities

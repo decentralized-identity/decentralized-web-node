@@ -7,7 +7,7 @@ Per the hub specification, there is a need for a flexible, expressive, and simpl
 The goal of this proposal is to present an access control system which:
 - Allows permissions to be delegated to DIDs
 - Supports multiple permission levels for differential access
-- Allows indepdendent permissioning of core endpoints and individual extensions
+- Allows independent permissioning of core endpoints and individual extensions
 
 
 ## Permission Levels
