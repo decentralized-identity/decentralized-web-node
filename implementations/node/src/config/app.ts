@@ -34,5 +34,4 @@ const appConfig = {
   dbURL,
   baseURL: `${scheme}://${hostName}:${port}/.identity`
 };
-
 export default appConfig;
