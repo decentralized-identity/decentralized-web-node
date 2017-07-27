@@ -44,7 +44,7 @@ Yubi Key factor that requires a second factor, a smart watch:
       {
     ]
   },
-  "sig": "g34df2hgjh5...",
+  "sig": "g34df2hgjh5..."
 }
 ```
 
