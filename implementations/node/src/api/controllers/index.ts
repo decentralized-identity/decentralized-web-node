@@ -19,7 +19,9 @@ indexRouter.post('/:id', function(ctx) {
     .then(response => {
       // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
       var pubkey;
-      response.ddo.owner.some(item => {
+      var did = response.did;
+      var ddo = response.ddo;
+      ddo.owner.some(item => {
         if (item.type[1] == 'EdDsaPublicKey') {
           pubkey = item.publicKeyBase64;
           return true;
@@ -29,22 +31,35 @@ indexRouter.post('/:id', function(ctx) {
       auth
         .validate(pubkey, ctx.sig)
         .then(function() {
-          // Check to see if the user already has a DB in Couch, if not create one/
-          if (!nano.use(response.did)) {
-            var services = response.ddo.service;
-            if (services && services.hubs && services.hubs[0]) {
-              nano.db.replicate(
-                services.hubs[0],
-                response.did,
-                { create_target: true },
-                function(err, body) {
-                  if (!err) {
-                    ctx.body = 'Syncing with existing Hubs';
+          // Check to see if the user already has a DB in Couch - if so exit, if not, sync existing remote or create one
+          if (!nano.use(did)) {
+            var hubs = ddo.service && ddo.service.hubs;
+            if (hubs) {
+              var hub = 0;
+              function hubSync(resolve, reject) {
+                nano.db.replicate(
+                  hubs[hub],
+                  did,
+                  { create_target: true },
+                  function(error, body) {
+                    if (error) {
+                      reject(error);
+                    } else {
+                      resolve(body);
+                    }
                   }
-                }
-              );
+                );
+              }
+              new Promise(hubSync)
+                .then(response => {
+                  ctx.body = 'Syncing with existing Hubs';
+                })
+                .catch(error => {
+                  hub++;
+                  hubSync();
+                });
             } else {
-              nano.db.create(response.did, function(error, body) {
+              nano.db.create(did, function(error, body) {
                 if (!error) {
                   ctx.body = 'DB created for user';
                 }
