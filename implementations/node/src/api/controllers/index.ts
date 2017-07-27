@@ -1,6 +1,9 @@
 import * as Router from 'koa-router';
 import resolver from '../../resolver';
 
+// THIS NEEDS TO BE A SEPARATE NPM MODULE
+import auth from '../../lib/auth';
+
 const indexRouter = new Router();
 const appConfig = require('../../config/app');
 const nano = require('nano')(appConfig.dbURL);
@@ -14,21 +17,36 @@ indexRouter.post('/:id', function(ctx) {
   resolver
     .resolve(this.params.id)
     .then(response => {
-      // Auth it
-      resolver
-        .auth(response.did, ctx)
-        .then(function() {})
+      // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
+      var pubkey;
+      response.ddo.owner.some(item => {
+        if (item.type[1] == 'EdDsaPublicKey') {
+          pubkey = item.publicKeyBase64;
+          return true;
+        }
+      });
+      // Validate it with a lib we use or create;
+      auth
+        .validate(pubkey, ctx.sig)
+        .then(function() {
+          // Check to see if the user already has a DB in Couch, if not create one/
+          if (!nano.use(response.did)) {
+            nano.db.create(response.did, function(error, body) {
+              if (!error) {
+                ctx.body = 'DB created for user';
+              }
+            });
+          } else {
+            ctx.body = 'User already exists';
+          }
+        })
         .catch(function(error) {
-          ctx.body = error;
+          ctx.body = 'Request could not be validated';
         });
     })
-    .catch(error => {});
-
-  nano.db.get(this.params.id, function(err, body) {
-    if (!err) {
-      console.log(body);
-    }
-  });
+    .catch(error => {
+      ctx.body = 'Could not resolve';
+    });
 });
 
 indexRouter.get('/:id', function(ctx) {

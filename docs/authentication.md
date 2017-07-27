@@ -31,19 +31,22 @@ Personal laptop factor:
 Yubi Key factor that requires a second factor, a smart watch:
 
 ```json
-
 {
-  "@id": "7e2fg36y3c31",
-  "name": "Yubi Key",
-  "key": "23fge3fwg34f...",
-  "requiredFactors": [
-    {
-      "@id": "7e2fg36y3c31",
-      "name": "Smart Watch",
-      "key": "57fta3fwgsd456ferf..."
-    {
-  ]
+  "factor": {
+    "@id": "7e2fg36y3c31",
+    "name": "Yubi Key",
+    "key": "23fge3fwg34f...",
+    "requiredFactors": [
+      {
+        "@id": "7e2fg36y3c31",
+        "name": "Smart Watch",
+        "key": "57fta3fwgsd456ferf..."
+      {
+    ]
+  },
+  "sig": "g34df2hgjh5..."
 }
+```
 
 ## DID Authentication
 
