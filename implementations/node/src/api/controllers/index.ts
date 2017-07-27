@@ -31,11 +31,25 @@ indexRouter.post('/:id', function(ctx) {
         .then(function() {
           // Check to see if the user already has a DB in Couch, if not create one/
           if (!nano.use(response.did)) {
-            nano.db.create(response.did, function(error, body) {
-              if (!error) {
-                ctx.body = 'DB created for user';
-              }
-            });
+            var services = response.ddo.service;
+            if (services && services.hubs && services.hubs[0]) {
+              nano.db.replicate(
+                services.hubs[0],
+                response.did,
+                { create_target: true },
+                function(err, body) {
+                  if (!err) {
+                    ctx.body = 'Syncing with existing Hubs';
+                  }
+                }
+              );
+            } else {
+              nano.db.create(response.did, function(error, body) {
+                if (!error) {
+                  ctx.body = 'DB created for user';
+                }
+              });
+            }
           } else {
             ctx.body = 'User already exists';
           }
