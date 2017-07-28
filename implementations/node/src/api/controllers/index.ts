@@ -10,13 +10,13 @@ const nano = require('nano')(appConfig.dbURL);
 
 // consider a default ID token that directs to a designated identity's Hub data
 
-indexRouter.post('/:id', function(ctx) {
+indexRouter.post('/:id', async function(ctx) {
   // DID or dan.id
   // Prove You Own It call. Where?
 
-  resolver
+  await resolver
     .resolve(this.params.id)
-    .then(response => {
+    .then(async response => {
       // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
       var pubkey;
       var did = response.did;
@@ -28,36 +28,26 @@ indexRouter.post('/:id', function(ctx) {
         }
       });
       // Validate it with a lib we use or create;
-      auth
+      await auth
         .validate(pubkey, ctx.sig)
-        .then(function() {
+        .then(async function() {
           // Check to see if the user already has a DB in Couch - if so exit, if not, sync existing remote or create one
           if (!nano.use(did)) {
             var hubs = ddo.service && ddo.service.hubs;
             if (hubs) {
-              var hub = 0;
-              function hubSync(resolve, reject) {
-                nano.db.replicate(
-                  hubs[hub],
-                  did,
-                  { create_target: true },
-                  function(error, body) {
-                    if (error) {
-                      reject(error);
-                    } else {
-                      resolve(body);
+              for (hub of hubs) {
+                await new Promise(function(resolve, reject) {
+                  nano.db.replicate(
+                    hubs[hub],
+                    did,
+                    { create_target: true },
+                    function(error, body) {
+                      if (error) reject(error);
+                      else resolve(body);
                     }
-                  }
-                );
-              }
-              new Promise(hubSync)
-                .then(response => {
-                  ctx.body = 'Syncing with existing Hubs';
-                })
-                .catch(error => {
-                  hub++;
-                  hubSync();
+                  );
                 });
+              }
             } else {
               nano.db.create(did, function(error, body) {
                 if (!error) {
