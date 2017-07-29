@@ -22,16 +22,17 @@ if (!scheme && ['development', 'test'].includes(environment)) {
   throw 'You must set an environment variable for SCHEME';
 }
 
-/*
-  I assume we need to specify the CouchDB instance location/settings somewhere in here?
-*/
+let couchdbURL = process.env.COUCHDB_URL;
+if (!couchdbURL) {
+  throw 'You must set an environment variable for COUCHDB_URL';
+}
 
 const appConfig = {
   environment,
   scheme,
   hostName,
   port,
-  dbURL,
-  baseURL: `${scheme}://${hostName}:${port}/.identity`
+  baseURL: `${scheme}://${hostName}:${port}/.identity`,
+  dbURL: `${couchdbURL}`
 };
 export default appConfig;
