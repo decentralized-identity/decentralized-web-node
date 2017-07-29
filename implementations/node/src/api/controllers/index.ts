@@ -49,7 +49,7 @@ indexRouter.post('/:id', async function(ctx) {
                 });
               }
             } else {
-              nano.db.create(did, function(error, body) {
+              nano.db.create(did, (error: object) => {
                 if (!error) {
                   ctx.body = 'DB created for user';
                 }
@@ -59,7 +59,7 @@ indexRouter.post('/:id', async function(ctx) {
             ctx.body = 'User already exists';
           }
         })
-        .catch(function(error) {
+        .catch(function() {
           ctx.body = 'Request could not be validated';
         });
     })
@@ -68,26 +68,25 @@ indexRouter.post('/:id', async function(ctx) {
     });
 });
 
-indexRouter.get('/:id', function(ctx) {
+indexRouter.get('/:id', async function(ctx) {
   // Ensure that there is an ID passed to the Hub
-
-  resolver.resolve(this.params.id).then(response => {});
-
-  ctx.body = JSON.stringify({
-    routes: {
-      extensions: {
+  await resolver.resolve(this.params.id).then(response => {
+    ctx.body = JSON.stringify({
+      routes: {
         extensions: {
-          rel: 'extension',
-          href: appConfig.baseURL + '/extensions',
-          action: 'GET'
-        },
-        extension: {
-          rel: 'extension',
-          href: appConfig.baseURL + '/extension/:id',
-          action: 'GET'
+          extensions: {
+            rel: 'extension',
+            href: appConfig.baseURL + '/extensions',
+            action: 'GET'
+          },
+          extension: {
+            rel: 'extension',
+            href: appConfig.baseURL + '/extension/:id',
+            action: 'GET'
+          }
         }
       }
-    }
+    });
   });
 });
 
