@@ -1,11 +1,11 @@
 import * as Router from 'koa-router';
 import resolver from '../../resolver';
+import appConfig from '../../config/app';
 
 // THIS NEEDS TO BE A SEPARATE NPM MODULE
 import auth from '../../lib/auth';
 
 const indexRouter = new Router();
-const appConfig = require('../../config/app');
 const nano = require('nano')(appConfig.dbURL);
 
 // consider a default ID token that directs to a designated identity's Hub data

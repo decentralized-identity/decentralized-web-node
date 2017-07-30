@@ -10,12 +10,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const Router = require("koa-router");
 const resolver_1 = require("../../resolver");
+const app_1 = require("../../config/app");
 // THIS NEEDS TO BE A SEPARATE NPM MODULE
 const auth_1 = require("../../lib/auth");
 const indexRouter = new Router();
 exports.indexRouter = indexRouter;
-const appConfig = require('../../config/app');
-const nano = require('nano')(appConfig.dbURL);
+const nano = require('nano')(app_1.default.dbURL);
 // consider a default ID token that directs to a designated identity's Hub data
 indexRouter.post('/:id', function (ctx) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -85,12 +85,12 @@ indexRouter.get('/:id', function (ctx) {
                     extensions: {
                         extensions: {
                             rel: 'extension',
-                            href: appConfig.baseURL + '/extensions',
+                            href: app_1.default.baseURL + '/extensions',
                             action: 'GET'
                         },
                         extension: {
                             rel: 'extension',
-                            href: appConfig.baseURL + '/extension/:id',
+                            href: app_1.default.baseURL + '/extension/:id',
                             action: 'GET'
                         }
                     }
