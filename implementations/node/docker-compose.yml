@@ -1,0 +1,13 @@
+version: '2'
+services:
+  hub:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - ENVIRONMENT=dev
+      - COUCHDB_URL="http://couchdb:5984"
+  couchdb:
+    image: "couchdb"
+    ports:
+      - "5984:5984"
