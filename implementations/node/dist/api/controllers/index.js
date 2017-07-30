@@ -17,7 +17,7 @@ const indexRouter = new Router();
 exports.indexRouter = indexRouter;
 const nano = require('nano')(app_1.default.dbURL);
 // consider a default ID token that directs to a designated identity's Hub data
-indexRouter.post('/:id', function (ctx) {
+indexRouter.post('/.identity/:id', function (ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         // DID or dan.id
         // Prove You Own It call. Where?
@@ -76,27 +76,31 @@ indexRouter.post('/:id', function (ctx) {
         });
     });
 });
-indexRouter.get('/:id', function (ctx) {
+indexRouter.get('/.identity/:id', function (ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         // Ensure that there is an ID passed to the Hub
-        yield resolver_1.default.resolve(this.params.id).then(response => {
-            ctx.body = JSON.stringify({
-                routes: {
-                    extensions: {
+        console.log(ctx.params.id);
+        if (!ctx.params.id)
+            ctx.body = "You must include a DID or TLN ID";
+        else
+            yield resolver_1.default.resolve(ctx.params.id).then(response => {
+                ctx.body = JSON.stringify({
+                    routes: {
                         extensions: {
-                            rel: 'extension',
-                            href: app_1.default.baseURL + '/extensions',
-                            action: 'GET'
-                        },
-                        extension: {
-                            rel: 'extension',
-                            href: app_1.default.baseURL + '/extension/:id',
-                            action: 'GET'
+                            extensions: {
+                                rel: 'extension',
+                                href: app_1.default.baseURL + '/extensions',
+                                action: 'GET'
+                            },
+                            extension: {
+                                rel: 'extension',
+                                href: app_1.default.baseURL + '/extension/:id',
+                                action: 'GET'
+                            }
                         }
                     }
-                }
+                });
             });
-        });
     });
 });
 const extensions_1 = require("./extensions");

@@ -10,7 +10,7 @@ const nano = require('nano')(appConfig.dbURL);
 
 // consider a default ID token that directs to a designated identity's Hub data
 
-indexRouter.post('/:id', async function(ctx) {
+indexRouter.post('/.identity/:id', async function(ctx) {
   // DID or dan.id
   // Prove You Own It call. Where?
 
@@ -68,26 +68,30 @@ indexRouter.post('/:id', async function(ctx) {
     });
 });
 
-indexRouter.get('/:id', async function(ctx) {
+indexRouter.get('/.identity/:id', async function(ctx) {
   // Ensure that there is an ID passed to the Hub
-  await resolver.resolve(this.params.id).then(response => {
-    ctx.body = JSON.stringify({
-      routes: {
-        extensions: {
+  console.log(ctx.params.id);
+
+  if (!ctx.params.id) ctx.body = 'You must include a DID or TLN ID';
+  else
+    await resolver.resolve(ctx.params.id).then(response => {
+      ctx.body = JSON.stringify({
+        routes: {
           extensions: {
-            rel: 'extension',
-            href: appConfig.baseURL + '/extensions',
-            action: 'GET'
-          },
-          extension: {
-            rel: 'extension',
-            href: appConfig.baseURL + '/extension/:id',
-            action: 'GET'
+            extensions: {
+              rel: 'extension',
+              href: appConfig.baseURL + '/extensions',
+              action: 'GET'
+            },
+            extension: {
+              rel: 'extension',
+              href: appConfig.baseURL + '/extension/:id',
+              action: 'GET'
+            }
           }
         }
-      }
+      });
     });
-  });
 });
 
 import extensionsRouter from './extensions';
