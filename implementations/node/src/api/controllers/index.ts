@@ -103,4 +103,5 @@ indexRouter.get('/.identity/:id/profile', async ctx => {
 });
 
 import extensionsRouter from './extensions';
-export { indexRouter, extensionsRouter };
+import devRouter from './_dev';
+export { indexRouter, extensionsRouter, devRouter };

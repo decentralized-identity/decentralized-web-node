@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+	  <title>API Playground</title>
+	  <meta charset="UTF-8">
+
+	  <link rel="stylesheet" type="text/css" href="../jasmine/jasmine.css">
+    <style>
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+      }
+
+      main {
+        display: flex;
+        height: 100%;
+      }
+
+      #query_form {
+        width: 300px;
+      }
+
+      #test_frame {
+        
+      }
+
+    </style>
+    
+    <script type="text/javascript" src="spec.js"></script>
+
+	</head>
+
+	<body>
+    <main>
+      <form id="query_form">
+
+        <select id="verb">
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="PATCH">PATCH</option>
+          <option value="DELETE">DELETE</option>
+          <option value="CONNECT">CONNECT</option>
+        </select>
+
+      </form>
+      <iframe id="test_frame" src="about:blank"></iframe>
+    </main>
+
+  </body>
+</html>

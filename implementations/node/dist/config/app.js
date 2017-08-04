@@ -27,6 +27,7 @@ let couchdbURL = process.env.COUCHDB_URL || 'http://0.0.0.0:5984';
 if (!couchdbURL) {
     throw 'You must set an environment variable for COUCHDB_URL';
 }
+console.log(environment);
 const appConfig = {
     environment,
     scheme,

@@ -19,7 +19,7 @@ exports.indexRouter = indexRouter;
 const nano = require('nano')(app_1.default.dbURL);
 // consider a default ID token that directs to a designated identity's Hub data
 // Identify all inbound parties from any route if an Authorize header declaration is present
-// If identification can be established, verify 
+// If identification can be established, verify
 indexRouter.use('/.identity/*', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     yield new Promise(function (resolve, reject) {
         var header = did_auth_1.default.parseAuthHeader(ctx.headers.authorization);
@@ -109,4 +109,6 @@ indexRouter.get('/.identity/:id/profile', (ctx) => __awaiter(this, void 0, void 
 }));
 const extensions_1 = require("./extensions");
 exports.extensionsRouter = extensions_1.default;
+const _dev_1 = require("./_dev");
+exports.devRouter = _dev_1.default;
 //# sourceMappingURL=index.js.map

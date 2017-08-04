@@ -27,6 +27,8 @@ if (!couchdbURL) {
   throw 'You must set an environment variable for COUCHDB_URL';
 }
 
+console.log(environment);
+
 const appConfig = {
   environment,
   scheme,
