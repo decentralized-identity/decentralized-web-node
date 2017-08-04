@@ -11,46 +11,31 @@ const nano = require('nano')(appConfig.dbURL);
 
 // consider a default ID token that directs to a designated identity's Hub data
 
-function parseAuthHeader(header) {
-  if (header) {
-    // header.split()
-  } else return false;
-}
-
-indexRouter.use('*', async ctx => {
+// Identify all inbound parties from any route if an Authorize header declaration is present
+// If identification can be established, verify
+indexRouter.use('/.identity/*', async (ctx, next) => {
   await new Promise(function(resolve, reject) {
-    resolver.lookup('bob.id').then(response => {
-      // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
-      var pubkey;
-      var ddo = response.ddo;
-      var did = ddo.id;
-      ddo.owner.some(item => {
-        // Which key pair do we challenge with? Can the DDO flag it?
-        if (item.type[1] == 'secp256k1PublicKey') {
-          pubkey = item.publicKeyHex;
-          return true;
-        }
-        return false;
+    var header = auth.parseAuthHeader(ctx.headers.authorization);
+    if (header) {
+      resolver.lookup(header.did).then(response => {
+        // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
+        var key = auth.getKeyFromDDO(response.ddo, header.key);
+
+        console.log(key);
+
+        if (key) {
+          ctx.body = key;
+          resolve(next());
+        } else reject();
       });
-
-      console.log(ddo);
-
-      // var verifier = crypto.createVerify("RSA-SHA256");
-      // verifier.update(nonceString);
-
-      // var publicKeyBuf = new Buffer(pubkey, 'base64');
-
-      //var result = null //verifier.verify(publicKeyBuf, signature, "base64");
-      var result = true;
-      if (result) {
-        ctx.body = ddo;
-        resolve();
-      } else reject();
-    });
+    } else {
+      ctx.body = 'foo';
+      resolve(next());
+    }
   });
 });
 
-indexRouter.post('/.identity/:id', async function(ctx) {
+indexRouter.post('/.identity/:id', async ctx => {
   // DID or dan.id
   // Prove You Own It call. Where?
 
@@ -58,20 +43,11 @@ indexRouter.post('/.identity/:id', async function(ctx) {
     .lookup(ctx.params.id)
     .then(async response => {
       // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
-      var pubkey;
       var ddo = response.ddo;
-      var did = ddo.id;
-      ddo.owner.some(item => {
-        // Which key pair do we challenge with? Can the DDO flag it?
-        if (item.type[1] == 'secp256k1PublicKey') {
-          pubkey = item.publicKeyHex;
-          return true;
-        }
-        return false;
-      });
+      var key = auth.getKeyFromDDO(ddo);
       // Validate it with a lib we use or create;
       await auth
-        .validate(pubkey, ctx.params.sig)
+        .validate(key.public, ctx.params.sig)
         .then(async function() {
           // Check to see if the user already has a DB in Couch - if so exit, if not, sync existing remote or create one
           if (!nano.use(did)) {
@@ -113,15 +89,17 @@ indexRouter.post('/.identity/:id', async function(ctx) {
     });
 });
 
-indexRouter.get('/.identity/:id', async function(ctx) {
+indexRouter.get('/.identity/:id/profile', async ctx => {
   // Ensure that there is an ID passed to the Hub
   console.log(ctx.params.id);
 
-  if (!ctx.params.id) ctx.body = 'You must include a DID or TLN ID';
-  else
-    await resolver.resolve(ctx.params.id).then(response => {
-      ctx.body = 'Success';
+  if (!ctx.params.id) {
+    ctx.body = 'You must include a DID or TLN ID';
+  } else {
+    await resolver.lookup(ctx.params.id).then(response => {
+      ctx.body = response.ddo;
     });
+  }
 });
 
 import extensionsRouter from './extensions';
