@@ -1,7 +1,7 @@
 import * as Koa from 'koa';
-const app = new Koa();
-
 import { indexRouter, extensionsRouter } from './controllers';
+
+const app = new Koa();
 
 app
   .use(indexRouter.routes())

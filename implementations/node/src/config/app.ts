@@ -8,9 +8,9 @@ if (!port && ['development', 'test'].includes(environment)) {
   throw 'You must set an environment variable for PORT';
 }
 
-let hostName = process.env.HOST_NAME;
-if (!hostName && ['development', 'test'].includes(environment)) {
-  hostName = 'localhost';
+let hostname = process.env.HOST_NAME;
+if (!hostname && ['development', 'test'].includes(environment)) {
+  hostname = 'localhost';
 } else {
   throw 'You must set an environment variable for HOST_NAME';
 }
@@ -30,9 +30,9 @@ if (!couchdbURL) {
 const appConfig = {
   environment,
   scheme,
-  hostName,
+  hostname,
   port,
-  baseURL: `${scheme}://${hostName}:${port}/.identity`,
+  baseURL: `${scheme}://${hostname}${port ? ':' + port : ''}/.identity`,
   dbURL: `${couchdbURL}`
 };
 export default appConfig;
