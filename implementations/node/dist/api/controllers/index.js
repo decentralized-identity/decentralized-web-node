@@ -27,9 +27,7 @@ function parseAuthHeader(header) {
 }
 indexRouter.use('*', (ctx) => __awaiter(this, void 0, void 0, function* () {
     yield new Promise(function (resolve, reject) {
-        resolver_1.default
-            .lookup('bob.id')
-            .then(response => {
+        resolver_1.default.lookup('bob.id').then(response => {
             // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
             var pubkey;
             var ddo = response.ddo;
@@ -87,6 +85,7 @@ indexRouter.post('/.identity/:id', function (ctx) {
                         if (hubs) {
                             for (let hub of hubs) {
                                 if (new URL(hub).hostname != app_1.default.hostname) {
+                                    // Don't count yourself as a sync target
                                     yield new Promise(function (resolve, reject) {
                                         nano.db.replicate(hubs[hub], did, { create_target: true }, function (error, body) {
                                             if (error)
@@ -128,7 +127,7 @@ indexRouter.get('/.identity/:id', function (ctx) {
             ctx.body = 'You must include a DID or TLN ID';
         else
             yield resolver_1.default.resolve(ctx.params.id).then(response => {
-                ctx.body = "Success";
+                ctx.body = 'Success';
             });
     });
 });

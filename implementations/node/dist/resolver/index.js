@@ -80,7 +80,8 @@ const resolver = {
                         }
                     });
                     break;
-                default: reject('not found');
+                default:
+                    reject('not found');
             }
         });
     },
