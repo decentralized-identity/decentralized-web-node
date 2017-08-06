@@ -45,6 +45,7 @@ indexRouter.use('/.identity/*', (ctx, next) => __awaiter(this, void 0, void 0, f
 indexRouter.post('/.identity/:id', (ctx) => __awaiter(this, void 0, void 0, function* () {
     // DID or dan.id
     // Prove You Own It call. Where?
+    console.log(ctx);
     yield resolver_1.default
         .lookup(ctx.params.id)
         .then((response) => __awaiter(this, void 0, void 0, function* () {

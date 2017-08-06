@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+	  <title>API Playground</title>
+    <meta charset="UTF-8">
+    <link href="/playground/playground.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet"/>
+  </head>
+
+	<body>
+
+    <svg id="svg_source">
+      <defs>
+        <symbol id="logo" width="100%" height="1em" viewBox="0 0 24 24">
+          <path d="M12.111 0.5l-11.111 5.452v11.034l11 6.514 11-6.514v-11.034l-10.889-5.452zM11 20.584l-8-4.738v-6.675l8 3.953v7.46zM3.464 7.106l8.664-4.366 8.664 4.366-8.664 4.281-8.664-4.281zM21 15.846l-9 5.33v-7.722l9-4.283v6.675z"></path>
+        </symbol>
+      </defs>
+    </svg>
+
+    <main>
+
+      <aside id="sidebar">
+        <header no-margin><h1><svg><use xlink:href="#logo"></use></svg>Identity Hub Playground</h1></header>
+        <section id="query_section">
+          <form id="query_form">
+
+            <label heading="Verb">
+              <select name="verb">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="PATCH">PATCH</option>
+                <option value="DELETE">DELETE</option>
+                <option value="CONNECT">CONNECT</option>
+              </select>
+            </label>
+
+            <label heading="Route &nbsp;(assumes /.identity/)">
+              <input name="route" />
+            </label>
+
+            <label heading="Headers">
+              <textarea name="headers" rows="3"></textarea>
+            </label>
+            
+            <div id="query_form_submit" no-margin>
+              <button>Test Query</button>
+            </div>
+          </form>
+        </section>
+      </aside>
+
+      <section id="frame_section">
+        <header>
+          
+        </header>
+        <object id="test_frame"></object>
+      </section>
+
+    </main>
+
+
+  <script>
+    (function(){
+      var parseHeaders = /([^\s\n:]*):(?:\s*)([^\s\n]*)/g;
+      query_form.addEventListener('submit', function(e){
+        e.preventDefault();
+          var headers = {};
+
+          (this.elements.headers.value || '').replace(parseHeaders, function(str, name, value){
+            headers[name] = value;     
+          });
+
+          console.log(headers);
+
+          fetch('/.identity/' + (this.elements.route.value || '').replace(/^\/+/g, ''), {
+            method: this.elements.verb.value,
+            headers: new Headers(headers),
+            mode: 'cors',
+            cache: 'no-cache'
+          }).then(function(response) {
+            return response.blob();
+          }).then(function(blob) {
+            console.log(blob);
+            var objectURL = URL.createObjectURL(blob);
+            test_frame.type = blob.type;
+            test_frame.data = objectURL;
+          });
+
+      })
+    })();
+  </script>
+  
+</body>
+</html>

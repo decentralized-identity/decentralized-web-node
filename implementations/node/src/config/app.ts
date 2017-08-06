@@ -1,7 +1,8 @@
 import * as process from 'process';
-const environment = process.env.NODE_ENV || 'development';
+const environment = (process.env.NODE_ENV || 'development').trim();
 
 let port = process.env.PORT;
+
 if (!port && ['development', 'test'].includes(environment)) {
   port = '3000';
 } else {
@@ -27,8 +28,6 @@ if (!couchdbURL) {
   throw 'You must set an environment variable for COUCHDB_URL';
 }
 
-console.log(environment);
-
 const appConfig = {
   environment,
   scheme,
@@ -37,4 +36,5 @@ const appConfig = {
   baseURL: `${scheme}://${hostname}${port ? ':' + port : ''}/.identity`,
   dbURL: `${couchdbURL}`
 };
+
 export default appConfig;

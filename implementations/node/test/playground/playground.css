@@ -1,0 +1,194 @@
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: 'Heebo', sans-serif;
+      }
+
+      #svg_source {
+        display: none;
+      }
+
+      svg {
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        margin-right: 0.3em;
+        pointer-events: none;
+        vertical-align: text-top;
+        fill: #fff;
+      }
+
+      main {
+        display: flex;
+        height: 100%;
+      }
+
+      
+      h1 {
+        font-size: 1em;
+        padding: 0 0.6em;
+        margin: 0;
+        text-shadow: 0 1px 1px rgba(0,0,0,0.75);
+      }
+
+      form input,
+      form select,
+      form textarea {
+        outline: none;
+      }
+
+      form input:focus,
+      form select:focus,
+      form textarea:focus {
+        outline: 2px solid rgba(146, 160, 222, 0.3);
+      }
+
+      form label {
+        position: relative;
+        margin-top: 1.75em;
+      }
+      
+      form label[heading]:before {
+        content: attr(heading);
+        display: block;
+        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 0.2em 0.4em 0;
+        font-size: 0.6em;
+        letter-spacing: 0.1em;
+        text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+        color: #fff;
+        background: rgba(255, 255, 255, 0.05);
+        border-top: 1px solid rgba(0, 0, 0, 0.3);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      form button {
+        padding: 0.5em 1em;
+        border: none;
+        border-radius: 2px;
+        background: #ccc;
+        box-shadow: 0 1px 2px 0px rgba(0,0,0,0.5);
+        font-weight: bold;
+        cursor: pointer;
+      }
+
+      form select {
+        cursor: pointer;
+      }
+
+      #sidebar > header,
+      #frame_section > header {
+        height: 3em;
+        line-height: 3em;
+      }
+
+      #sidebar {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+        border-right: 1px solid rgba(0,0,0,0.15);
+        box-shadow: 1px 0 2px 1px rgba(0,0,0,0.2);
+      }
+
+      #sidebar > header {
+        position: relative;
+        color: #fff;
+        background: rgba(70, 70, 70, 0.5);
+        border-bottom: 1px solid rgba(0,0,0,0.4);
+        box-shadow: 0 1px 4px -1px rgba(0,0,0,0.3);
+      }
+
+      #sidebar header svg {
+        width: 2em;
+        height: 1.4em;
+        fill: #c0cdde;
+      }
+
+      #sidebar,
+      #sidebar section {
+        background: #383c4d;
+      }
+
+      #sidebar section {
+        flex: 1;
+      }
+
+      #query_form {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+      }
+
+      #query_form > label {
+        padding: 2.75em 1.75em 1em;
+      }
+
+      #query_form input,
+      #query_form select,
+      #query_form textarea {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
+        padding: 0.4em 0.3em;
+        border-radius: 3px;
+        font-family: 'Heebo', sans-serif;     
+        color: #fff;
+        background: rgba(0,0,0, 0.1); 
+        border: 1px solid rgba(255,255,255, 0.1);
+        border-top: 1px solid rgba(255,255,255, 0.075);
+        border-bottom: 1px solid rgba(255,255,255, 0.125);
+        box-shadow: 0 1px 4px 0px rgba(0,0,0,0.5) inset;
+      }
+
+      #query_form option{
+        color: #000;
+      }
+
+      #query_form_submit {
+        padding: 1em;
+        margin-top: auto;
+      }
+      #query_form_submit button {
+        margin: 0 auto;
+        display: block;
+      }
+
+      #frame_section {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+      }
+
+      #frame_section > header {
+        position: relative;
+        color: #fff;
+        background: #888;
+        border-bottom: 1px solid rgba(0,0,0,0.4);
+        box-shadow: 0 1px 2px 0px rgba(0,0,0,0.5);
+      }
+
+      #frame_section:before {
+        display: inline-block;
+        position: absolute;
+        top: calc(50% + 1.5em);
+        left: 50%;
+        transform: translate(-50%, -50%);
+        content: "🡐 Enter a query";
+        z-index: -1;
+      }
+
+      #test_frame {
+        flex: 1;
+        border: none;
+        transition: opacity 0.5s ease;
+      }
+
+      #test_frame[src="about:blank"] {
+        opacity: 0;
+      }

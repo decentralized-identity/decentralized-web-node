@@ -38,7 +38,7 @@ indexRouter.use('/.identity/*', async (ctx, next) => {
 indexRouter.post('/.identity/:id', async ctx => {
   // DID or dan.id
   // Prove You Own It call. Where?
-
+  console.log(ctx);
   await resolver
     .lookup(ctx.params.id)
     .then(async response => {
