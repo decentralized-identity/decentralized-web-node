@@ -186,9 +186,11 @@
       #test_frame {
         flex: 1;
         border: none;
+        background: #fff;
+        opacity: 0;
         transition: opacity 0.5s ease;
       }
 
-      #test_frame[src="about:blank"] {
-        opacity: 0;
+      #test_frame:not([data="about:blank"]) {
+        opacity: 1;
       }

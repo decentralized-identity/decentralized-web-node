@@ -55,7 +55,7 @@
         <header>
           
         </header>
-        <object id="test_frame"></object>
+        <object id="test_frame" data="about:blank"></object>
       </section>
 
     </main>
@@ -63,30 +63,40 @@
 
   <script>
     (function(){
+
       var parseHeaders = /([^\s\n:]*):(?:\s*)([^\s\n]*)/g;
+
       query_form.addEventListener('submit', function(e){
+
         e.preventDefault();
-          var headers = {};
 
-          (this.elements.headers.value || '').replace(parseHeaders, function(str, name, value){
-            headers[name] = value;     
-          });
+        var headers = {};
 
-          console.log(headers);
+        (this.elements.headers.value || '').replace(parseHeaders, function(str, name, value){
+          headers[name] = value;     
+        });
 
-          fetch('/.identity/' + (this.elements.route.value || '').replace(/^\/+/g, ''), {
-            method: this.elements.verb.value,
-            headers: new Headers(headers),
-            mode: 'cors',
-            cache: 'no-cache'
-          }).then(function(response) {
-            return response.blob();
-          }).then(function(blob) {
-            console.log(blob);
-            var objectURL = URL.createObjectURL(blob);
+        fetch('/.identity/' + (this.elements.route.value || '').replace(/^\/+/g, ''), {
+          method: this.elements.verb.value,
+          headers: new Headers(headers),
+          mode: 'cors',
+          cache: 'no-cache'
+        }).then(function(response) {
+          var type = (response.headers.get('content-type') || '').split(';')[0];
+          return response.text().then(text => {
+            var blob;
+            switch(type) {
+              case 'application/json':   
+                var json = JSON.parse(text);
+                blob = new Blob([JSON.stringify(json, null, 2)], {type : 'application/json'});
+                break;
+              default:
+                blob = new Blob([text], {type : 'text/plain'});
+            }
             test_frame.type = blob.type;
-            test_frame.data = objectURL;
-          });
+            test_frame.data = URL.createObjectURL(blob);
+          })
+        });
 
       })
     })();
