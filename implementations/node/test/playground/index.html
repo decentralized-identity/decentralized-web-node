@@ -23,7 +23,7 @@
       <aside id="sidebar">
         <header no-margin><h1><svg><use xlink:href="#logo"></use></svg>Identity Hub Playground</h1></header>
         <section id="query_section">
-          <form id="query_form">
+          <form id="query_form" cache-form>
 
             <label heading="Verb">
               <select name="verb">
@@ -65,6 +65,22 @@
     (function(){
 
       var parseHeaders = /([^\s\n:]*):(?:\s*)([^\n]*)/g;
+      var inputs = document.querySelectorAll('form[id][cache-form] input, form[id][cache-form] select, form[id][cache-form] textarea');
+
+      for (let input of inputs) {
+        let value = localStorage[input.form.id + ':' + input.name];
+        if (value != null && value != undefined && value != 'undefined') {
+          input.value = value;
+        }
+      }
+
+      document.addEventListener('change', function(e){
+        var input = e.target;
+        var formID = input.form && input.form.hasAttribute('cache-form') && input.form.id;
+        if (formID) {
+          localStorage[formID + ':' + input.name] = input.value;
+        }
+      }, true);
 
       query_form.addEventListener('submit', function(e){
 
@@ -73,7 +89,6 @@
         var headers = {};
 
         (this.elements.headers.value || '').replace(parseHeaders, function(str, name, value){
-          console.log(arguments);
           headers[name] = value;     
         });
 
