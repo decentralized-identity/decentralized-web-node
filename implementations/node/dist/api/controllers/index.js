@@ -23,6 +23,7 @@ const nano = require('nano')(app_1.default.dbURL);
 indexRouter.use('/.identity/*', (ctx, next) => __awaiter(this, void 0, void 0, function* () {
     yield new Promise(function (resolve, reject) {
         var header = did_auth_1.default.parseAuthHeader(ctx.headers.authorization);
+        console.log(ctx.headers.authorization);
         if (header) {
             resolver_1.default.lookup(header.did).then(response => {
                 // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?

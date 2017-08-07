@@ -64,7 +64,7 @@
   <script>
     (function(){
 
-      var parseHeaders = /([^\s\n:]*):(?:\s*)([^\s\n]*)/g;
+      var parseHeaders = /([^\s\n:]*):(?:\s*)([^\n]*)/g;
 
       query_form.addEventListener('submit', function(e){
 
@@ -73,6 +73,7 @@
         var headers = {};
 
         (this.elements.headers.value || '').replace(parseHeaders, function(str, name, value){
+          console.log(arguments);
           headers[name] = value;     
         });
 
