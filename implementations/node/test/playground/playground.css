@@ -33,15 +33,18 @@
       }
 
       form input,
-      form select,
+      form button,
+      form select,  
       form textarea {
         outline: none;
       }
 
       form input:focus,
+      form button:focus,
       form select:focus,
       form textarea:focus {
-        outline: 2px solid rgba(146, 160, 222, 0.3);
+        outline: 2px dotted rgba(200, 206, 231, 0.5);
+        outline-offset: 2px;
       }
 
       form label {
