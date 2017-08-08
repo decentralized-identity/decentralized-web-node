@@ -4,6 +4,8 @@
 	<head>
 	  <title>API Playground</title>
     <meta charset="UTF-8">
+    <link href="/playground/editor/prism.css" rel="stylesheet"/>
+    <link href="/playground/editor/codeflask.css" rel="stylesheet"/>
     <link href="/playground/playground.css" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet"/>
   </head>
@@ -41,7 +43,11 @@
             </label>
 
             <label heading="Headers">
-              <textarea name="headers" rows="3"></textarea>
+              <div class="codeflask" data-language="css" name="headers"></div>
+            </label>
+
+            <label heading="Body">
+              <div class="codeflask" data-language="json" name="body"></div>
             </label>
             
             <div id="query_form_submit" no-margin>
@@ -59,64 +65,10 @@
       </section>
 
     </main>
-
-
-  <script>
-    (function(){
-
-      var parseHeaders = /([^\s\n:]*):(?:\s*)([^\n]*)/g;
-      var inputs = document.querySelectorAll('form[id][cache-form] input, form[id][cache-form] select, form[id][cache-form] textarea');
-
-      for (let input of inputs) {
-        let value = localStorage[input.form.id + ':' + input.name];
-        if (value != null && value != undefined && value != 'undefined') {
-          input.value = value;
-        }
-      }
-
-      document.addEventListener('change', function(e){
-        var input = e.target;
-        var formID = input.form && input.form.hasAttribute('cache-form') && input.form.id;
-        if (formID) {
-          localStorage[formID + ':' + input.name] = input.value;
-        }
-      }, true);
-
-      query_form.addEventListener('submit', function(e){
-
-        e.preventDefault();
-
-        var headers = {};
-
-        (this.elements.headers.value || '').replace(parseHeaders, function(str, name, value){
-          headers[name] = value;     
-        });
-
-        fetch('/.identity/' + (this.elements.route.value || '').replace(/^\/+/g, ''), {
-          method: this.elements.verb.value,
-          headers: new Headers(headers),
-          mode: 'cors',
-          cache: 'no-cache'
-        }).then(function(response) {
-          var type = (response.headers.get('content-type') || '').split(';')[0];
-          return response.text().then(text => {
-            var blob;
-            switch(type) {
-              case 'application/json':   
-                var json = JSON.parse(text);
-                blob = new Blob([JSON.stringify(json, null, 2)], {type : 'application/json'});
-                break;
-              default:
-                blob = new Blob([text], {type : 'text/plain'});
-            }
-            test_frame.type = blob.type;
-            test_frame.data = URL.createObjectURL(blob);
-          })
-        });
-
-      })
-    })();
-  </script>
+  
+  <script src="/playground/editor/prism.js"></script>
+  <script src="/playground/editor/codeflask.js"></script>
+  <script src="/playground/playground.js"></script>
   
 </body>
 </html>
