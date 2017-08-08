@@ -3,50 +3,72 @@ import resolver from '../../resolver';
 import appConfig from '../../config/app';
 
 // THIS NEEDS TO BE A SEPARATE NPM MODULE
-import auth from '../../lib/auth';
+import auth from '../../lib/did-auth';
 
+const URL = require('url');
 const indexRouter = new Router();
 const nano = require('nano')(appConfig.dbURL);
 
 // consider a default ID token that directs to a designated identity's Hub data
 
-indexRouter.post('/:id', async function(ctx) {
+// Identify all inbound parties from any route if an Authorize header declaration is present
+// If identification can be established, verify
+indexRouter.use('/.identity/*', async (ctx, next) => {
+  await new Promise(function(resolve, reject) {
+    var header = auth.parseAuthHeader(ctx.headers.authorization);
+    console.log(ctx.headers.authorization);
+    if (header) {
+      resolver.lookup(header.did).then(response => {
+        // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
+        var key = auth.getKeyFromDDO(response.ddo, header.key);
+
+        console.log(key);
+
+        if (key) {
+          ctx.body = key;
+          resolve(next());
+        } else reject();
+      });
+    } else {
+      ctx.body = 'foo';
+      resolve(next());
+    }
+  });
+});
+
+indexRouter.post('/.identity/:id', async ctx => {
   // DID or dan.id
   // Prove You Own It call. Where?
-
+  console.log(ctx);
   await resolver
-    .resolve(this.params.id)
+    .lookup(ctx.params.id)
     .then(async response => {
       // Locate a key to validate the request. Which one? Does the user specify, or is this standardized?
-      var pubkey;
-      var did = response.did;
       var ddo = response.ddo;
-      ddo.owner.some(item => {
-        if (item.type[1] == 'EdDsaPublicKey') {
-          pubkey = item.publicKeyBase64;
-          return true;
-        }
-      });
+      var key = auth.getKeyFromDDO(ddo);
       // Validate it with a lib we use or create;
       await auth
-        .validate(pubkey, ctx.sig)
+        .validate(key.public, ctx.params.sig)
         .then(async function() {
           // Check to see if the user already has a DB in Couch - if so exit, if not, sync existing remote or create one
           if (!nano.use(did)) {
             var hubs = ddo.service && ddo.service.hubs;
             if (hubs) {
-              for (hub of hubs) {
-                await new Promise(function(resolve, reject) {
-                  nano.db.replicate(
-                    hubs[hub],
-                    did,
-                    { create_target: true },
-                    function(error, body) {
-                      if (error) reject(error);
-                      else resolve(body);
-                    }
-                  );
-                });
+              for (let hub of hubs) {
+                if (new URL(hub).hostname != appConfig.hostname) {
+                  // Don't count yourself as a sync target
+                  await new Promise(function(resolve, reject) {
+                    nano.db.replicate(
+                      hubs[hub],
+                      did,
+                      { create_target: true },
+                      function(error, body) {
+                        if (error) reject(error);
+                        else resolve(body);
+                      }
+                    );
+                  });
+                }
               }
             } else {
               nano.db.create(did, (error: object) => {
@@ -63,32 +85,24 @@ indexRouter.post('/:id', async function(ctx) {
           ctx.body = 'Request could not be validated';
         });
     })
-    .catch(error => {
+    .catch(() => {
       ctx.body = 'Could not resolve';
     });
 });
 
-indexRouter.get('/:id', async function(ctx) {
+indexRouter.get('/.identity/:id/profile', async ctx => {
   // Ensure that there is an ID passed to the Hub
-  await resolver.resolve(this.params.id).then(response => {
-    ctx.body = JSON.stringify({
-      routes: {
-        extensions: {
-          extensions: {
-            rel: 'extension',
-            href: appConfig.baseURL + '/extensions',
-            action: 'GET'
-          },
-          extension: {
-            rel: 'extension',
-            href: appConfig.baseURL + '/extension/:id',
-            action: 'GET'
-          }
-        }
-      }
+  console.log(ctx.params.id);
+
+  if (!ctx.params.id) {
+    ctx.body = 'You must include a DID or TLN ID';
+  } else {
+    await resolver.lookup(ctx.params.id).then(response => {
+      ctx.body = response.ddo;
     });
-  });
+  }
 });
 
 import extensionsRouter from './extensions';
-export { indexRouter, extensionsRouter };
+import devRouter from './_dev';
+export { indexRouter, extensionsRouter, devRouter };

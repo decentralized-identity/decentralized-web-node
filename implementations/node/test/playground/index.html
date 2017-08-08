@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+	  <title>API Playground</title>
+    <meta charset="UTF-8">
+    <link href="/playground/editor/prism.css" rel="stylesheet"/>
+    <link href="/playground/editor/codeflask.css" rel="stylesheet"/>
+    <link href="/playground/playground.css" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Heebo" rel="stylesheet"/>
+  </head>
+
+	<body>
+
+    <svg id="svg_source">
+      <defs>
+        <symbol id="logo" width="100%" height="1em" viewBox="0 0 24 24">
+          <path d="M12.111 0.5l-11.111 5.452v11.034l11 6.514 11-6.514v-11.034l-10.889-5.452zM11 20.584l-8-4.738v-6.675l8 3.953v7.46zM3.464 7.106l8.664-4.366 8.664 4.366-8.664 4.281-8.664-4.281zM21 15.846l-9 5.33v-7.722l9-4.283v6.675z"></path>
+        </symbol>
+      </defs>
+    </svg>
+
+    <main>
+
+      <aside id="sidebar">
+        <header no-margin><h1><svg><use xlink:href="#logo"></use></svg>Identity Hub Playground</h1></header>
+        <section id="query_section">
+          <form id="query_form" cache-form>
+
+            <label heading="Verb">
+              <select name="verb">
+                <option value="GET">GET</option>
+                <option value="POST">POST</option>
+                <option value="PUT">PUT</option>
+                <option value="PATCH">PATCH</option>
+                <option value="DELETE">DELETE</option>
+                <option value="CONNECT">CONNECT</option>
+              </select>
+            </label>
+
+            <label heading="Route &nbsp;(assumes /.identity/)">
+              <input name="route" />
+            </label>
+
+            <label heading="Headers">
+              <div class="codeflask" data-language="css" name="headers"></div>
+            </label>
+
+            <label heading="Body">
+              <div class="codeflask" data-language="json" name="body"></div>
+            </label>
+          </form>
+          <footer id="query_form_submit" no-margin>
+            <input type="submit" value="Test Query" form="query_form"></button>
+          </footer>
+        </section>
+      </aside>
+
+      <section id="frame_section">
+        <header>
+          
+        </header>
+        <object id="test_frame" data="about:blank"></object>
+      </section>
+
+    </main>
+  
+  <script src="/playground/editor/prism.js"></script>
+  <script src="/playground/editor/codeflask.js"></script>
+  <script src="/playground/playground.js"></script>
+  
+</body>
+</html>
