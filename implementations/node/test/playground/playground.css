@@ -89,7 +89,10 @@ form label[heading]:before {
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-form button {
+form button,
+input[type="submit"] {
+  display: block;
+  margin: 0 auto;
   padding: 0.5em 1em;
   border: none;
   border-radius: 2px;
@@ -120,6 +123,7 @@ form select {
 }
 
 #sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 300px;
@@ -133,6 +137,7 @@ form select {
   background: rgba(70, 70, 70, 0.5);
   border-bottom: 1px solid rgba(0,0,0,0.4);
   box-shadow: 0 1px 4px -1px rgba(0,0,0,0.3);
+  z-index: 1;
 }
 
 #sidebar header svg {
@@ -147,7 +152,22 @@ form select {
 }
 
 #sidebar section {
+  position: absolute;
+  top: 3em;
+  bottom: 0;
+  width: inherit;
+  overflow-y: auto;
   flex: 1;
+}
+
+#sidebar section footer {
+  position: fixed;
+  bottom: 0;
+  box-sizing: border-box;
+  width: inherit;
+  padding: 0.75em 0.5em;
+  z-index: 2;
+  background: rgba(0,0,0,0.2);
 }
 
 #query_form {
@@ -157,7 +177,7 @@ form select {
 }
 
 #query_form > label {
-  padding: 2.75em 1.75em 1em;
+  padding: 2.75em 1.75em 0;
 }
 
 #query_form option{
