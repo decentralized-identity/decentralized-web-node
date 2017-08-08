@@ -1,0 +1,24 @@
+version: '2'
+services:
+  hub-alice:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - ENVIRONMENT=dev
+      - COUCHDB_URL="http://couchdb-alice:5984"
+  couchdb-alice:
+    image: "couchdb"
+    ports:
+      - "5984:5984"
+  hub-bob:
+    build: .
+    ports:
+      - "3001:3000"
+    environment:
+      - ENVIRONMENT=dev
+      - COUCHDB_URL="http://couchdb-bob:5984"
+  couchdb-bob:
+    image: "couchdb"
+    ports:
+      - "5985:5984"
