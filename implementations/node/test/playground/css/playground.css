@@ -13,15 +13,15 @@ svg {
   display: inline-block;
   width: 1em;
   height: 1em;
-  margin-right: 0.3em;
   pointer-events: none;
-  vertical-align: text-top;
+  vertical-align: middle;
   fill: #fff;
 }
 
 main {
   display: flex;
   height: 100%;
+  overflow: hidden;
 }
 
 
@@ -40,7 +40,8 @@ form textarea {
   font-family: monospace;
 }
 
-form input:focus,
+form input[type="text"]:focus,
+form input:not([type]):focus,
 form button:focus,
 form select:focus,
 form textarea:focus,
@@ -49,7 +50,8 @@ form textarea:focus,
   outline-offset: 2px;
 }
 
-form input,
+form input[type="text"],
+form input:not([type]),
 form select,
 form textarea {
   box-sizing: border-box;
@@ -66,12 +68,12 @@ form textarea {
   box-shadow: 0 1px 4px 0px rgba(0,0,0,0.5) inset;
 }
 
-form label {
+form label, form [heading] {
   position: relative;
   margin-top: 1.75em;
 }
 
-form label[heading]:before {
+form [heading]:before {
   content: attr(heading);
   display: block;
   box-sizing: border-box;
@@ -79,7 +81,7 @@ form label[heading]:before {
   top: 0;
   left: 0;
   width: 100%;
-  padding: 0.2em 0.4em 0;
+  padding: 0.3em 0.6em 0.2em;
   font-size: 0.6em;
   letter-spacing: 0.1em;
   text-shadow: 0 1px 0 rgba(0,0,0,0.5);
@@ -97,9 +99,13 @@ input[type="submit"] {
   border: none;
   border-radius: 2px;
   background: #ccc;
-  box-shadow: 0 1px 2px 0px rgba(0,0,0,0.5);
+  box-shadow: 0 1px 1px 1px rgba(0,0,0,0.5);
   font-weight: bold;
   cursor: pointer;
+}
+
+form input[type="submit"] {
+  margin-top: 1em;
 }
 
 form select {
@@ -108,12 +114,58 @@ form select {
 
 .codeflask {
   min-height: 100px;
+  border: 1px solid rgba(255,255,255, 0.1);
+  border-top: 1px solid rgba(255,255,255, 0.075);
+  border-bottom: 1px solid rgba(255,255,255, 0.125);
 }
 
 .codeflask textarea,
 .codeflask pre,
 .codeflask code {
   padding: 0.6em 0.7em !important;
+}
+
+#global_menu {
+  min-width: 4em;
+  background: #333;
+  border-right: 1px solid rgba(0,0,0,0.2);
+  box-shadow: 1px 0px 3px 0px rgba(0,0,0,0.2);
+  z-index: 2;
+}
+
+#global_menu a {
+  display: block;
+  padding: 1em 0;
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0,0,0,0.3);
+  box-shadow: 0 1px 1px 0 rgba(255,255,255,0.1)
+}
+
+#global_menu #home {
+  border-bottom: 3px solid rgba(0,0,0,0.3);
+  box-shadow: 0 1px 1px 0 rgba(255,255,255,0.1)
+}
+
+#global_menu a > * {
+  display: inline-block;
+  color: inherit;
+}
+
+#global_menu svg {
+  width: 1.5em;
+  height: 1.5em;
+}
+
+#home {
+  background: none !important;
+}
+
+#home svg {
+  width: 2em;
+  height: 2em;
+  fill: #9ca5c7;
 }
 
 #sidebar > header,
@@ -124,26 +176,10 @@ form select {
 
 #sidebar {
   position: relative;
-  display: flex;
-  flex-direction: column;
   width: 300px;
   border-right: 1px solid rgba(0,0,0,0.15);
   box-shadow: 1px 0 2px 1px rgba(0,0,0,0.2);
-}
-
-#sidebar > header {
-  position: relative;
-  color: #fff;
-  background: rgba(70, 70, 70, 0.5);
-  border-bottom: 1px solid rgba(0,0,0,0.4);
-  box-shadow: 0 1px 4px -1px rgba(0,0,0,0.3);
   z-index: 1;
-}
-
-#sidebar header svg {
-  width: 2em;
-  height: 1.4em;
-  fill: #c0cdde;
 }
 
 #sidebar,
@@ -153,14 +189,43 @@ form select {
 
 #sidebar section {
   position: absolute;
-  top: 3em;
+  top: 0;
+  left: 0;
   bottom: 0;
   width: inherit;
   overflow-y: auto;
-  flex: 1;
+  border-right: 1px solid rgba(0,0,0,0.5);
+  transform: translate3d(-100%, 0, 0);
+  transition: transform 0.35s ease;
+}
+
+#sidebar form {
+  display: flex;
+  flex-direction: column;
+  margin-top: auto;
+}
+
+#sidebar form label,
+form [heading] {
+  padding: 2.5em 1.25em 0;
+}
+
+#sidebar form option {
+  color: #000;
+}
+
+#sidebar form + footer {
+  padding: 1em;
+  margin-top: auto;
+}
+
+#sidebar form + footer input {
+  margin: 0 auto;
+  display: block;
 }
 
 #sidebar section footer {
+  display: flex;
   position: fixed;
   bottom: 0;
   box-sizing: border-box;
@@ -168,29 +233,6 @@ form select {
   padding: 0.75em 0.5em;
   z-index: 2;
   background: rgba(0,0,0,0.2);
-}
-
-#query_form {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-}
-
-#query_form > label {
-  padding: 2.75em 1.75em 0;
-}
-
-#query_form option{
-  color: #000;
-}
-
-#query_form_submit {
-  padding: 1em;
-  margin-top: auto;
-}
-#query_form_submit button {
-  margin: 0 auto;
-  display: block;
 }
 
 #frame_section {
@@ -205,7 +247,7 @@ form select {
   color: #fff;
   background: #888;
   border-bottom: 1px solid rgba(0,0,0,0.4);
-  box-shadow: 0 1px 2px 0px rgba(0,0,0,0.5);
+  box-shadow: 0 0px 1px 1px rgba(0,0,0,0.2);
 }
 
 #frame_section:before {
@@ -228,4 +270,57 @@ form select {
 
 #test_frame:not([data="about:blank"]) {
   opacity: 1;
+}
+
+/* USERS */
+
+#user_list {
+  color: #fff;
+  list-style: none;
+}
+
+#user_list:empty:after {
+  content: "No users. Add one above 🠅";
+  display: block;
+  text-align: center;
+  color: rgba(255,255,255,0.3);
+  text-shadow: 0 -1px 0 rgba(0,0,0,0.5);
+}
+
+#user_list li {
+  position: relative;
+  margin: 0 0 0.5em;
+  padding: 0.5em 0.6em;
+  background: rgba(0,0,0,0.2);
+  border-radius: 3px;
+}
+
+#user_list li:before {
+  content: attr(data-did);
+}
+
+#user_list li .delete-user {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  padding: 0 0.6em;
+  color: red;
+  line-height: 2em;
+  cursor: pointer;
+}
+
+
+/* UI STATES */
+
+body:not([path]) #query_section,
+body[path="/playground"] #query_section,
+body[path="/playground/users"] #user_section {
+  transform: translate3d(0,0,0);
+}
+
+body:not([path]) a[href="/"],
+body[path="/playground"] a[href="/playground"],
+body[path="/playground/users"] a[href="/playground/users"] {
+  background: radial-gradient(circle at center, rgba(255,255,255,0.1), transparent 100%)
 }
