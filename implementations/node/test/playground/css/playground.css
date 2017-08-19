@@ -288,25 +288,21 @@ form [heading] {
 }
 
 #user_list li {
-  position: relative;
+  display: flex;
   margin: 0 0 0.5em;
-  padding: 0.5em 0.6em;
   background: rgba(0,0,0,0.2);
   border-radius: 3px;
 }
 
 #user_list li:before {
   content: attr(data-did);
+  padding: 0.5em 0.75em;
 }
 
 #user_list li .delete-user {
-  position: absolute;
-  right: 0;
-  top: 0;
-  height: 100%;
-  padding: 0 0.6em;
+  margin: auto 0 auto auto;
+  padding: 0.5em 0.75em;
   color: red;
-  line-height: 2em;
   cursor: pointer;
 }
 
