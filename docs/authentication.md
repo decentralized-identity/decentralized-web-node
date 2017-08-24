@@ -21,6 +21,7 @@ Personal laptop factor:
 {
   "factor": {
     "@id": "7e2fg36y3c31",
+    "sign": true,
     "name": "Home Laptop",
     "key": "23fge3fwg34fwe..."
   },
