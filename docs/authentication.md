@@ -22,30 +22,46 @@ Personal laptop factor:
   "factor": {
     "@id": "7e2fg36y3c31",
     "name": "Home Laptop",
-    "key": "23fge3fwg34f..."
+    "key": "23fge3fwg34fwe..."
   },
-  "sig": "g34df2hgjh5..."
+  "sig": "g34df2hgjh5fd..."
 }
 ```
 
-Yubi Key factor that requires a second factor, a smart watch:
+Laptop as a factor that requires a second factor, either a smart watch or a Yubi Key:
 
 ```json
+
 {
   "factor": {
     "@id": "7e2fg36y3c31",
-    "name": "Yubi Key",
-    "key": "23fge3fwg34f...",
-    "requiredFactors": [
-      {
-        "@id": "7e2fg36y3c31",
-        "name": "Smart Watch",
-        "key": "57fta3fwgsd456ferf..."
-      {
-    ]
+    "sign": true,
+    "name": "Home Laptop",
+    "key": "23fge3fwg34fwe...",
+    "multiFactor": {
+      "require": 1,
+      "factors": ["w2v34n5436nkl5", "8sd7fabh3q23b4"]
+    }
   },
-  "sig": "g34df2hgjh5..."
+  "sig": "g34df2hgjh5fd..."
+},
+{
+  "factor": {
+    "@id": "w2v34n5436nkl5",
+    "name": "Smart Watch",
+    "key": "57ffwgsd46ferf..."
+  },
+  "sig": "34n5l34nj5vv7l..."
+},
+{
+  "factor": {
+    "@id": "8sd7fabh3q23b4",
+    "name": "Yubi Key",
+    "key": "m3er87nv4d3n12..."
+  },
+  "sig": "3sdf4n76bj5vgl..."
 }
+
 ```
 
 ## DID Authentication
