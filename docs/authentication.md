@@ -32,7 +32,6 @@ Personal laptop factor:
 Laptop as a factor that requires a second factor, either a smart watch or a Yubi Key:
 
 ```json
-
 {
   "factor": {
     "@id": "7e2fg36y3c31",
@@ -62,7 +61,6 @@ Laptop as a factor that requires a second factor, either a smart watch or a Yubi
   },
   "sig": "3sdf4n76bj5vgl..."
 }
-
 ```
 
 ## DID Authentication
