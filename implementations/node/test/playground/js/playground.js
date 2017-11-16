@@ -134,6 +134,7 @@
       mode: 'cors',
       cache: 'no-cache'
     }).then(function(response) {
+      
       var type = (response.headers.get('content-type') || '').split(';')[0];
       return response.text().then(text => {
         var blob;
