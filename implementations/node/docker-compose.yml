@@ -6,8 +6,8 @@ services:
       - "3000:3000"
     environment:
       - ENVIRONMENT=dev
-      - COUCHDB_URL="http://couchdb:5984"
+      - COUCHDB_URL="http://admin:password@localhost:5984"
   couchdb:
-    image: "couchdb"
+    image: "couchdb:2.1.1"
     ports:
       - "5984:5984"

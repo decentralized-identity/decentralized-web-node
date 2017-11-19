@@ -12,25 +12,25 @@ Hub instances must sync data without requiring master-slave relationships or for
 
 ## Well-Known URIs
 
-Existing web servers need to interact with Hubs.  Similar to the IETF convention for globally defined metadata resources, detailed in [RFC 5785 well-known URIs][13f07ee0], Hubs are accessible via a stable, universally recognizable path: /.identity/:id, wherein the last segment of the path is the target DID or global name for the identity you wish to interact with.
+Existing web servers need to interact with Hubs.  Similar to the IETF convention for globally defined metadata resources, detailed in [RFC 5785 well-known URIs][13f07ee0], Hubs are accessible via a stable, universally recognizable path: /.identity/:did, wherein the last segment of the path is the target DID or global name for the identity you wish to interact with.
 
 ## API Routes
 
 Each Hub has a set of top-level API routes:
 
-  `/.identity/:id/`*`profile`* ➜ The owning entity's primary descriptor object (schema agnostic).
+  `/.identity/:did/`*`profile`* ➜ The owning entity's primary descriptor object (schema agnostic).
 
-  `/.identity/:id/`*`permissions`* ➜ The access control JSON document
+  `/.identity/:did/`*`permissions`* ➜ The access control JSON document
 
-  `/.identity/:id/`*`factors`* ➜ Hub-associated factors that are authorized to act as the identity owner
+  `/.identity/:did/`*`factors`* ➜ Hub-associated factors that are authorized to act as the identity owner
 
-  `/.identity/:id/`*`messages`* ➜ A known endpoint for the relay of messages/actions to the identity owner
+  `/.identity/:did/`*`messages`* ➜ A known endpoint for the relay of messages/actions to the identity owner
 
-  `/.identity/:id/`*`stores`* ➜ Scoped storage space for user-permitted external entities
+  `/.identity/:did/`*`stores`* ➜ Scoped storage space for user-permitted external entities
 
-  `/.identity/:id/`*`collections/:context/:objectType`* ➜ The owning entity's identity collections (access limited)
+  `/.identity/:did/`*`collections/:context/:objectType`* ➜ The owning entity's identity collections (access limited)
 
-  `/.identity/:id/`*`extensions`* ➜ any custom, service-based functionality the identity exposes
+  `/.identity/:did/`*`extensions`* ➜ any custom, service-based functionality the identity exposes
 
 #### Route Handling
 
@@ -76,7 +76,7 @@ The `messages` open endpoint receives objects signed by other identities. Messag
 
 The endpoint location for message objects shall be:
 
-  `/.identity/:id/messages/`
+  `/.identity/:did/messages/`
 
 The required data format for message payloads shall be:
 
@@ -94,7 +94,7 @@ Here is a list of examples to show the range of use-cases this endpoint is inten
 
 Stores are collections of identity-scoped data storage. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
 
-`/.identity/:id/stores/`*`ENTITY_ID`*
+`/.identity/:did/stores/`*`ENTITY_ID`*
 
 The data shall be a JSON object and should be limited in size, with the option to expand the storage limit based on user or provider discretion. Stores are not unlike a user-sovereign entity-scoped version of the W3C DOM's origin-scoped `window.localStorage` API.
 
@@ -102,13 +102,13 @@ The data shall be a JSON object and should be limited in size, with the option t
 
 Collections provide a known path for accessing standardized, semantic objects across all hubs, in way that asserts as little opinion as possible. The full scope of an identity's data is accessible via the following path
 
-`/.identity/:id/collections/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as case insensitive. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
+`/.identity/:did/collections/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as case insensitive. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
 
-`/.identity/:id/collections/schema.org/Event` ➜ http://schema.org/Event
+`/.identity/:did/collections/schema.org/Event` ➜ http://schema.org/Event
 
-`/.identity/:id/collections/hl7.org:fhir:v2/Device` ➜ https://www.hl7.org/fhir/device.html
+`/.identity/:did/collections/hl7.org/fhir/Device` ➜ https://www.hl7.org/fhir/device.html
 
-`/.identity/:id/collections/schema.org/Photograph` ➜ http://schema.org/Photograph
+`/.identity/:did/collections/gs1.org/voc/Product` ➜ https://www.gs1.org/voc/Product
 
 #### Extensions
 
@@ -130,71 +130,75 @@ The process of authenticating requests from the primary user or an agent shall f
 
 See the [authentication.md](./docs/authentication.md) explainer for details.
 
-#### GET Requests
+#### Requesting Data
 
-The REST routes for fetching and manipulating identity data should follow a common path format that maps 1:1 to the schema of data objects being transacted. Here is an example of how to send a `GET` request for an identity's Schema.org formatted music playlists:
+Requests for data should follow a common path format under the `collections` route that maps 1:1 to the schema of the data being retrieved. Here is an example of a `GET` request for the data an identity has storted in the Schema.org music playlist format:
 
-`/.identity/jane.id/collections/schema.org:`*`MusicPlaylist`*
+`/.identity/jane.id/collections/schema.org/`*`MusicPlaylist`*
 
-Requests will always return an array of all objects - *the user has given you access to* - of the related Schema.org type, via the response object's `collections` property, as shown here:
+Requests will always return an array of all objects as the `payload` and a `settings` object containing the required elements for a consuming entity to associate, decrypt, and utilize the payload they receive:
 
 ```json
 {
   "links": {
-    "self": "/.identity/jane.id/collections/schema.org:MusicPlaylist"
+    "self": "/.identity/jane.id/collections/schema.org/MusicPlaylist"
   },
   "data": {
-    "payload": [{
-      "settings": {
-        "id": "4n93v7a4xd67",
+    "settings": [
+      {
+        "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
         "key": "...",
         "cache-intent": "full"
       },
-      "descriptor": {
+      {
+        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
+        "key": "...",
+        "cache-intent": "desc"
+      },
+      {
+        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
+        "key": "...",
+        "cache-intent": "desc"
+      },
+    ],
+    "payload": [
+      {
         "@context": "http://schema.org",
         "@type": "MusicPlaylist",
-        "@id": "4n93v7a4xd67",
-        "name": "Classic Rock Playlist",
+        "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
+        "name": "Classic Rock",
         "numTracks": 2,
         "track": [
-          {
-            "settings": {
-              "id": "23fge3fwg34f",
-              "key": "...",
-              "cache-intent": "full"
-            },
-            "descriptor": {
-              "@type": "MusicRecording",
-              "byArtist": "Lynard Skynyrd",
-              "duration": "PT4M45S",
-              "inAlbum": "Second Helping",
-              "name": "Sweet Home Alabama",
-              "permit": "/.identity/jane.id/collections/schema.org:Permit/ced043360b99"
-            }
-          },
-          {
-            "settings": {
-              "id": "7e2fg36y3c31",
-              "key": "...",
-              "cache-intent": "full"
-            },
-            "descriptor": {
-              "@type": "MusicRecording",
-              "byArtist": "Bob Seger",
-              "duration": "PT3M12S",
-              "inAlbum": "Stranger In Town",
-              "name": "Old Time Rock and Roll",
-              "permit": "/.identity/jane.id/collections/schema.org:Permit/aa9f3ac9eb7a"
-            }
-          }
+          { "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f" },
+          { "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31" }
         ]
+      },
+      {
+        "@context": "http://schema.org",
+        "@type": "MusicRecording",
+        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
+        "byArtist": "Lynard Skynyrd",
+        "duration": "PT4M45S",
+        "inAlbum": "Second Helping",
+        "name": "Sweet Home Alabama",
+        "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/ced043360b99" }
+      },
+      {
+        "@context": "http://schema.org",
+        "@type": "MusicRecording",
+        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
+        "byArtist": "Bob Seger",
+        "duration": "PT3M12S",
+        "inAlbum": "Stranger In Town",
+        "name": "Old Time Rock and Roll",
+        "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/aa9f3ac9eb7a" }
       }
-    }]
+    ]
   }
 }
 ```
 
-#### POST Requests
+#### Adding or Manipulating Data
 
 POSTs are verified to ensure two things about the requesting party: 1) They are the decentralized identity they claim to be, and 2) They are authorized (as specified in the ACL JSON document) to write data to a specified route.
 
@@ -202,7 +206,7 @@ Addition of new data objects into a collection must follow a process for handlin
 
 1. The new objects must be assigned with an `@id` property
 2. The Hub instance must wrap the native data object with an object that contains the unique ID and item-specific controls. These control properties include:
-- `key`: the symmetrical public key used to encrypt the object, which Hubs and entities use to re-encrypt
+- `key`: the encrypted symmetrical public key the requesting party can use to decrypt the payload (if the requestor is in possession of the correct key)
 - `cache-intent`:
   - `min`: Just the ID and item record for an entry
   - `desc`: The descriptor object for an item, without full source
@@ -213,7 +217,7 @@ Addition of new data objects into a collection must follow a process for handlin
 
 #### Replication Process
 
-...
+ _TBD_
 
 #### Query Filter Syntax
 

@@ -122,17 +122,20 @@
 
     e.preventDefault();
 
-    var headers = {};
+    var headers = {
+      'Content-Type': 'application/json',
+    };
 
     (this.elements.headers.value || '').replace(parseHeaders, function(str, name, value){
       headers[name] = value;     
     });
-
+    var method = this.elements.verb.value;
     fetch('/.identity/' + (this.elements.route.value || '').replace(removeLeadSlash, ''), {
-      method: this.elements.verb.value,
+      method: method,
       headers: new Headers(headers),
       mode: 'cors',
-      cache: 'no-cache'
+      cache: 'no-cache',
+      body: method == 'GET' ? null : this.elements.body.value
     }).then(function(response) {
       
       var type = (response.headers.get('content-type') || '').split(';')[0];

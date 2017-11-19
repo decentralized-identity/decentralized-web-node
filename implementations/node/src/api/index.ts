@@ -4,10 +4,12 @@ import { indexRouter, extensionsRouter } from './controllers';
 
 const app = new Koa();
 const cors = require('koa2-cors');
+const bodyParser = require('koa-bodyparser');
 const serve = require('koa-static-server');
 
 app
   .use(cors())
+  .use(bodyParser())
   .use(indexRouter.routes())
   .use(indexRouter.allowedMethods())
   .use(extensionsRouter.routes())

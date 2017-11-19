@@ -4,28 +4,33 @@ import appConfig from '../../config/app';
 
 // THIS NEEDS TO BE A SEPARATE NPM MODULE
 import auth from '../../lib/did-auth';
+import permissions from '../../lib/permissions';
 
 const URL = require('url');
 const indexRouter = new Router();
-const nano = require('nano')(appConfig.dbURL);
+const nano = require('nano')({
+  url: appConfig.dbURL
+});
+
+const dotRegex = /[.]/g;
+const dotReplacer = '---';
 // consider a default ID token that directs to a designated identity's Hub data
 
 // Identify all inbound parties from any route if an Authorize header declaration is present
 // If identification can be established, verify
 
-function getDB(did) {
+function getDB(name) {
   return new Promise(function(resolve, reject) {
-    var db = nano.use(did);
-    if (db) resolve(db);
-    else reject();
+    nano.db.get(name, (error, body) => {
+      if (error) reject();
+      else resolve(nano.use(name));
+    });
   });
 }
 
-function createDB(did, ddo) {
-  return new Promise(function(resolve, reject) {
-    console.log('createDB');
-    nano.db.create(did, (error: object) => {
-      console.log(error || 'db created!');
+function createDB(name: string, ddo: object) {
+  return new Promise(async function(resolve, reject) {
+    nano.db.create(name, (error: object) => {
       if (error) reject();
       else resolve();
     });
@@ -36,13 +41,15 @@ function createDB(did, ddo) {
         if (new URL(hub).hostname != appConfig.hostname) {
           // Don't count yourself as a sync target
           await new Promise(function(resolve, reject) {
-            nano.db.replicate(hubs[hub], did, { create_target: true }, function(
-              error,
-              body
-            ) {
-              if (error) reject(error);
-              else resolve(body);
-            });
+            nano.db.replicate(
+              hubs[hub],
+              name,
+              { create_target: true },
+              function(error, body) {
+                if (error) reject(error);
+                else resolve(body);
+              }
+            );
           });
         }
       }
@@ -51,70 +58,95 @@ function createDB(did, ddo) {
 }
 
 indexRouter.use('/.identity/*', async (ctx, next) => {
-  await auth.filterRequest(ctx, next);
+  await auth.authenticateRequest(ctx).catch(() => {
+    ctx.throw(400, 'Authentication failed');
+  });
+  await next();
 });
 
 indexRouter.post('/.identity/:did', async ctx => {
-  var did = ctx.state.did;
   if (ctx.state.did == ctx.params.did) {
-    await new Promise(function(resolve, reject) {
-      getDB(ctx.state.dbname)
-        .then(db => {
-          ctx.body = 'Entity already exists';
-          reject();
-        })
-        .catch(() => {
-          createDB(ctx.state.dbname, ctx.state.ddo);
-          resolve();
-        });
-    });
+    var dbName = ctx.params.did.replace(dotRegex, dotReplacer);
+    await getDB(dbName)
+      .then(db => {
+        ctx.status = 200;
+        ctx.body = 'Entity already exists';
+      })
+      .catch(() => {
+        ctx.status = 201;
+        ctx.body = 'New identity added to Hub';
+        createDB(dbName, ctx.state.ddo);
+      });
   } else {
-    ctx.body = 'Cannot create DB for other entities';
+    ctx.throw(
+      403,
+      'Cannot create an Identity Hub entry for a DID you do not own'
+    );
   }
+});
+
+indexRouter.use('/.identity/:did/*', async (ctx, next) => {
+  var dbName = ctx.params.did.replace(dotRegex, dotReplacer);
+  await getDB(dbName)
+    .then(async db => {
+      ctx.state.db = db;
+      await permissions.check(ctx).catch(() => {
+        ctx.throw(403, 'You are not permitted to make this request');
+      });
+      return next();
+    })
+    .catch(() => {
+      ctx.throw(403, 'You are not permitted to make this request');
+    });
 });
 
 indexRouter.get('/.identity/:did/profile', async ctx => {
   await new Promise(function(resolve, reject) {
-    getDB(ctx.state.dbname).then(db => {
-      db.get('profile', function(err, body) {
-        if (err) {
-          console.log(err);
-        } else {
-          ctx.body = body;
-        }
+    ctx.state.db.get('profile', function(err, body) {
+      if (err) {
+        reject();
+      } else {
+        ctx.body = body;
         resolve();
-      });
+      }
     });
+  }).catch(() => {
+    ctx.status = 400;
+    ctx.body = 'No profile found';
   });
 });
 
 indexRouter.post('/.identity/:did/profile', async ctx => {
-  console.log(ctx.request.body);
   var json = ctx.is('application/json');
-  console.log(json);
-  //if (ctx.is('application/json') && ctx.request.body){
-  await new Promise(function(resolve, reject) {
-    getDB(ctx.state.dbname).then(db => {
-      db.get('profile', function(err, doc) {
-        var rev = doc._rev;
+  if (ctx.is('application/json')) {
+    await new Promise(function(resolve, reject) {
+      ctx.state.db.get('profile', function(err, doc) {
         if (err) {
-          ctx.body = {};
-          resolve();
+          console.log(ctx.request.body);
+          ctx.state.db.insert(ctx.request.body, 'profile', function(
+            err,
+            body,
+            header
+          ) {
+            console.log(err || 'profile created');
+            ctx.body = 'Profile created';
+            resolve();
+          });
         } else {
-          ctx.request.body;
-          users.insert(
-            { title: 'here_ya_go', _rev: updaterev },
-            'document_name',
+          var rev = doc._rev;
+          ctx.state.db.insert(
+            Object.assign(ctx.request.body, { _rev: rev }),
+            'profile',
             function(err, body, header) {
-              ctx.body = {};
+              console.log('Updated');
+              ctx.body = 'Updated';
               resolve();
             }
           );
         }
       });
     });
-  });
-  //}
+  }
 });
 
 import extensionsRouter from './extensions';

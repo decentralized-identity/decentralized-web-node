@@ -23,7 +23,8 @@ if (!scheme && ['development', 'test'].includes(environment)) {
   throw 'You must set an environment variable for SCHEME';
 }
 
-let couchdbURL = process.env.COUCHDB_URL || 'http://localhost:5984';
+let couchdbURL =
+  process.env.COUCHDB_URL || 'http://admin:password@localhost:5984';
 if (!couchdbURL) {
   throw 'You must set an environment variable for COUCHDB_URL';
 }
@@ -34,7 +35,7 @@ const appConfig = {
   hostname,
   port,
   baseURL: `${scheme}://${hostname}${port ? ':' + port : ''}/.identity`,
-  dbURL: `${couchdbURL}`
+  dbURL: couchdbURL
 };
 
 export default appConfig;
