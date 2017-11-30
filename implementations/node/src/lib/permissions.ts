@@ -1,5 +1,10 @@
 const permissions = {
-  check(ctx) {
+  validateRequest(ctx) {
+    return new Promise(function(resolve) {
+      resolve(true);
+    });
+  },
+  validateObject(obj) {
     return new Promise(function(resolve) {
       resolve(true);
     });

@@ -136,33 +136,20 @@ Requests for data should follow a common path format under the `collections` rou
 
 `/.identity/jane.id/collections/schema.org/`*`MusicPlaylist`*
 
-Requests will always return an array of all objects as the `payload` and a `settings` object containing the required elements for a consuming entity to associate, decrypt, and utilize the payload they receive:
+Requests will always return an array of all objects from the requested type/path (the caller has access to) as the main `data` payload, with any related data in the `included` field of the response object. Each object contains the required elements for a consuming entity to associate, decrypt, and utilize the data within:
 
 ```json
 {
   "links": {
     "self": "/.identity/jane.id/collections/schema.org/MusicPlaylist"
   },
-  "data": {
-    "settings": [
-      {
-        "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
-        "key": "...",
-        "cache-intent": "full"
-      },
-      {
-        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
-        "key": "...",
-        "cache-intent": "desc"
-      },
-      {
-        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
-        "key": "...",
-        "cache-intent": "desc"
-      },
-    ],
-    "payload": [
-      {
+  "data": [
+    {
+      "id": "4n93v7a4xd67",
+      "key": "...",
+      "cache-intent": "attr",
+      "signature": "...",
+      "attributes": {
         "@context": "http://schema.org",
         "@type": "MusicPlaylist",
         "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
@@ -172,8 +159,16 @@ Requests will always return an array of all objects as the `payload` and a `sett
           { "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f" },
           { "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31" }
         ]
-      },
-      {
+      }
+    }
+  ],
+  "included": [
+    {
+      "id": "23fge3fwg34f",
+      "key": "...",
+      "cache-intent": "attr",
+      "signature": "...",
+      "attributes": {
         "@context": "http://schema.org",
         "@type": "MusicRecording",
         "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
@@ -182,8 +177,14 @@ Requests will always return an array of all objects as the `payload` and a `sett
         "inAlbum": "Second Helping",
         "name": "Sweet Home Alabama",
         "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/ced043360b99" }
-      },
-      {
+      }
+    },
+    {
+      "id": "7e2fg36y3c31",
+      "key": "...",
+      "cache-intent": "attr",
+      "signature": "...",
+      "attributes": {
         "@context": "http://schema.org",
         "@type": "MusicRecording",
         "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
@@ -193,8 +194,8 @@ Requests will always return an array of all objects as the `payload` and a `sett
         "name": "Old Time Rock and Roll",
         "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/aa9f3ac9eb7a" }
       }
-    ]
-  }
+    }
+  ]
 }
 ```
 
@@ -209,8 +210,8 @@ Addition of new data objects into a collection must follow a process for handlin
 - `key`: the encrypted symmetrical public key the requesting party can use to decrypt the payload (if the requestor is in possession of the correct key)
 - `cache-intent`:
   - `min`: Just the ID and item record for an entry
-  - `desc`: The descriptor object for an item, without full source
-  - `full`: The descriptor object and full source for an item
+  - `attr`: The descriptor object for an item, without full source
+  - `full`: The descriptor object and full source - including any binary or blob data - for an item
 3. The object must be encrypted with the symmetrical key of the entities that have read privileges, as specified in the ACL JSON document.
 4. The object shall be inserted into the Hub instance that is handling the request.
 5. Upon completing the above steps, the change must be synced to the other Hub instances via the Replication Process.

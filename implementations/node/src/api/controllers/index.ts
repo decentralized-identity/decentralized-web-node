@@ -1,9 +1,9 @@
 import * as Router from 'koa-router';
-import resolver from '../../resolver';
 import appConfig from '../../config/app';
 
 // THIS NEEDS TO BE A SEPARATE NPM MODULE
-import auth from '../../lib/did-auth';
+import auth from '../../lib/auth';
+import data from '../../lib/data';
 import permissions from '../../lib/permissions';
 
 const URL = require('url');
@@ -90,7 +90,7 @@ indexRouter.use('/.identity/:did/*', async (ctx, next) => {
   await getDB(dbName)
     .then(async db => {
       ctx.state.db = db;
-      await permissions.check(ctx).catch(() => {
+      await permissions.validateRequest(ctx).catch(() => {
         ctx.throw(403, 'You are not permitted to make this request');
       });
       return next();
@@ -122,15 +122,15 @@ indexRouter.post('/.identity/:did/profile', async ctx => {
     await new Promise(function(resolve, reject) {
       ctx.state.db.get('profile', function(err, doc) {
         if (err) {
-          console.log(ctx.request.body);
-          ctx.state.db.insert(ctx.request.body, 'profile', function(
-            err,
-            body,
-            header
-          ) {
-            console.log(err || 'profile created');
-            ctx.body = 'Profile created';
-            resolve();
+          data.parseObject(ctx.request.body).then(() => {
+            ctx.state.db.insert(ctx.request.body, 'profile', function(
+              err,
+              body
+            ) {
+              console.log(err || 'profile created');
+              ctx.body = 'Profile created';
+              resolve();
+            });
           });
         } else {
           var rev = doc._rev;
