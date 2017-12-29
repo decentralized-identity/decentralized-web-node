@@ -71,6 +71,8 @@ All `CapabilitySpecification`s adhere to the following schema:
 | _deny_ | [CRUDX specification](#CRUDX-specification) | The permissions denied to the identities specified in `identifiers`. NOTE: this is field is not yet part of the specification and is being reserved for possible future inclusion.  | FALSE | `CR--X`, `CRUDX`, `19 (CR--X)`, `31 (CRUDX)` |
 | ext | object | The `ext` field is reserved for additional fields that are use to configure specific routes or extensions. | FALSE | The `/stores` endpoint supports `min_size` and `max_size` to configure how much storage an identity is permitted to keep in its store: <br> <pre> { "min_size": 1, "max_size": 100 } </pre> |
 
+> TODO: Allow a permission for auto-endorse?
+
 ### Example
 `GET /.identity/:id_owner_did/capabilities?path=collections`
 ```json

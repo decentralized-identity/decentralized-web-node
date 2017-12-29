@@ -22,8 +22,6 @@ Each Hub has a set of top-level API routes:
 
   `/.identity/:did/`*`permissions`* ➜ The access control JSON document
 
-  `/.identity/:did/`*`factors`* ➜ Hub-associated factors that are authorized to act as the identity owner
-
   `/.identity/:did/`*`messages`* ➜ A known endpoint for the relay of messages/actions to the identity owner
 
   `/.identity/:did/`*`stores`* ➜ Scoped storage space for user-permitted external entities
@@ -118,7 +116,7 @@ Performing a `GET` request to the base `/extensions` endpoint will respond with 
 
 ##### Service Descriptions
 
-All definitions shall conform to the [Swagger API descriptor format](http://swagger.io/specification).
+All definitions shall conform to the [Open API descriptor format](https://github.com/OAI/OpenAPI-Specification).
 
 ## Request/Response
 
