@@ -160,7 +160,7 @@ Requests will always return an array of all objects from the requested type/path
           "key": "...",
           "cache-intent": "attr",
           "signature": "...",
-          "attributes": {
+          "data": {
             "@context": "http://schema.org",
             "@type": "MusicRecording",
             "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
@@ -176,7 +176,7 @@ Requests will always return an array of all objects from the requested type/path
           "key": "...",
           "cache-intent": "attr",
           "signature": "...",
-          "attributes": {
+          "data": {
             "@context": "http://schema.org",
             "@type": "MusicRecording",
             "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
