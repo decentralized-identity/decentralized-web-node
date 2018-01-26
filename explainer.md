@@ -149,7 +149,7 @@ Requests will always return an array of all objects from the requested type/path
     "key": "...",
     "cache-intent": "attr",
     "signature": "...",
-    "attributes": {
+    "data": {
       "@context": "http://schema.org",
       "@type": "MusicPlaylist",
       "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
