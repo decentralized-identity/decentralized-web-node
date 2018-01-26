@@ -118,9 +118,12 @@ Performing a `GET` request to the base `/extensions` endpoint will respond with 
 
 All definitions shall conform to the [Open API descriptor format](https://github.com/OAI/OpenAPI-Specification).
 
-## Request/Response
+## Request, Response, and Auth
 
-The REST API uses [JSON API's specification](http://jsonapi.org/format/) for request, response, and query formats, and leverages standard schemas for encoding stored data and response objects.  Given the nature of the responses, only the Top Level properties are in scope for this utilization. Requests should be formatted in accordance with the JSON API documentation: http://jsonapi.org/format/#fetching. The `Content-Type` and `Accept` header parameters must be set to `application/vnd.api+json`.  This approach maximizes the use of existing standards and open source projects.
+
+#### Response Format
+
+To minimize the complexity of the REST API's response format, all responses will match the response object definition standardized by the Web platform in the [Fetch specification](https://fetch.spec.whatwg.org/#response-class).
 
 #### Authentication
 
@@ -138,62 +141,54 @@ Requests will always return an array of all objects from the requested type/path
 
 ```json
 {
-  "links": {
-    "self": "/.identity/jane.id/collections/schema.org/MusicPlaylist"
-  },
-  "data": [
-    {
-      "id": "4n93v7a4xd67",
-      "key": "...",
-      "cache-intent": "attr",
-      "signature": "...",
-      "attributes": {
-        "@context": "http://schema.org",
-        "@type": "MusicPlaylist",
-        "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
-        "name": "Classic Rock",
-        "numTracks": 2,
-        "track": [
-          { "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f" },
-          { "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31" }
-        ]
-      }
+  "status": 200,
+  "statusText": "OK",
+  "url": "/.identity/jane.id/collections/schema.org/MusicPlaylist",
+  "body": [{
+    "id": "4n93v7a4xd67",
+    "key": "...",
+    "cache-intent": "attr",
+    "signature": "...",
+    "attributes": {
+      "@context": "http://schema.org",
+      "@type": "MusicPlaylist",
+      "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
+      "name": "Classic Rock",
+      "numTracks": 2,
+      "track": [{
+          "id": "23fge3fwg34f",
+          "key": "...",
+          "cache-intent": "attr",
+          "signature": "...",
+          "attributes": {
+            "@context": "http://schema.org",
+            "@type": "MusicRecording",
+            "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
+            "byArtist": "Lynard Skynyrd",
+            "duration": "PT4M45S",
+            "inAlbum": "Second Helping",
+            "name": "Sweet Home Alabama",
+            "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/ced043360b99" }
+          }
+        },
+        {
+          "id": "7e2fg36y3c31",
+          "key": "...",
+          "cache-intent": "attr",
+          "signature": "...",
+          "attributes": {
+            "@context": "http://schema.org",
+            "@type": "MusicRecording",
+            "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
+            "byArtist": "Bob Seger",
+            "duration": "PT3M12S",
+            "inAlbum": "Stranger In Town",
+            "name": "Old Time Rock and Roll",
+            "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/aa9f3ac9eb7a" }
+          }
+      }]
     }
-  ],
-  "included": [
-    {
-      "id": "23fge3fwg34f",
-      "key": "...",
-      "cache-intent": "attr",
-      "signature": "...",
-      "attributes": {
-        "@context": "http://schema.org",
-        "@type": "MusicRecording",
-        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
-        "byArtist": "Lynard Skynyrd",
-        "duration": "PT4M45S",
-        "inAlbum": "Second Helping",
-        "name": "Sweet Home Alabama",
-        "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/ced043360b99" }
-      }
-    },
-    {
-      "id": "7e2fg36y3c31",
-      "key": "...",
-      "cache-intent": "attr",
-      "signature": "...",
-      "attributes": {
-        "@context": "http://schema.org",
-        "@type": "MusicRecording",
-        "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
-        "byArtist": "Bob Seger",
-        "duration": "PT3M12S",
-        "inAlbum": "Stranger In Town",
-        "name": "Old Time Rock and Roll",
-        "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/aa9f3ac9eb7a" }
-      }
-    }
-  ]
+  }]
 }
 ```
 
