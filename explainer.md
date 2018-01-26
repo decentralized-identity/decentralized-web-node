@@ -120,16 +120,24 @@ All definitions shall conform to the [Open API descriptor format](https://github
 
 ## Request, Response, and Auth
 
-
-#### Response Format
-
-To minimize the complexity of the REST API's response format, all responses will match the response object definition standardized by the Web platform in the [Fetch specification](https://fetch.spec.whatwg.org/#response-class).
-
 #### Authentication
 
 The process of authenticating requests from the primary user or an agent shall follow the FIDO and Web Authentication specifications (as closely as possible). These specifications may require modifications in order to support challenging globally known IDs with provably linked keys.
 
 See the [authentication.md](./docs/authentication.md) explainer for details.
+
+#### Response Format
+
+To minimize the complexity of the REST API's response format, all responses will match the response object definition standardized by the Web platform in the [Fetch specification](https://fetch.spec.whatwg.org/#response-class).
+
+Paging is supported via conformance with the [IETF Link HEADER](https://tools.ietf.org/html/rfc5988#page-6) specification, using the parameters `page` and `take` for paging values. Here are example links for a paged response:
+
+```
+Link: </.identity/bob.id/collections/schema.org/Offers?page=1&take=100>; rel="first",
+      </.identity/bob.id/collections/schema.org/Offers?page=2&take=100>; rel="prev",
+      </.identity/bob.id/collections/schema.org/Offers?page=4&take=100>; rel="next",
+      </.identity/bob.id/collections/schema.org/Offers?page=7&take=100>; rel="last"
+```
 
 #### Requesting Data
 
@@ -211,7 +219,7 @@ Addition of new data objects into a collection must follow a process for handlin
 
 #### Replication Process
 
- _TBD_
+> Note: Add Couch replication protocol refs
 
 #### Query Filter Syntax
 
