@@ -118,7 +118,7 @@ Performing a `GET` request to the base `/extensions` endpoint will respond with 
 
 All definitions shall conform to the [Open API descriptor format](https://github.com/OAI/OpenAPI-Specification).
 
-## Request, Response, and Auth
+## HTTP-based Request, Response, and Auth
 
 #### Authentication
 
@@ -128,7 +128,7 @@ See the [authentication.md](./docs/authentication.md) explainer for details.
 
 #### Response Format
 
-To minimize the complexity of the REST API's response format, all responses will match the response object definition standardized by the Web platform in the [Fetch specification](https://fetch.spec.whatwg.org/#response-class).
+To minimize the complexity of the REST API's response format, all HTTP-based requests will return requested data as the response `body`, with any applicable `HEADERS` set in accordance with the Web platform's [Fetch specification](https://fetch.spec.whatwg.org/#response-class).
 
 Paging is supported via conformance with the [IETF Link HEADER](https://tools.ietf.org/html/rfc5988#page-6) specification, using the parameters `page` and `take` for paging values. Here are example links for a paged response:
 
@@ -143,61 +143,58 @@ Link: </.identity/bob.id/collections/schema.org/Offers?page=1&take=100>; rel="fi
 
 Requests for data should follow a common path format under the `collections` route that maps 1:1 to the schema of the data being retrieved. Here is an example of a `GET` request for the data an identity has storted in the Schema.org music playlist format:
 
+
 `/.identity/jane.id/collections/schema.org/`*`MusicPlaylist`*
 
-Requests will always return an array of all objects from the requested type/path (the caller has access to) as the main `data` payload, with any related data in the `included` field of the response object. Each object contains the required elements for a consuming entity to associate, decrypt, and utilize the data within:
+```js
 
-```json
-{
-  "status": 200,
-  "statusText": "OK",
-  "url": "/.identity/jane.id/collections/schema.org/MusicPlaylist",
-  "body": [{
-    "id": "4n93v7a4xd67",
-    "key": "...",
-    "cache-intent": "attr",
-    "signature": "...",
-    "data": {
-      "@context": "http://schema.org",
-      "@type": "MusicPlaylist",
-      "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
-      "name": "Classic Rock",
-      "numTracks": 2,
-      "track": [{
-          "id": "23fge3fwg34f",
-          "key": "...",
-          "cache-intent": "attr",
-          "signature": "...",
-          "data": {
-            "@context": "http://schema.org",
-            "@type": "MusicRecording",
-            "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
-            "byArtist": "Lynard Skynyrd",
-            "duration": "PT4M45S",
-            "inAlbum": "Second Helping",
-            "name": "Sweet Home Alabama",
-            "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/ced043360b99" }
-          }
-        },
-        {
-          "id": "7e2fg36y3c31",
-          "key": "...",
-          "cache-intent": "attr",
-          "signature": "...",
-          "data": {
-            "@context": "http://schema.org",
-            "@type": "MusicRecording",
-            "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
-            "byArtist": "Bob Seger",
-            "duration": "PT3M12S",
-            "inAlbum": "Stranger In Town",
-            "name": "Old Time Rock and Roll",
-            "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/aa9f3ac9eb7a" }
-          }
-      }]
-    }
-  }]
-}
+// Response body
+
+[{ 
+  "id": "4n93v7a4xd67",
+  "key": "...",
+  "cache-intent": "attr",
+  "signature": "...",
+  "data": {
+    "@context": "http://schema.org",
+    "@type": "MusicPlaylist",
+    "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
+    "name": "Classic Rock",
+    "numTracks": 2,
+    "track": [{
+        "id": "23fge3fwg34f",
+        "key": "...",
+        "cache-intent": "attr",
+        "signature": "...",
+        "data": {
+          "@context": "http://schema.org",
+          "@type": "MusicRecording",
+          "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
+          "byArtist": "Lynard Skynyrd",
+          "duration": "PT4M45S",
+          "inAlbum": "Second Helping",
+          "name": "Sweet Home Alabama",
+          "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/ced043360b99" }
+        }
+      },
+      {
+        "id": "7e2fg36y3c31",
+        "key": "...",
+        "cache-intent": "attr",
+        "signature": "...",
+        "data": {
+          "@context": "http://schema.org",
+          "@type": "MusicRecording",
+          "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
+          "byArtist": "Bob Seger",
+          "duration": "PT3M12S",
+          "inAlbum": "Stranger In Town",
+          "name": "Old Time Rock and Roll",
+          "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/aa9f3ac9eb7a" }
+        }
+    }]
+  }
+}]
 ```
 
 #### Adding or Manipulating Data
