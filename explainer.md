@@ -88,6 +88,67 @@ Here is a list of examples to show the range of use-cases this endpoint is inten
 - Bot identity prompts a human to sign a document (Message with an [EndorseAction](http://schema.org/EndorseAction))
 - IoT device sends a notification to one of its Agents (Message with an [UpdateAction](http://schema.org/UpdateAction))
 
+##### Attestation Flow
+
+A frequent activity users will engage in is the exchange of attestations. Attestations are claims that one or more users sign with their DID-linked keys to create assertions of proof. These proofs can be for just about anything you can imagine: diplomas, driver's licenses, property deeds, etc. In order to make discovery, request, and transmission of attestations possible, users and organizations need a way to send attestation requests to users and get back the proofs they're looking for.
+
+##### *Requesting Attestations*
+
+Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must pass a message to the target identity's Hub with a `potentialAction` of the type `CheckAction`, containing an `object` value that describes a Verifiable Credential.
+
+The example below is a request for a Verifiable Credential that represents a driver's license, where the requesting party just wants a valid license, not from a specific issuer. For more generic requests, as in this example, requesting parties should describe what they are looking for. Notice the `context` of the Verifiable Credential descriptor includes multiple values, allowing the requestor to include a `disambiguatingDescription` from the schema.org context. This allows User Agents to reason over descriptions and locate attestations that matches. In the case of generic requests with multiple potential matches, it may require the user picking from a list in a UI view the User Agent presents.
+
+```js
+{
+  "@type": "Message",
+    "sender": {
+      "@context": "https://w3id.org/did/v1",
+      "id": "did:ex:123..."
+    },
+    "potentialAction": {
+      "@context": "https://schema.org",
+      "@type": "CheckAction",
+      "object": [{
+        "@context": [
+          "https://w3id.org/credentials/v1",
+          "http://schema.org"
+        ],
+        "type": ["Credential"], 
+        "disambiguatingDescription": "driving, permit, driver's, license, dl" 
+      }]
+    }
+  }
+}
+```
+Here's the same example, but with one addition: the requesting party has specified the exact issuer it wants the driver's license attestation to be signed by:
+
+```js
+{
+  "@type": "Message",
+    "sender": {
+      "@context": "https://w3id.org/did/v1",
+      "id": "did:ex:123..."
+    },
+    "potentialAction": {
+      "@context": "https://schema.org",
+      "@type": "CheckAction",
+      "object": [{
+        "@context": [
+          "https://w3id.org/credentials/v1",
+          "http://schema.org"
+        ],
+        "issuer": { // Ex: specifies the DID for Province of BC Canada
+          "@context": "https://w3id.org/did/v1",
+          "id": "did:ex:456..."
+        },
+        "type": ["Credential"], 
+        "disambiguatingDescription": "driving, permit, driver's, license, dl" 
+      }]
+    }
+  }
+}
+```
+
 #### Stores
 
 Stores are collections of identity-scoped data storage. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
@@ -139,9 +200,9 @@ Link: </.identity/bob.id/collections/schema.org/Offers?page=1&take=100>; rel="fi
       </.identity/bob.id/collections/schema.org/Offers?page=7&take=100>; rel="last"
 ```
 
-#### Requesting Data
+#### Requesting Collections
 
-Requests for data should follow a common path format under the `collections` route that maps 1:1 to the schema of the data being retrieved. Here is an example of a `GET` request for the data an identity has storted in the Schema.org music playlist format:
+Requests for Collections data should follow a common path format under the `/collections` route that maps 1:1 to the schema of the data being retrieved. Here is an example of a `GET` request for the data an identity has storted in the Schema.org music playlist format:
 
 
 `/.identity/jane.id/collections/schema.org/`*`MusicPlaylist`*
@@ -197,7 +258,7 @@ Requests for data should follow a common path format under the `collections` rou
 }]
 ```
 
-#### Adding or Manipulating Data
+#### Adding or Manipulating Collections Data
 
 POSTs are verified to ensure two things about the requesting party: 1) They are the decentralized identity they claim to be, and 2) They are authorized (as specified in the ACL JSON document) to write data to a specified route.
 
@@ -216,9 +277,19 @@ Addition of new data objects into a collection must follow a process for handlin
 
 #### Replication Process
 
+While Hubs can be implemented with any underlying DB of the author's choice, they must share a common format for replication that spans across instances, providers, and implementations.
+
+For the HTTP replication strategy, Hubs shall transmit updates to other Hub endpoints specified in the DID Document of the user via the Couch DB replication protocol. The reference implementation uses the actual Couch database, but Couch's replication protocol can be implemented on top of other databases.
+
 > Note: Add Couch replication protocol refs
 
+
+
+
+
 #### Query Filter Syntax
+
+> WARNING: all query-related parts of the spec shall be considered strawman ideas, and everything pertaining to it is subject to change.
 
 The Hub spec does not mandate specific storage and search implementations.  For the purposes of interoperability and developer ergonomics hubs must accept a common search and filtering syntax regardless of the underlying implementation choice.
 
