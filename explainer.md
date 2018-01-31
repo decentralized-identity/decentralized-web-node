@@ -104,7 +104,7 @@ Collections provide a known path for accessing standardized, semantic objects ac
 
 `/.identity/:did/collections/schema.org/Event` ➜ http://schema.org/Event
 
-`/.identity/:did/collections/hl7.org/fhir/Device` ➜ https://www.hl7.org/fhir/device.html
+`/.identity/:did/collections/hl7.org/fhir/Device` ➜ https://www.hl7.org/fhir/device
 
 `/.identity/:did/collections/gs1.org/voc/Product` ➜ https://www.gs1.org/voc/Product
 
