@@ -10,6 +10,9 @@ A single entity may have one or more instances of a Hub, all of which are addres
 
 Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic.  This requires a shared replication protocol for broadcasting and resolving changes. [CouchDB](http://docs.couchdb.org/en/2.0.0/replication/protocol.html), an open source Apache project, will be the data syncing protocol Hubs must implement. It features an eventually consistent, master-master replication protocol that can be decoupled from the default storage layer provided by CouchDB.
 
+#### Data Portability
+All Hub data associated with the identity must be portable. Transfer of a Hub’s contents between instances and environments should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
+
 ## Well-Known URIs
 
 Existing web servers need to interact with Hubs.  Similar to the IETF convention for globally defined metadata resources, detailed in [RFC 5785 well-known URIs][13f07ee0], Hubs are accessible via a stable, universally recognizable path: /.identity/:did, wherein the last segment of the path is the target DID or global name for the identity you wish to interact with.
@@ -58,9 +61,6 @@ Each Hub has a `profile` object that describes the owning entity.  The profile o
     }
 }
 ```
-
-#### Data Portability
-All Hub data associated with the identity must be portable. Transfer of a hub’s contents and settings between environments should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
 #### Permissions
 
