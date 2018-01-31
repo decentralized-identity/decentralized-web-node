@@ -47,17 +47,19 @@ Each Hub has a `profile` object that describes the owning entity.  The profile o
 {
     "@context": "http://schema.org",
     "@type": "Person",
-    "name": "Daniel Buchner",
-    "description": "Working on decentralized identity at Microsoft",
+    "name": "The Dude",
+    "description": "That's just, like, your opinion, man.",
     "website": [
       {
         "@type": "WebSite",
-        "url": "http://www.backalleycoder.com/"
+        "url": "http://www.thedudelovesbowling.com/"
       }
     ],
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Los Gatos, CA"
+      "streetAddress": "5227 Santa Monica Boulevard",
+      "addressLocality": "Los Angeles",
+      "addressRegion": "CA"
     }
 }
 ```
