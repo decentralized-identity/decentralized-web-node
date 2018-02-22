@@ -96,6 +96,8 @@ A frequent activity users will engage in is the exchange of attestations. Attest
 
 ##### *Requesting Attestations*
 
+![Attestation Request](http://github.com/decentralized-identity/hubs/diagrams/alice-attestation-request.png)
+
 Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must pass a message to the target identity's Hub with a `potentialAction` of the type `CheckAction`, containing an `object` value that describes a Verifiable Credential.
 
 The example below is a request for a Verifiable Credential that represents a driver's license, where the requesting party just wants a valid license, not from a specific issuer. For more generic requests, as in this example, requesting parties should describe what they are looking for. Notice the `context` of the Verifiable Credential descriptor includes multiple values, allowing the requestor to include a `disambiguatingDescription` from the schema.org context. This allows User Agents to reason over descriptions and locate attestations that matches. In the case of generic requests with multiple potential matches, it may require the user picking from a list in a UI view the User Agent presents.
@@ -115,7 +117,7 @@ The example below is a request for a Verifiable Credential that represents a dri
           "https://w3id.org/credentials/v1",
           "http://schema.org"
         ],
-        "type": ["Credential"], 
+        "type": ["Credential"],
         "disambiguatingDescription": "driving, permit, driver's, license, dl" 
       }]
     }
@@ -143,13 +145,23 @@ Here's the same example, but with one addition: the requesting party has specifi
           "@context": "https://w3id.org/did/v1",
           "id": "did:ex:456..."
         },
-        "type": ["Credential"], 
+        "type": ["Credential"],
+        "name": "Province of British Columbia Driver's License",
         "disambiguatingDescription": "driving, permit, driver's, license, dl" 
       }]
     }
   }
 }
 ```
+
+##### Real-time Communication Connection Flow
+
+Identity owners often need to communicate with one another via real-time text, speech, and video exchanges. To help enable this between different entities, Identity Hubs provide a means to initiate these connections.
+
+##### *Requesting a Real-time Communication Connection*
+
+To send a request that is recognized by User Agents as a request for an attestation, the requesting party must pass a message to the target identity's Hub with a `potentialAction` of the type `CommunicateAction`.
+
 
 #### Stores
 
@@ -196,10 +208,10 @@ To minimize the complexity of the REST API's response format, all HTTP-based req
 Paging is supported via conformance with the [IETF Link HEADER](https://tools.ietf.org/html/rfc5988#page-6) specification, using the parameters `page` and `take` for paging values. Here are example links for a paged response:
 
 ```
-Link: </.identity/bob.id/collections/schema.org/Offers?page=1&take=100>; rel="first",
-      </.identity/bob.id/collections/schema.org/Offers?page=2&take=100>; rel="prev",
-      </.identity/bob.id/collections/schema.org/Offers?page=4&take=100>; rel="next",
-      </.identity/bob.id/collections/schema.org/Offers?page=7&take=100>; rel="last"
+Link: </.identity/did:bob/collections/schema.org/Offers?page=1&take=100>; rel="first",
+      </.identity/did:bob/collections/schema.org/Offers?page=2&take=100>; rel="prev",
+      </.identity/did:bob/collections/schema.org/Offers?page=4&take=100>; rel="next",
+      </.identity/did:bob/collections/schema.org/Offers?page=7&take=100>; rel="last"
 ```
 
 #### Requesting Collections
@@ -207,7 +219,7 @@ Link: </.identity/bob.id/collections/schema.org/Offers?page=1&take=100>; rel="fi
 Requests for Collections data should follow a common path format under the `/collections` route that maps 1:1 to the schema of the data being retrieved. Here is an example of a `GET` request for the data an identity has storted in the Schema.org music playlist format:
 
 
-`/.identity/jane.id/collections/schema.org/`*`MusicPlaylist`*
+`/.identity/did:alice/collections/schema.org/`*`MusicPlaylist`*
 
 ```js
 
@@ -221,7 +233,7 @@ Requests for Collections data should follow a common path format under the `/col
   "data": {
     "@context": "http://schema.org",
     "@type": "MusicPlaylist",
-    "@id": "/.identity/jane.id/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
+    "@id": "/.identity/did:alice/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
     "name": "Classic Rock",
     "numTracks": 2,
     "track": [{
@@ -232,12 +244,12 @@ Requests for Collections data should follow a common path format under the `/col
         "data": {
           "@context": "http://schema.org",
           "@type": "MusicRecording",
-          "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/23fge3fwg34f",
+          "@id": "/.identity/did:alice/collections/schema.org/MusicRecording/23fge3fwg34f",
           "byArtist": "Lynard Skynyrd",
           "duration": "PT4M45S",
           "inAlbum": "Second Helping",
           "name": "Sweet Home Alabama",
-          "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/ced043360b99" }
+          "permit": { "@id": "/.identity/did:alice/collections/schema.org/Permit/ced043360b99" }
         }
       },
       {
@@ -248,12 +260,12 @@ Requests for Collections data should follow a common path format under the `/col
         "data": {
           "@context": "http://schema.org",
           "@type": "MusicRecording",
-          "@id": "/.identity/jane.id/collections/schema.org/MusicRecording/7e2fg36y3c31",
+          "@id": "/.identity/did:alice/collections/schema.org/MusicRecording/7e2fg36y3c31",
           "byArtist": "Bob Seger",
           "duration": "PT3M12S",
           "inAlbum": "Stranger In Town",
           "name": "Old Time Rock and Roll",
-          "permit": { "@id": "/.identity/jane.id/collections/schema.org/Permit/aa9f3ac9eb7a" }
+          "permit": { "@id": "/.identity/did:alice/collections/schema.org/Permit/aa9f3ac9eb7a" }
         }
     }]
   }
@@ -284,10 +296,6 @@ While Hubs can be implemented with any underlying DB of the author's choice, the
 For the HTTP replication strategy, Hubs shall transmit updates to other Hub endpoints specified in the DID Document of the user via the Couch DB replication protocol. The reference implementation uses the actual Couch database, but Couch's replication protocol can be implemented on top of other databases.
 
 > Note: Add Couch replication protocol refs
-
-
-
-
 
 #### Query Filter Syntax
 
