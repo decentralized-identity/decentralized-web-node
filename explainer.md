@@ -96,7 +96,7 @@ A frequent activity users will engage in is the exchange of attestations. Attest
 
 ##### *Requesting Attestations*
 
-![Attestation Request](http://github.com/decentralized-identity/hubs/diagrams/alice-attestation-request.png)
+![Attestation Request](/diagrams/alice-attestation-request.png)
 
 Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must pass a message to the target identity's Hub with a `potentialAction` of the type `CheckAction`, containing an `object` value that describes a Verifiable Credential.
 
