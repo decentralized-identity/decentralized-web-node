@@ -1,8 +1,9 @@
-# Hubs
+
+# **DIF Identity Hubs**
 
 Hubs let you securely store and share data. A Hub is a datastore containing semantic data objects at well-known locations.  Each object in a Hub is signed by an identity and accessible via a globally recognized API format that explicitly maps to semantic data objects.  Hubs are addressable via a unique identifiers maintained in a global namespace.
 
-## Single Address for Multiple Hub Instances
+# Single Address for Multiple Hub Instances
 
 A single entity may have one or more instances of a Hub, all of which are addressable via a URI routing mechanism linked to the entity’s identifier.  Hub instances sync state changes, ensuring the owner can access data and attestations from anywhere, even when offline.
 
@@ -10,41 +11,139 @@ A single entity may have one or more instances of a Hub, all of which are addres
 
 Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic.  This requires a shared replication protocol for broadcasting and resolving changes. [CouchDB](http://docs.couchdb.org/en/2.0.0/replication/protocol.html), an open source Apache project, will be the data syncing protocol Hubs must implement. It features an eventually consistent, master-master replication protocol that can be decoupled from the default storage layer provided by CouchDB.
 
-#### Data Portability
 All Hub data associated with the identity must be portable. Transfer of a Hub’s contents between instances and environments should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
-## Well-Known URIs
+# Hub Locations & Protocol Schemes
 
-Existing web servers need to interact with Hubs.  Similar to the IETF convention for globally defined metadata resources, detailed in [RFC 5785 well-known URIs][13f07ee0], Hubs are accessible via a stable, universally recognizable path: /.identity/:did, wherein the last segment of the path is the target DID or global name for the identity you wish to interact with.
+## Well-Known Endpoint
 
-## API Routes
+Existing web servers need to interact with Hubs.  Similar to the IETF convention for universally understood resources, detailed in [RFC 5785 well-known URIs][13f07ee0], Hubs are accessible via the path format: `:root/.identity`, wherein the path will reside at the root of the target Hub's root domain.
 
-Each Hub has a set of top-level API routes:
+## Hub URI Scheme
 
-  `/.identity/:did/`*`profile`* ➜ The owning entity's primary descriptor object (schema agnostic).
+In addition to the URL path convention for individual Hubs instances, it is important that links to an identity owner's data not be encoded with a dependency on a specific Hub instance. To make this possible, we propose the introduction of the following Hub URI scheme:
 
-  `/.identity/:did/`*`permissions`* ➜ The access control JSON document
+`hub://did:foo:123abc/`
 
-  `/.identity/:did/`*`messages`* ➜ A known endpoint for the relay of messages/actions to the identity owner
+User Agents that understand this scheme will leverage the Universal Resolver to lookup the Hub instances of the target DID and address the Hub endpoints via the Service Endpoints it finds within. This allows the formation of URIs that are not Hub instance-specific, allowing a more natural way to link to a DID's data, without having to specify a specific instance. This also prevents the circulation of dead links across the Web, given an identity owner can choose to add/remove new Hub instances at any time.
 
-  `/.identity/:did/`*`stores`* ➜ Scoped storage space for user-permitted external entities
+# Authentication
 
-  `/.identity/:did/`*`collections/:context/:objectType`* ➜ The owning entity's identity collections (access limited)
+The process of authenticating requests from the primary user or an agent shall follow the DIF/W3C DID Auth schemes.
 
-  `/.identity/:did/`*`extensions`* ➜ any custom, service-based functionality the identity exposes
+These standards are in early phases of formation - more info here: https://github.com/WebOfTrustInfo/rebooting-the-web-of-trust-spring2018/blob/master/draft-documents/did_auth_draft.md
 
-#### Route Handling
+# API
+
+Because of the sensitive nature of the data being transmitted between Identity Hubs and User Agents, this API that may look a bit different to developers who are used to a traditional REST service API. Most of the differences are based on the high level of security and privacy decentralized identity inherently demands.
+
+## Interfaces
+
+To facilitate common identity interactions and data storage Hubs provide a set of standard interfaces:
+
+- `profile` ➜ The owning entity's primary descriptor object (schema agnostic)
+- `permissions` ➜ The access control JSON document
+- `actions` ➜ A known endpoint for the relay of actions to the identity owner
+- `stores` ➜ Scoped 1:1 storage space that is directly assigned to another, external DID
+- `collections` ➜ The owning entity's identity collections (access limited)
+- `extensions` ➜ any custom, service-based functionality the identity exposes
+
+##### Unimplemented Interfaces
 
 If for whatever reason a Hub implementer decides not to support any endpoints of the top-level API (a rare but possible case), the Hub shall return the HTTP Error Code `501 Not Implemented`, regardless of the path depth of the inbound request.
 
 If the Hub provider wishes, for any reason, to relay the request to a different URI location, they must return the HTTP Status Code `303 See Other`.
 
-#### Hub Profile Objects
+##### Request Format
 
-Each Hub has a `profile` object that describes the owning entity.  The profile object should use the format of the schema object best represents the entity. Here is an example of using the Schema.org `Person` schema to express that a hub belongs to a person:
+Instead of a REST-based scheme where data like the username, object types, and query strings are present in the URL, Identity Hubs requests are self-contained message objects that encapsulate all they need to that shielded from observing entities during transport.
 
-```json
-{
+```js
+{ 
+  // Outer envelope is multi-party encrypted with the keys
+  // of all Hubs listed in the User's DDO Services array
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'collections',
+    method: 'create', // create, read, update, delete, execute
+    schema: 'schema.org',
+    type: 'MusicPlaylist',
+    skip: 20,
+    take: 10
+  },
+  payload: {
+    // Hubs can see and operate on controls to do the following:
+    // 1) Know, via cache-intent, the storage replication priority
+    // 2) Read metadata the user/party wishes to expose (for search/indexing)
+    // 3) Unencrypted - intended-public data
+    controls: {
+      cache-intent: 'full',
+      title: 'Best of Classic Rock',
+      description: 'The best rock of the 60s, 70s, and 80s',
+      tags: ['classic rock', 'rock', 'rock n roll']
+    },
+    // The data in the payload can be encrypted in one of 3 ways:
+    // 1) Encrypted for only the user (DEFAULT)
+    // 2) Encrypted for the user and others they allow
+    // 3) Unencrypted - intended-public data
+    data: {
+      "@context": 'http://schema.org/',
+      "@type": "MusicPlaylist",
+      ...
+    }
+  }
+}
+```
+
+##### Paging
+
+- `skip` omits the specified number of returned records from the 0-based index.
+- `take` returns the number of results specified (if that many exist).
+
+```js
+{ 
+  // Outer envelope is multi-party encrypted with the keys
+  // of all Hubs listed in the User's DDO Services array
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'collections',
+    method: 'read',
+    schema: 'schema.org',
+    type: 'MusicPlaylist',
+    skip: 20, // Skip the first 20 records
+    take: 10 // Send back records 20-30
+  }
+}
+
+### Profile
+
+Each Hub has a `profile` object that describes the owning entity. The profile object should use whatever schema and object that best represents the entity.
+
+##### *Request*
+
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'profile',
+    method: 'read'
+  }
+}
+```
+
+##### *Response*
+
+Here is an example of using the Schema.org `Person` schema to express that a hub belongs to a person:
+
+```js
+{ 
+  data: {
     "@context": "http://schema.org",
     "@type": "Person",
     "name": "The Dude",
@@ -61,216 +160,177 @@ Each Hub has a `profile` object that describes the owning entity.  The profile o
       "addressLocality": "Los Angeles",
       "addressRegion": "CA"
     }
+  }
 }
 ```
 
-#### Permissions
+### Permissions
 
 All access and manipulation of identity data is subject to the permissions established by the owning entity. Because the identities are self-sovereign, all data associated with the identity must be portable. Transfer of a identity's contents and settings between environments and hosts should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
 
 See the [permissions.md](./docs/permissions.md) explainer for details.
 
-#### Messages
+### Actions
 
-The `messages` open endpoint receives objects signed by other identities. Messages are not constrained to the simple exchange of human-to-human communications. Rather, they are intended to be a singular, known endpoint where identities can transact all manner of messaging, notifications, and prompts for action.
+The `actions` interface receives objects signed by other identities. Actions are not constrained to the simple exchange of human-to-human communications. Rather, they are intended to be a singular, known endpoint where identities can transact all manner of messaging, notifications, and prompts for action.
 
-The endpoint location for message objects shall be:
-
-  `/.identity/:did/messages/`
-
-The required data format for message payloads shall be:
+The required data format for action payloads shall be:
 
 [http://schema.org/Message](http://schema.org/Message)
 
-If the intent of your message is to prompt the receiving Hub to perform a certain semantic activity, you can pass an [Action](http://schema.org/Action) object via the Message's `potentialAction` property.
+If the intent of your action request is to prompt the receiving Hub to perform a certain semantic activity, you can pass an [Action](http://schema.org/Action) object via the Message's `potentialAction` property.
 
 Here is a list of examples to show the range of use-cases this endpoint is intended to support:
 
-- Human user contacts another with a textual message (Message with a [ReadAction](http://schema.org/ReadAction))
-- Bot identity prompts a human to sign a document (Message with an [EndorseAction](http://schema.org/EndorseAction))
-- IoT device sends a notification to one of its Agents (Message with an [UpdateAction](http://schema.org/UpdateAction))
+- Human user contacts another with a textual message ([ReadAction](http://schema.org/ReadAction))
+- Bot identity prompts a human to sign a document ([EndorseAction](http://schema.org/EndorseAction))
+- IoT device sends a notification to one of its User Agents ([UpdateAction](http://schema.org/UpdateAction))
 
-##### Attestation Flow
+##### *Request*
+
+```js
+{ 
+  // Outer envelope is multi-party encrypted with the keys
+  // of all Hubs listed in the User's DDO Services array
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'actions',
+    method: 'create',
+    schema: 'schema.org',
+    type: 'ReadAction'
+  },
+  payload: {
+    controls: {
+      title: 'Please read this sensitive document',
+      tags: ['document', 'pdf']
+    },
+    data: { // Data encrypted for the DID owner and the bank
+      "@context": 'http://schema.org/',
+      "@type": "ReadAction",
+      "name": "Acme Bank - March 2018 Statement",
+      "description": "Your Acme Bank statement for account #1734765",
+      "object": PDF_SOURCE
+    }
+  }
+}
+```
+
+##### Attestations
 
 A frequent activity users will engage in is the exchange of attestations. Attestations are claims that one or more users sign with their DID-linked keys to create assertions of proof. These proofs can be for just about anything you can imagine: diplomas, driver's licenses, property deeds, etc. In order to make discovery, request, and transmission of attestations possible, users and organizations need a way to send attestation requests to users and get back the proofs they're looking for.
 
-##### *Requesting Attestations*
+Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must use semantic actions the represent the various stages of negotiation, such as `RequestAttestationAction` and others, as shown in the diagram below:
 
 ![Attestation Request](/diagrams/alice-attestation-request.png)
 
-Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must pass a message to the target identity's Hub with a `potentialAction` of the type `CheckAction`, containing an `object` value that describes a Verifiable Credential.
+### Stores
 
-The example below is a request for a Verifiable Credential that represents a driver's license, where the requesting party just wants a valid license, not from a specific issuer. For more generic requests, as in this example, requesting parties should describe what they are looking for. Notice the `context` of the Verifiable Credential descriptor includes multiple values, allowing the requestor to include a `disambiguatingDescription` from the schema.org context. This allows User Agents to reason over descriptions and locate attestations that matches. In the case of generic requests with multiple potential matches, it may require the user picking from a list in a UI view the User Agent presents.
-
-```js
-{
-  "@type": "Message",
-    "sender": {
-      "@context": "https://w3id.org/did/v1",
-      "id": "did:ex:123..."
-    },
-    "potentialAction": {
-      "@context": "https://schema.org",
-      "@type": "CheckAction",
-      "object": [{
-        "@context": [
-          "https://w3id.org/credentials/v1",
-          "http://schema.org"
-        ],
-        "type": ["Credential"],
-        "disambiguatingDescription": "driving, permit, driver's, license, dl" 
-      }]
-    }
-  }
-}
-```
-Here's the same example, but with one addition: the requesting party has specified the exact issuer it wants the driver's license attestation to be signed by:
-
-```js
-{
-  "@type": "Message",
-    "sender": {
-      "@context": "https://w3id.org/did/v1",
-      "id": "did:ex:123..."
-    },
-    "potentialAction": {
-      "@context": "https://schema.org",
-      "@type": "CheckAction",
-      "object": [{
-        "@context": [
-          "https://w3id.org/credentials/v1",
-          "http://schema.org"
-        ],
-        "issuer": { // Ex: specifies the DID for Province of BC Canada
-          "@context": "https://w3id.org/did/v1",
-          "id": "did:ex:456..."
-        },
-        "type": ["Credential"],
-        "name": "Province of British Columbia Driver's License",
-        "disambiguatingDescription": "driving, permit, driver's, license, dl" 
-      }]
-    }
-  }
-}
-```
-
-##### Real-time Communication Connection Flow
-
-Identity owners often need to communicate with one another via real-time text, speech, and video exchanges. To help enable this between different entities, Identity Hubs provide a means to initiate these connections.
-
-##### *Requesting a Real-time Communication Connection*
-
-To send a request that is recognized by User Agents as a request for an attestation, the requesting party must pass a message to the target identity's Hub with a `potentialAction` of the type `CommunicateAction`.
-
-
-#### Stores
-
-Stores are collections of identity-scoped data storage. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
+Stores provides 1:1 scoped data storage between the owner of a DID and external DID-based identities. The storage is isolated per external DID, and unstructured, encrypted JSON data. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
 
 `/.identity/:did/stores/`*`ENTITY_ID`*
 
 The data shall be a JSON object and should be limited in size, with the option to expand the storage limit based on user or provider discretion. Stores are not unlike a user-sovereign entity-scoped version of the W3C DOM's origin-scoped `window.localStorage` API.
 
-#### Collections
+### Collections
 
-Collections provide a known path for accessing standardized, semantic objects across all hubs, in way that asserts as little opinion as possible. The full scope of an identity's data is accessible via the following path
+Data discovery has been a problem since the inception of the Web. Most previous attempts to solve this begin with the premise that discovery is about individual entities providing a mapping of their own service-specific API and data schemas. While you can certainly create a common format for expressing different APIs and data schemas, you are left with the same basic issue: a sea of services that can't efficiently interoperate without specific review, effort, and integration. Hubs avoid this issue entirely by recognizing that the problem with *data discovery* is that it relies on *discovery*. Instead, Hubs assert the position that locating and retrieving data should be an *implicitly knowable* process.
 
-`/.identity/:did/collections/:context`, wherein the path structure is a 1:1 mirror of the schema context declared in the previous path segment. The names of object types may be cased in various schema ontologies, but hub implementations should always treat these paths as case insensitive. Here are a few examples of actual paths and the type of Schema.org objects they will respond with:
+Collections provide an interface for accessing data objects across all Hubs, regardless of their implementation. This interface exerts almost no opinion on what data schemas entities use. To do this, the Hub Collection interface allows objects from any schema to be stored, indexed, and accessed in a unified manner.
 
-`/.identity/:did/collections/schema.org/Event` ➜ http://schema.org/Event
+With Collections, you store, query, and retrieve data based on the very schema and type of data you seek. Here are a few examples data objects from a variety of common schemas that entities may write and access via a user's Hub:
 
-`/.identity/:did/collections/hl7.org/fhir/Device` ➜ https://www.hl7.org/fhir/device
+**Locate any offers a user might want to share with apps** (http://schema.org/Offer)
 
-`/.identity/:did/collections/gs1.org/voc/Product` ➜ https://www.gs1.org/voc/Product
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'collections',
+    method: 'read',
+    schema: 'schema.org',
+    type: 'event'
+  }
+}
+```
 
-#### Extensions
+**Manufacturer creates a new product entry supply chain partners can access**  (https://www.gs1.org/voc/Product)
 
-Extensions offer a means to surface custom API endpoints an identity wishes to expose publicly or in an access-limited fashion. Extensions should not require the Hub host to directly execute code the endpoints describe; service descriptions should link to a URI where execution takes place.
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'collections',
+    method: 'read',
+    schema: 'gs1.org/voc',
+    type: 'product'
+  },
+  payload: {
+    controls: {
+      title: "Folgers Aroma Roasted Coffee",
+      tags: ['coffee', 'ground coffee']
+    },
+    // Data encrypted for the manufacturer and their supply chain partners
+    data: {
+      "@context": 'https://www.gs1.org/voc',
+      "@type": "product",
+      "gtin": 00025500101163,
+      "productName": "Aroma Roasted Coffee",
+      "manufacturer": "The Folger Coffee Company"
+      ...
+    }
+  }
+}
+```
 
-Performing a `GET` request to the base `/extensions` endpoint will respond with an object that contains an entry for every service description the requesting entity is permitted to access.
+**Medical provider updates a user's patient record** (https://www.hl7.org/fhir/patient)
+
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'collections',
+    method: 'update',
+    schema: 'hl7.org/fhir',
+    type: 'patient',
+    id: '34bj452vvg443l'
+  },
+  payload: {
+    controls: {
+      title: 'Patent Record',
+      tags: ['medical', 'patient', 'record']
+    },
+    // Data encrypted for the DID owner and their doctors
+    data: {
+      "@context": 'https://www.hl7.org/fhir',
+      "@type": "patient",
+      "name": "Jeff",
+      "family": "Lebowski"
+      ...
+    }
+  }
+}
+```
+
+### Extensions
+
+Extensions offer a means to surface custom service calls an identity wishes to expose publicly or in an access-limited fashion. Extensions should not require the Hub host to directly execute code the service calls describe; service descriptions should link to a URI where execution takes place.
+
+Performing a `read` request to the base `extensions` interface will respond with an object that contains an entry for every service description the requesting entity is permitted to access.
 
 ##### Service Descriptions
 
 All definitions shall conform to the [Open API descriptor format](https://github.com/OAI/OpenAPI-Specification).
 
-## HTTP-based Request, Response, and Auth
 
-#### Authentication
-
-The process of authenticating requests from the primary user or an agent shall follow the FIDO and Web Authentication specifications (as closely as possible). These specifications may require modifications in order to support challenging globally known IDs with provably linked keys.
-
-See the [authentication.md](./docs/authentication.md) explainer for details.
-
-#### Response Format
-
-To minimize the complexity of the REST API's response format, all HTTP-based requests will return requested data as the response `body`, with any applicable `HEADERS` set in accordance with the Web platform's [Fetch specification](https://fetch.spec.whatwg.org/#response-class).
-
-Paging is supported via conformance with the [IETF Link HEADER](https://tools.ietf.org/html/rfc5988#page-6) specification, using the parameters `page` and `take` for paging values. Here are example links for a paged response:
-
-```
-Link: </.identity/did:bob/collections/schema.org/Offers?page=1&take=100>; rel="first",
-      </.identity/did:bob/collections/schema.org/Offers?page=2&take=100>; rel="prev",
-      </.identity/did:bob/collections/schema.org/Offers?page=4&take=100>; rel="next",
-      </.identity/did:bob/collections/schema.org/Offers?page=7&take=100>; rel="last"
-```
-
-#### Requesting Collections
-
-Requests for Collections data should follow a common path format under the `/collections` route that maps 1:1 to the schema of the data being retrieved. Here is an example of a `GET` request for the data an identity has storted in the Schema.org music playlist format:
-
-
-`/.identity/did:alice/collections/schema.org/`*`MusicPlaylist`*
-
-```js
-
-// Response body
-
-[{ 
-  "id": "4n93v7a4xd67",
-  "key": "...",
-  "cache-intent": "attr",
-  "signature": "...",
-  "data": {
-    "@context": "http://schema.org",
-    "@type": "MusicPlaylist",
-    "@id": "/.identity/did:alice/collections/schema.org/MusicPlaylist/4n93v7a4xd67",
-    "name": "Classic Rock",
-    "numTracks": 2,
-    "track": [{
-        "id": "23fge3fwg34f",
-        "key": "...",
-        "cache-intent": "attr",
-        "signature": "...",
-        "data": {
-          "@context": "http://schema.org",
-          "@type": "MusicRecording",
-          "@id": "/.identity/did:alice/collections/schema.org/MusicRecording/23fge3fwg34f",
-          "byArtist": "Lynard Skynyrd",
-          "duration": "PT4M45S",
-          "inAlbum": "Second Helping",
-          "name": "Sweet Home Alabama",
-          "permit": { "@id": "/.identity/did:alice/collections/schema.org/Permit/ced043360b99" }
-        }
-      },
-      {
-        "id": "7e2fg36y3c31",
-        "key": "...",
-        "cache-intent": "attr",
-        "signature": "...",
-        "data": {
-          "@context": "http://schema.org",
-          "@type": "MusicRecording",
-          "@id": "/.identity/did:alice/collections/schema.org/MusicRecording/7e2fg36y3c31",
-          "byArtist": "Bob Seger",
-          "duration": "PT3M12S",
-          "inAlbum": "Stranger In Town",
-          "name": "Old Time Rock and Roll",
-          "permit": { "@id": "/.identity/did:alice/collections/schema.org/Permit/aa9f3ac9eb7a" }
-        }
-    }]
-  }
-}]
-```
+# Parking Lot
 
 #### Adding or Manipulating Collections Data
 
@@ -288,14 +348,6 @@ Addition of new data objects into a collection must follow a process for handlin
 3. The object must be encrypted with the symmetrical key of the entities that have read privileges, as specified in the ACL JSON document.
 4. The object shall be inserted into the Hub instance that is handling the request.
 5. Upon completing the above steps, the change must be synced to the other Hub instances via the Replication Process.
-
-#### Replication Process
-
-While Hubs can be implemented with any underlying DB of the author's choice, they must share a common format for replication that spans across instances, providers, and implementations.
-
-For the HTTP replication strategy, Hubs shall transmit updates to other Hub endpoints specified in the DID Document of the user via the Couch DB replication protocol. The reference implementation uses the actual Couch database, but Couch's replication protocol can be implemented on top of other databases.
-
-> Note: Add Couch replication protocol refs
 
 #### Query Filter Syntax
 
