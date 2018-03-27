@@ -143,6 +143,7 @@ Here is an example of using the Schema.org `Person` schema to express that a hub
 
 ```js
 { 
+  request: HASH_OF_REQUEST,
   data: {
     "@context": "http://schema.org",
     "@type": "Person",
@@ -227,11 +228,69 @@ Requesting parties need a means to ask for attestations in a standard, interoper
 
 ### Stores
 
-Stores provides 1:1 scoped data storage between the owner of a DID and external DID-based identities. The storage is isolated per external DID, and unstructured, encrypted JSON data. Stores are addressable via the `/stores` top-level path, and keyed on the entity's decentralize identifier. Here's an example of the path format:
+The best way to describe Stores is as a 1:1 DID-scoped variant of the W3C DOM's origin-scoped `window.localStorage` API. The key difference being that this form of persistent, pairwise object storage transcends providers, platforms, and devices. For each storage relationship between the DID owner and external DIDs, the Hub shall create a key-value document-based storage area. The DID owner or external DID can store unstructured JSON data to the document, in relation to the keys they specify. The Hub implementer may choose to limit the available space of the storage document, with the option to expand the storage limit based on criteria the implementer defines. . Here's an example of what Stores requests look like:
 
-`/.identity/:did/stores/`*`ENTITY_ID`*
+##### *Request*
 
-The data shall be a JSON object and should be limited in size, with the option to expand the storage limit based on user or provider discretion. Stores are not unlike a user-sovereign entity-scoped version of the W3C DOM's origin-scoped `window.localStorage` API.
+Write to a Store:
+
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'stores',
+    method: 'write',
+    key: 'u6ef54344w67h5'
+  },
+  payload: {
+    foo: 'bar'
+  }
+}
+```
+
+General read of a Store:
+
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'stores',
+    method: 'read',
+    skip: 20, // Skip the first 20 keys
+    take: 10 // Send back values for keys 20-30
+  }
+}
+```
+
+Specific read of a Store key:
+
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'stores',
+    method: 'read',
+    key: 'u6ef54344w67h5'
+  }
+}
+```
+
+##### *Response*
+
+```js
+{
+  request: HASH_OF_REQUEST,
+  data: {
+    foo: 'bar'
+  }
+}
+```
 
 ### Collections
 
