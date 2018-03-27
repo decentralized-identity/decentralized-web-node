@@ -118,6 +118,7 @@ Instead of a REST-based scheme where data like the username, object types, and q
     take: 10 // Send back records 20-30
   }
 }
+```
 
 ### Profile
 
