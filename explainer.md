@@ -3,7 +3,7 @@
 
 Hubs let you securely store and share data. A Hub is a datastore containing semantic data objects at well-known locations.  Each object in a Hub is signed by an identity and accessible via a globally recognized API format that explicitly maps to semantic data objects.  Hubs are addressable via a unique identifiers maintained in a global namespace.
 
-# Single Address for Multiple Hub Instances
+# One DID to Many Hub Instances
 
 A single entity may have one or more instances of a Hub, all of which are addressable via a URI routing mechanism linked to the entity’s identifier.  Hub instances sync state changes, ensuring the owner can access data and attestations from anywhere, even when offline.
 
@@ -101,8 +101,10 @@ Instead of a REST-based scheme where data like the username, object types, and q
 
 ```js
 {
-  request: HASH_OF_REQUEST,
-  data: { ... }
+  response: {
+    requestHash: HASH_OF_REQUEST
+  },
+  payload: [{ ... }]
 }
 ```
 
@@ -153,8 +155,10 @@ Here is an example of using the Schema.org `Person` schema to express that a hub
 
 ```js
 { 
-  request: HASH_OF_REQUEST,
-  data: {
+  response: {
+    requestHash: HASH_OF_REQUEST
+  },
+  payload: [{
     "@context": "http://schema.org",
     "@type": "Person",
     "name": "The Dude",
@@ -171,7 +175,7 @@ Here is an example of using the Schema.org `Person` schema to express that a hub
       "addressLocality": "Los Angeles",
       "addressRegion": "CA"
     }
-  }
+  }]
 }
 ```
 
@@ -293,10 +297,12 @@ Specific read of a Store key:
 
 ```js
 {
-  request: HASH_OF_REQUEST,
-  data: {
+  response: {
+    requestHash: HASH_OF_REQUEST
+  },
+  payload: [{
     foo: 'bar'
-  }
+  }]
 }
 ```
 
@@ -337,7 +343,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
     schema: 'gs1.org/voc',
     type: 'product'
   },
-  payload: {
+  payload: [{
     controls: {
       title: "Folgers Aroma Roasted Coffee",
       tags: ['coffee', 'ground coffee']
@@ -351,7 +357,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
       "manufacturer": "The Folger Coffee Company"
       ...
     }
-  }
+  }]
 }
 ```
 
@@ -369,7 +375,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
     type: 'patient',
     id: '34bj452vvg443l'
   },
-  payload: {
+  payload: [{
     controls: {
       title: 'Patent Record',
       tags: ['medical', 'patient', 'record']
@@ -382,7 +388,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
       "family": "Lebowski"
       ...
     }
-  }
+  }]
 }
 ```
 
@@ -391,6 +397,35 @@ With Collections, you store, query, and retrieve data based on the very schema a
 Extensions offer a means to surface custom service calls an identity wishes to expose publicly or in an access-limited fashion. Extensions should not require the Hub host to directly execute code the service calls describe; service descriptions should link to a URI where execution takes place.
 
 Performing a `read` request to the base `extensions` interface will respond with an object that contains an entry for every service description the requesting entity is permitted to access.
+
+##### *Request*
+
+```js
+{ 
+  source: 'did:foo:123abc',
+  target: 'did:bar:456def',
+  sig: SOURCE_SIGNATURE,
+  request: {
+    interface: 'extensions',
+    method: 'read'
+  }
+}
+```
+
+##### *Response*
+
+Here is an example of a request for all 
+
+```js
+{ 
+  response: {
+    requestHash: HASH_OF_REQUEST
+  },
+  payload: [{
+    // Open ID JSON service descriptors
+  }]
+}
+```
 
 ##### Service Descriptions
 
