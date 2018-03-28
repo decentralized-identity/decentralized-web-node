@@ -97,6 +97,15 @@ Instead of a REST-based scheme where data like the username, object types, and q
 }
 ```
 
+##### Response Format
+
+```js
+{
+  request: HASH_OF_REQUEST,
+  data: { ... }
+}
+```
+
 ##### Paging
 
 - `skip` omits the specified number of returned records from the 0-based index.
@@ -174,19 +183,17 @@ See the [permissions.md](./docs/permissions.md) explainer for details.
 
 ### Actions
 
-The `actions` interface receives objects signed by other identities. Actions are not constrained to the simple exchange of human-to-human communications. Rather, they are intended to be a singular, known endpoint where identities can transact all manner of messaging, notifications, and prompts for action.
+The `actions` interface is for sending a target identity semantically meaningful objects that convey an intent to the sender, which often involves the data payload of the object. The `actions` interface is not constrained to simple human-centric communications. Rather, it is intended as a universal conduit through which identities can transact all manner of activities, exchanges, and notifications.
 
-The required data format for action payloads shall be:
+The base data format for conveying an action shall be:
 
-[http://schema.org/Message](http://schema.org/Message)
+[http://schema.org/Action](http://schema.org/Action)
 
-If the intent of your action request is to prompt the receiving Hub to perform a certain semantic activity, you can pass an [Action](http://schema.org/Action) object via the Message's `potentialAction` property.
-
-Here is a list of examples to show the range of use-cases this endpoint is intended to support:
+Here is a list of examples to show the range of use-cases this interface is intended to support:
 
 - Human user contacts another with a textual message ([ReadAction](http://schema.org/ReadAction))
-- Bot identity prompts a human to sign a document ([EndorseAction](http://schema.org/EndorseAction))
-- IoT device sends a notification to one of its User Agents ([UpdateAction](http://schema.org/UpdateAction))
+- Event app sends a request to RSVP for an event ([EndorseAction](http://schema.org/RsvpAction))
+- Voting agency prompts a user to submit a vote ([UpdateAction](http://schema.org/VoteAction))
 
 ##### *Request*
 
