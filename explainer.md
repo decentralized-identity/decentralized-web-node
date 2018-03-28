@@ -192,7 +192,7 @@ The base data format for conveying an action shall be:
 Here is a list of examples to show the range of use-cases this interface is intended to support:
 
 - Human user contacts another with a textual message ([ReadAction](http://schema.org/ReadAction))
-- Event app sends a request to RSVP for an event ([EndorseAction](http://schema.org/RsvpAction))
+- Event app sends a request to RSVP for an event ([RsvpAction](http://schema.org/RsvpAction))
 - Voting agency prompts a user to submit a vote ([UpdateAction](http://schema.org/VoteAction))
 
 ##### *Request*
