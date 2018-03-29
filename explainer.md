@@ -7,7 +7,7 @@ Hubs let you securely store and share data. A Hub is a datastore containing sema
 
 A single entity may have one or more instances of a Hub, all of which are addressable via a URI routing mechanism linked to the entity’s identifier.  Hub instances sync state changes, ensuring the owner can access data and attestations from anywhere, even when offline.
 
-## Syncing Data to Multiple Hubs
+## Syncing data between Hubs
 
 Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic.  This requires a shared replication protocol for broadcasting and resolving changes. [CouchDB](http://docs.couchdb.org/en/2.0.0/replication/protocol.html), an open source Apache project, will be the data syncing protocol Hubs must implement. It features an eventually consistent, master-master replication protocol that can be decoupled from the default storage layer provided by CouchDB.
 
@@ -422,7 +422,7 @@ Here is an example of a request for all
     requestHash: HASH_OF_REQUEST
   },
   payload: [{
-    // Open ID JSON service descriptors
+    // Open API service descriptors
   }]
 }
 ```
