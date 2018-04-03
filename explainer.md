@@ -1,7 +1,7 @@
 
 # **DIF Identity Hubs**
 
-Hubs let you securely store and share data. A Hub is a datastore containing semantic data objects at well-known locations.  Each object in a Hub is signed by an identity and accessible via a globally recognized API format that explicitly maps to semantic data objects.  Hubs are addressable via a unique identifiers maintained in a global namespace.
+Hubs let you securely store and share data. A Hub is a datastore containing semantic data objects at well-known locations.  Each object in a Hub is signed by an identity and accessible via a globally recognized API format that explicitly maps to semantic data objects.  Hubs are addressable via unique identifiers maintained in a global namespace.
 
 # One DID to Many Hub Instances
 
@@ -56,7 +56,7 @@ If the Hub provider wishes, for any reason, to relay the request to a different 
 
 ##### Request Format
 
-Instead of a REST-based scheme where data like the username, object types, and query strings are present in the URL, Identity Hubs requests are self-contained message objects that encapsulate all they need to that shielded from observing entities during transport.
+Instead of a REST-based scheme where data like the username, object types, and query strings are present in the URL, Identity Hubs requests are self-contained message objects that encapsulate all they need to be shielded from observing entities during transport.
 
 ```js
 { 
@@ -234,7 +234,7 @@ Here is a list of examples to show the range of use-cases this interface is inte
 
 A frequent activity users will engage in is the exchange of attestations. Attestations are claims that one or more users sign with their DID-linked keys to create assertions of proof. These proofs can be for just about anything you can imagine: diplomas, driver's licenses, property deeds, etc. In order to make discovery, request, and transmission of attestations possible, users and organizations need a way to send attestation requests to users and get back the proofs they're looking for.
 
-Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must use semantic actions the represent the various stages of negotiation, such as `RequestAttestationAction` and others, as shown in the diagram below:
+Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must use semantic actions that represent the various stages of negotiation, such as `RequestAttestationAction` and others, as shown in the diagram below:
 
 ![Attestation Request](/diagrams/alice-attestation-request.png)
 
@@ -312,7 +312,7 @@ Data discovery has been a problem since the inception of the Web. Most previous 
 
 Collections provide an interface for accessing data objects across all Hubs, regardless of their implementation. This interface exerts almost no opinion on what data schemas entities use. To do this, the Hub Collection interface allows objects from any schema to be stored, indexed, and accessed in a unified manner.
 
-With Collections, you store, query, and retrieve data based on the very schema and type of data you seek. Here are a few examples data objects from a variety of common schemas that entities may write and access via a user's Hub:
+With Collections, you store, query, and retrieve data based on the very schema and type of data you seek. Here are a few example data objects from a variety of common schemas that entities may write and access via a user's Hub:
 
 **Locate any offers a user might want to share with apps** (http://schema.org/Offer)
 
