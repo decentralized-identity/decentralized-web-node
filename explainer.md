@@ -9,9 +9,11 @@ A single entity may have one or more instances of a Hub, all of which are addres
 
 ## Syncing data between Hubs
 
-Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic.  This requires a shared replication protocol for broadcasting and resolving changes. [CouchDB](http://docs.couchdb.org/en/2.0.0/replication/protocol.html), an open source Apache project, will be the data syncing protocol Hubs must implement. It features an eventually consistent, master-master replication protocol that can be decoupled from the default storage layer provided by CouchDB.
+Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic. This requires a shared replication protocol for broadcasting and resolving changes. The protocol for reproducing Hub state across multiple instances is in the formative phases of definition/selection, but should be relatively straightforward to integrate on top of any NoSQL datastore.
 
-All Hub data associated with the identity must be portable. Transfer of a Hub’s contents between instances and environments should be seamless, without loss of data or operational state, including the permissions that govern access to identity data.
+## Hub data serialization and export
+
+All Hubs must support the export of their serialized state. This is to ensure the user retains full control over the portability of their data. A later revision to this document will specify the process for invoking this intent and retrieving the serialized data from a Hub instance.
 
 # Hub Locations & Protocol Schemes
 
@@ -41,12 +43,12 @@ Because of the sensitive nature of the data being transmitted between Identity H
 
 To facilitate common identity interactions and data storage Hubs provide a set of standard interfaces:
 
-- `profile` ➜ The owning entity's primary descriptor object (schema agnostic)
-- `permissions` ➜ The access control JSON document
-- `actions` ➜ A known endpoint for the relay of actions to the identity owner
-- `stores` ➜ Scoped 1:1 storage space that is directly assigned to another, external DID
-- `collections` ➜ The owning entity's identity collections (access limited)
-- `extensions` ➜ any custom, service-based functionality the identity exposes
+- `Profile` ➜ The owning entity's primary descriptor object (schema agnostic)
+- `Permissions` ➜ The access control JSON document
+- `Actions` ➜ A known endpoint for the relay of actions to the identity owner
+- `Stores` ➜ Scoped 1:1 storage space that is directly assigned to another, external DID
+- `Collections` ➜ The owning entity's identity collections (access limited)
+- `Extensions` ➜ any custom, service-based functionality the identity exposes
 
 ##### Unimplemented Interfaces
 
@@ -62,37 +64,31 @@ Instead of a REST-based scheme where data like the username, object types, and q
 { 
   // Outer envelope is multi-party encrypted with the keys
   // of all Hubs listed in the User's DDO Services array
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Collections/Add', // read, add, update, remove, execute
   request: {
-    interface: 'collections',
-    method: 'create', // create, read, update, delete, execute
-    schema: 'schema.org',
-    type: 'MusicPlaylist',
-    skip: 20,
-    take: 10
+    schema: 'schema.org/MusicPlaylist'
   },
+  // Hubs can see and operate on controls to do the following:
+  // 1) Know, via cache-intent, the storage replication priority
+  // 2) Request metadata the user/party wishes to expose (for search/indexing)
+  // 3) Unencrypted - intended-public data
+  meta: {
+    cache-intent: 'full',
+    title: 'Best of Classic Rock',
+    tags: ['classic rock', 'rock', 'rock n roll']
+  },
+  // The data in the payload can be encrypted in one of 3 ways:
+  // 1) Encrypted for only the user (DEFAULT)
+  // 2) Encrypted for the user and others they allow
+  // 3) Unencrypted - intended-public data
   payload: {
-    // Hubs can see and operate on controls to do the following:
-    // 1) Know, via cache-intent, the storage replication priority
-    // 2) Read metadata the user/party wishes to expose (for search/indexing)
-    // 3) Unencrypted - intended-public data
-    controls: {
-      cache-intent: 'full',
-      title: 'Best of Classic Rock',
-      description: 'The best rock of the 60s, 70s, and 80s',
-      tags: ['classic rock', 'rock', 'rock n roll']
-    },
-    // The data in the payload can be encrypted in one of 3 ways:
-    // 1) Encrypted for only the user (DEFAULT)
-    // 2) Encrypted for the user and others they allow
-    // 3) Unencrypted - intended-public data
-    data: {
-      "@context": 'http://schema.org/',
-      "@type": "MusicPlaylist",
-      ...
-    }
+    "@context": 'http://schema.org/',
+    "@type": "MusicPlaylist",
+    "description": 'The best rock of the 60s, 70s, and 80s',
+    "tracks": [...]
+    ...
   }
 }
 ```
@@ -101,6 +97,7 @@ Instead of a REST-based scheme where data like the username, object types, and q
 
 ```js
 {
+  '@type': 'Collections/Response',
   response: {
     requestHash: HASH_OF_REQUEST
   },
@@ -117,14 +114,11 @@ Instead of a REST-based scheme where data like the username, object types, and q
 { 
   // Outer envelope is multi-party encrypted with the keys
   // of all Hubs listed in the User's DDO Services array
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Collections/Request',
   request: {
-    interface: 'collections',
-    method: 'read',
-    schema: 'schema.org',
-    type: 'MusicPlaylist',
+    schema: 'schema.org/MusicPlaylist',
     skip: 20, // Skip the first 20 records
     take: 10 // Send back records 20-30
   }
@@ -139,13 +133,9 @@ Each Hub has a `profile` object that describes the owning entity. The profile ob
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
-  request: {
-    interface: 'profile',
-    method: 'read'
-  }
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Profile/Request'
 }
 ```
 
@@ -155,6 +145,7 @@ Here is an example of using the Schema.org `Person` schema to express that a hub
 
 ```js
 { 
+  '@type': 'Profile/Response',
   response: {
     requestHash: HASH_OF_REQUEST
   },
@@ -205,27 +196,22 @@ Here is a list of examples to show the range of use-cases this interface is inte
 { 
   // Outer envelope is multi-party encrypted with the keys
   // of all Hubs listed in the User's DDO Services array
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def', 
+  '@type': 'Actions/Add',
   request: {
-    interface: 'actions',
-    method: 'create',
-    schema: 'schema.org',
-    type: 'ReadAction'
+    schema: 'schema.org/ReadAction'
   },
-  payload: {
-    controls: {
-      title: 'Please read this sensitive document',
-      tags: ['document', 'pdf']
-    },
-    data: { // Data encrypted for the DID owner and the bank
-      "@context": 'http://schema.org/',
-      "@type": "ReadAction",
-      "name": "Acme Bank - March 2018 Statement",
-      "description": "Your Acme Bank statement for account #1734765",
-      "object": PDF_SOURCE
-    }
+  meta: {
+    title: 'Please read this sensitive document',
+    tags: ['document', 'pdf']
+  },
+  payload: {  // Data encrypted for the DID owner and the bank
+    "@context": 'http://schema.org/',
+    "@type": "ReadAction",
+    "name": "Acme Bank - March 2018 Statement",
+    "description": "Your Acme Bank statement for account #1734765",
+    "object": PDF_SOURCE
   }
 }
 ```
@@ -248,17 +234,15 @@ Write to a Store:
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Stores/Add',
   request: {
-    interface: 'stores',
-    method: 'write',
     key: 'u6ef54344w67h5'
   },
-  payload: {
+  payload: [{
     foo: 'bar'
-  }
+  }]
 }
 ```
 
@@ -266,28 +250,24 @@ General read of a Store:
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Stores/Request',
   request: {
-    interface: 'stores',
-    method: 'read',
     skip: 20, // Skip the first 20 keys
     take: 10 // Send back values for keys 20-30
   }
 }
 ```
 
-Specific read of a Store key:
+Request of a specific Store key:
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Stores/Request',
   request: {
-    interface: 'stores',
-    method: 'read',
     key: 'u6ef54344w67h5'
   }
 }
@@ -297,6 +277,7 @@ Specific read of a Store key:
 
 ```js
 {
+  '@type': 'Stores/Response',
   response: {
     requestHash: HASH_OF_REQUEST
   },
@@ -318,14 +299,11 @@ With Collections, you store, query, and retrieve data based on the very schema a
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Collections/Request',
   request: {
-    interface: 'collections',
-    method: 'read',
-    schema: 'schema.org',
-    type: 'event'
+    schema: 'schema.org/Offer'
   }
 }
 ```
@@ -334,29 +312,23 @@ With Collections, you store, query, and retrieve data based on the very schema a
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Collections/Request',
   request: {
-    interface: 'collections',
-    method: 'read',
-    schema: 'gs1.org/voc',
-    type: 'product'
+    schema: 'gs1.org/voc/Product'
+  },
+  meta: {
+    title: "Folgers Coffee",
+    tags: ['coffee', 'ground coffee']
   },
   payload: [{
-    controls: {
-      title: "Folgers Aroma Roasted Coffee",
-      tags: ['coffee', 'ground coffee']
-    },
-    // Data encrypted for the manufacturer and their supply chain partners
-    data: {
-      "@context": 'https://www.gs1.org/voc',
-      "@type": "product",
-      "gtin": 00025500101163,
-      "productName": "Aroma Roasted Coffee",
-      "manufacturer": "The Folger Coffee Company"
-      ...
-    }
+    "@context": 'https://www.gs1.org/voc',
+    "@type": "product",
+    "gtin": 00025500101163,
+    "productName": "Aroma Roasted Coffee",
+    "manufacturer": "The Folger Coffee Company"
+    ...
   }]
 }
 ```
@@ -365,29 +337,23 @@ With Collections, you store, query, and retrieve data based on the very schema a
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Collections/Update',
   request: {
-    interface: 'collections',
-    method: 'update',
-    schema: 'hl7.org/fhir',
-    type: 'patient',
+    schema: 'hl7.org/fhir/patient',
     id: '34bj452vvg443l'
   },
-  payload: [{
-    controls: {
-      title: 'Patent Record',
-      tags: ['medical', 'patient', 'record']
-    },
-    // Data encrypted for the DID owner and their doctors
-    data: {
-      "@context": 'https://www.hl7.org/fhir',
-      "@type": "patient",
-      "name": "Jeff",
-      "family": "Lebowski"
-      ...
-    }
+  meta: {
+    title: 'Patent Record',
+    tags: ['medical', 'patient', 'record']
+  },
+  payload: [{ // Data encrypted for the DID owner and their doctors
+    "@context": 'https://www.hl7.org/fhir',
+    "@type": "patient",
+    "name": "Jeff",
+    "family": "Lebowski"
+    ...
   }]
 }
 ```
@@ -402,13 +368,9 @@ Performing a `read` request to the base `extensions` interface will respond with
 
 ```js
 { 
-  source: 'did:foo:123abc',
-  target: 'did:bar:456def',
-  sig: SOURCE_SIGNATURE,
-  request: {
-    interface: 'extensions',
-    method: 'read'
-  }
+  iss: 'did:foo:123abc',
+  aud: 'did:bar:456def',
+  '@type': 'Extensions/Request'
 }
 ```
 
@@ -418,6 +380,7 @@ Here is an example of a request for all
 
 ```js
 { 
+  '@type': 'Extensions/Response'
   response: {
     requestHash: HASH_OF_REQUEST
   },
