@@ -358,11 +358,11 @@ With Collections, you store, query, and retrieve data based on the very schema a
 }
 ```
 
-### Extensions
+### Services
 
-Extensions offer a means to surface custom service calls an identity wishes to expose publicly or in an access-limited fashion. Extensions should not require the Hub host to directly execute code the service calls describe; service descriptions should link to a URI where execution takes place.
+Services offer a means to surface custom service calls an identity wishes to expose publicly or in an access-limited fashion. Extensions should not require the Hub host to directly execute code the service calls describe; service descriptions should link to a URI where execution takes place.
 
-Performing a `read` request to the base `extensions` interface will respond with an object that contains an entry for every service description the requesting entity is permitted to access.
+Performing a `Request` request to the base `Services` interface will respond with an object that contains an entry for every service description the requesting entity is permitted to access.
 
 ##### *Request*
 
@@ -370,7 +370,7 @@ Performing a `read` request to the base `extensions` interface will respond with
 { 
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Extensions/Request'
+  '@type': 'Services/Request'
 }
 ```
 
@@ -380,7 +380,7 @@ Here is an example of a request for all
 
 ```js
 { 
-  '@type': 'Extensions/Response'
+  '@type': 'Services/Response'
   response: {
     requestHash: HASH_OF_REQUEST
   },
