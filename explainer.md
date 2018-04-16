@@ -70,26 +70,30 @@ Instead of a REST-based scheme where data like the username, object types, and q
   request: {
     schema: 'schema.org/MusicPlaylist'
   },
-  // Hubs can see and operate on controls to do the following:
-  // 1) Know, via cache-intent, the storage replication priority
-  // 2) Request metadata the user/party wishes to expose (for search/indexing)
-  // 3) Unencrypted - intended-public data
-  meta: {
-    cache-intent: 'full',
-    title: 'Best of Classic Rock',
-    tags: ['classic rock', 'rock', 'rock n roll']
-  },
-  // The data in the payload can be encrypted in one of 3 ways:
-  // 1) Encrypted for only the user (DEFAULT)
-  // 2) Encrypted for the user and others they allow
-  // 3) Unencrypted - intended-public data
-  payload: {
-    "@context": 'http://schema.org/',
-    "@type": "MusicPlaylist",
-    "description": 'The best rock of the 60s, 70s, and 80s',
-    "tracks": [...]
-    ...
-  }
+  payload: [
+    {
+      // Hubs can see and operate on controls to do the following:
+      // 1) Know, via cache-intent, the storage replication priority
+      // 2) Request metadata the user/party wishes to expose (for search/indexing)
+      // 3) Unencrypted - intended-public data
+      meta: {
+        cache-intent: 'full',
+        title: 'Best of Classic Rock',
+        tags: ['classic rock', 'rock', 'rock n roll']
+      },
+      // The data in the payload can be encrypted in one of 3 ways:
+      // 1) Encrypted for only the user (DEFAULT)
+      // 2) Encrypted for the user and others they allow
+      // 3) Unencrypted - intended-public data
+      data: {
+        "@context": 'http://schema.org/',
+        "@type": "MusicPlaylist",
+        "description": 'The best rock of the 60s, 70s, and 80s',
+        "tracks": [...]
+        ...
+      }
+    }
+  ]
 }
 ```
 
@@ -202,16 +206,18 @@ Here is a list of examples to show the range of use-cases this interface is inte
   request: {
     schema: 'schema.org/ReadAction'
   },
-  meta: {
-    title: 'Please read this sensitive document',
-    tags: ['document', 'pdf']
-  },
-  payload: {  // Data encrypted for the DID owner and the bank
-    "@context": 'http://schema.org/',
-    "@type": "ReadAction",
-    "name": "Acme Bank - March 2018 Statement",
-    "description": "Your Acme Bank statement for account #1734765",
-    "object": PDF_SOURCE
+  payload: {
+    meta: {
+      title: 'Please read this sensitive document',
+      tags: ['document', 'pdf']
+    },
+    {  // Data encrypted for the DID owner and the bank
+      "@context": 'http://schema.org/',
+      "@type": "ReadAction",
+      "name": "Acme Bank - March 2018 Statement",
+      "description": "Your Acme Bank statement for account #1734765",
+      "object": PDF_SOURCE
+    }
   }
 }
 ```
@@ -318,18 +324,20 @@ With Collections, you store, query, and retrieve data based on the very schema a
   request: {
     schema: 'gs1.org/voc/Product'
   },
-  meta: {
-    title: "Folgers Coffee",
-    tags: ['coffee', 'ground coffee']
-  },
-  payload: [{
-    "@context": 'https://www.gs1.org/voc',
-    "@type": "product",
-    "gtin": 00025500101163,
-    "productName": "Aroma Roasted Coffee",
-    "manufacturer": "The Folger Coffee Company"
-    ...
-  }]
+  payload: {
+    meta: {
+      title: "Folgers Coffee",
+      tags: ['coffee', 'ground coffee']
+    },
+    {
+      "@context": 'https://www.gs1.org/voc',
+      "@type": "product",
+      "gtin": 00025500101163,
+      "productName": "Aroma Roasted Coffee",
+      "manufacturer": "The Folger Coffee Company"
+      ...
+    }
+  }
 }
 ```
 
@@ -344,17 +352,19 @@ With Collections, you store, query, and retrieve data based on the very schema a
     schema: 'hl7.org/fhir/patient',
     id: '34bj452vvg443l'
   },
-  meta: {
-    title: 'Patent Record',
-    tags: ['medical', 'patient', 'record']
-  },
-  payload: [{ // Data encrypted for the DID owner and their doctors
-    "@context": 'https://www.hl7.org/fhir',
-    "@type": "patient",
-    "name": "Jeff",
-    "family": "Lebowski"
-    ...
-  }]
+  payload: {
+    meta: {
+      title: 'Patent Record',
+      tags: ['medical', 'patient', 'record']
+    },
+    { // Data encrypted for the DID owner and their doctors
+      "@context": 'https://www.hl7.org/fhir',
+      "@type": "patient",
+      "name": "Jeff",
+      "family": "Lebowski"
+      ...
+    }
+  }
 }
 ```
 
