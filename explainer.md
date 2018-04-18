@@ -320,7 +320,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
 { 
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Collections/Request',
+  '@type': 'Collections/Add',
   request: {
     schema: 'gs1.org/voc/Product'
   },
