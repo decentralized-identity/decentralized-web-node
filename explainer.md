@@ -211,7 +211,7 @@ Here is a list of examples to show the range of use-cases this interface is inte
       title: 'Please read this sensitive document',
       tags: ['document', 'pdf']
     },
-    {  // Data encrypted for the DID owner and the bank
+    data: {  // Data encrypted for the DID owner and the bank
       "@context": 'http://schema.org/',
       "@type": "ReadAction",
       "name": "Acme Bank - March 2018 Statement",
@@ -329,7 +329,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
       title: "Folgers Coffee",
       tags: ['coffee', 'ground coffee']
     },
-    {
+    data: {
       "@context": 'https://www.gs1.org/voc',
       "@type": "product",
       "gtin": 00025500101163,
@@ -357,7 +357,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
       title: 'Patent Record',
       tags: ['medical', 'patient', 'record']
     },
-    { // Data encrypted for the DID owner and their doctors
+    data: { // Data encrypted for the DID owner and their doctors
       "@context": 'https://www.hl7.org/fhir',
       "@type": "patient",
       "name": "Jeff",
