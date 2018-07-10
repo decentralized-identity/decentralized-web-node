@@ -48,7 +48,7 @@ To facilitate common identity interactions and data storage Hubs provide a set o
 - `Actions` ➜ A known endpoint for the relay of actions to the identity owner
 - `Stores` ➜ Scoped 1:1 storage space that is directly assigned to another, external DID
 - `Collections` ➜ The owning entity's identity collections (access limited)
-- `Extensions` ➜ any custom, service-based functionality the identity exposes
+- `Services` ➜ any custom, service-based functionality the identity exposes
 
 ##### Unimplemented Interfaces
 
@@ -370,7 +370,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
 
 ### Services
 
-Services offer a means to surface custom service calls an identity wishes to expose publicly or in an access-limited fashion. Extensions should not require the Hub host to directly execute code the service calls describe; service descriptions should link to a URI where execution takes place.
+Services offer a means to surface custom service calls an identity wishes to expose publicly or in an access-limited fashion. Services should not require the Hub host to directly execute code the service calls describe; service descriptions should link to a URI where execution takes place.
 
 Performing a `Request` request to the base `Services` interface will respond with an object that contains an entry for every service description the requesting entity is permitted to access.
 
