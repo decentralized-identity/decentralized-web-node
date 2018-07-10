@@ -1,5 +1,6 @@
 
 # **DIF Identity Hubs**
+Deliverable Status: Approved Draft
 
 Hubs let you securely store and share data. A Hub is a datastore containing semantic data objects at well-known locations.  Each object in a Hub is signed by an identity and accessible via a globally recognized API format that explicitly maps to semantic data objects.  Hubs are addressable via unique identifiers maintained in a global namespace.
 
@@ -58,10 +59,10 @@ If the Hub provider wishes, for any reason, to relay the request to a different 
 
 ##### Request Format
 
-Instead of a REST-based scheme where data like the username, object types, and query strings are present in the URL, Identity Hubs requests are self-contained message objects that encapsulate all they need to that shielded from observing entities during transport.
+Instead of a REST-based scheme where data like the username, object types, and query strings are present in the URL, Identity Hubs requests are self-contained message objects that encapsulate all they need to be shielded from observing entities during transport.
 
 ```js
-{ 
+{
   // Outer envelope is multi-party encrypted with the keys
   // of all Hubs listed in the User's DDO Services array
   iss: 'did:foo:123abc',
@@ -115,7 +116,7 @@ Instead of a REST-based scheme where data like the username, object types, and q
 - `take` returns the number of results specified (if that many exist).
 
 ```js
-{ 
+{
   // Outer envelope is multi-party encrypted with the keys
   // of all Hubs listed in the User's DDO Services array
   iss: 'did:foo:123abc',
@@ -136,7 +137,7 @@ Each Hub has a `profile` object that describes the owning entity. The profile ob
 ##### *Request*
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Profile/Request'
@@ -148,7 +149,7 @@ Each Hub has a `profile` object that describes the owning entity. The profile ob
 Here is an example of using the Schema.org `Person` schema to express that a hub belongs to a person:
 
 ```js
-{ 
+{
   '@type': 'Profile/Response',
   response: {
     requestHash: HASH_OF_REQUEST
@@ -197,11 +198,11 @@ Here is a list of examples to show the range of use-cases this interface is inte
 ##### *Request*
 
 ```js
-{ 
+{
   // Outer envelope is multi-party encrypted with the keys
   // of all Hubs listed in the User's DDO Services array
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def', 
+  aud: 'did:bar:456def',
   '@type': 'Actions/Add',
   request: {
     schema: 'schema.org/ReadAction'
@@ -226,7 +227,7 @@ Here is a list of examples to show the range of use-cases this interface is inte
 
 A frequent activity users will engage in is the exchange of attestations. Attestations are claims that one or more users sign with their DID-linked keys to create assertions of proof. These proofs can be for just about anything you can imagine: diplomas, driver's licenses, property deeds, etc. In order to make discovery, request, and transmission of attestations possible, users and organizations need a way to send attestation requests to users and get back the proofs they're looking for.
 
-Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must use semantic actions the represent the various stages of negotiation, such as `RequestAttestationAction` and others, as shown in the diagram below:
+Requesting parties need a means to ask for attestations in a standard, interoperable way across different instances of Hubs. To send a request that is recognized by User Agents as a request for an attestation, the requesting party must use semantic actions that represent the various stages of negotiation, such as `RequestAttestationAction` and others, as shown in the diagram below:
 
 ![Attestation Request](/diagrams/alice-attestation-request.png)
 
@@ -239,7 +240,7 @@ The best way to describe Stores is as a 1:1 DID-scoped variant of the W3C DOM's 
 Write to a Store:
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Stores/Add',
@@ -255,7 +256,7 @@ Write to a Store:
 General read of a Store:
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Stores/Request',
@@ -269,7 +270,7 @@ General read of a Store:
 Request of a specific Store key:
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Stores/Request',
@@ -299,12 +300,12 @@ Data discovery has been a problem since the inception of the Web. Most previous 
 
 Collections provide an interface for accessing data objects across all Hubs, regardless of their implementation. This interface exerts almost no opinion on what data schemas entities use. To do this, the Hub Collection interface allows objects from any schema to be stored, indexed, and accessed in a unified manner.
 
-With Collections, you store, query, and retrieve data based on the very schema and type of data you seek. Here are a few examples data objects from a variety of common schemas that entities may write and access via a user's Hub:
+With Collections, you store, query, and retrieve data based on the very schema and type of data you seek. Here are a few example data objects from a variety of common schemas that entities may write and access via a user's Hub:
 
 **Locate any offers a user might want to share with apps** (http://schema.org/Offer)
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Collections/Request',
@@ -317,7 +318,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
 **Manufacturer creates a new product entry supply chain partners can access**  (https://www.gs1.org/voc/Product)
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Collections/Add',
@@ -344,7 +345,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
 **Medical provider updates a user's patient record** (https://www.hl7.org/fhir/patient)
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Collections/Update',
@@ -377,7 +378,7 @@ Performing a `Request` request to the base `Services` interface will respond wit
 ##### *Request*
 
 ```js
-{ 
+{
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
   '@type': 'Services/Request'
@@ -386,10 +387,10 @@ Performing a `Request` request to the base `Services` interface will respond wit
 
 ##### *Response*
 
-Here is an example of a request for all 
+Here is an example of a request for all
 
 ```js
-{ 
+{
   '@type': 'Services/Response'
   response: {
     requestHash: HASH_OF_REQUEST
