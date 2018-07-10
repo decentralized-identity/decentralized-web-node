@@ -1,9 +1,0 @@
-    (function(){
-      
-      if (!navigator.identity) {
-
-        
-
-      }
-
-    })()
