@@ -67,9 +67,10 @@ Instead of a REST-based scheme where data like the username, object types, and q
   // of all Hubs listed in the User's DDO Services array
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Collections/Add', // read, add, update, remove, execute
+  '@type': 'Collections/Create', // create, read, update, delete, execute
   request: {
-    schema: 'schema.org/MusicPlaylist'
+    schema: 'schema.org',
+    type: 'MusicPlaylist'
   },
   payload: [
     {
@@ -121,9 +122,10 @@ Instead of a REST-based scheme where data like the username, object types, and q
   // of all Hubs listed in the User's DDO Services array
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Collections/Request',
+  '@type': 'Collections/Read',
   request: {
-    schema: 'schema.org/MusicPlaylist',
+    schema: 'schema.org',
+    type: 'MusicPlaylist',
     skip: 20, // Skip the first 20 records
     take: 10 // Send back records 20-30
   }
@@ -140,7 +142,7 @@ Each Hub has a `profile` object that describes the owning entity. The profile ob
 {
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Profile/Request'
+  '@type': 'Profile/Read'
 }
 ```
 
@@ -150,7 +152,7 @@ Here is an example of using the Schema.org `Person` schema to express that a hub
 
 ```js
 {
-  '@type': 'Profile/Response',
+  '@type': 'Profile/Read',
   response: {
     requestHash: HASH_OF_REQUEST
   },
@@ -203,9 +205,10 @@ Here is a list of examples to show the range of use-cases this interface is inte
   // of all Hubs listed in the User's DDO Services array
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Actions/Add',
+  '@type': 'Actions/Create',
   request: {
-    schema: 'schema.org/ReadAction'
+    schema: 'schema.org',
+    type: 'ReadAction'
   },
   payload: {
     meta: {
@@ -243,7 +246,7 @@ Write to a Store:
 {
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Stores/Add',
+  '@type': 'Stores/Create',
   request: {
     key: 'u6ef54344w67h5'
   },
@@ -259,7 +262,7 @@ General read of a Store:
 {
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Stores/Request',
+  '@type': 'Stores/Read',
   request: {
     skip: 20, // Skip the first 20 keys
     take: 10 // Send back values for keys 20-30
@@ -273,7 +276,7 @@ Request of a specific Store key:
 {
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Stores/Request',
+  '@type': 'Stores/Read',
   request: {
     key: 'u6ef54344w67h5'
   }
@@ -308,7 +311,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
 {
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Collections/Request',
+  '@type': 'Collections/Read',
   request: {
     schema: 'schema.org/Offer'
   }
@@ -321,9 +324,10 @@ With Collections, you store, query, and retrieve data based on the very schema a
 {
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Collections/Add',
+  '@type': 'Collections/Create',
   request: {
-    schema: 'gs1.org/voc/Product'
+    schema: 'gs1.org/voc',
+    type: 'Product'
   },
   payload: {
     meta: {
@@ -350,7 +354,8 @@ With Collections, you store, query, and retrieve data based on the very schema a
   aud: 'did:bar:456def',
   '@type': 'Collections/Update',
   request: {
-    schema: 'hl7.org/fhir/patient',
+    schema: 'hl7.org/fhir',
+    type: 'patient',
     id: '34bj452vvg443l'
   },
   payload: {
@@ -381,7 +386,7 @@ Performing a `Request` request to the base `Services` interface will respond wit
 {
   iss: 'did:foo:123abc',
   aud: 'did:bar:456def',
-  '@type': 'Services/Request'
+  '@type': 'Services/Read'
 }
 ```
 
