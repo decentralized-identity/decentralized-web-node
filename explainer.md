@@ -8,6 +8,36 @@ Hubs let you securely store and share data. A Hub is a datastore containing sema
 
 A single entity may have one or more instances of a Hub, all of which are addressable via a URI routing mechanism linked to the entity’s identifier.  Hub instances sync state changes, ensuring the owner can access data and attestations from anywhere, even when offline.
 
+## DID Document Service Endpoint Descriptors
+
+There are two different variations of Hub-specific DID Document Service Endpoint descriptors, one that users associate with their DIDs, and another that Hosts use to direct requests to locations where their Hub infrastructure resides.
+
+Users specify their Hub instances (different Hub Hosts) via the `UserServiceEndpoint` descriptor:
+```json
+"service": [{
+  "type": "IdentityHub",
+  "publicKey": "did:foo:123#key-1",
+  "serviceEndpoint": {
+    "@context": "schema.identity.foundation/hub",
+    "@type": "UserServiceEndpoint",
+    "instances": ["did:bar:456", "did:zaz:789"]
+  }
+}]
+```
+
+Hosts specify the locations of their Hub offerings via the `HostServiceEndpoint` descriptor:
+```json
+"service": [{
+  "type": "IdentityHub",
+  "publicKey": "did:bar:456#key-1",
+  "serviceEndpoint": {
+    "@context": "schema.identity.foundation/hub",
+    "@type": "HostServiceEndpoint",
+    "locations": ["https://hub1.bar.com/.identity", "https://hub2.bar.com/blah/.identity"]
+  }
+}]
+```
+
 ## Syncing data between Hubs
 
 Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic. This requires a shared replication protocol for broadcasting and resolving changes. The protocol for reproducing Hub state across multiple instances is in the formative phases of definition/selection, but should be relatively straightforward to integrate on top of any NoSQL datastore.
@@ -69,8 +99,7 @@ Instead of a REST-based scheme where data like the username, object types, and q
   aud: 'did:bar:456def',
   '@type': 'Collections/Create', // create, read, update, delete, execute
   request: {
-    schema: 'schema.org',
-    type: 'MusicPlaylist'
+    collection: 'https://schema.org/MusicPlaylist'
   },
   payload: [
     {
@@ -124,8 +153,7 @@ Instead of a REST-based scheme where data like the username, object types, and q
   aud: 'did:bar:456def',
   '@type': 'Collections/Read',
   request: {
-    schema: 'schema.org',
-    type: 'MusicPlaylist',
+    collection: 'schema.org/MusicPlaylist',
     skip: 20, // Skip the first 20 records
     take: 10 // Send back records 20-30
   }
@@ -148,7 +176,7 @@ Each Hub has a `profile` object that describes the owning entity. The profile ob
 
 ##### *Response*
 
-Here is an example of using the Schema.org `Person` schema to express that a hub belongs to a person:
+Here is an example of using the DIF Hub schema's Profile object (properties are TBD) to specify a few standard Profile details, as well as a more detailed schema.org `Person` descriptor that indicates to requesting parties that this DID is associated with a human person:
 
 ```js
 {
@@ -157,25 +185,35 @@ Here is an example of using the Schema.org `Person` schema to express that a hub
     requestHash: HASH_OF_REQUEST
   },
   payload: [{
-    "@context": "http://schema.org",
-    "@type": "Person",
-    "name": "The Dude",
-    "description": "That's just, like, your opinion, man.",
-    "website": [
-      {
-        "@type": "WebSite",
-        "url": "http://www.thedudelovesbowling.com/"
+    "@context": "schema.identity.foundation/hub",
+    "@type": "Profile",
+    "nickname": "The Dude",
+    "gender": "male",
+    "descriptors": {
+      "http://schema.org/Person": {
+        "@context": "http://schema.org",
+        "@type": "Person",
+        "name": "Jeffrey Lebowski",
+        "description": "That's just, like, your opinion, man.",
+        "website": [
+          {
+            "@type": "WebSite",
+            "url": "http://www.thedudelovesbowling.com/"
+          }
+        ],
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "5227 Santa Monica Boulevard",
+          "addressLocality": "Los Angeles",
+          "addressRegion": "CA"
+        }
       }
-    ],
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "5227 Santa Monica Boulevard",
-      "addressLocality": "Los Angeles",
-      "addressRegion": "CA"
     }
   }]
 }
 ```
+
+Identity Hubs do not 
 
 ### Permissions
 
@@ -195,7 +233,7 @@ Here is a list of examples to show the range of use-cases this interface is inte
 
 - Human user contacts another with a textual message ([ReadAction](http://schema.org/ReadAction))
 - Event app sends a request to RSVP for an event ([RsvpAction](http://schema.org/RsvpAction))
-- Voting agency prompts a user to submit a vote ([UpdateAction](http://schema.org/VoteAction))
+- Voting agency prompts a user to submit a vote ([VoteAction](http://schema.org/VoteAction))
 
 ##### *Request*
 
@@ -207,8 +245,7 @@ Here is a list of examples to show the range of use-cases this interface is inte
   aud: 'did:bar:456def',
   '@type': 'Actions/Create',
   request: {
-    schema: 'schema.org',
-    type: 'ReadAction'
+    collection: 'schema.org/ReadAction'
   },
   payload: {
     meta: {
@@ -313,7 +350,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
   aud: 'did:bar:456def',
   '@type': 'Collections/Read',
   request: {
-    schema: 'schema.org/Offer'
+    collection: 'schema.org/Offer'
   }
 }
 ```
@@ -326,8 +363,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
   aud: 'did:bar:456def',
   '@type': 'Collections/Create',
   request: {
-    schema: 'gs1.org/voc',
-    type: 'Product'
+    collection: 'gs1.org/voc/Product'
   },
   payload: {
     meta: {
@@ -354,8 +390,7 @@ With Collections, you store, query, and retrieve data based on the very schema a
   aud: 'did:bar:456def',
   '@type': 'Collections/Update',
   request: {
-    schema: 'hl7.org/fhir',
-    type: 'patient',
+    collection: 'hl7.org/fhir/patient',
     id: '34bj452vvg443l'
   },
   payload: {
