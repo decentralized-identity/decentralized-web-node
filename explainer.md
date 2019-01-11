@@ -87,44 +87,61 @@ If for whatever reason a Hub implementer decides not to support any endpoints of
 
 If the Hub provider wishes, for any reason, to relay the request to a different URI location, they must return the HTTP Status Code `303 See Other`.
 
-##### Request Format
+##### Write Request Format
 
 Instead of a REST-based scheme where data like the username, object types, and query strings are present in the URL, Identity Hubs requests are self-contained message objects that encapsulate all they need to be shielded from observing entities during transport.
 
-```js
+```javascript
 {
-  // Outer envelope is multi-party encrypted with the keys
-  // of all Hubs listed in the User's DDO Services array
+  // Outer envelope is signed with the key
+  // of the "iss" DID, and encrypted with the Hub's DID key
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Collections/Create', // create, read, update, delete, execute
-  request: {
-    collection: 'https://schema.org/MusicPlaylist'
-  },
-  payload: [
-    {
-      // Hubs can see and operate on controls to do the following:
-      // 1) Know, via cache-intent, the storage replication priority
-      // 2) Request metadata the user/party wishes to expose (for search/indexing)
-      // 3) Unencrypted - intended-public data
-      meta: {
-        cache-intent: 'full',
-        title: 'Best of Classic Rock',
-        tags: ['classic rock', 'rock', 'rock n roll']
-      },
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "@context": "https://schema.identity.foundation/0.1",
+  '@type': 'WriteRequest',
+
+  commit: {
+    // protected is the base64url of:
+    // {
+    //   // Hubs can see and operate on controls to do the following:
+    //   // 1) Know, via cache-intent, the storage replication priority
+    //   // 2) Request metadata the user/party wishes to expose (for search/indexing)
+    //   // 3) Unencrypted - intended-public dat
+    //   "interface": "Collections",
+    //   "context": "schema.org",
+    //   "type": "MusicPlaylist",
+    //   "operation": "create", // update, delete
+    //   "committed_at": "2019-01-11T00:00:00.00:00Z",
+    //   "commit_strategy": "basic",
+    //   "sub": "did:bar:456def",
+    //   "kid": "did:foo:123abc",
+    //   "meta": {
+    //     // Associated commit object for mutable metadata properties about the object
+    //     "title": "Best of Classic Rock",
+    //     "tags": ["classic rock", "rock", "rock n roll"],
+    //     "cache-intent": "full"
+    //   }
+    // }
+    protected: "ewogICJpbnRlcmZhY2UiOiAiQ29sbGVjdGlvbnMiLAogICJjb250ZXh0IjogInNjaGVtYS5vcmciLAogICJ0eXBlIjogIk11c2ljUGxheWxpc3QiLAogICJvcGVyYXRpb24iOiAiY3JlYXRlIiwgLy8gdXBkYXRlLCBkZWxldGUKICAiY29tbWl0dGVkX2F0IjogIjIwMTktMDEtMTFUMDA6MDA6MDAuMDA6MDBaIiwKICAiY29tbWl0X3N0cmF0ZWd5IjogImJhc2ljIiwKICAic3ViIjogImRpZDpiYXI6NDU2ZGVmIiwKICAia2lkIjogImRpZDpmb286MTIzYWJjIiwKICAibWV0YSI6IHsKICAgICJ0aXRsZSI6ICJCZXN0IG9mIENsYXNzaWMgUm9jayIsCiAgICAidGFncyI6IFsiY2xhc3NpYyByb2NrIiwgInJvY2siLCAicm9jayBuIHJvbGwiXSwKICAgICJjYWNoZS1pbnRlbnQiOiAiZnVsbCIKICB9Cn0",
+    // Optional metadata information not protected by the signature
+    header: {
+      "iss": "did:foo:123abc"
+    },
       // The data in the payload can be encrypted in one of 3 ways:
       // 1) Encrypted for only the user (DEFAULT)
       // 2) Encrypted for the user and others they allow
-      // 3) Unencrypted - intended-public data
-      data: {
-        "@context": 'http://schema.org/',
-        "@type": "MusicPlaylist",
-        "description": 'The best rock of the 60s, 70s, and 80s',
-        "tracks": [...]
-        ...
-      }
-    }
-  ]
+      // 3) Unencrypted - intended-public data (used in this example)
+      // payload is the base64url of:
+      // {
+      //   "@context": 'http://schema.org/',
+      //   "@type": "MusicPlaylist",
+      //   "description": 'The best rock of the 60s, 70s, and 80s',
+      //   "tracks": ["..."],
+      // }
+    payload: "ewogICJAY29udGV4dCI6ICdodHRwOi8vc2NoZW1hLm9yZy8nLAogICJAdHlwZSI6ICJNdXNpY1BsYXlsaXN0IiwKICAiZGVzY3JpcHRpb24iOiAnVGhlIGJlc3Qgcm9jayBvZiB0aGUgNjBzLCA3MHMsIGFuZCA4MHMnLAogICJ0cmFja3MiOiBbIi4uLiJdLAp9",
+    signature: "SignatureOfProtectedAndPayload"
+  }
 }
 ```
 
@@ -132,33 +149,165 @@ Instead of a REST-based scheme where data like the username, object types, and q
 
 ```js
 {
-  '@type': 'Collections/Response',
-  response: {
-    requestHash: HASH_OF_REQUEST
+  // Outer envelope is signed with the key
+  // of the hub DID, and encrypted with the issuer's DID key
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "WriteResponse",
+  "developer_message": "completely optional message from the hub",
+  "revisions": ["aHashOfTheCommitSubmitted"]
+}
+```
+
+##### Object Read Request Format
+
+Objects follow one logical object across multiple commits. Object reads do not contain the literal object data, only metadata associated. Objects may be queried for using the following request format:
+
+```javascript
+{
+  // Outer envelope is signed with the key
+  // of the "iss" DID, and encrypted with the Hub's DID key
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ObjectQueryRequest",
+  iss: 'did:foo:123abc',
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "query": {
+      "interface": "Collections",
+      "context": "http://schema.org",
+      "type": "MusicPlaylist",
+      
+      // Optional object_id filters
+      "object_id": ["3a9de008f526d239..", "a8f3e7..."]
+  }
+}
+```
+
+##### Response Format
+
+```js
+{
+  // Outer envelope is signed with the key
+  // of the hub DID, and encrypted with the issuer's DID key
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ObjectQueryResponse",
+  "developer_message": "completely optional",
+  "objects": [
+    {
+      // object metadata
+      "interface": "Collections",
+      "context": "http://schema.org",
+      "type": "MusicPlaylist",
+      "id": "3a9de008f526d239...",
+      "created_by": "did:foo:123abc",
+      "created_at": "2018-10-24T18:39:10.10:00Z",
+      "sub": "did:foo:123abc",
+      "commit_strategy": "basic",
+      "meta": {
+        // the final state of the "meta" object may be included if the hub knows how to resolve the commit strategy. 
+      }
+    },
+    // ...more objects
+  ]
+}
+```
+
+##### Commit Read Request Format
+
+To read one or many commits, use the following request format:
+
+```javascript
+{
+  // Outer envelope is signed with the key
+  // of the "iss" DID, and encrypted with the Hub's DID key
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "CommitQueryRequest",
+  iss: 'did:foo:123abc',
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "query": {
+      "object_id": ["3a9de008f526d239..."],
+      "revision": ["abc", "def", ...]
   },
-  payload: [{ ... }]
+}
+```
+
+##### Response Format
+
+```js
+{
+  // Outer envelope is signed with the key
+  // of the hub DID, and encrypted with the issuer's DID key
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "CommitQueryResponse",
+  "developer_message": "completely optional",
+  "commits": [
+    {
+      protected: "ewogICJpbnRlcmZhY2UiOiAiQ29sbGVjdGlvbnMiLAogICJjb250ZXh0IjogInNjaGVtYS5vcmciLAogICJ0eXBlIjogIk11c2ljUGxheWxpc3QiLAogICJvcGVyYXRpb24iOiAiY3JlYXRlIiwgLy8gdXBkYXRlLCBkZWxldGUKICAiY29tbWl0dGVkX2F0IjogIjIwMTktMDEtMTFUMDA6MDA6MDAuMDA6MDBaIiwKICAiY29tbWl0X3N0cmF0ZWd5IjogImJhc2ljIiwKICAic3ViIjogImRpZDpiYXI6NDU2ZGVmIiwKICAia2lkIjogImRpZDpmb286MTIzYWJjIiwKICAibWV0YSI6IHsKICAgICJ0aXRsZSI6ICJCZXN0IG9mIENsYXNzaWMgUm9jayIsCiAgICAidGFncyI6IFsiY2xhc3NpYyByb2NrIiwgInJvY2siLCAicm9jayBuIHJvbGwiXSwKICAgICJjYWNoZS1pbnRlbnQiOiAiZnVsbCIKICB9Cn0",
+      header: {
+        "iss": "did:foo:123abc",
+        // Hubs may add additional information to the unprotected headers for convenience
+        "rev": "aHashOfTheCommit",
+      },
+      payload: "ewogICJAY29udGV4dCI6ICdodHRwOi8vc2NoZW1hLm9yZy8nLAogICJAdHlwZSI6ICJNdXNpY1BsYXlsaXN0IiwKICAiZGVzY3JpcHRpb24iOiAnVGhlIGJlc3Qgcm9jayBvZiB0aGUgNjBzLCA3MHMsIGFuZCA4MHMnLAogICJ0cmFja3MiOiBbIi4uLiJdLAp9",
+      signature: "SignatureOfProtectedAndPayload"
+    },
+    // ...
+  ],
+  // potential pagination token
+  "skip_token": "ajfl43241nnn1p;u9390",
 }
 ```
 
 ##### Paging
 
-- `skip` omits the specified number of returned records from the 0-based index.
-- `take` returns the number of results specified (if that many exist).
+- `skip_token` is an opaque token to be used for continuation of a request.
+
+They may be returned on responses with multiple results:
 
 ```js
 {
-  // Outer envelope is multi-party encrypted with the keys
-  // of all Hubs listed in the User's DDO Services array
+  // Outer envelope is signed with the key
+  // of the hub DID, and encrypted with the issuer's DID key
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ObjectQueryResponse", # multiple results return pagination
+  "developer_message": "completely optional",
+  "objects": [
+    {
+      // object metadata
+      "context": "http://schema.org",
+      "type": "MusicPlaylist",
+      "id": "3a9de008f526d239...",
+      "created_at": "2018-10-24T18:39:10.10:00Z",
+      // "[other metadata fields]": "from storage specification",
+      "sub": "did:bar:456def",
+      "commit_strategy": "basic",
+    },
+    ...
+  ],
+  "skip_token": "ajfl43241nnn1p;u9390",
+}
+```
+
+And are added to the initial request's `query` object:
+
+```js
+{
+  // Outer envelope is signed with the key
+  // of the "iss" DID, and encrypted with the Hub's DID key
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Collections/Read',
-  request: {
-    collection: 'schema.org/MusicPlaylist',
-    skip: 20, // Skip the first 20 records
-    take: 10 // Send back records 20-30
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "@context": "https://schema.identity.foundation/0.1",
+  '@type': 'ObjectQueryRequest',
+  interface: "Collections",
+  query: {
+    "context": "schema.org",
+    "type": "MusicPlaylist",
+    "skip_token": "ajfl43241nnn1p;u9390"
   }
 }
 ```
+
 
 ### Profile
 
@@ -168,52 +317,18 @@ Each Hub has a `profile` object that describes the owning entity. The profile ob
 
 ```js
 {
+  // Outer envelope is signed with the key
+  // of the "iss" DID, and encrypted with the Hub's DID key
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ObjectQueryRequest",
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Profile/Read'
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "query": {
+      "interface": "Profile",
+  }
 }
 ```
-
-##### *Response*
-
-Here is an example of using the DIF Hub schema's Profile object (properties are TBD) to specify a few standard Profile details, as well as a more detailed schema.org `Person` descriptor that indicates to requesting parties that this DID is associated with a human person:
-
-```js
-{
-  '@type': 'Profile/Read',
-  response: {
-    requestHash: HASH_OF_REQUEST
-  },
-  payload: [{
-    "@context": "schema.identity.foundation/hub",
-    "@type": "Profile",
-    "nickname": "The Dude",
-    "gender": "male",
-    "descriptors": {
-      "http://schema.org/Person": {
-        "@context": "http://schema.org",
-        "@type": "Person",
-        "name": "Jeffrey Lebowski",
-        "description": "That's just, like, your opinion, man.",
-        "website": [
-          {
-            "@type": "WebSite",
-            "url": "http://www.thedudelovesbowling.com/"
-          }
-        ],
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "5227 Santa Monica Boulevard",
-          "addressLocality": "Los Angeles",
-          "addressRegion": "CA"
-        }
-      }
-    }
-  }]
-}
-```
-
-Identity Hubs do not 
 
 ### Permissions
 
@@ -239,26 +354,38 @@ Here is a list of examples to show the range of use-cases this interface is inte
 
 ```js
 {
-  // Outer envelope is multi-party encrypted with the keys
-  // of all Hubs listed in the User's DDO Services array
+  // Outer envelope is signed with the key
+  // of the "iss" DID, and encrypted with the Hub's DID key
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Actions/Create',
-  request: {
-    collection: 'schema.org/ReadAction'
-  },
-  payload: {
-    meta: {
-      title: 'Please read this sensitive document',
-      tags: ['document', 'pdf']
-    },
-    data: {  // Data encrypted for the DID owner and the bank
-      "@context": 'http://schema.org/',
-      "@type": "ReadAction",
-      "name": "Acme Bank - March 2018 Statement",
-      "description": "Your Acme Bank statement for account #1734765",
-      "object": PDF_SOURCE
-    }
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "@context": "https://schema.identity.foundation/0.1",
+  '@type': 'WriteRequest',
+  commit: {
+      // protected: {
+      //   "interface": "Actions",
+      //   "context": "schema.org",
+      //   "type": "ReadAction",
+      //   "operation": "create",
+      //   "committed_at": "2019-01-11T00:00:00.00:00Z",
+      //   "commit_strategy": "basic",
+      //   "sub": "did:bar:456def",
+      //   "kid": "did:foo:123abc",
+      //   "meta": {
+      //     "title": "Please read this sensitive document",
+      //     "tags": ["document", "pdf"]
+      //   }
+      // }
+    protected: "ewogICJpbnRlcmZhY2UiOiAiQWN0aW9ucyIsCiAgImNvbnRleHQiOiAic2NoZW1hLm9yZyIsCiAgInR5cGUiOiAiUmVhZEFjdGlvbiIsCiAgIm9wZXJhdGlvbiI6ICJjcmVhdGUiLAogICJjb21taXR0ZWRfYXQiOiAiMjAxOS0wMS0xMVQwMDowMDowMC4wMDowMFoiLAogICJjb21taXRfc3RyYXRlZ3kiOiAiYmFzaWMiLAogICJzdWIiOiAiZGlkOmJhcjo0NTZkZWYiLAogICJraWQiOiAiZGlkOmZvbzoxMjNhYmMiLAogICJtZXRhIjogewogICAgInRpdGxlIjogIlBsZWFzZSByZWFkIHRoaXMgc2Vuc2l0aXZlIGRvY3VtZW50IiwKICAgICJ0YWdzIjogWyJkb2N1bWVudCIsICJwZGYiXQogIH0KfQ",
+      // payload: {  // Data encrypted for the DID owner and the bank
+      //  "@context": 'http://schema.org/',
+      //   "@type": "ReadAction",
+      //   "name": "Acme Bank - March 2018 Statement",
+      //   "description": "Your Acme Bank statement for account #1734765",
+      //   "object": PDF_SOURCE
+      // }
+    payload: "eyAgLy8gRGF0YSBlbmNyeXB0ZWQgZm9yIHRoZSBESUQgb3duZXIgYW5kIHRoZSBiYW5rCiAiQGNvbnRleHQiOiAnaHR0cDovL3NjaGVtYS5vcmcvJywKICAiQHR5cGUiOiAiUmVhZEFjdGlvbiIsCiAgIm5hbWUiOiAiQWNtZSBCYW5rIC0gTWFyY2ggMjAxOCBTdGF0ZW1lbnQiLAogICJkZXNjcmlwdGlvbiI6ICJZb3VyIEFjbWUgQmFuayBzdGF0ZW1lbnQgZm9yIGFjY291bnQgIzE3MzQ3NjUiLAogICJvYmplY3QiOiBQREZfU09VUkNFCn0",
+    signature: "SignatureOfProtectedAndPayload"
   }
 }
 ```
@@ -275,65 +402,6 @@ Requesting parties need a means to ask for attestations in a standard, interoper
 
 The best way to describe Stores is as a 1:1 DID-scoped variant of the W3C DOM's origin-scoped `window.localStorage` API. The key difference being that this form of persistent, pairwise object storage transcends providers, platforms, and devices. For each storage relationship between the DID owner and external DIDs, the Hub shall create a key-value document-based storage area. The DID owner or external DID can store unstructured JSON data to the document, in relation to the keys they specify. The Hub implementer may choose to limit the available space of the storage document, with the option to expand the storage limit based on criteria the implementer defines. . Here's an example of what Stores requests look like:
 
-##### *Request*
-
-Write to a Store:
-
-```js
-{
-  iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Stores/Create',
-  request: {
-    key: 'u6ef54344w67h5'
-  },
-  payload: [{
-    foo: 'bar'
-  }]
-}
-```
-
-General read of a Store:
-
-```js
-{
-  iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Stores/Read',
-  request: {
-    skip: 20, // Skip the first 20 keys
-    take: 10 // Send back values for keys 20-30
-  }
-}
-```
-
-Request of a specific Store key:
-
-```js
-{
-  iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Stores/Read',
-  request: {
-    key: 'u6ef54344w67h5'
-  }
-}
-```
-
-##### *Response*
-
-```js
-{
-  '@type': 'Stores/Response',
-  response: {
-    requestHash: HASH_OF_REQUEST
-  },
-  payload: [{
-    foo: 'bar'
-  }]
-}
-```
-
 ### Collections
 
 Data discovery has been a problem since the inception of the Web. Most previous attempts to solve this begin with the premise that discovery is about individual entities providing a mapping of their own service-specific API and data schemas. While you can certainly create a common format for expressing different APIs and data schemas, you are left with the same basic issue: a sea of services that can't efficiently interoperate without specific review, effort, and integration. Hubs avoid this issue entirely by recognizing that the problem with *data discovery* is that it relies on *discovery*. Instead, Hubs assert the position that locating and retrieving data should be an *implicitly knowable* process.
@@ -346,11 +414,15 @@ With Collections, you store, query, and retrieve data based on the very schema a
 
 ```js
 {
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ObjectQueryRequest",
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Collections/Read',
-  request: {
-    collection: 'schema.org/Offer'
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "query": {
+      "interface": "Collections",
+      "context": "http://schema.org",
+      "type": "Offer",
   }
 }
 ```
@@ -360,24 +432,37 @@ With Collections, you store, query, and retrieve data based on the very schema a
 ```js
 {
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Collections/Create',
-  request: {
-    collection: 'gs1.org/voc/Product'
-  },
-  payload: {
-    meta: {
-      title: "Folgers Coffee",
-      tags: ['coffee', 'ground coffee']
-    },
-    data: {
-      "@context": 'https://www.gs1.org/voc',
-      "@type": "product",
-      "gtin": 00025500101163,
-      "productName": "Aroma Roasted Coffee",
-      "manufacturer": "The Folger Coffee Company"
-      ...
-    }
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "@context": "https://schema.identity.foundation/0.1",
+  '@type': 'WriteRequest',
+
+  commit: {
+      // {
+      //   "interface": "Collections",
+      //   "context": "gs1.org/voc",
+      //   "type": "product",
+      //   "operation": "create",
+      //   "committed_at": "2019-01-11T00:00:00.00:00Z",
+      //   "commit_strategy": "basic",
+      //   "sub": "did:bar:456def",
+      //   "kid": "did:foo:123abc",
+      //   "meta": {
+      //     "title": "Folgers Coffee",
+      //     "tags": ["coffee", "ground coffee"]
+      //   }
+      // }
+    protected: "ewogICJpbnRlcmZhY2UiOiAiQ29sbGVjdGlvbnMiLAogICJjb250ZXh0IjogImdzMS5vcmcvdm9jIiwKICAidHlwZSI6ICJwcm9kdWN0IiwKICAib3BlcmF0aW9uIjogImNyZWF0ZSIsCiAgImNvbW1pdHRlZF9hdCI6ICIyMDE5LTAxLTExVDAwOjAwOjAwLjAwOjAwWiIsCiAgImNvbW1pdF9zdHJhdGVneSI6ICJiYXNpYyIsCiAgInN1YiI6ICJkaWQ6YmFyOjQ1NmRlZiIsCiAgImtpZCI6ICJkaWQ6Zm9vOjEyM2FiYyIsCiAgIm1ldGEiOiB7CiAgICAidGl0bGUiOiAiRm9sZ2VycyBDb2ZmZWUiLAogICAgInRhZ3MiOiBbImNvZmZlZSIsICJncm91bmQgY29mZmVlIl0KICB9Cn0",
+      // {
+      //   "@context": 'https://www.gs1.org/voc',
+      //   "@type": "product",
+      //   "gtin": 00025500101163,
+      //   "productName": "Aroma Roasted Coffee",
+      //   "manufacturer": "The Folger Coffee Company"
+      //   ...
+      // }
+    payload: "ewogICJAY29udGV4dCI6ICdodHRwczovL3d3dy5nczEub3JnL3ZvYycsCiAgIkB0eXBlIjogInByb2R1Y3QiLAogICJndGluIjogMDAwMjU1MDAxMDExNjMsCiAgInByb2R1Y3ROYW1lIjogIkFyb21hIFJvYXN0ZWQgQ29mZmVlIiwKICAibWFudWZhY3R1cmVyIjogIlRoZSBGb2xnZXIgQ29mZmVlIENvbXBhbnkiCiAgLi4uCn0",
+    signature: "SignatureOfProtectedAndPayload"
   }
 }
 ```
@@ -387,24 +472,36 @@ With Collections, you store, query, and retrieve data based on the very schema a
 ```js
 {
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Collections/Update',
-  request: {
-    collection: 'hl7.org/fhir/patient',
-    id: '34bj452vvg443l'
-  },
-  payload: {
-    meta: {
-      title: 'Patent Record',
-      tags: ['medical', 'patient', 'record']
-    },
-    data: { // Data encrypted for the DID owner and their doctors
-      "@context": 'https://www.hl7.org/fhir',
-      "@type": "patient",
-      "name": "Jeff",
-      "family": "Lebowski"
-      ...
-    }
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "@context": "https://schema.identity.foundation/0.1",
+  '@type': 'WriteRequest',
+
+  commit: {
+      // {
+      //   "interface": "Collections",
+      //   "context": "hl7.org/fhir",
+      //   "type": "patient",
+      //   "operation": "update",
+      //   "committed_at": "2019-01-11T00:00:00.00:00Z",
+      //   "commit_strategy": "basic",
+      //   "sub": "did:bar:456def",
+      //   "kid": "did:foo:123abc",
+      //   "object_id": "34bj452vvg443l...",
+      //   "meta": {
+      //     "title": "Patent Record",
+      //     "tags": ["medical", "patient", "record"]
+      //   }
+      // }
+    protected: "ewogICJpbnRlcmZhY2UiOiAiQ29sbGVjdGlvbnMiLAogICJjb250ZXh0IjogImhsNy5vcmcvZmhpciIsCiAgInR5cGUiOiAicGF0aWVudCIsCiAgIm9wZXJhdGlvbiI6ICJ1cGRhdGUiLAogICJjb21taXR0ZWRfYXQiOiAiMjAxOS0wMS0xMVQwMDowMDowMC4wMDowMFoiLAogICJjb21taXRfc3RyYXRlZ3kiOiAiYmFzaWMiLAogICJzdWIiOiAiZGlkOmJhcjo0NTZkZWYiLAogICJraWQiOiAiZGlkOmZvbzoxMjNhYmMiLAogICJvYmplY3RfaWQiOiAiMzRiajQ1MnZ2ZzQ0M2wuLi4iLAogICJtZXRhIjogewogICAgInRpdGxlIjogIlBhdGVudCBSZWNvcmQiLAogICAgInRhZ3MiOiBbIm1lZGljYWwiLCAicGF0aWVudCIsICJyZWNvcmQiXQogIH0KfQ"
+      // { // Data encrypted for the DID owner and their doctors
+      //   "@context": 'https://www.hl7.org/fhir',
+      //   "@type": "patient",
+      //   "name": "Jeff",
+      //   "family": "Lebowski"
+      // }
+    payload: "eyAvLyBEYXRhIGVuY3J5cHRlZCBmb3IgdGhlIERJRCBvd25lciBhbmQgdGhlaXIgZG9jdG9ycwogICJAY29udGV4dCI6ICdodHRwczovL3d3dy5obDcub3JnL2ZoaXInLAogICJAdHlwZSI6ICJwYXRpZW50IiwKICAibmFtZSI6ICJKZWZmIiwKICAiZmFtaWx5IjogIkxlYm93c2tpIgp9",
+    signature: "SignatureOfProtectedAndPayload"
   }
 }
 ```
@@ -419,9 +516,13 @@ Performing a `Request` request to the base `Services` interface will respond wit
 
 ```js
 {
+  // Outer envelope is signed with the key
+  // of the "iss" DID, and encrypted with the Hub's DID key
   iss: 'did:foo:123abc',
-  aud: 'did:bar:456def',
-  '@type': 'Services/Read'
+  sub: 'did:bar:456def',
+  aud: 'did:baz:789ghi',
+  "@context": "https://schema.identity.foundation/0.1",
+  '@type': 'ServicesRequest',
 }
 ```
 
@@ -431,11 +532,10 @@ Here is an example of a request for all
 
 ```js
 {
-  '@type': 'Services/Response'
-  response: {
-    requestHash: HASH_OF_REQUEST
-  },
-  payload: [{
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ServicesResponse",
+  developer_message: "optional message",
+  services: [{
     // Open API service descriptors
   }]
 }
