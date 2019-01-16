@@ -270,30 +270,94 @@ Get all permissions granted by a user:
 ```
 // Request
 {
-  iss: 'did:example:12345', // the user’s DID
-  aud: 'did:example:12345', // the user’s DID
-  '@type': 'Permissions/Read',
-  request: {
-    type: 'https://schema.identity.foundation/Hub/PermissionGrant'
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ObjectQueryRequest",
+  iss: 'did:example:12345',
+  sub: 'did:example:12345',
+  aud: 'did:example:hub',
+  "query": {
+      "interface": "Permissions",
+      "context": "schema.identity.foundation/Hub",
+      "type": "PermissionGrant"
   }
 }
 
 // Response
 {
-  '@type': 'Permissions/Read',
-  payload: [
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "ObjectQueryResponse",
+  "objects": [
     {
-      "@type": ‘https://schema.identity.foundation/Hub/PermissionGrant’,
-      "grantee": "did:example:67890",
-      "object_type": "https://schemas.clothing.org/measurements",
-      "allow”: "-R--"
+      "interface": "Permissions",
+      "context": "schema.identity.foundation/Hub",
+      "type": "PermissionGrant",
+      "id": "3a9de008f526d239...",
+      "created_by": "did:example:12345",
+      "created_at": "2019-01-16T00:00:00.00:00Z",
+      "sub": "did:example:12345",
+      "commit_strategy": "basic",
+      "meta": {
+        "title": "Retailer's tailor measurement permissions"
+      }
     },
-    ...
+    // ...
+  ]
+}
+
+// Request
+{
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "CommitQueryRequest",
+  iss: 'did:example:12345',
+  sub: 'did:example:12345',
+  aud: 'did:example:hub',
+  "query": {
+      "object_id": ["3a9de008f526d239..."]
+  }
+}
+
+// Response
+{
+  "@context": "https://schema.identity.foundation/0.1",
+  "@type": "CommitQueryResponse",
+  "commits": [
+    {
+      // protected is the base64url of:
+      protected: {
+        "interface": "Permissions",
+        "context": "schema.identity.foundation/Hub/",
+        "type": "PermissionGrant",
+        "operation": "create", // update, delete
+        "committed_at": "2019-01-16T00:00:00.00:00Z",
+        "commit_strategy": "basic",
+        "sub": "did:example:12345",
+        "kid": "did:example:12345#key-1",
+        "meta": {
+          "title": "Retailer's tailor measurement permissions"
+        }
+      },
+      header: {
+        "iss": "did:example:12345",
+        "rev": "3a9de008f526d239...",
+      },
+      // payload is the base64url of:
+      payload: {
+        "@context": "schema.identity.foundation/Hub/",
+        "@type": "PermissionGrant",
+        "owner": "did:example:12345",
+        "grantee": "did:example:67890",
+        "context": "schemas.clothing.org",
+        "type": "measurements",
+        “allow”: “-R--”
+      },
+      signature: "signatureOfCommit"
+    },
+    // ...
   ]
 }
 ```
 
-Get all permissions pertaining to a certain object type in the user’s Hub:
+<!-- Get all permissions pertaining to a certain object type in the user’s Hub:
 ```
 // Request
 {
@@ -385,6 +449,7 @@ Get all permissions pertaining to a client DID:
 }
 ```
 > OPEN: How do you filter a permissions query down to only certain objects in Hub syntax? Is the above correct?
+-->
 
 ### 1.4.2. Permission management experience
 Note, all mocks are for illustrative purposes only.
@@ -416,13 +481,15 @@ PermissionSet // defines a group of permissions that can be requested by a clien
   // the set of PermissionGrants that this permission includes
   “permissions”: [ 
     {
-      “object_type”: “https://schemas.clothing.org/measurements”
+      "context": "schemas.clothing.org",
+      "type": "measurements",
       “allow”: “-R--”,
       ...
     },
     {
-      “object_type”: “https://schemas.clothing.org/brandPreferences”
-      “verbs”: “-R--”
+      "context": "schemas.clothing.org",
+      "type": "brandPreferences",
+      allow: “-R--”
       ...
     }
   ]
