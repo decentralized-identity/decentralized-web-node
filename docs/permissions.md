@@ -1,197 +1,116 @@
-# Hub Asset Access Control System (Revision: 2017-10-05)
+Identity Hub Permissions
+================================
+The success of a decentralized identity platform is dependent upon the ability for users to share their data with other people, organizations, apps, and services in a way that respects and protects a user’s privacy. In our decentralized platform, all user information & data resides in the user’s identity Hub. This document outlines the current proposal for identity hub authorizaiton.
 
-## Motivation
-Per the hub specification, there is a need for a safe, flexible, expressive, and simple permissioning system to represent authority over files stored by a hub.
-The goal of this proposal is to present an access control system which:
-- Allows permissions to be delegated to DIDs
-- Supports multiple permission levels for differential access
-- Allows independent permissioning of core endpoints and individual extensions
+## Scope of the current design
+This proposal is a first cut. The intention is to start extremely simple, and extend the model to include more richness over time. We choose to focus on two simple use cases, described below.
 
+### Use case 1: Registering for a website
 
-## Permission Levels
-Hubs support basic data manipulation operations which follow RESTful design principles as well as extensions which can expose a REST or RPC-style interface. To handle both styles, this proposal recommends the CRUDX permission set:
-- C: Create
-- R: Read
-- U: Update
-- D: Delete
-- X: Execute
+>Alice has added some useful data about her wardrobe style to her Hub: her measurements from her tailor, and a list of her favorite clothing brands. When Alice goes to try out a new online clothing retailer, the retailer’s website allows her to set up an account using her DID. After signing in her DID, the retailer’s website is able to access Alice’s style data. Alice does not have to re-enter her sizes in the site, and the site can give her recommended options based on her brand preferences.
 
-The goal is to provide intuitive permission levels for common operations (`CRUD` for RESTful interfaces) as well as flexible permissioning for complex or aberrant operations (`X` for extensions that manage their own access controls or expose an RPC interface, e.g. via an `action` body parameter).
+![Permission request flow](../diagrams/permissions-use-case-1.png)
 
-### CRUDX Specification
-The CRUDX specification string follows the UNIX file system model: each specification is a bit-array of length 5 where each element of the array represents the corresponding permission level and can be set to `1` (allowed), `0` (not allowed). This can be displayed as a 5-character string where each character is either the first letter of the permission level's name (allowed) or a hyphen (not allowed); hyphens can optionally be omitted (e.g. ```C--DX == CDX```. Since the representation is an ordered list, a permission can also be specified as an unsigned, 5-bit integer (e.g. ```C--DX == 25```).
+### Use case 2: Reviewing & managing access
 
-#### Examples
-| Description | String | Integer |
-|-------------|--------|---------|
-| Full Permissions | `CRUDX` | `31` |
-| Null Permissions | `-----` | `0` |
-| Read Only | `-R---` | `2` |
-| Read & Execute | `-R--X` | `18` |
+> Alice learns that one of the websites she visited is making improper use of her personal data. She would like to immediately remove that website’s access to her Hub.
 
-NOTE: this proposal could be confusing because the integer values of each permission level do NOT match the UNIX levels; they are not even ordered from least to most dangerous.
+![Permission denied flow](../diagrams/permissions-use-case-2.png)
 
+### Out of scope
 
-## DID (Capability Recipients)
-Following the higher-level architecture of Hubs, the permission system uses DIDs as the primary mechanism for identifying privilege recipients.
-It supports raw signature verification keys, but those are represented as inline/bearer DID Documents (TODO: is this efficient for lookup?). Below is a json array of valid identifiers:
+These use cases, and the current Hub authorization system are not sufficient to consider identity Hubs ready for real world usage. It leaves out several features that have been discussed as being necessary for a minimally viable authorization layer, including[[3]](#):
 
-```json
-[
-  "did:sov:dan.id",
-  { "@context": "https://example.org/did/v1",
-    "authenticationCredential": [
-      { "type": "RsaCryptographicKey",
-        "publicKeyPem": "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n" }
-    ]
-  }
-]
-```
+**Features that control *what* is being granted:**
 
+- How to grant a permission to a specific object by ID, rather than all objects of a certain type.
+- How to grant a permission to a property of some object type, rather than the entire object.
+- How to grant permission to an object type and all of the children object types in its respective schema.
+- How to filter a permission to only:
+  - objects created by a specific DID.
+  - objects created in a certain time period.
+  - objects larger than some byte size.
+- How to grant a permission to a zero-knowledge proof of some object, rather than the entire object.
+- How to grant permission to act as a delegate of a DID when interacting with other Hubs.
 
-## CapabilitySpecification
-Permissions are represented via a series of `CapabilitySpecification` objects. A root CapabilitySpecification is stored at: `/.identity/:id_owner_did/capabilities` and is only visible to the hub's root identity. Importantly, `CapabilitySpecification`s are assigned a unique `cap_id` which is used in the
+**Features that control *who* is being granted access:**
 
-TODO: define the request envelope -- it should support specification of a cap_id and a notation of which levels are being included from that capspec, probably a fragment:
-```json
-{ "capability": "9d95ec63-f515-4355-be47-a5954381b2fc#CR",
-  "other": "request-stuff" }
-```
+- How to grant a permission to all DIDs, and therefore make some data public.
+- How to create a permission that explicitly denies a DID access to an object.
 
-All `CapabilitySpecification`s adhere to the following schema:
+**Features that limit/expand *where or when* access is granted:**
 
-| Field | Type | Description | Required | Examples |
-|-------|------|-------------|----------|---------|
-| cap_id | UUID | This field is assigned when the specification is created, and is used in the incoming request envelope to specify the precise capability for the request. | 9d95ec63-f515-4355-be47-a5954381b2fc |
-| did | DID \| DID-Document \| glob | This field specifies the entity who is granted the permissions specified by this CapabilitySpecification object | TRUE     | <pre> "did:sov:dan.id"</pre><pre>  {"@context": "https://example.org/did/v1",<br>  "authenticationCredential": [{<br/>    "type": "RsaCryptographicKey",<br/>    "publicKeyPem": "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"}]}</pre> |
-| path | DID-reference \| glob | The `path` field contains an absolute or relative [DID reference](https://docs.google.com/document/d/1Z-9jX4PEWtyRFD5fEyyzEnWK_0ir0no1JJLuRu8O9Gs/edit#heading=h.q2ajgt4zoqlc) that identifies a path, data asset, or endpoint. Pattern matching is supported per the [Patterns](###Patterns) section | TRUE | `*`, `./stores`, `did:sov:dan.id/collections/photos` |
-| object_filters | object | The `object_filters` field allows for the selection of data assets using the metadata in the control object which wraps each path and asset. This is (currently) a flat key-value mapping with no pattern-matching support. | FALSE | To allow access to objects _created_ by a given identity: <br> <pre> { "author": "did:btcr:123" } </pre> |
-| argument_filters | object | The `argument_filters` field allows for selection of data assets using the properties of the incoming request which initiated the permission validation. | FALSE | To allow access to execution of an extension's `invokeRPC` method: <br> <pre> { "action": "invokeRPC" } </pre> |
-| allow | [CRUDX specification](#CRUDX-specification) | The permissions granted to the identities specified in `identifiers` | TRUE | `CR--X`, `CRUDX`, `19 (CR--X)`, `31 (CRUDX)` |
-| _deny_ | [CRUDX specification](#CRUDX-specification) | The permissions denied to the identities specified in `identifiers`. NOTE: this is field is not yet part of the specification and is being reserved for possible future inclusion.  | FALSE | `CR--X`, `CRUDX`, `19 (CR--X)`, `31 (CRUDX)` |
-| ext | object | The `ext` field is reserved for additional fields that are use to configure specific routes or extensions. | FALSE | The `/stores` endpoint supports `min_size` and `max_size` to configure how much storage an identity is permitted to keep in its store: <br> <pre> { "min_size": 1, "max_size": 100 } </pre> |
+- How to time-bound permissions, such that a permission expires automatically.
+- How to grant permissions to an app on some devices, but not others.
 
-> TODO: Allow a permission for auto-endorse?
+**Features that control *why* access is granted:**
 
-### Example
-`GET /.identity/:id_owner_did/capabilities?path=collections`
-```json
-[{
-  "did": "did:btcr:1btcaddr...",
-  "path": "hl7.org:fhir/*",
-  "object_filters": {
-    "author": "did:btcr:1btcaddr..."
-  },
-  "argument_filters": {
-    "action": "create"
-  },
-  "allow": "CR---",
-  "ext": {
-    "callbacks": [
-      {
-        "event": "created",
-        "uri": URI,
-        "headers": { "X-MY-FABULOUS-HEADER": 44 }
-      }
-    ]
-  }
-}, ...]
-```
+- How an app can specify why permission is being requested.
+- How a user can specify why permission is being denied.
+- How relying parties and trust providers are reviewed for trustworthiness and integrity.
 
-## Paths
-The path is the main unit of granularity for permissions. Each `CapabilitySpecification` has a `path` field which supports glob pattern matching, and an optional parent path query parameter can be specified in the the get request to the `/permissions` endpoint.
+**Features that are related to Hub authorization, but will be addressed at a later time:**
 
-Paths in the body of a `CapabilitySpecification` may be either full DID-references or relative [DID-paths](https://docs.google.com/document/d/1Z-9jX4PEWtyRFD5fEyyzEnWK_0ir0no1JJLuRu8O9Gs/edit#heading=h.8rl8lput6gnv). Relative paths are relative to the location of the `CapabilitySpecification` in which they are used, e.g.
+- How to request & send callbacks to notify apps of changes to data and permissions in a Hub[[4]](#).
+- How to authorize the execution of services, or extensions, in a Hub.
+- What format(s) the Hub uses for requests & responses.
+- How to encrypt data in a Hub such that the Hub provider cannot access it.
 
-`GET /.identity/:id_owner_did/capabilities`
-```json
-[{
-  "did": "did:btcr:1btcaddr...",
-  "path": "collections/hl7.org:fhir/*",
-  "allow": "CRU--"
-}]
-```
+Clearly, there is a large body of functionality that can be added to Hub authorization over time. This is why this initial document intentionally strives to be as simple as possible. We’ll incorporate these things into Hub authorization over time as we receive feedback from early adopters of Identity Hubs.
 
-Paths in the query parameter are always relative to the root of the identity owner's DID are being requested, e.g.
+# Authorization Model
 
-`GET /.identity/:id_owner_did/capabilities?path=stores&did=btcr:123`
-```json
-[{
-  "did": "did:btcr:1btcaddr...",
-  "path": "did:btcr:1btcaddr.../*",
-  "allow": "CRUD-"
-}]
-```
-If no path is specified in the query string, the implied path is also the root of the identity owner's DID.
-
-### Patterns
-There is a clear need to support specifications that apply to a set of resources, rather than a single path (directory) or resource (data asset). To support this behavior we have to choose a solution that balances expressiveness, comprehensibility, and safety.
-
-The naive solution is to employ regular expressions. While regex are extremely powerful, they are also error prone and difficult to audit, so instead we elect to use the less powerful solution, but safer solution: UNIX-like glob matching, which provides a subset of regex functionality, particularly `?` (single-character wildcard) and `*` (many-character wildcard).
-
-Patterns (currently) may only be used in the `path` field of the `CapabilitySpecification` object.
-
-## Inheritance / Field-level Permissions
-The `deny` field of the `CapabilitySpecification` is reserved for future use to implement field-level permissioning, i.e. allowing access to a data asset, but resistrictng access to specific fields. This concept is only sensible in the mode where the hub has access to the data asset itself (where it is not encrypted with a client-side encryption key).
-
-This example will grant `did:btrc:123` access to read the identity owner's profile document, _with the `github-handle` field omitted_:
-```json
-[{
-  "did": "did:btcr:1btcaddr...",
-  "path": "profile",
-  "allow": "-R---"
-}, {
-  "did": "did:btcr:1btcaddr...",
-  "path": "profile#github-handle",
-  "deny": "-R---"
-}]
-```
-
-## Content-Type Selection (Tags/Querying)
-It is useful to be able to select resources based on metadata apart from their path. Examples include selecting all resources:
-- created by a certain identity
-- updated at a certain time
-- adhering to a certain schema, or
-- tagged with a certain label
-
-To achieve this, all data assets are wrapped with a control object that contains a finite set (**TODO: define the set**). These fields are exposed via the `object_filters` field in the `CapabilitySpecification` which does not support any pattern matching, only direct comparison.
-
-This example will grant `did:btcr:1btcaddr...` access to only the assets in the `hl7.org:fhir` collection _that were created by `did:btcr:1btcaddr...`_:
-```json
-[{
-  "did": "did:btcr:1btcaddr...",
-  "path": "hl7.org:fhir/*",
-  "object_filters": {
-    "author": "did:btcr:1btcaddr..."
-  }
-}]
-```
-
-## Callbacks
-In order for applications to operate with hubs reactively, there is a need to expose a mechanism for requesting notifications from the hub when data assets are created/updated/executed/etc. Since this mechanism would essentially enable autonomous operation of the hub, it must be explicitly permissioned. We leverage the `ext` block to add support for callback permissioning.
-
-### CallbackSpecification
-Callback permissions are represented via a series of `CallbackSpecification` objects, which adhere to the following schema: **WIP!**
-
-| Field | Type | Description | Required | Examples |
-|-------|------|-------------|----------|----------|
-| events | array\<CRUDX operation> | The event field specifies when a callback should be launched. (Should this just be a normal CRUDX value?) | TRUE | `["created", "read", "updated", "deleted", "executed"]` |
-| uri | URI | The uri field specifies who should receive the callback notification. This field and the did field are mutually exclusive. | FALSE | `https://someuri.co/callback_endpoint` |
-| did | DID or DDO | The did field specifies who should received. A hub for the receiving DID will be resolved and that will receive the notification. This field and the URI field are mutually exclusive. | FALSE | `did:btcr:1btcaddr...` |
-| headers | object | The headers field contains any custom headers the receiver wants to be included on outgoing callback notification requests. | FALSE | `{ "Content-Type": "application/Person.json" }` |
+Access to data in Identity Hubs is controlled by a special object stored in Hubs called a `PermissionGrant`. The structure of a `PermissionGrant` is:
 
 ```json
-[{
-  "did": "did:btcr:1btcaddr...",
-  "path": "hl7.org:fhir/*",
-  "ext": {
-    "callbacks": [{
-      "events": ["created"],
-      "uri": URI,
-      "headers": {"X-MY-DOPE-HEADER": 44}
-    }]
-  }
-}]
+{
+  "owner": "did:example:12345", // the identity owner (granters)’s DID
+  "grantee": "did:example:67890", // the grantee’s DID
+  "context": "schemas.clothing.org", // the data schema context
+  "type": "measurements", // the data type
+  "allow": "-R--", // allows create, read, update, and delete
+  ... // additional richness & specificity can be added in the future
+}
 ```
 
-TODO: define the callback request interface.
+## Granting permissions
+
+When a hub owner grants a permission to another DID, they can do so by specifying the exact objects in the permission grant. When permissions span more than one data type, several PermissionGrant objects can be created. For each PermissionGrant, the following object should be written to the `Permissions` interface of the owner's Hub, typically via user agent:
+
+```json
+{
+  "@context": "schema.identity.foundation/Hub/",
+  "@type": "PermissionGrant",
+  "owner": "did:example:12345",
+  "grantee": "did:example:67890",
+  "context": "schemas.clothing.org",
+  "type": "measurements",
+  "allow": "-R--"
+}
+```
+
+Note that the Hub Permissions interface only supports the single PermissionGrant object type. The Hub should reject any requests to create objects of other types in the Permissions interface, barring future updates to the PermissionGrant model.
+
+The response format, and any error conditions, should be consistent with all other requests to Hubs. Upon creation of this permission grant object in a user’s Hub, the permission will be propagated to all other Hub instances listed in the user’s DID document via the Hub’s standard sync & replication protocol. This will ensure that all Hub instances are up-to-date with all new permission grants in a timely manner.
+
+## Checking permissions
+
+The following describes the logic implemented by the Hub’s authorization layer when a request arrives.
+
+![](../diagrams/permissions-verification.png)
+
+1. Receive incoming request from client
+2. Determine relevant schema, verb, and client from request
+3. Query for all PermissionGrants that whose object_type matches the schema, for the given client DID
+4. Check if any query results allow the verb in question
+5. Return success/failed authorization check
+
+Note that PermissionGrants do not understand or evaluate the structure of a given schema. For instance, if a user grants access to all “https://schema.org/game” objects, they **do not** implicitly grant access to all “https://schema.org/videogame” objects (which is a child of game in schema.org’s hierarchy).
+
+## Reviewing & managing permissions
+
+`PermissionGrant` objects can be created, read, modified, and deleted just like any other object in a hub. To revoke access to data, the Hub owner needs to simply modify an existing `PermissionGrant` or delete it entirely. Instructions for reading and writing data in Identity Hubs is available in the [explainer](../explainer.md).
+
+## Requesting permissions
+
+At this time, proposals for how to request access to data in an identity hub via a user agent are still being evaluated. In the future, we will update this document with details on how a client can request access from a user.
