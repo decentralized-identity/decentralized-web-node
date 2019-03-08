@@ -82,11 +82,11 @@ Finally, you have a signed and encrypted Hub request that can be transmitted to 
 
 ## Caching the access token
 
-To send a successful request to an Identity Hub, you need to include an access token in the `did-access-token` header of the JWE. The access token is a short-lived JWT that can be used across many Hub requests until it expires.
+To send a successful request to an Identity Hub, you need to include an access token in the `did-access-token` header of the signed JWT within the JWE payload. The access token is a short-lived JWT that can be used across many Hub requests until it expires.
 
 On an initial request to an Identity Hub, you should exclude the `did-access-token` header. When a Hub request does not include this header, the Hub will reject the request. Instead, the Hub will return a JWE response (as described in the next section) whose payload is an access token. You should extract the access token from the response and cache it somewhere safe. The access token can be used for subsequent requests.
 
-Once you've cached the access token, include it in each request in the `did-access-token` JWE header as described above. 
+Once you've cached the access token, include it in each request in the `did-access-token` JWT header as described above. 
 
 Eventually, the access token will expire. Its expiry time can be found in the `exp` claim inside the access token. If you attempt to use an expired access token, the Identity Hub will return an error indicating a new access token is required. To get a new access token, send another hub request without the `did-access-token` header.
 
