@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Secure Data Hubs 0.1</title>
+    <meta http-equiv='Content-Type' content='text/html;charset=utf-8'/>
+    <!--
+      === NOTA BENE ===
+      For the three scripts below, if your spec resides on dev.w3 you can check them
+      out in the same tree and use relative links so that they'll work offline,
+     -->
+    <script src='https://www.w3.org/Tools/respec/respec-w3c-common' class='remove'></script>
+    <script src="./common.js" class="remove"></script>
+    <script type="text/javascript" class="remove">
+      var respecConfig = {
+        // specification status (e.g., WD, LCWD, NOTE, etc.). If in doubt use ED.
+        specStatus: "CG-DRAFT",
+
+        // the specification's short name, as in http://www.w3.org/TR/short-name/
+        shortName: "data-hubs",
+
+        // subtitle for the spec
+        subtitle: "Encrypted storage for the Web",
+
+        // if you wish the publication date to be other than today, set this
+        //publishDate: "2019-03-26",
+        //crEnd: "2019-04-23",
+        //implementationReportURI: "https://w3c.github.io/sdh-test-suite",
+        //previousMaturity: "CG-DRAFT",
+        //previousPublishDate: "2019-02-08",
+
+        // if there is a previously published draft, uncomment this and set its YYYY-MM-DD date
+        // and its maturity status
+        // previousPublishDate:  "1977-03-15",
+        // previousMaturity:  "WD",
+
+        // extend the bibliography entries
+        localBiblio: ccg.localBiblio,
+        doJsonLd: true,
+
+        github: "https://github.com/w3c-ccg/data-hubs/",
+        includePermalinks: false,
+
+        // if there a publicly available Editor's Draft, this is the link
+        edDraftURI: "https://w3c-ccg.github.io/data-hubs/",
+
+        // if this is a LCWD, uncomment and set the end of its review period
+        // lcEnd: "2009-08-05",
+
+        // editors, add as many as you like
+        // only "name" is required
+        editors: [
+          { name: "Manu Sporny", url: "http://manu.sporny.org/",
+            company: "Digital Bazaar", companyURL: "http://digitalbazaar.com/"},
+          { name: "Dave Longley", url: "https://github.com/dlongley",
+            company: "Digital Bazaar", companyURL: "http://digitalbazaar.com/"}
+        ],
+        // authors, add as many as you like.
+        // This is optional, uncomment if you have authors as well as editors.
+        // only "name" is required. Same format as editors.
+        authors:
+        [
+          { name: "Dave Longley", url: "http://digitalbazaar.com/",
+            company: "Digital Bazaar", companyURL: "http://digitalbazaar.com/"},
+          { name: "Manu Sporny", url: "http://digitalbazaar.com/",
+            company: "Digital Bazaar", companyURL: "http://digitalbazaar.com/" }
+        ],
+        // name of the WG
+        wg:           "Credentials Community Group",
+
+        // URI of the public WG page
+        wgURI:        "https://www.w3.org/community/credentials/",
+
+        // name (with the @w3c.org) of the public mailing to which comments are due
+        wgPublicList: "public-credentials",
+
+        // URI of the patent status for this WG, for Rec-track documents
+        // !!!! IMPORTANT !!!!
+        // This is important for Rec-track documents, do not copy a patent URI from a random
+        // document unless you know what you're doing. If in doubt ask your friendly neighborhood
+        // Team Contact.
+        wgPatentURI:  "https://www.w3.org/2004/01/pp-impl/98922/status",
+        maxTocLevel: 2,
+        inlineCSS: true
+      };
+    </script>
+    <style>
+pre .highlight {
+  font-weight: bold;
+  color: green;
+}
+pre .comment {
+  font-weight: bold;
+  color: Gray;
+}
+.color-text {
+  font-weight: bold;
+  text-shadow: -1px 0 black, 0 1px black, 1px 0 black, 0 -1px black;
+}
+    </style>
+  </head>
+  <body>
+    <section id='abstract'>
+      <p>
+
+      </p>
+    </section>
+
+    <section id='sotd'>
+      <p>
+Comments regarding all aspects of this document are welcome.
+Please file issues
+directly on <a href="https://github.com/w3c-ccg/data-hubs/issues/">GitHub</a>,
+or send them to
+<a href="mailto:public-credentials@w3.org">public-credentials@w3.org</a>
+(<a href="mailto:public-credentials-request@w3.org?subject=subscribe">subscribe</a>,
+<a href="https://lists.w3.org/Archives/Public/public-credentials/">archives</a>).
+      </p>
+
+    </section>
+
+    <section class="informative">
+      <h2>Introduction</h2>
+
+      <p>
+      </p>
+
+      <section class="informative">
+        <h3>Why Do We Need Secure Data Hubs?</h3>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="informative">
+        <h3>Ecosystem Overview</h3>
+
+        <p>
+This section describes the roles of the core actors and the relationships
+between them in an ecosystem where this specification is expected
+to be useful. A role is an abstraction that might be implemented in many
+different ways. The separation of roles suggests likely interfaces and
+protocols for standardization. The following roles are introduced in this
+specification:
+        </p>
+
+        <dl>
+          <dt>storage agent</dt>
+          <dd>
+A role an <a>entity</a> might perform by
+          </dd>
+          <dt>storage provider</dt>
+          <dd>
+A role an <a>entity</a> might perform by
+          </dd>
+          <dt>web application</dt>
+          <dd>
+A role an <a>entity</a> might perform by
+          </dd>
+        </dl>
+
+      </section>
+
+      <section class="informative">
+        <h3>Use Cases and Requirements</h3>
+
+        <p>
+The USE-CASES document outlines a number
+of key topics that readers might find useful, including:
+        </p>
+
+        <ul>
+          <li>
+TBD
+          </li>
+        </ul>
+
+        <p>
+As a result of documenting and analyzing the use cases document, the following
+desirable ecosystem characteristics were identified for this specification:
+        </p>
+<!-- requirement list start -->
+        <ul>
+          <li>
+TBD
+          </li>
+      </section>
+
+      <section id="conformance" class="normative">
+        <p>
+TBD
+        </p>
+      </section>
+
+    </section>
+
+    <section class="informative">
+      <h2>Terminology</h2>
+
+      <div data-include="./terms.html"
+        data-oninclude="restrictReferences">
+      </div>
+    </section>
+
+    <section class="informative">
+      <h2>Core Concepts</h2>
+
+      <p>
+The following sections outline core concepts, such as ...
+which form the foundation of this specification.
+      </p>
+
+    </section>
+
+    <section class="normative">
+      <h2>Data Model</h2>
+
+      <p>
+This section introduces some basic concepts for the specification...
+      </p>
+    </section>
+
+  <section class="informative">
+    <h2>Privacy Considerations</h2>
+
+    <p>
+This section details the general privacy considerations and specific privacy
+implications of deploying this specification into production environments.
+    </p>
+
+  </section>
+
+  <section class="informative">
+    <h2>Security Considerations</h2>
+
+    <p>
+There are a number of security considerations that implementers should be
+aware of when processing data described by this specification. Ignoring or
+not understanding the implications of this section can result in
+security vulnerabilities.
+    </p>
+
+    <p>
+While this section attempts to highlight a broad set of security
+considerations, it is not a complete list. Implementers are urged to seek the
+advice of security and cryptography professionals when implementing mission
+critical systems using the technology outlined in this specification.
+    </p>
+
+  </section>
+
+  <section class="informative">
+    <h2>Accessibility Considerations</h2>
+
+    <p>
+There are a number of accessibility considerations implementers should be
+aware of when processing data described in this specification. As with any web
+standards or protocols implementation, ignoring accessibility issues makes
+this information unusable to a large subset of the population. It is important
+to follow accessibility guidelines and standards, such as [[WCAG21]], to ensure
+all people, regardless of ability, can make use of this data. This is
+especially important when establishing systems utilizing cryptography, which
+have historically created problems for assistive technologies.
+    </p>
+
+    <p>
+This section details the general accessibility considerations to take into
+account when utilizing this data model.
+    </p>
+
+  </section>
+
+  <section class="informative">
+    <h2>Internationalization Considerations</h2>
+
+    <p>
+There are a number of internationalization considerations implementers should be
+aware of when publishing data described in this specification. As with any web
+standards or protocols implementation, ignoring internationalization makes it
+difficult for data to be produced and consumed across a disparate set of
+languages and societies, which would limit the applicability of the
+specification and significantly diminish its value as a standard.
+    </p>
+
+    <p>
+This section outlines general internationalization considerations to take into
+account when utilizing this data model.
+    </p>
+
+  </section>
+
+  </body>
+</html>
