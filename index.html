@@ -101,7 +101,7 @@ pre .comment {
   <body>
     <section id='abstract'>
       <p>
-We store a significant amount of sensitive data online including personally
+We store a significant amount of sensitive data online such as personally
 identifying information, trade secrets, sensitive imagery, and customer
 information. The data that we store should be encrypted in transit and at rest
 but is often not protected in an appropriate manner.
@@ -218,14 +218,134 @@ The following sections outline core concepts, such as ...
 which form the foundation of this specification.
       </p>
 
+      <section class="normative">
+        <h2>Encrypted Storage</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Documents</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Streams</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Indexing</h2>
+
+        <p>
+        </p>
+      </section>
+
     </section>
 
     <section class="normative">
-      <h2>Data Model</h2>
+      <h2>Data Hub HTTPS API</h2>
 
       <p>
 This section introduces some basic concepts for the specification...
       </p>
+
+      <section>
+        <h3>Discovering Service Endpoints</h3>
+
+        <p>
+A website may provide service endpoint discovery by embedding JSON-LD in their
+top-most HTML web page (e.g. at <code>https://example.com/</code>):
+        </p>
+
+        <pre class="example highlight" title="Example of HTML-based service description">
+&lt;!DOCTYPE html>
+&lt;html lang="en">
+  &lt;head>
+    &lt;meta charset="utf-8">
+    &lt;title>Example Website&lt;/title>
+    &lt;link rel="stylesheet" href="style.css">
+    &lt;script src="script.js">&lt;/script>
+    &lt;script type="application/ld+json">
+{
+  "@context": "https://w3id.org/data-hubs/v1",
+  "id": "https://example.com/",
+  "name": "Example Website",
+  "dataHubService": "https://example.com/data-hubs"
+}
+    &lt;/script>
+  &lt;/head>
+  &lt;body>
+    &lt;!-- page content -->
+  &lt;/body>
+&lt;/html>
+        </pre>
+
+        <p>
+Service descriptions may also be requested via content negotiation.
+In the following example a JSON-compatible service description is provided
+(e.g. <code>curl -H "Accept: application/json" https://example.com/</code>):
+        </p>
+
+        <pre class="example highlight" title="Example of a JSON-based service description">
+{
+  "@context": "https://w3id.org/data-hubs/v1",
+  "id": "https://example.com/",
+  "name": "Example Website",
+  "dataHubService": "https://example.com/data-hubs"
+}
+        </pre>
+
+      </section>
+
+      <section class="normative">
+        <h2>Creating a Data Hub</h2>
+
+        <p>
+        </p>
+
+      </section>
+
+      <section class="normative">
+        <h2>Writing a Document</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Reading a Document</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Writing a Stream</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Reading a Stream</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Querying</h2>
+
+        <p>
+        </p>
+      </section>
+
     </section>
 
   <section class="informative">
