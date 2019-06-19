@@ -299,7 +299,7 @@ will have.
             <tr>
               <td>sequence</td>
               <td>
-Used to specify a unique counter for the data hub in order to ensure that
+A unique counter for the data hub in order to ensure that
 clients are properly synchronized to the data hub. The value is required and
 MUST be an unsigned 64-bit number.
               </td>
@@ -307,7 +307,7 @@ MUST be an unsigned 64-bit number.
             <tr>
               <td>controller</td>
               <td>
-Used to express the entity or cryptographic key that is in control of the
+The entity or cryptographic key that is in control of the
 data hub. The value is required and MUST be a URI.
               </td>
             </tr>
@@ -355,16 +355,79 @@ a URI.
   referenceId: "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
   kek: {
     id: "https://example.com/kms/12345",
-    type: "???"
+    type: "AesKeyWrappingKey2019"
   },
   hmac: {
     id: "https://example.com/kms/67891",
-    type: "???"
+    type: "Sha256HmacKey2019"
   }
 }
         </pre>
 
       </section>
+
+      <section>
+        <h3>EncryptedDocument</h3>
+
+        <p>
+An encrypted document is used to store a structured document in a way that
+ensures that no entity can read the information without the consent of the
+data controller.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">Property</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>id</td>
+              <td>
+An identifier for the encrypted document. The value is required and MUST be a
+URI.
+              </td>
+            </tr>
+            <tr>
+              <td>sequence</td>
+              <td>
+A unique counter for the data hub in order to ensure that
+clients are properly synchronized to the data hub. The value is required and
+MUST be an unsigned 64-bit number.
+              </td>
+            </tr>
+            <tr>
+              <td>jwe or cwe</td>
+              <td>
+A JSON Web Encryption or COSE Encrypted value that, if decoded, results in
+the corresponding <a>StructuredDocument</a>.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <pre class="example highlight" title="Example encrypted document">
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "sequence": 0,
+  "jwe": {
+    "protected": "eyJlbmMiOiJDMjBQIn0",
+    "recipients": [{
+      "header": {
+        "alg": "A256KW",
+        "kid": "https://example.com/kms/f3ce1a43-162f-43b2-80b4-b51abbeea46e"
+      },
+      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+    }],
+    "iv": "i8Nins2vTI3PlrYW",
+    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+    "tag": "pfZO0JulJcrc3trOZy8rjA"
+  }
+}
+        </pre>
+
+      </section>
+
     </section>
 
     <section class="normative">
@@ -390,7 +453,7 @@ top-most HTML web page (e.g. at <code>https://example.com/</code>):
     &lt;title>Example Website&lt;/title>
     &lt;link rel="stylesheet" href="style.css">
     &lt;script src="script.js">&lt;/script>
-    &lt;script type="application/ld+json">
+    &lt;script type="application/json">
 {
   "@context": "https://w3id.org/data-hubs/v1",
   "id": "https://example.com/",
@@ -443,7 +506,7 @@ status codes are defined for this service:
               <td>201</td>
               <td>
 Data hub creation was successful. The HTTP <code>Location</code> header will
-contain the URL for the newly created ledger.
+contain the URL for the newly created data hub.
               </td>
             </tr>
             <tr>
@@ -451,8 +514,8 @@ contain the URL for the newly created ledger.
               <td>
 Data hub creation failed.
               </td>
-            </tr>
             <tr>
+            </tr>
               <td>409</td>
               <td>
 A duplicate data hub exists.
@@ -468,8 +531,8 @@ An example exchange of a data hub creation is shown below:
         <pre class="example highlight" title="Data hub creation request">
 POST /data-hubs HTTP/1.1
 Host: example.com
-Content-Type: application/ld+json
-Accept: application/ld+json, application/json, text/plain, */*
+Content-Type: application/json
+Accept: application/json, text/plain, */*
 Accept-Encoding: gzip, deflate
 
 {
@@ -478,11 +541,11 @@ Accept-Encoding: gzip, deflate
   referenceId: "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
   kek: {
     id: "https://example.com/kms/12345",
-    type: "???"
+    type: "AesKeyWrappingKey2019"
   },
   hmac: {
     id: "https://example.com/kms/67891",
-    type: "???"
+    type: "Sha256HmacKey2019"
   }
 }
         </pre>
@@ -494,7 +557,7 @@ expected in return:
 
         <pre class="example highlight" title="Successful data hub creation response">
 HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/ad800444-4791-45c9-9fa1-c0414fcfc8e0
+Location: https://example.com/data-hubs/ad800444
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -506,14 +569,109 @@ Transfer-Encoding: chunked
       </section>
 
       <section class="normative">
-        <h2>Writing a Document</h2>
+        <h2>Creating a Document</h2>
+
+        <p>
+A structured document is stored in a data hub by encoding a
+<a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
+an HTTP POST to a data hub endpoint created via the
+<a>Creating a Data Hub</a> section.
+The following HTTP status codes are defined for this service:
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>201</td>
+              <td>
+Structured document creation was successful. The HTTP <code>Location</code>
+header will contain the URL for the newly created document.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+Structured document creation failed.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In order to convert a <a>StructuredDocument</a> to an
+<a>EncryptedDocument</a> an implementer MUST encode the
+<a>StructuredDocument</a> as a JWE or a COSE Encrypted object. Once the
+document is encrypted, it can be sent to the document creation service.
+        </p>
+
+        <p>
+A protocol example of a document creation is shown below:
+        </p>
+
+        <pre class="example highlight" title="Data hub creation request">
+POST /data-hubs/ad800444 HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate
+
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "sequence": 0,
+  "jwe": {
+    "protected": "eyJlbmMiOiJDMjBQIn0",
+    "recipients": [{
+      "header": {
+        "alg": "A256KW",
+        "kid": "https://example.com/kms/f3ce1a43-162f-43b2-80b4-b51abbeea46e"
+      },
+      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+    }],
+    "iv": "i8Nins2vTI3PlrYW",
+    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+    "tag": "pfZO0JulJcrc3trOZy8rjA"
+  }
+}
+        </pre>
+
+        <p>
+If the creation of the structured document was successful, an HTTP 201 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub creation response">
+HTTP/1.1 201 Created
+Location: https://example.com/data-hubs/ad800444/docs/feab3cdd-a7fe-4c43-bd2e-f0f5b49269e2
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Date: Fri, 14 Jun 2019 18:37:12 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+        </pre>
+
+      </section>
+
+      <section class="normative">
+        <h2>Reading a Document</h2>
 
         <p>
         </p>
       </section>
 
       <section class="normative">
-        <h2>Reading a Document</h2>
+        <h2>Updating a Document</h2>
+
+        <p>
+        </p>
+      </section>
+
+      <section class="normative">
+        <h2>Deleting a Document</h2>
 
         <p>
         </p>
