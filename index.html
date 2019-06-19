@@ -248,6 +248,99 @@ which form the foundation of this specification.
 
     </section>
 
+    <section class="informative">
+      <h2>Data Model</h2>
+
+      <p>
+The following sections outlines the data model for data hubs.
+      </p>
+
+      <section>
+        <h3>DataHubConfiguration</h3>
+
+        <p>
+A data hub configuration specifies the properties a particular data hub
+will have.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">Property</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>sequence</td>
+              <td>
+Used to specify a unique counter for the data hub in order to ensure that
+clients are properly synchronized to the data hub. The value is required and
+MUST be an unsigned 64-bit number.
+              </td>
+            </tr>
+            <tr>
+              <td>controller</td>
+              <td>
+Used to express the entity or cryptographic key that is in control of the
+data hub. The value is required and MUST be a URI.
+              </td>
+            </tr>
+            <tr>
+              <td>referenceId</td>
+              <td>
+Used to express an application-specific reference identifier. The value is
+optional and, if present, MUST be a URI.
+              </td>
+            </tr>
+            <tr>
+              <td>kek.id</td>
+              <td>
+An identifier for the key encryption key. The value is required and MUST be
+a URI.
+              </td>
+            </tr>
+            <tr>
+              <td>kek.type</td>
+              <td>
+The type of key encryption key. The value is required and MUST be or map to
+a URI.
+              </td>
+            </tr>
+            <tr>
+              <td>hmac.id</td>
+              <td>
+An identifier for the HMAC key. The value is required a MUST be or map to a URI.
+              </td>
+            </tr>
+            <tr>
+              <td>hmac.type</td>
+              <td>
+The type of HMAC key. The value is required and MUST be or map to
+a URI.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <pre class="example highlight" title="Example data hub configuration">
+{
+  sequence: 0,
+  controller: "did:example:123456789",
+  referenceId: "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
+  kek: {
+    id: "https://example.com/kms/12345",
+    type: "???"
+  },
+  hmac: {
+    id: "https://example.com/kms/67891",
+    type: "???"
+  }
+};
+        </pre>
+
+      </section>
+
+    </section>
+
     <section class="normative">
       <h2>Data Hub HTTPS API</h2>
 
@@ -306,8 +399,6 @@ In the following example a JSON-compatible service description is provided
       <section class="normative">
         <h2>Creating a Data Hub</h2>
 
-        <p>
-        </p>
 
       </section>
 
