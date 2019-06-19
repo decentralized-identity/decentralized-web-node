@@ -367,7 +367,58 @@ a URI.
       </section>
 
       <section>
-        <h3>EncryptedDocument</h3>
+        <h3><dfn>StructuredDocument</dfn></h3>
+
+        <p>
+A structured document is used to store application data as well as metadata
+about the application data. This information is typically encrypted and then
+stored on the data hub.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">Property</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>id</td>
+              <td>
+An identifier for the structured document. The value is required and MUST be a
+URI.
+              </td>
+            </tr>
+            <tr>
+              <td>meta</td>
+              <td>
+Key-value metadata associated with the structured document.
+              </td>
+            </tr>
+            <tr>
+              <td>content</td>
+              <td>
+Key-value content for the structured document.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <pre class="example highlight" title="Example structured document">
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  meta: {
+    "created": "2019-06-18"
+  },
+  content: {
+    "message": "Hello World!"
+  }
+}
+        </pre>
+
+      </section>
+
+      <section>
+        <h3><dfn>EncryptedDocument</dfn></h3>
 
         <p>
 An encrypted document is used to store a structured document in a way that
