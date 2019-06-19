@@ -660,7 +660,86 @@ Transfer-Encoding: chunked
         <h2>Reading a Document</h2>
 
         <p>
+Reading a document from a data hub is performed by retrieving the
+<a>EncryptedDocument</a> and then decrypting it to a
+<a>StructuredDocument</a>. The following HTTP status codes are defined for
+this service:
         </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>200</td>
+              <td>
+EncryptedDocument retrieval was successful.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+EncryptedDocument retrieval failed.
+              </td>
+            </tr>
+            <tr>
+              <td>404</td>
+              <td>
+EncryptedDocument with given id was not found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In order to convert an <a>EncryptedDocument</a> to a
+<a>StructuredDocument</a> an implementer MUST decode the
+<a>EncryptedDocument</a> from a JWE or a COSE Encrypted object. Once the
+document is decrypted, it can be processed by the web application.
+        </p>
+
+        <p>
+A protocol example of a document retrieval is shown below:
+        </p>
+
+        <pre class="example highlight" title="Data hub encrypted document retrieval">
+GET https://example.com/data-hubs/ad800444/docs/feab3cdd-a7fe-4c43-bd2e-f0f5b49269e2 HTTP/1.1
+Host: example.com
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate
+        </pre>
+
+        <p>
+If the retrieval of the encrypted document was successful, an HTTP 200 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub creation response">
+HTTP/1.1 200 OK
+Date: Fri, 14 Jun 2019 18:37:12 GMT
+Connection: keep-alive
+
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "sequence": 0,
+  "jwe": {
+    "protected": "eyJlbmMiOiJDMjBQIn0",
+    "recipients": [{
+      "header": {
+        "alg": "A256KW",
+        "kid": "https://example.com/kms/f3ce1a43-162f-43b2-80b4-b51abbeea46e"
+      },
+      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+    }],
+    "iv": "i8Nins2vTI3PlrYW",
+    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+    "tag": "pfZO0JulJcrc3trOZy8rjA"
+  }
+}
+        </pre>
+
       </section>
 
       <section class="normative">
