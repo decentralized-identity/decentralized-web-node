@@ -334,7 +334,7 @@ a URI.
     id: "https://example.com/kms/67891",
     type: "???"
   }
-};
+}
         </pre>
 
       </section>
@@ -369,7 +369,7 @@ top-most HTML web page (e.g. at <code>https://example.com/</code>):
   "@context": "https://w3id.org/data-hubs/v1",
   "id": "https://example.com/",
   "name": "Example Website",
-  "dataHubService": "https://example.com/data-hubs"
+  "dataHubCreationService": "https://example.com/data-hubs"
 }
     &lt;/script>
   &lt;/head>
@@ -390,7 +390,7 @@ In the following example a JSON-compatible service description is provided
   "@context": "https://w3id.org/data-hubs/v1",
   "id": "https://example.com/",
   "name": "Example Website",
-  "dataHubService": "https://example.com/data-hubs"
+  "dataHubCreationService": "https://example.com/data-hubs"
 }
         </pre>
 
@@ -399,6 +399,82 @@ In the following example a JSON-compatible service description is provided
       <section class="normative">
         <h2>Creating a Data Hub</h2>
 
+        <p>
+A data hub is created by performing an HTTP POST of a
+<a href="#datahubconfiguration">DataHubConfiguration</a>
+to the <code>dataHubCreationService</code>. The following HTTP
+status codes are defined for this service:
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>201</td>
+              <td>
+Data hub creation was successful. The HTTP <code>Location</code> header will
+contain the URL for the newly created ledger.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+Data hub creation failed.
+              </td>
+            </tr>
+            <tr>
+              <td>409</td>
+              <td>
+A duplicate data hub exists.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+An example exchange of a data hub creation is shown below:
+        </p>
+
+        <pre class="example highlight" title="Data hub creation request">
+POST /data-hubs HTTP/1.1
+Host: example.com
+Content-Type: application/ld+json
+Accept: application/ld+json, application/json, text/plain, */*
+Accept-Encoding: gzip, deflate
+
+{
+  sequence: 0,
+  controller: "did:example:123456789",
+  referenceId: "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
+  kek: {
+    id: "https://example.com/kms/12345",
+    type: "???"
+  },
+  hmac: {
+    id: "https://example.com/kms/67891",
+    type: "???"
+  }
+}
+        </pre>
+
+        <p>
+If the creation of the data hub was successful, an HTTP 201 status code is
+expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub creation response">
+HTTP/1.1 201 Created
+Location: https://example.com/data-hubs/ad800444-4791-45c9-9fa1-c0414fcfc8e0
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Date: Fri, 14 Jun 2019 18:35:33 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+        </pre>
 
       </section>
 
