@@ -146,7 +146,10 @@ from storage provider data breaches.
       <section class="informative">
         <h3>Why Do We Need Secure Data Hubs?</h3>
 
-        <p>
+        <p class="issue">
+Explain why individuals and organizations that want to protect their privacy,
+trade secrets, and ensure data portability will benefit from using this
+technology.
         </p>
       </section>
 
@@ -168,10 +171,6 @@ specification:
 A role an <a>entity</a> might perform by
           </dd>
           <dt>storage provider</dt>
-          <dd>
-A role an <a>entity</a> might perform by
-          </dd>
-          <dt>web application</dt>
           <dd>
 A role an <a>entity</a> might perform by
           </dd>
@@ -231,14 +230,21 @@ which form the foundation of this specification.
       <section class="normative">
         <h2>Encrypted Storage</h2>
 
-        <p>
+        <p class="issue">
+Explain why storing data encrypted at rest is a good idea and how you can
+control who has access to what data in a more fine grained way by doing this.
         </p>
       </section>
 
       <section class="normative">
-        <h2>Documents</h2>
+        <h2>Structured Documents</h2>
 
         <p>
+The fundamental unit of storage in data hubs is the encrypted
+structured document which, when decrypted, provides a data structure that
+can be expressed in popular syntaxes such as JSON and CBOR. Documents can
+store structured data and metadata about the structured data. Structured
+document sizes are limited to 16MB.
         </p>
       </section>
 
@@ -246,6 +252,11 @@ which form the foundation of this specification.
         <h2>Streams</h2>
 
         <p>
+For files larger than 16MB or for raw binary data formats such as audio,
+video, and office productivity files, a streaming API is provided that
+enables data to be streamed to/from a data hub. Streams are described using
+structured documents, but the storage of the data is separated from the
+structured document using a hashlink to the encrypted content.
         </p>
       </section>
 
@@ -253,6 +264,12 @@ which form the foundation of this specification.
         <h2>Indexing</h2>
 
         <p>
+Data hubs are expected to store a very large number of documents
+of varying kinds. This means that it is important to be able to search the
+documents in a timely way, which creates a challenge for the storage provider
+as the content is encrypted. An encrypted search scheme is provided for
+secure data hubs that enable data hub clients to do meta data indexing while
+not leaking metadata to the storage provider.
         </p>
       </section>
 
@@ -348,7 +365,6 @@ a URI.
         </pre>
 
       </section>
-
     </section>
 
     <section class="normative">
@@ -380,6 +396,7 @@ top-most HTML web page (e.g. at <code>https://example.com/</code>):
   "id": "https://example.com/",
   "name": "Example Website",
   "dataHubCreationService": "https://example.com/data-hubs"
+  "dataHubQueryService": "https://example.com/data-hubs"
 }
     &lt;/script>
   &lt;/head>
