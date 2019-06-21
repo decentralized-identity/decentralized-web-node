@@ -350,16 +350,16 @@ a URI.
 
         <pre class="example highlight" title="Example data hub configuration">
 {
-  sequence: 0,
-  controller: "did:example:123456789",
-  referenceId: "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
-  kek: {
-    id: "https://example.com/kms/12345",
-    type: "AesKeyWrappingKey2019"
+  "sequence": 0,
+  "controller": "did:example:123456789",
+  "referenceId": "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
+  "kek": {
+    "id": "https://example.com/kms/12345",
+    "type": "AesKeyWrappingKey2019"
   },
-  hmac: {
-    id: "https://example.com/kms/67891",
-    type: "Sha256HmacKey2019"
+  "hmac": {
+    "id": "https://example.com/kms/67891",
+    "type": "Sha256HmacKey2019"
   }
 }
         </pre>
@@ -406,10 +406,10 @@ Key-value content for the structured document.
         <pre class="example highlight" title="Example structured document">
 {
   "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  meta: {
+  "meta": {
     "created": "2019-06-18"
   },
-  content: {
+  "content": {
     "message": "Hello World!"
   }
 }
@@ -587,16 +587,16 @@ Accept: application/json, text/plain, */*
 Accept-Encoding: gzip, deflate
 
 {
-  sequence: 0,
-  controller: "did:example:123456789",
-  referenceId: "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
-  kek: {
-    id: "https://example.com/kms/12345",
-    type: "AesKeyWrappingKey2019"
+  "sequence": 0,
+  "controller": "did:example:123456789",
+  "referenceId": "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
+  "kek": {
+    "id": "https://example.com/kms/12345",
+    "type": "AesKeyWrappingKey2019"
   },
-  hmac: {
-    id: "https://example.com/kms/67891",
-    type: "Sha256HmacKey2019"
+  "hmac": {
+    "id": "https://example.com/kms/67891",
+    "type": "Sha256HmacKey2019"
   }
 }
         </pre>
