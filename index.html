@@ -166,13 +166,25 @@ specification:
         </p>
 
         <dl>
-          <dt>storage agent</dt>
+          <dt><dfn>data hub controller</dfn></dt>
           <dd>
-A role an <a>entity</a> might perform by
+A role an <a>entity</a> might perform by creating, managing, and deleting
+data hubs. This entity is also responsible for granting and revoking
+authorization to <a>storage agents</a> to the data hubs that are under its
+control.
           </dd>
-          <dt>storage provider</dt>
+          <dt><dfn data-lt="storage agents">storage agent</dfn></dt>
           <dd>
-A role an <a>entity</a> might perform by
+A role an <a>entity</a> might perform by creating, updating, and deleting
+data in a data hub. This entity is typically granted authorization to
+to access a data hub by a <a>data hub controller</a>.
+          </dd>
+          <dt><dfn>storage provider</dfn></dt>
+          <dd>
+A role an <a>entity</a> might perform by providing a raw data storage
+mechanism to a <a>data hub controller</a>. It is impossible for this entity
+to see the data that it is storing due to all data being encrypted at rest
+and in transit to and from the <a>storage provider</a>.
           </dd>
         </dl>
 
@@ -504,7 +516,7 @@ top-most HTML web page (e.g. at <code>https://example.com/</code>):
     &lt;title>Example Website&lt;/title>
     &lt;link rel="stylesheet" href="style.css">
     &lt;script src="script.js">&lt;/script>
-    &lt;script type="application/json">
+    &lt;script type="application/ld+json">
 {
   "@context": "https://w3id.org/data-hubs/v1",
   "id": "https://example.com/",
@@ -584,7 +596,7 @@ POST /data-hubs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
+Accept-Encoding: gzip, dfnlate
 
 {
   "sequence": 0,
@@ -668,7 +680,7 @@ POST /data-hubs/z4sRgBJJLnYy HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
+Accept-Encoding: gzip, dfnlate
 
 {
   "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
@@ -694,7 +706,7 @@ If the creation of the structured document was successful, an HTTP 201 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub creation response">
+        <pre class="example highlight" title="Successful data hub document creation response">
 HTTP/1.1 201 Created
 Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz
 Cache-Control: no-cache, no-store, must-revalidate
@@ -759,7 +771,7 @@ A protocol example of a document retrieval is shown below:
 GET https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
+Accept-Encoding: gzip, dfnlate
         </pre>
 
         <p>
@@ -767,7 +779,7 @@ If the retrieval of the encrypted document was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub creation response">
+        <pre class="example highlight" title="Successful data hub document read response">
 HTTP/1.1 200 OK
 Date: Fri, 14 Jun 2019 18:37:12 GMT
 Connection: keep-alive
@@ -797,7 +809,83 @@ Connection: keep-alive
         <h2>Updating a Document</h2>
 
         <p>
+A structured document is updated in a data hub by encoding the updated
+<a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
+an HTTP POST to a data hub endpoint created via
+<a href="#creating-a-data-hub"></a>.
+The following HTTP status codes are defined for this service:
         </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>200</td>
+              <td>
+Structured document update was successful.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+Structured document update failed.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In order to convert a <a>StructuredDocument</a> to an
+<a>EncryptedDocument</a> an implementer MUST encode the
+<a>StructuredDocument</a> as a JWE or a COSE Encrypted object. Once the
+document is encrypted, it can be sent to the document creation service.
+        </p>
+
+        <p>
+A protocol example of a document update is shown below:
+        </p>
+
+        <pre class="example highlight" title="Data hub document update request">
+POST  /data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, dfnlate
+
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "sequence": 1,
+  "jwe": {
+    "protected": "eyJlbmMiOiJDMjBQIn0",
+    "recipients": [{
+      "header": {
+        "alg": "A256KW",
+        "kid": "https://example.com/kms/zSDn2MzzbxmX"
+      },
+      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+    }],
+    "iv": "i8Nins2vTI3PlrYW",
+    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+    "tag": "pfZO0JulJcrc3trOZy8rjA"
+  }
+}
+        </pre>
+
+        <p>
+If the update to the encrypted document was successful, an HTTP 200 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub document creation response">
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Date: Fri, 14 Jun 2019 18:39:52 GMT
+Connection: keep-alive
+        </pre>
+
       </section>
 
       <section class="normative">
