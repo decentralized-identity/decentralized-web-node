@@ -1172,6 +1172,88 @@ Connection: keep-alive
 
       </section>
 
+      <section class="normative">
+        <h2>Deleting a stream</h2>
+
+        <p>
+A stream is deleted by performing an HTTP DELETE to a data hub
+stream endpoint created via <a href="#creating-a-stream"></a> and
+the corresponding metadata document created via
+<a href="#creating-a-document"></a>. The following HTTP status codes are
+defined for this service:
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>200</td>
+              <td>
+Stream was deleted successfully.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+Stream deletion failed.
+              </td>
+            </tr>
+            <tr>
+              <td>404</td>
+              <td>
+Stream was not found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+A protocol example of a stream deletion is shown below:
+        </p>
+
+        <pre class="example highlight" title="Data hub stream deletion request">
+DELETE  /data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz HTTP/1.1
+Host: example.com
+        </pre>
+
+        <p>
+If the deletion of the encrypted stream was successful, an HTTP 200 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub stream deletion response">
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Date: Fri, 14 Jun 2019 18:40:18 GMT
+Connection: keep-alive
+        </pre>
+
+        <p>
+Once the stream is deleted, implementations MUST also delete the corresponding
+metadata document:
+        </p>
+
+        <pre class="example highlight" title="Data hub stream deletion request">
+DELETE  /data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+Host: example.com
+        </pre>
+
+        <p>
+If the deletion of the encrypted stream was successful, an HTTP 200 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub stream deletion response">
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Date: Fri, 14 Jun 2019 18:40:18 GMT
+Connection: keep-alive
+        </pre>
+
+      </section>
 
       <section class="normative">
         <h2>Querying</h2>
