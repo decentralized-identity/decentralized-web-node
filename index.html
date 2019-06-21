@@ -1217,6 +1217,7 @@ A protocol example of a stream deletion is shown below:
         <pre class="example highlight" title="Data hub stream deletion request">
 DELETE  /data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
+</pre>
         </pre>
 
         <p>
@@ -1229,7 +1230,6 @@ HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:40:18 GMT
 Connection: keep-alive
-        </pre>
 
         <p>
 Once the stream is deleted, implementations MUST also delete the corresponding
@@ -1256,7 +1256,79 @@ Connection: keep-alive
       </section>
 
       <section class="normative">
-        <h2>Querying</h2>
+        <h2>Creating Encrypted Indexes</h2>
+
+        <p>
+It is often useful to search a data hub for structured documents that contain
+specific metadata. Efficient searching requires the use of search indexes
+and local access to data. This poses an interesting challenge as the
+search has to be performed on the <a>storage provider</a> without leaking
+information that could violate the privacy of the entities that are storing
+information in the data hub. This section details how encrypted indexes
+can be created and used to perform efficient searching while protecting
+the privacy of entities that are storing information in the data hub.
+        </p>
+
+        <p>
+When creating an <a>EncryptedDocument</a>, encrypted index properties MAY
+be utilized to perform efficient searches. An example of the use of these
+properties is shown below:
+        </p>
+
+        <pre class="example highlight" title="Example encrypted document with encrypted indexes">
+{
+  "id": "urn:uuid:698f3fb6-592f-4d22-9e04-462cc4606a23",
+  "sequence": 0,
+  "indexed": [{
+    "sequence": 0,
+    "hmac": {
+      "id": "https://example.com/kms/z7BgF536GaR",
+      "type": "Sha256HmacKey2019"
+    },
+    "attributes": [{
+      "name": "CUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
+      "value": "RV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro",
+      "unique": true
+    }, {
+      "name": "DUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
+      "value": "QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro"
+    }]
+  }],
+  "jwe": {
+    "protected": "eyJlbmMiOiJDMjBQIn0",
+    "recipients": [
+      {
+        "header": {
+          "alg": "A256KW",
+          "kid": "https://example.com/kms/z7BgF536GaR"
+        },
+        "encrypted_key":
+          "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+      }
+    ],
+    "iv": "i8Nins2vTI3PlrYW",
+    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+    "tag": "pfZO0JulJcrc3trOZy8rjA"
+  }
+}
+        </pre>
+
+        <p class="note">
+The example above demonstrates the use of unique index values as well as
+non-unique indexes.
+        </p>
+
+        <p>
+The example above enables the <a>storage provider</a> to build
+efficient indexes on encrypted properties while enabling
+<a>storage agents</a> to search the information without leaking information
+that would create privacy concerns.
+        </p>
+
+      </section>
+
+      <section class="normative">
+        <h2>Searching Encrypted Documents</h2>
 
         <p>
         </p>
