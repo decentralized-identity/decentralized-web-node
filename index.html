@@ -596,7 +596,7 @@ POST /data-hubs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, dfnlate
+Accept-Encoding: gzip, deflate
 
 {
   "sequence": 0,
@@ -680,7 +680,7 @@ POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, dfnlate
+Accept-Encoding: gzip, deflate
 
 {
   "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
@@ -771,7 +771,7 @@ A protocol example of a document retrieval is shown below:
 GET https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, dfnlate
+Accept-Encoding: gzip, deflate
         </pre>
 
         <p>
@@ -853,7 +853,7 @@ POST  /data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, dfnlate
+Accept-Encoding: gzip, deflate
 
 {
   "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
@@ -992,7 +992,7 @@ POST /data-hubs/z4sRgBJJLnYy/streams HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, dfnlate
+Accept-Encoding: gzip, deflate
 
 TBD
         </pre>
@@ -1055,7 +1055,7 @@ POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, dfnlate
+Accept-Encoding: gzip, deflate
 
 {
   "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
@@ -1093,6 +1093,85 @@ Transfer-Encoding: chunked
         </pre>
 
       </section>
+
+      <section class="normative">
+        <h2>Reading a stream</h2>
+
+        <p>
+Reading a stream from a data hub is performed by retrieving the associated
+metadata that is encrypted as an <a>EncryptedDocument</a>, decoding the
+hashlink information, and then retrieving the <a>EncryptedStream</a> and then
+decrypting it. The following HTTP status codes are defined for this service:
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>200</td>
+              <td>
+Encrypted stream retrieval was successful.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+Encrypted stream retrieval failed.
+              </td>
+            </tr>
+            <tr>
+              <td>404</td>
+              <td>
+Encrypted stream with given id was not found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+In order to convert an <a>EncryptedStream</a> to a stream
+an implementer MUST decode the <a>EncryptedStream</a> using the information
+provided in the associated <a>EncryptedDocument</a>. Once the stream is
+decrypted, it can be processed by the web application.
+        </p>
+
+        <p class="note">
+Implementers can perform random seeking in the stream by utilizing the
+<code>Content-Range</code> HTTP Header.
+        </p>
+
+        <p>
+A protocol example of a stream retrieval is shown below:
+        </p>
+
+        <pre class="example highlight" title="Data hub encrypted stream retrieval">
+GET https://example.com/data-hubs/z4sRgBJJLnYy/streams/zn2XmSDzMbxz HTTP/1.1
+Host: example.com
+Content-Range: 0-1048576
+Accept: application/octet-stream
+Accept-Encoding: gzip, deflate
+        </pre>
+
+        <p>
+If the retrieval of the encrypted stream was successful, an HTTP 200 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub stream read response">
+HTTP/1.1 200 OK
+Date: Fri, 14 Jun 2019 18:37:12 GMT
+Content-Range: 0-1048576
+Content-Length: 1048576
+Connection: keep-alive
+
+...
+        </pre>
+
+      </section>
+
 
       <section class="normative">
         <h2>Querying</h2>
