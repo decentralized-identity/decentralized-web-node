@@ -478,7 +478,7 @@ the corresponding <a>StructuredDocument</a>.
     "recipients": [{
       "header": {
         "alg": "A256KW",
-        "kid": "https://example.com/kms/f3ce1a43-162f-43b2-80b4-b51abbeea46e"
+        "kid": "https://example.com/kms/zSDn2MzzbxmX"
       },
       "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
     }],
@@ -675,8 +675,8 @@ document is encrypted, it can be sent to the document creation service.
 A protocol example of a document creation is shown below:
         </p>
 
-        <pre class="example highlight" title="Data hub creation request">
-POST /data-hubs/z4sRgBJJLnYy HTTP/1.1
+        <pre class="example highlight" title="Data hub document creation request">
+POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -792,7 +792,7 @@ Connection: keep-alive
     "recipients": [{
       "header": {
         "alg": "A256KW",
-        "kid": "https://example.com/kms/f3ce1a43-162f-43b2-80b4-b51abbeea46e"
+        "kid": "https://example.com/kms/zSDn2MzzbxmX"
       },
       "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
     }],
@@ -947,17 +947,151 @@ Connection: keep-alive
       </section>
 
       <section class="normative">
-        <h2>Writing a Stream</h2>
+        <h2>Creating a Stream</h2>
 
         <p>
+A stream is stored in a data hub by encrypting the stream, writing it to a
+data hub, and then writing a document containing metadata about the stream.
+The following HTTP status codes are defined for this service:
         </p>
-      </section>
 
-      <section class="normative">
-        <h2>Reading a Stream</h2>
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>201</td>
+              <td>
+Stream creation was successful. The HTTP <code>Location</code>
+header will contain the URL for the newly created stream.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+Stream creation failed.
+              </td>
+            </tr>
+          </tbody>
+        </table>
 
         <p>
+In order to convert a stream to an <a>Encryptedstream</a> an implementer
+MUST encode the stream as a JWE or a COSE Encrypted object. Once the
+stream is encrypted, it can be sent to the stream creation service.
         </p>
+
+        <p>
+A protocol example of a stream creation is shown below:
+        </p>
+
+        <pre class="example highlight" title="Encrypted stream creation request">
+POST /data-hubs/z4sRgBJJLnYy/streams HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, dfnlate
+
+TBD
+        </pre>
+
+        <p>
+If the creation of the stream was successful, an HTTP 201 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful stream creation response">
+HTTP/1.1 201 Created
+Location: https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Date: Fri, 14 Jun 2019 18:37:12 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+        </pre>
+
+        <p>
+Once a stream is created, metadata related to the stream can be written to
+the data hub using the protocol defined in <a href="#creating-a-document"></a>.
+An example of creating a link to a video file is shown below.
+        </p>
+
+        <p>
+Implementations first encode the metadata associated with the stream into a
+<a>StructuredDocument</a>:
+        </p>
+
+        <pre class="example highlight" title="StructuredDocument associated with a stream">
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "meta": {
+    "created": "2019-06-18",
+    "contentType": "video/mpeg",
+    "contentLength": 56735817
+  },
+  "content": {
+    "id": "hl:zMd87F7jkKWwljfn73jJ763:zn4nf98982...j8fH"
+  }
+}
+        </pre>
+
+        <p class="note">
+In this case, the value of <code>content.id</code> is a hashlink to the
+stream located at
+<code>https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz</code>.
+        </p>
+
+        <p>
+The <a>StrucutedDocument</a> above is then transformed to an
+<a>EncryptedDocument</a> and the procedure in
+<a href="#creating-a-document"></a> is executed:
+        </p>
+
+        <pre class="example highlight" title="Encrypted document creation request for stream metadata">
+POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, dfnlate
+
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "sequence": 0,
+  "jwe": {
+    "protected": "eyJlbmMiOiJDMjBQIn0",
+    "recipients": [{
+      "header": {
+        "alg": "A256KW",
+        "kid": "https://example.com/kms/zSDn2MzzbxmX"
+      },
+      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+    }],
+    "iv": "i8Nins2vTI3PlrYW",
+    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+    "tag": "pfZO0JulJcrc3trOZy8rjA"
+  }
+}
+        </pre>
+
+        <p>
+If the creation of the structured document was successful, an HTTP 201 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub document creation response">
+HTTP/1.1 201 Created
+Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zp4H8ekWn
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Date: Fri, 14 Jun 2019 18:37:12 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+        </pre>
+
       </section>
 
       <section class="normative">
