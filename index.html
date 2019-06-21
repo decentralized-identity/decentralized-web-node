@@ -892,7 +892,58 @@ Connection: keep-alive
         <h2>Deleting a Document</h2>
 
         <p>
+A structured document is deleted by performing an HTTP DELETE to a data hub
+endpoint created via <a href="#creating-a-data-hub"></a>.
+The following HTTP status codes are defined for this service:
         </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">HTTP Status</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>200</td>
+              <td>
+Structured document was deleted successfully.
+              </td>
+            </tr>
+            <tr>
+              <td>400</td>
+              <td>
+Structured document deletion failed.
+              </td>
+            </tr>
+            <tr>
+              <td>404</td>
+              <td>
+Structured document was not found.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>
+A protocol example of a document deletion is shown below:
+        </p>
+
+        <pre class="example highlight" title="Data hub document deletion request">
+DELETE  /data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+Host: example.com
+        </pre>
+
+        <p>
+If the deletion of the encrypted document was successful, an HTTP 200 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub document deletion response">
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Date: Fri, 14 Jun 2019 18:40:18 GMT
+Connection: keep-alive
+        </pre>
       </section>
 
       <section class="normative">
