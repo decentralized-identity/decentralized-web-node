@@ -608,7 +608,7 @@ expected in return:
 
         <pre class="example highlight" title="Successful data hub creation response">
 HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/ad800444
+Location: https://example.com/data-hubs/z4sRgBJJLnYy
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -625,8 +625,8 @@ Transfer-Encoding: chunked
         <p>
 A structured document is stored in a data hub by encoding a
 <a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
-an HTTP POST to a data hub endpoint created via the
-<a>Creating a Data Hub</a> section.
+an HTTP POST to a data hub endpoint created via
+<a href="#creating-a-data-hub"></a>.
 The following HTTP status codes are defined for this service:
         </p>
 
@@ -664,7 +664,7 @@ A protocol example of a document creation is shown below:
         </p>
 
         <pre class="example highlight" title="Data hub creation request">
-POST /data-hubs/ad800444 HTTP/1.1
+POST /data-hubs/z4sRgBJJLnYy HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -678,7 +678,7 @@ Accept-Encoding: gzip, deflate
     "recipients": [{
       "header": {
         "alg": "A256KW",
-        "kid": "https://example.com/kms/f3ce1a43-162f-43b2-80b4-b51abbeea46e"
+        "kid": "https://example.com/kms/zSDn2MzzbxmX"
       },
       "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
     }],
@@ -696,7 +696,7 @@ code is expected in return:
 
         <pre class="example highlight" title="Successful data hub creation response">
 HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/ad800444/docs/feab3cdd-a7fe-4c43-bd2e-f0f5b49269e2
+Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -756,7 +756,7 @@ A protocol example of a document retrieval is shown below:
         </p>
 
         <pre class="example highlight" title="Data hub encrypted document retrieval">
-GET https://example.com/data-hubs/ad800444/docs/feab3cdd-a7fe-4c43-bd2e-f0f5b49269e2 HTTP/1.1
+GET https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
 Accept: application/json, text/plain, */*
 Accept-Encoding: gzip, deflate
