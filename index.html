@@ -491,6 +491,73 @@ the corresponding <a>StructuredDocument</a>.
 
       </section>
 
+      <section>
+        <h3><dfn>EncryptedStream</dfn></h3>
+
+        <p>
+An encrypted stream is a raw binary stream that has been encrypted before
+being uploaded to a data hub. An encrypted stream MUST be associated
+with a <a>StructuredDocument</a> where the <code>content.id</code> is a
+hashlink for the encrypted stream.
+        </p>
+
+        <table class="simple">
+          <thead>
+            <th style="white-space: nowrap">Property</th>
+            <th>Description</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>id</td>
+              <td>
+An identifier for the structured document that is associated with the
+encrypted stream. The value is required and MUST be a URI.
+              </td>
+            </tr>
+            <tr>
+              <td>meta</td>
+              <td>
+Key-value metadata associated with the structured document.
+              </td>
+            </tr>
+            <tr>
+              <td>meta.contentType</td>
+              <td>
+The content type associated with the stream. The content type MUST be
+provided.
+              </td>
+            </tr>
+            <tr>
+              <td>content</td>
+              <td>
+Key-value content for the structured document.
+              </td>
+            </tr>
+            <tr>
+              <td>content.id</td>
+              <td>
+The identifier for the content. The content identifier MUST be provided and
+MUST be encoded as a hashlink. The hashlink MUST exist as a content hash
+for a stream that exists in the data hub.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <pre class="example highlight" title="Example structured document referencing an encrypted stream">
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "meta": {
+    "contentType": "video/mpeg"
+  },
+  "content": {
+    "id": "hl:zb47JhaKJ3hJ5Jkw8oan35jK23289Hp""
+  }
+}
+        </pre>
+
+      </section>
+
     </section>
 
     <section class="normative">
@@ -521,8 +588,7 @@ top-most HTML web page (e.g. at <code>https://example.com/</code>):
   "@context": "https://w3id.org/data-hubs/v1",
   "id": "https://example.com/",
   "name": "Example Website",
-  "dataHubCreationService": "https://example.com/data-hubs"
-  "dataHubQueryService": "https://example.com/data-hubs"
+  "dataHubManagementService": "https://example.com/data-hubs"
 }
     &lt;/script>
   &lt;/head>
@@ -1045,7 +1111,7 @@ stream located at
         </p>
 
         <p>
-The <a>StrucutedDocument</a> above is then transformed to an
+The <a>StructuredDocument</a> above is then transformed to an
 <a>EncryptedDocument</a> and the procedure in
 <a href="#creating-a-document"></a> is executed:
         </p>
@@ -1095,7 +1161,7 @@ Transfer-Encoding: chunked
       </section>
 
       <section class="normative">
-        <h2>Reading a stream</h2>
+        <h2>Reading a Stream</h2>
 
         <p>
 Reading a stream from a data hub is performed by retrieving the associated
@@ -1173,7 +1239,7 @@ Connection: keep-alive
       </section>
 
       <section class="normative">
-        <h2>Deleting a stream</h2>
+        <h2>Deleting a Stream</h2>
 
         <p>
 A stream is deleted by performing an HTTP DELETE to a data hub
@@ -1230,6 +1296,7 @@ HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:40:18 GMT
 Connection: keep-alive
+        </pre>
 
         <p>
 Once the stream is deleted, implementations MUST also delete the corresponding
@@ -1331,7 +1398,76 @@ that would create privacy concerns.
         <h2>Searching Encrypted Documents</h2>
 
         <p>
+The contents of a data hub can be searched using encrypted indexes created
+using the processes described in <a href="#creating-encrypted-indexes"></a>.
+There are two primary ways of searching for encrypted documents. The first
+is to search for a specific value associated with a specific index. The
+second is to search to see if a specific index exists on a document.
         </p>
+
+        <p>
+The example below demonstrates how to search for a specific value associated
+with a specific index.
+        </p>
+
+        <pre class="example highlight" title="Data hub query for a specifically indexed value">
+POST https://example.com/data-hubs/z4sRgBJJLnYy HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate
+
+{
+  "index": "DUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
+  "equals": ["QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro"]
+}
+        </pre>
+
+        <p>
+A successful query will result in a standard HTTP 200 response with a list of
+identifiers for all encrypted documents that match the query:
+        </p>
+
+        <pre class="example highlight" title="Successful query response from a data hub">
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Date: Fri, 14 Jun 2019 18:45:18 GMT
+Connection: keep-alive
+
+["https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
+        </pre>
+
+        <p>
+The contents of a data hub can also be searched to see if a certain attribute
+name is indexed by using the <code>has</code> keyword.
+        </p>
+
+        <pre class="example highlight" title="Data hub query for a particular attribute name">
+POST https://example.com/data-hubs/z4sRgBJJLnYy/queries HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate
+
+{
+  "has": ["CUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ"]
+}
+        </pre>
+
+        <p>
+If the query above is successful, an HTTP 200 code is expected with a list
+of <a>EncryptedDocument</a> identifiers that contain the value.
+        </p>
+
+        <pre class="example highlight" title="Successful query response for a specific attribute name">
+HTTP/1.1 200 OK
+Cache-Control: no-cache, no-store, must-revalidate
+Date: Fri, 14 Jun 2019 18:45:18 GMT
+Connection: keep-alive
+
+["https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
+        </pre>
+
       </section>
 
     </section>
