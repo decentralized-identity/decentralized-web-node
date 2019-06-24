@@ -149,7 +149,13 @@ from storage provider data breaches.
         <p class="issue">
 Explain why individuals and organizations that want to protect their privacy,
 trade secrets, and ensure data portability will benefit from using this
-technology.
+technology. Explain how giving a standard API for the storage of user data
+empowering users to "bring their own storage", giving them control of their
+own information. Explain how applications that are written against a standard
+API and assume that users will bring their own storage can separate concerns
+and focus on the functionality of their application, removing the need to
+deal with storage infrastructure (instead leaving it to a specialist service
+provider that is chosen by the user).
         </p>
       </section>
 
@@ -297,6 +303,12 @@ The following sections outlines the data model for data hubs.
       <section>
         <h3>DataHubConfiguration</h3>
 
+        <p class="issue">
+Data hub configuration isn't strictly necessary for using the other features
+of data hubs. This should have its own conformance section/class or potentially
+event be non-normative.
+        </p>
+
         <p>
 A data hub configuration specifies the properties a particular data hub
 will have.
@@ -324,10 +336,30 @@ data hub. The value is required and MUST be a URI.
               </td>
             </tr>
             <tr>
+              <td>invoker</td>
+              <td>
+The root entities or cryptographic key(s) that are authorized to invoke
+an authorization capability to modify the data hub's configuration or
+read or write to it. The value is optional, but if present, MUST be a URI
+or an array of URIs. When this value is not present, the value of controller
+property is used for the same purpose.
+              </td>
+            </tr>
+            <tr>
+              <td>delegator</td>
+              <td>
+The root entities or cryptographic key(s) that are authorized to delegate
+authorization capabilities to modify the data hub's configuration or
+read or write to it. The value is optional, but if present, MUST be a URI
+or an array of URIs. When this value is not present, the value of controller
+property is used for the same purpose.
+              </td>
+            </tr>
+            <tr>
               <td>referenceId</td>
               <td>
 Used to express an application-specific reference identifier. The value is
-optional and, if present, MUST be a URI.
+optional and, if present, MUST be a string.
               </td>
             </tr>
             <tr>
@@ -364,7 +396,7 @@ a URI.
 {
   "sequence": 0,
   "controller": "did:example:123456789",
-  "referenceId": "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
+  "referenceId": "my-primary-data-hub",
   "kek": {
     "id": "https://example.com/kms/12345",
     "type": "AesKeyWrappingKey2019"
@@ -438,6 +470,12 @@ ensures that no entity can read the information without the consent of the
 data controller.
         </p>
 
+        <p class="issue">
+While the table below is a simple version of an EncryptedDocument, there is
+no other table that yet describes the indexed property and its subproperties,
+should it be present on an EncryptedDocument.
+        </p>
+
         <table class="simple">
           <thead>
             <th style="white-space: nowrap">Property</th>
@@ -469,6 +507,20 @@ the corresponding <a>StructuredDocument</a>.
           </tbody>
         </table>
 
+        <p class="issue">
+Another example should be added that shows that a Diffie-Hellman key can
+be identified in the JWE recipients field. This type of key can be used for
+key agreement on a key wrapping key.
+        </p>
+
+        <p class="issue">
+Another section should detail that data hub servers may omit certain fields
+or certain values in certain fields, such as the recipients field, based on
+whether or not the entity requesting an EncryptedDocument is authorized to
+see the field or its values. This can be finely controlled through the use
+of Authorization Capabilities.
+        </p>
+
         <pre class="example highlight" title="Example encrypted document">
 {
   "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
@@ -499,6 +551,12 @@ An encrypted stream is a raw binary stream that has been encrypted before
 being uploaded to a data hub. An encrypted stream MUST be associated
 with a <a>StructuredDocument</a> where the <code>content.id</code> is a
 hashlink for the encrypted stream.
+        </p>
+
+        <p class="issue">
+Properties about the file (such as contentType) may be moved to the content
+section of the document that describes the file. The metadata section may
+instead be considered metadata about the document that describes the file.
         </p>
 
         <table class="simple">
@@ -536,9 +594,13 @@ Key-value content for the structured document.
             <tr>
               <td>content.id</td>
               <td>
-The identifier for the content. The content identifier MUST be provided and
-MUST be encoded as a hashlink. The hashlink MUST exist as a content hash
-for a stream that exists in the data hub.
+The identifier for the content. The content identifier MUST be a URI that
+references a stream on the same data hub. Once the stream has been written
+to the data hub, the content identifier MUST be updated such that it is a
+valid hashlink. To allow for streaming encryption, the value of the digest
+for the <a>EncryptedStream</a> is assumed to be unknowable until after the
+stream has been written. The hashlink MUST exist as a content hash for the
+stream that has been written to the data hub.
               </td>
             </tr>
           </tbody>
@@ -551,7 +613,7 @@ for a stream that exists in the data hub.
     "contentType": "video/mpeg"
   },
   "content": {
-    "id": "hl:zb47JhaKJ3hJ5Jkw8oan35jK23289Hp""
+    "id": "https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp"
   }
 }
         </pre>
@@ -678,6 +740,12 @@ Accept-Encoding: gzip, deflate
   }
 }
         </pre>
+
+        <p class="issue">
+Explain the purpose of the controller property to root authority. Explain how
+Authorization Capabilities can be created and invoked via HTTP signatures to
+authorize reading and writing from/to data hubs.
+        </p>
 
         <p>
 If the creation of the data hub was successful, an HTTP 201 status code is
@@ -831,6 +899,13 @@ document is decrypted, it can be processed by the web application.
 
         <p>
 A protocol example of a document retrieval is shown below:
+        </p>
+
+        <p class="issue">
+Explain that the URL path structure is fixed for all data hubs to enable
+portability and the use of stable URLs (such as through DID URLs) to reference
+certain documents while allowing users to change their data hub service
+providers. Explain how this enables portability.
         </p>
 
         <pre class="example highlight" title="Data hub encrypted document retrieval">
@@ -1016,9 +1091,10 @@ Connection: keep-alive
         <h2>Creating a Stream</h2>
 
         <p>
-A stream is stored in a data hub by encrypting the stream, writing it to a
-data hub, and then writing a document containing metadata about the stream.
-The following HTTP status codes are defined for this service:
+A stream is stored in a data hub by writing a document containing metadata
+about the stream, encrypting the stream, writing it to a data hub, and then
+updating the document containing metadata about the stream. The following
+HTTP status codes are defined for this service:
         </p>
 
         <table class="simple">
@@ -1044,48 +1120,6 @@ Stream creation failed.
         </table>
 
         <p>
-In order to convert a stream to an <a>Encryptedstream</a> an implementer
-MUST encode the stream as a JWE or a COSE Encrypted object. Once the
-stream is encrypted, it can be sent to the stream creation service.
-        </p>
-
-        <p>
-A protocol example of a stream creation is shown below:
-        </p>
-
-        <pre class="example highlight" title="Encrypted stream creation request">
-POST /data-hubs/z4sRgBJJLnYy/streams HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-TBD
-        </pre>
-
-        <p>
-If the creation of the stream was successful, an HTTP 201 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful stream creation response">
-HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz
-Cache-Control: no-cache, no-store, must-revalidate
-Pragma: no-cache
-Expires: 0
-Date: Fri, 14 Jun 2019 18:37:12 GMT
-Connection: keep-alive
-Transfer-Encoding: chunked
-        </pre>
-
-        <p>
-Once a stream is created, metadata related to the stream can be written to
-the data hub using the protocol defined in <a href="#creating-a-document"></a>.
-An example of creating a link to a video file is shown below.
-        </p>
-
-        <p>
 Implementations first encode the metadata associated with the stream into a
 <a>StructuredDocument</a>:
         </p>
@@ -1099,15 +1133,18 @@ Implementations first encode the metadata associated with the stream into a
     "contentLength": 56735817
   },
   "content": {
-    "id": "hl:zMd87F7jkKWwljfn73jJ763:zn4nf98982...j8fH"
+    "id": "https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz"
   }
 }
         </pre>
 
         <p class="note">
-In this case, the value of <code>content.id</code> is a hashlink to the
+In this case, the value of <code>content.id</code> is a reference to the
 stream located at
-<code>https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz</code>.
+<code>https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz</code>,
+which is the location that the stream MUST be written to. This content
+identifier MUST be updated to include a hashlink once the stream has been
+written and its digest is known.
         </p>
 
         <p>
@@ -1149,6 +1186,135 @@ code is expected in return:
 
         <pre class="example highlight" title="Successful data hub document creation response">
 HTTP/1.1 201 Created
+Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zp4H8ekWn
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Date: Fri, 14 Jun 2019 18:37:12 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+        </pre>
+
+        <p>
+Next, in order to convert a stream to an <a>EncryptedStream</a> an implementer
+MUST encrypt the stream. Once the stream is encrypted (or as it is encrypted),
+it can be sent to the stream creation service.
+        </p>
+
+        <p>
+A protocol example of a stream creation is shown below:
+        </p>
+
+        <pre class="example highlight" title="Encrypted stream creation request">
+POST /data-hubs/z4sRgBJJLnYy/streams HTTP/1.1
+Host: example.com
+Content-Type: application/octet-stream
+Transfer-Encoding: chunked
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate
+
+TBD
+        </pre>
+
+        <p>
+If the creation of the stream was successful, an HTTP 201 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful stream creation response">
+HTTP/1.1 201 Created
+Location: https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz
+Cache-Control: no-cache, no-store, must-revalidate
+Pragma: no-cache
+Expires: 0
+Date: Fri, 14 Jun 2019 18:37:12 GMT
+Connection: keep-alive
+Transfer-Encoding: chunked
+        </pre>
+
+        <p>
+Once a stream is created, the metadata related to the stream can be updated
+in the data hub using the protocol defined in
+<a href="#updating-a-document"></a>. An example of updating a link to a video
+file is shown below.
+        </p>
+
+        <p>
+Implementations update the metadata associated with the stream in its
+<a>StructuredDocument</a>:
+        </p>
+
+        <pre class="example highlight" title="Updating StructuredDocument associated with a stream">
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "sequence": 1,
+  "meta": {
+    "created": "2019-06-18",
+    "contentType": "video/mpeg",
+    "contentLength": 56735817
+  },
+  "content": {
+    "id": "https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp",
+    "jwe": {
+      "protected": "eyJlbmMiOiJDMjBQIn0",
+      "recipients": [{
+        "header": {
+          "alg": "A256KW",
+          "kid": "https://example.com/kms/zSDn2MzzbxmX"
+        },
+        "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+      }],
+      "iv": "i8Nins2vTI3PlrYW",
+      "tag": "pfZO0JulJcrc3trOZy8rjA"
+    }
+  }
+}
+        </pre>
+
+        <p class="note">
+The value of <code>content.id</code> MUST be updated to include a hashlink
+now that the stream has been written and its digest is known.
+        </p>
+
+        <p>
+The <a>StructuredDocument</a> above is then transformed to an
+<a>EncryptedDocument</a> and the procedure in
+<a href="#updating-a-document"></a> is executed:
+        </p>
+
+        <pre class="example highlight" title="Encrypted document update request for stream metadata">
+POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
+Host: example.com
+Content-Type: application/json
+Accept: application/json, text/plain, */*
+Accept-Encoding: gzip, deflate
+
+{
+  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+  "sequence": 1,
+  "jwe": {
+    "protected": "eyJlbmMiOiJDMjBQIn0",
+    "recipients": [{
+      "header": {
+        "alg": "A256KW",
+        "kid": "https://example.com/kms/zSDn2MzzbxmX"
+      },
+      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+    }],
+    "iv": "i8Nins2vTI3PlrYW",
+    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+    "tag": "pfZO0JulJcrc3trOZy8rjA"
+  }
+}
+        </pre>
+
+        <p>
+If the creation of the structured document was successful, an HTTP 200 status
+code is expected in return:
+        </p>
+
+        <pre class="example highlight" title="Successful data hub document creation response">
+HTTP/1.1 200 OK
 Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zp4H8ekWn
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
@@ -1337,7 +1503,7 @@ the privacy of entities that are storing information in the data hub.
         </p>
 
         <p>
-When creating an <a>EncryptedDocument</a>, encrypted index properties MAY
+When creating an <a>EncryptedDocument</a>, blinded index properties MAY
 be utilized to perform efficient searches. An example of the use of these
 properties is shown below:
         </p>
@@ -1392,6 +1558,23 @@ efficient indexes on encrypted properties while enabling
 that would create privacy concerns.
         </p>
 
+        <p class="issue">
+Provide instructions and examples for how indexes are blinded using an
+HMAC key.
+        </p>
+
+        <p class="issue">
+Explain that multiple entities can maintain their own independent indexes
+(using their own HMAC key) provided they have been granted this capability.
+Explain that indexes can be sparse/partial. Explain that indexes have their
+own sequence number and that it will match the document's sequence number
+once it is updated.
+        </p>
+
+        <p class="issue">
+Add a section showing the update index endpoint and how it works.
+        </p>
+
       </section>
 
       <section class="normative">
@@ -1419,7 +1602,10 @@ Accept-Encoding: gzip, deflate
 
 {
   "index": "DUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
-  "equals": ["QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro"]
+  "equals": [
+    {"QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro":
+      "dh327d234h8437hc34f43f43ZXGHDXG"}
+  ]
 }
         </pre>
 
