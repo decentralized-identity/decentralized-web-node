@@ -1638,6 +1638,18 @@ Connection: keep-alive
       <section class="normative">
         <h2>Creating a Stream</h2>
 
+        <p class="issue">
+Another design is being considered that would transform streams into a
+single index document and a collection of documents, each of which contains
+a chunk of the stream. This would be done to help prevent misuse of a
+decryption stream prior to its authentication. In order for this approach to
+be implemented in a Web browser, it also requires certain File or Blob APIs.
+Further investigation is needed to ensure that support of these APIs would be
+sufficient for this design approach, as it would be preferred to prevent data
+misuse and to make better use of native implementations of authenticated
+encryption modes.
+        </p>
+
         <p>
 A stream is stored in a data vault by writing a document containing metadata
 about the stream, encrypting the stream, writing it to a data vault, and then
