@@ -27,7 +27,7 @@ The problem of decentralized data storage has been approached from various diffe
 | Project | In-transit Encryption | At-rest Encryption Required? | Metadata | Queries  | Storage
 | ------- | -------------------- | ----------------- | ----------- | ----------------- | -------
 | NextCloud | TLS | no, [beta support](https://nextcloud.com/endtoend/) avail. |  | yes | database & device fs
-| Solid | TLS | no | RDF | no | not specified
+| Solid | TLS | no | binary or structured linked data | no | not specified
 | Blockstack | TLS | no (supported) | n/a |
 | Identity Hubs | yes | yes (but not metadata) | JWTs | yes | device fs
 | Datashards | yes | yes | binary | no | device fs
