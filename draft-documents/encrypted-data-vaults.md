@@ -6,11 +6,9 @@ After RWoT9 Lead: Amy Guy
 
 We store a significant amount of sensitive data online, such as personally identifying information (PII), trade secrets, family pictures, and customer information. The data that we store should be encrypted in transit and at rest but is often not protected in an appropriate manner.
 
-Legislation such as GDPR is incentivizing data providers to act to better preserve individuals privacy, primarily through making them liable in the event data breaches occur. This liability pressure has revealed a technological gap, whereby providers are often un-equipped with technology that can suitably protect their users, encrypted data vaults among other benefits aims to fill this gap.
+Legislation, such as the General Data Protection Regulation (GDPR), incentivizes service providers to better preserve individuals privacy, primarily through making them liable in the event of a data breach. This liability pressure has revealed a technological gap, whereby providers are often not equipped with technology that can suitably protect their customers. Encrypted data vaults fill this gap and provide a variety of other benefits.
 
-This paper describes current approaches and architectures, derived requirements, and dangers that implementers should be aware of when implementing data storage.
-
-This paper also explores the base assumptions of these sorts of systems such as providing privacy-respecting mechanisms for storing, indexing, and retrieving encrypted data, as well as data portability.
+This paper describes current approaches and architectures, derived requirements, design goals, and dangers that implementers should be aware of when implementing data storage. This paper also explores the base assumptions of these sorts of systems such as providing privacy-respecting mechanisms for storing, indexing, and retrieving encrypted data, as well as data portability.
 
 ## Introduction
 
@@ -158,45 +156,46 @@ Encrypted data vaults define a client-server relationship, whereby the vault is 
 
 > Note: Even though a client-server relationship exists with encrypted data vaults, nothing excludes both the server/vault and client existing on the same device, in fact the expectation is this will be a popular model for running local vaults that replicate via a client with vaults that are hosted elsewhere.
 
-### Server Responsibilities
+The Encrypted Data Vault architecture is layered in nature, where the foundational layer consists of an operational system with minimal features and more advanced features are layered on top. Implementations can choose to implement only the foundational layer, or optionally, additional layers consisting of a richer set of features for more advanced use cases.
+
+#### Server Responsibilities
 
 The server is assumed to be of low trust and hence must have no visibility of the data in an un-encrypted state that it persists, however even in this model it still has a set of minimum responsibilities it must adhere to.
 
-#### Enforcement of Authorization Policies
+### Client Responsibilities
 
-When a vault client makes a request to query, persist, modify or delete data in the vault, the vault must enforce any authorization policy that is associated with the request.
+The client is responsible for providing an interface to the Server, with bindings for each relevant protocol (HTTP, RPC, or binary over-the-wire protocols), as required by the use case.
 
-#### Validate Requests
+Since one of the primary design goals of this spec is privacy-preserving storage of data, it is essential that all encryption and decryption of data is done on the client side, at the edges. The data (including metadata) MUST be opaque to the server, and the architecture is designed to prevent the server from being able to decrypt it.
 
-When a vault client makes a request to query, persist, modify or delete data in the vault, the vault must validate this request. Because any actual data content in a request to a vault is encrypted, the validation the vault can perform is limited to the request data.
+### Layer 1
 
-#### Persist Global Configuration
+Layer 1 consists of a client-server system that is capable of encrypting data in transit and at rest.
+
+#### Enforcement of Authorization Policies (L1)
+
+When a vault client makes a request to query, persist, modify or delete data in the vault, the server enforces any authorization policy that is associated with the request.
+
+#### Validate Requests (L1)
+
+When a vault client makes a request to query, persist, modify or delete data in the vault, the server validates the request. Since any actual data content in a request to a vault is encrypted, the validation the server can perform is limited to the request data.
+
+#### Persist Global Configuration (L1)
 
 A vault has a global configuration that defines the following properties
     * Vault controller
     * Chunk size
     * Authorization framework
 
-#### Persist Data
+A client sets this configuration when a vault is created and the server validates that the configuration conforms to this specification.
 
-The vault is free to persist data however it is designed, but it must adhere to the common expectations of a data storage provider, such as reliable persistence, updatability and ability to query.
+#### Persist Data (L1)
 
-### Advance Server Responsibilities
+The mechanism a server uses to persist data, such as storage on a local, networked, or distributed file system is determined by the implementation. The persistence mechanism is expected to adhere to the common expectations of a data storage provider, such as reliable storage and retrieval of data.
 
-#### Notifications
+#### Resource Structure (L1)
 
-A commonly associated feature with data storage providers is a mechanism by which to notify about changes to the data it persists. A vault may optional implement such mechanism by which clients can subscribe to changes in data from the vault.
-
-### Client Responsibilities
-(Dmitri)
-
-The Client is responsible for providing an interface to the Server, with  bindings for each relevant protocol (HTTP, RPC, or some binary over-the-wire  protocol), as required by the use case.
-
-Since one of the primary design goals of this spec is privacy-preserving storage of data, it is essential that all encryption and decryption of data is done on the client side, at the edges. The data (including metadata) MUST be opaque to the server, and the architecture is designed to prevent the server from being able to decrypt it.
-
-#### Resource Structure
-
-The process of storing encrypted data starts with the creation of a Resource, with the following structure.
+The process of storing encrypted data starts with the creation of a Resource by the client, with the following structure.
 
 Resource:
 * `id` (required)
@@ -204,32 +203,17 @@ Resource:
     * `meta.contentType` MIME type
 * `content` - payload or manifest-like list of hashlinks to chunks
 
-Content:
+If the data is less than the chunk size, it is embedded directly into the `content`.
 
-If the data is small enough (less than the chunk size), it is embedded directly into the `content`.
+Otherwise, the data is sharded into chunks by the client (see next section), and each chunk is encrypted and sent to the server. In this case, `content` contains a manifest-like listing of URIs to individual chunks (integrity-protected by [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)).
 
-Otherwise, the data is sharded into chunks (see next section), and each chunk is encrypted and sent to the Encrypted Data Vault. In this case, `content` contains a manifest-like listing of URIs to individual chunks (integrity-protected by [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)).
+#### Encrypted Data Chunking (L1)
 
-#### Sharding of Data Into Encrypted Chunks (Layer 1)
-
-Encrypted Data Vaults are capable of storing many different types of data, including large unstructured binary data. This means that storing a file as a single entry would be challenging for systems that have limits on single record sizes. For example, certain databases set the maximum size for a single record to 16MB. As a result, it is necessary that large data is chunked into sizes that are easily managed by a server. It is the responsibility of the client to set the chunk size of each resource and chunk large data into manageable chunks for the server. It is the responsibility of the server to deny requests to store chunks larger that it can handle.
+Encrypted Data Vaults are capable of storing many different types of data, including large unstructured binary data. This means that storing a file as a single entry would be challenging for systems that have limits on single record sizes. For example, some databases set the maximum size for a single record to 16MB. As a result, it is necessary that large data is chunked into sizes that are easily managed by a server. It is the responsibility of the client to set the chunk size of each resource and chunk large data into manageable chunks for the server. It is the responsibility of the server to deny requests to store chunks larger that it can handle.
 
 Each chunk is encrypted individually using authenticated encryption. Doing so protects against attacks where an attacking server replaces chunks in a large file and requires the entire file to be downloaded and decrypted by the victim before determining that the file is compromised. Encrypting each chunk with authenticated encryption ensures that a client knows that it has a valid chunk before proceeding to the next one. Note that another authorized client can still perform an attack by doing authenticated encryption on a chunk, but a server is not capable of launching the same attack.
 
-#### Index Tags (Layer 2?)
-
-To enable privacy-preserving querying (where the search index is opaque to the server), the client must prepare a list of encrypted index tags (that are stored in the Encrypted Resource, alongside the encrypted data contents).
-
-* TODO: add details about the salting + encryption mechanism of the index tags
-
-#### Versioning and Replication (Layer 3?)
-
-* A server must support _at least one_ versioning/change control mechanism
-* Replication done by the client, not server (since the client controls the keys, knows about which other servers to replicate to, etc.)
-* If an Encrypted Data Vault implementation aims to provide Replication functionality, it needs to also pick a versioning/change control strategy (since replication necessarily involves conflict resolution)
-* Some versioning strategies are implicit ("last write wins" - think of `rsync` or uploading a file to a file hosting service), but keep in mind that replication _always_ implies that some sort of conflict resolution mechanism is involved
-
-#### Encrypted Resource (Layer 1)
+#### Encrypted Resource (L1)
 
 Creating the Encrypted Resource (if the data was sharded into chunks, this is done after the individual chunks are written to the server):
 
@@ -238,15 +222,34 @@ Creating the Encrypted Resource (if the data was sharded into chunks, this is do
 * Versioning metadata such as sequence, Git-like hashes, or other mechanisms
 * Encrypted resource payload, encoded as a [`jwe`](https://tools.ietf.org/html/rfc7516), [`cwe`](https://tools.ietf.org/html/rfc8152#section-5) or other appropriate mechanism
 
-#### Sharing with other entities (Layer 2 or 3?)
+### Layer 2
+
+Layer 2 consists of a system that is capable of sharing data among multiple entities, versioning and replication, and performing privacy-preserving searches in an efficient manner.
+
+#### Encrypted Search Indexes (L2)
+
+To enable privacy-preserving querying (where the search index is opaque to the server), the client must prepare a list of encrypted index tags (that are stored in the Encrypted Resource, alongside the encrypted data contents).
+
+* TODO: add details about the salting + encryption mechanism of the index tags
+
+#### Versioning and Replication (L2)
+
+* A server must support _at least one_ versioning/change control mechanism
+* Replication done by the client, not server (since the client controls the keys, knows about which other servers to replicate to, etc.)
+* If an Encrypted Data Vault implementation aims to provide Replication functionality, it needs to also pick a versioning/change control strategy (since replication necessarily involves conflict resolution)
+* Some versioning strategies are implicit ("last write wins" - think of `rsync` or uploading a file to a file hosting service), but keep in mind that replication _always_ implies that some sort of conflict resolution mechanism is involved
+
+#### Sharing with other entities (L2)
 
 * Vault's choice of Authorization mechanism determines how a Client shares resources with other entities (authorization capability link or similar mechanism)
 
-#### Subscribing to server side notifications and pub-sub (layer 3)
+### Layer 3
 
-* Some servers supports notification or publish-subscribe mechanisms (such as notifying the client of updates to a resource by other clients); the client is responsible for implementing support for these mechanisms.
+#### Notifications (L3)
 
-#### Global data catalog and integrity protection (Layer 2 or 3?)
+A commonly associated feature with data storage providers is a mechanism by which to notify about changes to the data it persists. A vault may optional implement such mechanism by which clients can subscribe to changes in data from the vault.
+
+#### Global data catalog and integrity protection (L3)
 
 * Some use cases require a global catalog / listing of all the resource IDs that belong to a user
 * Some clients may store a copy of this catalog locally (and include integrity protection mechanism such as [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)) to guard against interference or deletion by the server
@@ -262,18 +265,36 @@ Encrypted Data Vaults allow for the following extension points to be modular / p
 
 ## Security and Privacy Considerations
 
+This section details the general security and privacy considerations as well
+as specific privacy implications of deploying Encrypted Data Vaults into
+production environments.
+
+### Malicious or Accidental Modification of Data
+
+While a service provider is not able to read or modify data in an
+Encrypted Data Vault, it is possible for a service provider to delete
+or modify encrypted data. The deletion or modification of encrypted data
+can be prevented by keeping a global manifest of data in the data vault.
+
 ### Compromised Vault
 
-In the event a vault is compromised/malicious , there are several attacks
+An Encrypted Data Vault can be compromised if the controller accidentally
+grants access to an attacker. Once an attacker has access to the system,
+they may modify, remove, or
 
-- Malicious/Accidental deletion of data
-- Ignoring authorization rules
-- Add garbage data to data store
-- Timing attacks on access to data
-- Do not put encrypted data on public networks
-- Unencrypted data and metadata on service provider
-- Partial Matching w/ Encrypted Indexes
-- What a malicious provider, threat model
+### Ignoring authorization rules
+
+### Add garbage data to data store
+
+### Timing attacks on access to data
+
+### Do not put encrypted data on public networks
+
+### Unencrypted data and metadata on service provider
+
+### Partial Matching w/ Encrypted Indexes
+
+### What a malicious provider, threat model
 
 ---------------------------- END OF PAPER ------------------------------
 
