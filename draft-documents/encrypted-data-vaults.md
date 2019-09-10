@@ -158,7 +158,7 @@ Encrypted data vaults define a client-server relationship, whereby the vault is 
 
 The Encrypted Data Vault architecture is layered in nature, where the foundational layer consists of an operational system with minimal features and more advanced features are layered on top. Implementations can choose to implement only the foundational layer, or optionally, additional layers consisting of a richer set of features for more advanced use cases.
 
-#### Server Responsibilities
+### Server Responsibilities
 
 The server is assumed to be of low trust and hence must have no visibility of the data in an un-encrypted state that it persists, however even in this model it still has a set of minimum responsibilities it must adhere to.
 
@@ -193,6 +193,12 @@ A client sets this configuration when a vault is created and the server validate
 
 The mechanism a server uses to persist data, such as storage on a local, networked, or distributed file system is determined by the implementation. The persistence mechanism is expected to adhere to the common expectations of a data storage provider, such as reliable storage and retrieval of data.
 
+#### Encrypted Data Chunking (L1)
+
+Encrypted Data Vaults are capable of storing many different types of data, including large unstructured binary data. This means that storing a file as a single entry would be challenging for systems that have limits on single record sizes. For example, some databases set the maximum size for a single record to 16MB. As a result, it is necessary that large data is chunked into sizes that are easily managed by a server. It is the responsibility of the client to set the chunk size of each resource and chunk large data into manageable chunks for the server. It is the responsibility of the server to deny requests to store chunks larger that it can handle.
+
+Each chunk is encrypted individually using authenticated encryption. Doing so protects against attacks where an attacking server replaces chunks in a large file and requires the entire file to be downloaded and decrypted by the victim before determining that the file is compromised. Encrypting each chunk with authenticated encryption ensures that a client knows that it has a valid chunk before proceeding to the next one. Note that another authorized client can still perform an attack by doing authenticated encryption on a chunk, but a server is not capable of launching the same attack.
+
 #### Resource Structure (L1)
 
 The process of storing encrypted data starts with the creation of a Resource by the client, with the following structure.
@@ -207,13 +213,7 @@ If the data is less than the chunk size, it is embedded directly into the `conte
 
 Otherwise, the data is sharded into chunks by the client (see next section), and each chunk is encrypted and sent to the server. In this case, `content` contains a manifest-like listing of URIs to individual chunks (integrity-protected by [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)).
 
-#### Encrypted Data Chunking (L1)
-
-Encrypted Data Vaults are capable of storing many different types of data, including large unstructured binary data. This means that storing a file as a single entry would be challenging for systems that have limits on single record sizes. For example, some databases set the maximum size for a single record to 16MB. As a result, it is necessary that large data is chunked into sizes that are easily managed by a server. It is the responsibility of the client to set the chunk size of each resource and chunk large data into manageable chunks for the server. It is the responsibility of the server to deny requests to store chunks larger that it can handle.
-
-Each chunk is encrypted individually using authenticated encryption. Doing so protects against attacks where an attacking server replaces chunks in a large file and requires the entire file to be downloaded and decrypted by the victim before determining that the file is compromised. Encrypting each chunk with authenticated encryption ensures that a client knows that it has a valid chunk before proceeding to the next one. Note that another authorized client can still perform an attack by doing authenticated encryption on a chunk, but a server is not capable of launching the same attack.
-
-#### Encrypted Resource (L1)
+#### Encrypted Resource Structure (L1)
 
 Creating the Encrypted Resource (if the data was sharded into chunks, this is done after the individual chunks are written to the server):
 
@@ -249,19 +249,20 @@ To enable privacy-preserving querying (where the search index is opaque to the s
 
 A commonly associated feature with data storage providers is a mechanism by which to notify about changes to the data it persists. A vault may optional implement such mechanism by which clients can subscribe to changes in data from the vault.
 
-#### Global data catalog and integrity protection (L3)
+#### Vault-wide Integrity Protection (L3)
 
 * Some use cases require a global catalog / listing of all the resource IDs that belong to a user
 * Some clients may store a copy of this catalog locally (and include integrity protection mechanism such as [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)) to guard against interference or deletion by the server
 
 ## Extension Points
 
-Encrypted Data Vaults allow for the following extension points to be modular / pluggable.
+Encrypted Data Vaults support a number of extension points:
 
-- Authorization Strategies
-- Protocol/API (http, didcomm-like, etc)
-- Versioning Strategies and Replication Strategies
-- Notification/pub-sub mechanisms
+- Encryption Strategies - One or more encryption strategies such as ECDH or XSalsaPoly1305 can be used to encrypt data.
+- Authorization Strategies - One or more authorization strategies such as OAuth, HTTP Signatures, or Authorization Capabilities can be used to protect access to encrypted data.
+- Protocol/API - One or more protocols such as library APIs, HTTPS, gRPC, or Bluetooth can be used to access the system.
+- Versioning Strategies and Replication Strategies - One or more versioning and replication strategies such as counters, cryptographic hashes, or Conflict-free Replication Data Types can be used to synchronize data.
+- Notification mechanisms - One or more notification mechanisms 
 
 ## Security and Privacy Considerations
 
