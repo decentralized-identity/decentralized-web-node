@@ -172,13 +172,13 @@ Since one of the primary design goals of this spec is privacy-preserving storage
 
 Layer 1 consists of a client-server system that is capable of encrypting data in transit and at rest.
 
-#### Enforcement of Authorization Policies (L1)
-
-When a vault client makes a request to query, persist, modify or delete data in the vault, the server enforces any authorization policy that is associated with the request.
-
 #### Validate Requests (L1)
 
 When a vault client makes a request to query, persist, modify or delete data in the vault, the server validates the request. Since any actual data content in a request to a vault is encrypted, the validation the server can perform is limited to the request data.
+
+#### Persist Data (L1)
+
+The mechanism a server uses to persist data, such as storage on a local, networked, or distributed file system is determined by the implementation. The persistence mechanism is expected to adhere to the common expectations of a data storage provider, such as reliable storage and retrieval of data.
 
 #### Persist Global Configuration (L1)
 
@@ -189,9 +189,9 @@ A vault has a global configuration that defines the following properties
 
 A client sets this configuration when a vault is created and the server validates that the configuration conforms to this specification.
 
-#### Persist Data (L1)
+#### Enforcement of Authorization Policies (L1)
 
-The mechanism a server uses to persist data, such as storage on a local, networked, or distributed file system is determined by the implementation. The persistence mechanism is expected to adhere to the common expectations of a data storage provider, such as reliable storage and retrieval of data.
+When a vault client makes a request to query, persist, modify or delete data in the vault, the server enforces any authorization policy that is associated with the request.
 
 #### Encrypted Data Chunking (L1)
 
@@ -262,7 +262,7 @@ Encrypted Data Vaults support a number of extension points:
 - Authorization Strategies - One or more authorization strategies such as OAuth, HTTP Signatures, or Authorization Capabilities can be used to protect access to encrypted data.
 - Protocol/API - One or more protocols such as library APIs, HTTPS, gRPC, or Bluetooth can be used to access the system.
 - Versioning Strategies and Replication Strategies - One or more versioning and replication strategies such as counters, cryptographic hashes, or Conflict-free Replication Data Types can be used to synchronize data.
-- Notification mechanisms - One or more notification mechanisms 
+- Notification mechanisms - One or more notification mechanisms
 
 ## Security and Privacy Considerations
 
@@ -273,29 +273,68 @@ production environments.
 ### Malicious or Accidental Modification of Data
 
 While a service provider is not able to read or modify data in an
-Encrypted Data Vault, it is possible for a service provider to delete
-or modify encrypted data. The deletion or modification of encrypted data
-can be prevented by keeping a global manifest of data in the data vault.
+Encrypted Data Vault, it is possible for a service provider to delete, add,
+or modify encrypted data. The deletion, addition, or modification of encrypted
+data can be prevented by keeping a global manifest of data in the data vault.
 
 ### Compromised Vault
 
 An Encrypted Data Vault can be compromised if the controller accidentally
-grants access to an attacker. Once an attacker has access to the system,
-they may modify, remove, or
-
-### Ignoring authorization rules
-
-### Add garbage data to data store
+grants access to an attacker. For example, a victim might accidentally
+authorize an attacker to the entire vault or mishandle their encryption
+key. Once an attacker has access to the system, they may modify, remove, or
+change the vault's configuration.
 
 ### Timing attacks on access to data
 
-### Do not put encrypted data on public networks
+While it is normally difficult for a server to determine the identity of an
+entity as well as the purpose for which that entity is accessing the
+encrypted data vault, there is always metadata related to access patterns,
+rough file sizes, and other information that is leaked when an entity accesses
+the vault. The system has been designed to not leak information that creates
+concerning privacy limitations and the approach protects against many, but
+not all, surveillance strategies utilized by servers that don't necessarily
+act in the best interest of the controller's privacy.
 
-### Unencrypted data and metadata on service provider
+### Encrypted Data on Public Networks
+
+Assuming that all encryption schemes are eventually broken is a safe
+assumption to make when protecting one's data. For this reason, it is
+inadvisable that servers use any sort of public storage network to store
+encrypted data as a storage strategy.
+
+### Unencrypted Data on Server
+
+While this system goes to great lengths to encrypt content and metadata,
+there are a handful of fields that cannot be encrypted in order to ensure
+the server can provide the features outlined in this specification.
+For example, a version number associated with data provides insight into
+how often the data is modified. The identifiers associated with
+encrypted content enables a server to gain knowledge by possibly correlating
+identifiers across documents. Implementations are advised to minimize the
+amount of information that is stored in an unencrypted fashion.
 
 ### Partial Matching w/ Encrypted Indexes
 
-### What a malicious provider, threat model
+The encrypted indexes used by this system are designed to maximize privacy.
+As a result, there are a number of operations that are common in search
+systems that are not available with encrypted indexes, such as partial
+matching on encrypted text fields and searches over a scalar range. These
+features might be added in the future through the use of zero-knowledge
+encryption schemes.
+
+### Threat Model for Malicious Service Provider
+
+While it is expected that most service providers are not malicious, it is
+also important to understand what a malicious service provider can and
+cannot do. The following attacks are possible given a malicious service
+provider:
+
+- Correlation of entities accessing information in a vault.
+- Speculation about the types of files stored in a vault depending on file size and access patterns
+- Addition, deletion, and modification of encrypted data
+- Not enforcing authorization policy set by the controller to encrypted data
+- Exfiltrating encrypted data to a system unknown to the controller
 
 ---------------------------- END OF PAPER ------------------------------
 
@@ -317,23 +356,6 @@ they may modify, remove, or
 - Encrypted searching relies on direct equality
 - What are the opportunities for encrypted searching (e.g. using Homomorphic encryption), and what are the dangers
 - We dont have any way to retrive the history of an objects updates
-
-### Existing solutions / implementations / proposals
-
-* Solid PODS
-    * LDP (RDF data) + authentication + ACL
-* Identity Hubs
-* Tahoe FS?
-* NextCloud
-*
-
-### Naming things is hard
-
-We need to define 'hub'?
-
-Do we call it something else? Is 'storage' right or is that more about the persistence layer?
-
-'encrypted' instead of 'secure'?
 
 ### Things missing from current spec
 
