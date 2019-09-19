@@ -23,33 +23,33 @@ The problem of decentralized data storage has been approached from various diffe
 
 | Project | In-transit Encryption | At-rest Encryption Required? | Metadata | Queries  | Storage
 | ------- | -------------------- | ----------------- | ----------- | ----------------- | -------
-| NextCloud | TLS | no, [beta support](https://nextcloud.com/endtoend/) avail. |  | yes | database & device fs
-| Solid | TLS | no | binary or structured linked data | no | not specified
+| NextCloud | TLS | no, [beta support](https://nextcloud.com/endtoend/) avail. |  | [WebDAV search](https://docs.nextcloud.com/server/16/developer_manual/client_apis/WebDAV/search.html) | database & device fs
+| Solid | TLS | no | binary or structured linked data | [experimental](https://github.com/solid/query-ldflex) | modular (currently device fs)
 | Blockstack | TLS | no (supported) | n/a |
-| Identity Hubs | yes | yes (but not metadata) | JWTs | yes | device fs
-| Datashards | yes | yes | binary | no | device fs
+| Identity Hubs | custom | yes (but not metadata) | JWTs | yes | database & device fs
+| Datashards | n/a | yes | binary | no | modular (device fs)
 | IPFS | [custom non-TLS](https://github.com/ipfs/specs/issues/29) | no | binary? | no | public network
 | Tahoe LAFS |
 
 | Project | Authn | Access Control | Read-write interface | Application ecosystem | Standard(s)
 | ------- | ---- | -------------- | -------------------- | --------------------- | ----------------
-| NextCloud | OAuth? | ?? | WebDAV | yes | IETF & own
+| NextCloud | [custom](https://docs.nextcloud.com/server/16/developer_manual/client_apis/LoginFlow/) | ?? | WebDAV | yes | IETF & own
 | Solid | [WebID-OIDC](https://github.com/solid/webid-oidc-spec) | [WAC](https://github.com/solid/web-access-control-spec) | REST (LDP) | yes | W3C, IETF & own
 | Blockstack | bearer token | per-resource | REST | yes | own
-| Identity Hubs | DID Auth | JSON-LD Permissions API | JSON API | pending | own
+| Identity Hubs | DID Authn | JSON-LD Permissions API | JSON API | pending | own
 | Datashards | n/a | OCAP? | | no | not yet..
 | IPFS | | | | | own
 | Tahoe LAFS | | | | | own
 
-Separating storage from applications which use the stored data is key to most of these architectures. [Blockstack](https://docs.blockstack.org/storage/overview.html), [NextCloud](https://docs.nextcloud.com/server/16/developer_manual/client_apis/index.html), [Solid](https://github.com/solid/solid-spec/) and [DIF's Identity Hubs](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md) all describe architectures for decoupled end-user applications along with storage. Such applications may be generic file-management type interfaces for browsing or sharing any data, or specialized domain specific tools designed for particular tasks (eg. a calendar). [Datashards](https://github.com/WebOfTrustInfo/rwot9-prague/blob/master/topics-and-advance-readings/datashards-rationale.md), [Tahoe-LAFS](https://tahoe-lafs.org/trac/tahoe-lafs) and [IPFS](https://docs.ipfs.io) are only concerned with data storage and retreival.
+Separating storage from applications which use the stored data is key to most of these architectures. [Blockstack](https://docs.blockstack.org/storage/overview.html), [NextCloud](https://docs.nextcloud.com/server/16/developer_manual/client_apis/), [Solid](https://github.com/solid/solid-spec/) and [DIF's Identity Hubs](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md) all describe architectures for decoupled end-user applications from storage. Such applications may be generic file management type interfaces for browsing or sharing data, or specialized domain specific tools designed for particular tasks (eg. a calendar). [Datashards](https://github.com/WebOfTrustInfo/rwot9-prague/blob/master/topics-and-advance-readings/datashards-rationale.md), [Tahoe-LAFS](https://tahoe-lafs.org/trac/tahoe-lafs) and [IPFS](https://docs.ipfs.io) are only concerned with data storage and retrieval.
 
 In the case of Solid, NextCloud and Identity Hubs, end users have the option of installing and running the server portion of the data store on a device they control, or signing up to an already configured instance hosted by a trusted third-party (eg. a commercial provider, affiliated institution, or friend). Blockstack also uses this model for the "hub" interface between clients and storage servers, alongside a blockchain for transactional data, and permits the user to choose cloud storage (such as AWS or a Digital Ocean VPS) for the data itself. For Datashards and Tahoe-LAFS, end users install a native application on one or more device(s) they control, and data is stored locally to these devices. IPFS is peer-to-peer, so end users only install the read/write client, and data is stored across a public network.
 
 NextCloud uses WebDAV to allow client applications to read, write and search data on the server's filesystem using a directory structure, and OCP for authentication. End-to-end encryption is currently in beta and can be enabled by users, but is not on by default. Spreading data across multiple instances for scalability is a [commercial enterprise offering](https://nextcloud.com/globalscale/). Different NextCloud servers do not talk to each other directly, but can do via applications installed by the user.
 
-Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID Connect](https://github.com/solid/solid-auth-oidc) auth and [Web Access Control](https://github.com/solid/web-access-control-spec) to end users to sign into client applications, which discover the user's data store URI from their profile and can then read or write data. Resources (data objects) on Solid servers are represented by HTTP URIs, and Solid servers receive HTTP requests (`GET`, `POST`, `PUT`, `DELETE`) containing RDF payloads and create or modify the target URI accordingly. Resources are listed in `ldp:Container`s, which serve as indexes which can be updated by end users or client applications according to specific needs. Precisely how the data is stored is an implementation detail (could be a filesystem, a database). No search interface has been specified, but some implementations may expose a SPARQL endpoint or Triple Pattern Fragments. Data on Solid servers is not encrypted but HTTPS is assumed for the connection between clients and servers. Different instances of Solid servers do not communicate with each other.
+Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID Connect](https://github.com/solid/solid-auth-oidc) auth and [Web Access Control](https://github.com/solid/web-access-control-spec) to enable users to sign into client applications, which discover the user's data store URI from their profile and can then read or write data. Resources (data objects) on Solid servers are represented by HTTP URIs, and Solid servers receive HTTP requests (`GET`, `POST`, `PUT`, `DELETE`) containing RDF payloads and create or modify the target URI accordingly. Resources are listed in `ldp:Container`s, which serve as indexes which can be updated by end users or client applications according to specific needs. Precisely how the data is stored is an implementation detail (could be a filesystem or a database). No search interface has been specified, but some implementations may expose a SPARQL endpoint or Triple Pattern Fragments. Data on Solid servers is not required to be encrypted at rest, but HTTPS is assumed for the connection between clients and servers. Different instances of Solid servers do not communicate with each other (client apps perform all communication between storage servers).
 
-Blockstack uses "storage hubs" called Gaia, which run as a service and write to a user's chosen storage once a user has authenticated with the clientside application they wish to use. Gaia writes the data exactly as given by the application, whether a valid or invalid data format, encrypted or not, so long as a valid bearer token is included in the request. Clients interact with Gaia through a REST API.
+Blockstack uses "storage hubs" called Gaia, which run as a service and write to a user's chosen storage once a user has authenticated with the client-side application they wish to use. Gaia writes the data exactly as given by the application, whether a valid or invalid data format, encrypted or not, so long as a valid bearer token is included in the request. Clients interact with Gaia through a REST API.
 
 Identity Hubs enable the end user to store their data in one or more locations which are linked to a DID. Creating and updating data and metadata in the Hub is done by posting JWTs to specified endpoints. The JWT headers include metadata for the data in the JWT body, as well as a signature. The read and write requests are encrypted on the wire, and data is encrypted on the Hub. Access control is carried out via posting to the Permissions interface and indexing is done via the Collections interface. Clients are responsible for writing appropriate metadata to Collections, which are not themselves encrypted, enabling the Hub to respond to queries. Reads require multiple requests, first to retrieve metadata for the desired data object(s), and then to retrieve the sequence of commits which make up the actual data. Mechanisms for authentication and synchronization of changes and conflict resolution between Hub instances are still under development. Identity Hubs are responsible for additional things beyond just data storage, for example management of the end user's profile; transmission of human- or machine-readable messages through the Actions interface; pointers to external services.
 
@@ -65,11 +65,13 @@ IPFS is a distributed content-addressed storage mechanism which breaks data up i
 From an end-user perspective the following top three use cases have been identified. This list is not extensive and just covers the three most important ones.
 
 #### Use Data and Control Access to it
-As an end-user, I want to store my data in an Encrypted Data Vault. Since I don’t want the storage provider to be aware of any data I store, I will encrypt my data on the edge device. This means that all my data is encrypted in transit and at rest, and only I as end-user can see and use the actual data. When I have stored my data, I need a unique endpoint for each document that I can use to retrieve the data I have stored before. For stored data, I should have full control over who, besides me, has access to the data.
+As an end-user, I want to store my data in an Encrypted Data Vault. Since I don’t want the storage provider to be aware of any data I store, I will encrypt my data on the edge device. This means that all my data is encrypted in transit and at rest, and only I as end-user can see and use the actual data. When I have stored my data, I need a unique identifier for each document that I can use to retrieve the data I have stored before. For stored data, I should have full control over who, besides me, has access to the data.
+
 A large amount of data will be stored in the vault which requires that I can do some searching. Since I don’t want my storage provider to be aware of any (meta-)data, I want to use encrypted indexes and be able to query the vault on those.
 
 #### Share Data With One or More Entities
-As an end-user, I might want to share my data with other entities. I can decide on sharing with other entities when I save the data for the first time or in a later stage. I can give access to (certain documents in) my Encrypted Data Vault by sharing credentials (e.g. public key) from the other entity. The vault should only give access to others when I have explicitly given consent for each document. In case that I have written a stream (data splitted into chunks), the manifest as well as each chunk must contain the sharing authorization to other parties.
+As an end-user, I might want to share my data with other entities. I can decide on giving other entities access to data in my Encrypted Data Vault when I save the data for the first time or in a later stage. The vault should only give access to others when I have explicitly given consent for each document.
+
 At any time, I want to be able to revoke authorizations to other entities. A possible feature can be that when sharing data, I can immediately include an expiration date for the data authorization to the other entity.
 
 #### Store the Same Data in More Than One Place
@@ -83,7 +85,7 @@ This specification can be deployed in a number of topologies to support the vari
 
 ### Mobile Device Only
 
-An Encrypted Data Vault can be realized on a mobile device as a library providing functionality via a binary API. This library can utilize local storage to provide an encrypted database. In this configuration, both the server and the client would reside on the same device.
+An Encrypted Data Vault can be realized on a mobile device as a library providing functionality via a binary API. This library can use local storage to provide an encrypted database. In this configuration, both the server and the client would reside on the same device.
 
 ### Mobile Device Plus Cloud Storage
 
@@ -95,7 +97,7 @@ When adding more devices managed by a single user, the vault can be used to sync
 
 ### Multiple Devices (Multiple Users) Plus Cloud Storage
 
-When pairing multiple users with cloud storage, the vault can be used to synchronize data between multiple users if an appropriate replication and merge strategy is utilized.
+When pairing multiple users with cloud storage, the vault can be used to synchronize data between multiple users if an appropriate replication and merge strategy is used.
 
 ## Requirements
 
@@ -113,7 +115,7 @@ Since data could be shared with more than one entity, it is also necessary for t
 
 This system is designed to ensure the authorized sharing of information between multiple parties. It is necessary to have a mechanism that enables the sharing of encrypted information among one or more entities.
 
-There are multiple valid authorization schemes that are possible. The system is expected to specify one mandatory mechanism, but also allow other alternate authorization schemes. Examples of authorization schemes include OAuth2, HTTP Signatures, and [Authorization Capabilities](https://w3c-ccg.github.io/zcap-ld/) (ZCAPs).
+There are multiple valid authorization schemes that are possible. The system is expected to specify one mandatory mechanism, but also allow other alternate authorization schemes. Examples of authorization schemes include OAuth2, Web Access Control, and [Authorization Capabilities](https://w3c-ccg.github.io/zcap-ld/) (ZCAPs).
 
 ### Identifiers
 
@@ -187,11 +189,10 @@ The mechanism a server uses to persist data, such as storage on a local, network
 
 A vault has a global configuration that defines the following properties:
 
-* Vault controller
 * Chunk size
-* Authorization framework
+* Other config metadata
 
-A client sets this configuration when a vault is created, and the server validates that the configuration conforms to this specification.
+The configuration allows the the client to perform capability discovery regarding e.g. authorization, protocol and replication mechanisms, used by the server.
 
 #### Server: Enforcement of Authorization Policies (L1)
 
@@ -284,11 +285,7 @@ data can be prevented by keeping a global manifest of data in the data vault.
 
 ### Compromised Vault
 
-An Encrypted Data Vault can be compromised if the controller accidentally
-grants access to an attacker. For example, a victim might accidentally
-authorize an attacker to the entire vault or mishandle their encryption
-key. Once an attacker has access to the system, they may modify, remove, or
-change the vault's configuration.
+An Encrypted Data Vault can be compromised if the data controller (the entity who holds the decryption keys and appropriate authorization credentials) accidentally grants access to an attacker. For example, a victim might accidentally authorize an attacker to the entire vault or mishandle their encryption key. Once an attacker has access to the system, they may modify, remove, or change the vault's configuration.
 
 ### Data Access Timing Attacks
 
@@ -299,7 +296,7 @@ rough file sizes, and other information that is leaked when an entity accesses
 the vault. The system has been designed to not leak information that creates
 concerning privacy limitations and the approach protects against many, but
 not all, surveillance strategies utilized by servers that don't necessarily
-act in the best interest of the controller's privacy.
+act in the best interest of the privacy of the vault's users.
 
 ### Encrypted Data on Public Networks
 
@@ -338,8 +335,8 @@ provider:
 - Correlation of entities accessing information in a vault.
 - Speculation about the types of files stored in a vault depending on file size and access patterns
 - Addition, deletion, and modification of encrypted data
-- Not enforcing authorization policy set by the controller to encrypted data
-- Exfiltrating encrypted data to a system unknown to the controller
+- Not enforcing authorization policy set on the encrypted data
+- Exfiltrating encrypted data to an unknown external system
 
 ---------------------------- END OF PAPER ------------------------------
 
