@@ -113,11 +113,11 @@ Since data could be shared with more than one entity, it is also necessary for t
 
 This system is designed to ensure the authorized sharing of information between multiple parties. It is necessary to have a mechanism that enables the sharing of encrypted information among one or more entities.
 
-There are multiple valid authorization schemes that are possible. The system is expected to specify one mandatory mechanism, but also allow other alternate authorization schemes. Examples of authorization schemes include OAuth2, HTTP Signatures, and Authorization Capabilities (ZCAPs).
+There are multiple valid authorization schemes that are possible. The system is expected to specify one mandatory mechanism, but also allow other alternate authorization schemes. Examples of authorization schemes include OAuth2, HTTP Signatures, and [Authorization Capabilities](https://w3c-ccg.github.io/zcap-ld/) (ZCAPs).
 
 ### Identifiers
 
-To the greatest extent possible, the system is expected to be identifier agnostic. In general, identifiers that are a form of URN or URL are preferred. While it is presumed that Decentralized Identifiers will be used by the system in a few important ways, hardcoding the implementations to DIDs has been identified as an anti-pattern.
+To the greatest extent possible, the system is expected to be identifier agnostic. In general, identifiers that are a form of URN or URL are preferred. While it is presumed that [Decentralized Identifiers](https://w3c-ccg.github.io/did-spec/) (DIDs) will be used by the system in a few important ways, hardcoding the implementations to DIDs has been identified as an anti-pattern.
 
 ### Versioning and Replication
 
@@ -167,7 +167,7 @@ The server is assumed to be of low trust, and must have no visibility into the d
 
 ### Client Responsibilities
 
-The client is responsible for providing an interface to the Server, with bindings for each relevant protocol (HTTP, RPC, or binary over-the-wire protocols), as required by the use case.
+The client is responsible for providing an interface to the server, with bindings for each relevant protocol (HTTP, RPC, or binary over-the-wire protocols), as required by the use case.
 
 Since one of the primary design goals of this spec is privacy-preserving storage of data, it is essential that all encryption and decryption of data is done on the client side, at the edges. The data (including metadata) MUST be opaque to the server, and the architecture is designed to prevent the server from being able to decrypt it.
 
@@ -195,7 +195,7 @@ A client sets this configuration when a vault is created, and the server validat
 
 #### Server: Enforcement of Authorization Policies (L1)
 
-When a vault client makes a request to query, persist, modify or delete data in the vault, the server enforces any authorization policy that is associated with the request.
+When a vault client makes a request to store, query, modify or delete data in the vault, the server enforces any authorization policy that is associated with the request.
 
 #### Client: Encrypted Data Chunking (L1)
 
@@ -240,13 +240,13 @@ To enable privacy-preserving querying (where the search index is opaque to the s
 #### Client: Versioning and Replication (L2)
 
 * A server must support _at least one_ versioning/change control mechanism
-* Replication done by the client, not server (since the client controls the keys, knows about which other servers to replicate to, etc.)
-* If an Encrypted Data Vault implementation aims to provide Replication functionality, it MUST also pick a versioning/change control strategy (since replication necessarily involves conflict resolution)
-* Some versioning strategies are implicit ("last write wins" - think of `rsync` or uploading a file to a file hosting service), but keep in mind that replication _always_ implies that some sort of conflict resolution mechanism is involved
+* Replication is done by the client, not by the server (since the client controls the keys, knows about which other servers to replicate to, etc.)
+* If an Encrypted Data Vault implementation aims to provide replication functionality, it MUST also pick a versioning/change control strategy (since replication necessarily involves conflict resolution)
+* Some versioning strategies are implicit ("last write wins" - think of `rsync` or uploading a file to a file hosting service), but keep in mind that a replication strategy _always_ implies that some sort of conflict resolution mechanism should be involved
 
 #### Client: Sharing With Other Entities (L2)
 
-* An individual vault's choice of Authorization mechanism determines how a Client shares resources with other entities (authorization capability link or similar mechanism)
+* An individual vault's choice of authorization mechanism determines how a client shares resources with other entities (authorization capability link or similar mechanism)
 
 ### Layer 3 Responsibilities
 
@@ -256,7 +256,7 @@ A commonly associated feature with data storage providers is a mechanism by whic
 
 #### Client: Vault-wide Integrity Protection (L3)
 
-* Some use cases require a global catalog / listing of all the resource IDs that belong to a user
+* Some use cases require a global catalog/listing of all the resource IDs that belong to a user
 * Some clients may store a copy of this catalog locally (and include integrity protection mechanism such as [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)) to guard against interference or deletion by the server
 
 ## Extension Points
