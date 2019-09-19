@@ -9,13 +9,13 @@ Legislation, such as the General Data Protection Regulation (GDPR), incentivizes
 
 This paper describes current approaches and architectures, derived requirements, design goals, and dangers that implementers should be aware of when implementing data storage. This paper also explores the base assumptions of these sorts of systems such as providing privacy-respecting mechanisms for storing, indexing, and retrieving encrypted data, as well as data portability.
 
-## Introduction
+## Context
 
->TODO add more text after paper is done
+We acknowledge the different terminology, architectures and responsibilities for components that people might have in this space. However, to clearly explain where Encrypted Data Vaults play a role, the diagram below is included. Encrypted Data Vaults fulfill the storage role that is shown in the diagram. This paper elaborates on the role itself as well as the interaction it has with the agent, or sometimes so-called wallet.
 
-We acknowledge the different terminology, architectures and responsibilities for components that people might have in this space. However, to clearly explain where Encrypted Data Vaults play a role, the diagram below is included. Encrypted Data Vaults fulfill the storage role that is shown in the diagram. This paper elaborates on the role itself as well as the interaction it has with the agent, or sometimes so-called wallet.  
+It is possible that all components are deployed on the same device but for instance to provide backup possibilities it can be beneficial to deploy components on different hardware. The key management service (KMS) is decoupled, so the storage provider never has access to unencrypted data. The end-user interacts with the agent/wallet on an edge device for e.g. storing data.
 
-![Roles and interactions](https://i.imgur.com/uDpigFz.png)
+![Roles and interactions](media/edv.png)
 
 ## Survey of existing work
 
