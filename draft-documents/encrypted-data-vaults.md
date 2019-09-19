@@ -1,12 +1,11 @@
 # Encrypted Data Vaults
 Authors: David Lamers, Tobias Looker, Daniel Bluhm, Amy Guy, Manu Sporny, Dmitri Zagidulin, Kim Hamilton Duffy
 
-Paper Lead: Manu Sporny
-After RWoT9 Lead: Amy Guy
+Paper Lead: Manu Sporny, after RWoT9 Lead: Amy Guy
 
 We store a significant amount of sensitive data online, such as personally identifying information (PII), trade secrets, family pictures, and customer information. The data that we store should be encrypted in transit and at rest but is often not protected in an appropriate manner.
 
-Legislation, such as the General Data Protection Regulation (GDPR), incentivizes service providers to better preserve individuals' privacy, primarily through making the providers liable in the event of a data breach. This liability pressure has revealed a technological gap, whereby providers are often not equipped with technology that can suitably protect their customers. Encrypted data vaults fill this gap and provide a variety of other benefits.
+Legislation, such as the General Data Protection Regulation (GDPR), incentivizes service providers to better preserve individuals' privacy, primarily through making the providers liable in the event of a data breach. This liability pressure has revealed a technological gap, whereby providers are often not equipped with technology that can suitably protect their customers. Encrypted Data Vaults fill this gap and provide a variety of other benefits.
 
 This paper describes current approaches and architectures, derived requirements, design goals, and dangers that implementers should be aware of when implementing data storage. This paper also explores the base assumptions of these sorts of systems such as providing privacy-respecting mechanisms for storing, indexing, and retrieving encrypted data, as well as data portability.
 
@@ -14,7 +13,7 @@ This paper describes current approaches and architectures, derived requirements,
 
 >TODO add more text after paper is done
 
-We acknowledge the different terminology, architectures and responsibilities for components that people might have in this space. However, to clearly explain where encrypted data vaults play a role, the diagram below is included. Encrypted data vaults fulfill the storage role that is shown in the diagram. This paper elaborates on the role itself as well as the interaction it has with the agent, or sometimes so-called wallet.  
+We acknowledge the different terminology, architectures and responsibilities for components that people might have in this space. However, to clearly explain where Encrypted Data Vaults play a role, the diagram below is included. Encrypted Data Vaults fulfill the storage role that is shown in the diagram. This paper elaborates on the role itself as well as the interaction it has with the agent, or sometimes so-called wallet.  
 
 ![Roles and interactions](https://i.imgur.com/uDpigFz.png)
 
@@ -66,15 +65,15 @@ IPFS is a distributed content-addressed storage mechanism which breaks data up i
 From an end-user perspective the following top three use cases have been identified. This list is not extensive and just covers the three most important ones.
 
 #### Use Data and Control Access to it
-As an end-user, I want to store my data in an encrypted data vault. Since I don’t want the storage provider to be aware of any data I store, I will encrypt my data on the edge device. This means that all my data is encrypted in transit and at rest, and only I as end-user can see and use the actual data. When I have stored my data, I need a unique endpoint for each document that I can use to retrieve the data I have stored before. For stored data, I should have full control over who, besides me, has access to the data.
+As an end-user, I want to store my data in an Encrypted Data Vault. Since I don’t want the storage provider to be aware of any data I store, I will encrypt my data on the edge device. This means that all my data is encrypted in transit and at rest, and only I as end-user can see and use the actual data. When I have stored my data, I need a unique endpoint for each document that I can use to retrieve the data I have stored before. For stored data, I should have full control over who, besides me, has access to the data.
 A large amount of data will be stored in the vault which requires that I can do some searching. Since I don’t want my storage provider to be aware of any (meta-)data, I want to use encrypted indexes and be able to query the vault on those.
 
 #### Share Data With One or More Entities
-As an end-user, I might want to share my data with other entities. I can decide on sharing with other entities when I save the data for the first time or in a later stage. I can give access to (certain documents in) my encrypted data vault by sharing credentials (e.g. public key) from the other entity. The vault should only give access to others when I have explicitly given consent for each document. In case that I have written a stream (data splitted into chunks), the manifest as well as each chunk must contain the sharing authorization to other parties.
+As an end-user, I might want to share my data with other entities. I can decide on sharing with other entities when I save the data for the first time or in a later stage. I can give access to (certain documents in) my Encrypted Data Vault by sharing credentials (e.g. public key) from the other entity. The vault should only give access to others when I have explicitly given consent for each document. In case that I have written a stream (data splitted into chunks), the manifest as well as each chunk must contain the sharing authorization to other parties.
 At any time, I want to be able to revoke authorizations to other entities. A possible feature can be that when sharing data, I can immediately include an expiration date for the data authorization to the other entity.
 
 #### Store the Same Data in More Than One Place
-For safety, availability, and other reasons, I may want to make use of multiple encrypted data vaults. These vaults can be hosted by different storage providers, and can be accessible over different protocols. One vault can for instance be local on my phone, while another is cloud-based. I want to be able to let the vaults synchronize between each other. As an end-user, I don’t want to be actively involved in the replication and conflict resolution process. However, if versioning conflicts do arise during replication, I want to be notified, and to be able to manually select the desired version.
+For safety, availability, and other reasons, I may want to make use of multiple Encrypted Data Vaults. These vaults can be hosted by different storage providers, and can be accessible over different protocols. One vault can for instance be local on my phone, while another is cloud-based. I want to be able to let the vaults synchronize between each other. As an end-user, I don’t want to be actively involved in the replication and conflict resolution process. However, if versioning conflicts do arise during replication, I want to be notified, and to be able to manually select the desired version.
 
 The requirements and architecture sections further elaborate on the technical side of the use cases.
 
@@ -295,7 +294,7 @@ change the vault's configuration.
 
 While it is normally difficult for a server to determine the identity of an
 entity as well as the purpose for which that entity is accessing the
-encrypted data vault, there is always metadata related to access patterns,
+Encrypted Data Vault, there is always metadata related to access patterns,
 rough file sizes, and other information that is leaked when an entity accesses
 the vault. The system has been designed to not leak information that creates
 concerning privacy limitations and the approach protects against many, but
@@ -354,7 +353,7 @@ provider:
 
 ## General Thoughts
 
-- If we are going to claim encrypted data vaults have integrity, we need to address whether the vault provider has the ability to delete information without a clients knowledge.
+- If we are going to claim Encrypted Data Vaults have integrity, we need to address whether the vault provider has the ability to delete information without a clients knowledge.
 - Authorization model, does the vault merely enforce authorization rules, or act as an authorization server.
 - What are the assumptions of trust the host the vault must provide, enforcement of authorization rules? Perhaps discuss potential attack vectors from the host of the vault?
 - Discuss if data vault should have the responsibility to sync with other data vault (and if so, how to resolve conflicts)
