@@ -225,33 +225,31 @@ from the core use cases.
 ### Privacy and Multi-party Encryption
 
 One of the main goals of this system is ensuring the privacy of an entity's
-data, so that it is always protected from unauthorized parties.
+data, so that it cannot be accessed by unauthorized parties.
 
-To accomplish this, the use of encryption in transit and at rest is required.
+To accomplish this, the data must be encrypted both while it is in transit
+(being sent over a network) and while it is at rest (on disk).
 
 Since data could be shared with more than one entity, it is also necessary for
 the encryption mechanism to support encrypting data to multiple parties.
 
 ### Sharing and Authorization
 
-This system is designed to ensure the authorized sharing of information between
-multiple parties. It is necessary to have a mechanism that enables the sharing
+It is necessary to have a mechanism that enables authorized sharing
 of encrypted information among one or more entities.
 
-There are multiple valid authorization schemes that are possible. The system is
-expected to specify one mandatory mechanism, but also allow other alternate
-authorization schemes. Examples of authorization schemes include OAuth2, Web
-Access Control, and [Authorization
-Capabilities](https://w3c-ccg.github.io/zcap-ld/) (ZCAPs).
+The system is expected to specify one mandatory authorization scheme,
+but also allow other alternate authorization schemes. Examples of
+authorization schemes include OAuth2, Web Access Control, and
+[Authorization Capabilities](https://w3c-ccg.github.io/zcap-ld/) (ZCAPs).
 
 ### Identifiers
 
-To the greatest extent possible, the system is expected to be identifier
-agnostic. In general, identifiers that are a form of URN or URL are preferred.
-While it is presumed that [Decentralized
+The system should be identifier agnostic. In general, identifiers that are a
+form of URN or URL are preferred. While it is presumed that [Decentralized
 Identifiers](https://w3c-ccg.github.io/did-spec/) (DIDs) will be used by the
-system in a few important ways, hardcoding the implementations to DIDs has been
-identified as an anti-pattern.
+system in a few important ways, hardcoding the implementations to DIDs would be
+an anti-pattern.
 
 ### Versioning and Replication
 
@@ -282,7 +280,7 @@ and various binary on-the-wire protocols.
 ## Design Goals
 
 This section elaborates upon a number of guiding principles and design goals
-that have shaped this system.
+that shape Encrypted Data Vaults.
 
 ### Layered and Modular Architecture
 
@@ -305,11 +303,12 @@ if the tradeoffs are worth the new functionality.
 
 ### Push Implementation Complexity to the Client
 
-Servers in this system are expected to provide "dumb storage". The more a server
-knows, the greater the risk to privacy and the more liability the service
+Servers in this system are expected to provide _only_ storage, with no
+additional logic. The more a server knows, the greater the risk to the privacy
+of the entity storing the data, and the more liability the service
 provider might have for hosting data. In addition, pushing complexity to the
 client enables service providers to provide stable server-side implementations
-while innovation can be pushed off to clients.
+while innovation can by carried out by clients.
 
 ## Architecture
 
