@@ -3,8 +3,7 @@ Authors (in alphabetical order): Daniel Bluhm, Kim Hamilton Duffy, Amy Guy, Davi
 
 We store a significant amount of sensitive data online, such as personally
 identifying information (PII), trade secrets, family pictures, and customer
-information. The data that we store should be encrypted in transit and at rest
-but is often not protected in an appropriate manner.
+information. The data that we store is often not protected in an appropriate manner.
 
 Legislation, such as the General Data Protection Regulation (GDPR), incentivizes
 service providers to better preserve individuals' privacy, primarily through
@@ -19,34 +18,20 @@ data storage. This paper also explores the base assumptions of these sorts of
 systems such as providing privacy-respecting mechanisms for storing, indexing,
 and retrieving encrypted data, as well as data portability.
 
-## Ecosystem
-
-We acknowledge the different terminology, architectures and responsibilities for
-components that people might have in this space. To clearly explain where
-Encrypted Data Vaults play a role, a diagram of the ecosystem is provided
-below. Encrypted Data Vaults fulfill the storage role that is shown in the
-diagram. This paper elaborates on the role itself as well as the interaction it
-has with the agent, also known as a wallet.
-
-It is possible to deploy all components on the same device. It is also possible
-to deploy the components on multiple devices, such as in backup scenarios  where
-it is beneficial to have separate hardware redundancies. The key management
-service (KMS) is typically decoupled, so the storage provider never has access
-to unencrypted data. The end-user interacts with the agent/wallet via an edge
-device such as when they need to store and retrieve data.
-
-![Roles and interactions](media/edv.png)
-
-## Survey of existing work
+## Current ecosystem and existing work
 
 The problem of decentralized data storage has been approached from various
 different angles, and personal data stores (PDS), decentralized or otherwise,
-have a long history in commercial and academic settings
-[1](https://en.wikipedia.org/wiki/Personal_data_service),
+have a long history in commercial and academic settings [[1](https://en.wikipedia.org/wiki/Personal_data_service),
 [2](http://www.randomwalker.info/publications/critical-look-at-decentralization-v1.pdf)].
-This section outlines commonalities and differences between different existing
-implementations, which are currently active, and which are concerned with
-empowering end users to control their data.
+Different approaches have resulted in variations in terminology and architectures.
+The diagram below shows the types of components that are emerging, and the roles
+they play. Encrypted Data Vaults fulfill a _storage_ role.
+
+![Roles and interactions](media/edv.png)
+
+What follows is an outline of commonalities and differences between a selection
+of existing implementations.
 
 | Project | In-transit Encryption | At-rest Encryption Required? | Metadata | Queries  | Storage
 | ------- | -------------------- | ----------------- | ----------- | ----------------- | -------
@@ -169,20 +154,18 @@ infrastructure for agent interactions but does not provide a solution for data
 storage.
 
 ## Core Use Cases
-From the perspective of a person using this ecosystem, the following three use
-cases have been identified as representative of common usage patterns. Other
-use cases exist and may be documented in future revisions of this document.
+The following three use
+cases have been identified as representative of common usage patterns (though
+are by no means the only ones).
 
 #### Use Data and Control Access to it
 As an end-user, I want to store my data in a safe location. I don’t want the
-storage provider to be aware of any data I store. This means that all my data is
-unreadable in transit and while stored and only I can see and use the actual
-data. For stored data, I should have full control over who, besides me, has
+storage provider to be able to see any data I store. This means that only I can
+see and use the data. I should have full control over who, besides me, has
 access to the data.
 
-A large amount of data will be stored in the vault which requires that I can do
-some searching, but I don't want the service provider to know what I'm searching
-for.
+A large amount of data will be stored which requires that I can do some
+searching, but I don't want the service provider to know what I'm searching for.
 
 #### Share Data With One or More Entities
 I want to share my data with other people and services. I can decide on giving
@@ -190,22 +173,18 @@ other entities access to data in my storage area when I save the data for the
 first time or in a later stage. The storage should only give access to others
 when I have explicitly given consent for each item.
 
-I want to be able to revoke authorizations to other entities at any time. When
-sharing data, I can immediately include an expiration date for the data
-authorization to the other entity.
+I want to be able to revoke the access of others at any time. When
+sharing data, I can include an expiration date for the 
+access to my data by a third-party.
 
 #### Store the Same Data in More Than One Place
-For safety, availability, and other reasons, I may want to make use of multiple
-storage locations. These locations can be hosted by different storage
-providers, and can be accessible over different protocols. One location could
-be local on my phone, while another is cloud-based. I want to be able
-to let the locations synchronize between each other. I don’t want
-to be actively involved in the replication and conflict resolution process.
-However, if versioning conflicts do arise during replication, I want to be
-notified, and to be able to manually select the desired version.
-
-The requirements and architecture sections further elaborate on the technical
-side of the use cases.
+I want to backup my data across multiple
+storage locations in case one goes down. These locations can be hosted by
+different storage providers, and can be accessible over different protocols. One
+location could be local on my phone, while another is cloud-based. The locations
+should be able to synchronize between each other so data is up to date in both
+places regardless of how I create or update data, and this should happen
+automatically and without my help as much as possible.
 
 ## Deployment Topologies
 
