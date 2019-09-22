@@ -322,7 +322,7 @@ of minimum responsibilities it must adhere to.
 
 The client is responsible for providing an interface to the server, with
 bindings for each relevant protocol (HTTP, RPC, or binary over-the-wire
-protocols), as required by the use case.
+protocols), as required by the implementation.
 
 All encryption and decryption of data is done on
 the client side, at the edges. The data (including metadata) MUST be opaque to
@@ -413,9 +413,11 @@ Creating the Encrypted Resource (if the data was sharded into chunks, this is
 done after the individual chunks are written to the server):
 
 * `id`
-* `index` - encrypted index tags prepared by the client (for use with privacy-preserving querying over encrypted resources)
+* `index` - encrypted index tags prepared by the client (for use with
+privacy-preserving querying over encrypted resources)
 * _Versioning metadata_ - such as sequence numbers, Git-like hashes, or other mechanisms
-* _Encrypted resource payload_ - encoded as a [`jwe`](https://tools.ietf.org/html/rfc7516), [`cwe`](https://tools.ietf.org/html/rfc8152#section-5) or other appropriate mechanism
+* _Encrypted resource payload_ - encoded as a [`jwe`](https://tools.ietf.org/html/rfc7516),
+[`cwe`](https://tools.ietf.org/html/rfc8152#section-5) or other appropriate mechanism
 
 ### Layer 2 Responsibilities
 
@@ -439,7 +441,7 @@ the keys, knows about which other servers to replicate to, etc.). If an
 Encrypted Data Vault implementation aims to provide replication functionality,
 it MUST also pick a versioning/change control strategy (since replication
 necessarily involves conflict resolution). Some versioning strategies are
-implicit ("last write wins" - think of `rsync` or uploading a file to a file
+implicit ("last write wins", eg. `rsync` or uploading a file to a file
 hosting service), but keep in mind that a replication strategy _always_ implies
 that some sort of conflict resolution mechanism should be involved.
 
@@ -447,7 +449,7 @@ that some sort of conflict resolution mechanism should be involved.
 
 An individual vault's choice of authorization mechanism determines how a client
 shares resources with other entities (authorization capability link or similar
-mechanism)
+mechanism).
 
 ### Layer 3 Responsibilities
 
@@ -463,9 +465,9 @@ vault.
 Vault-wide integrity protection is provided to prevent a variety of storage
 provider attacks where data is modified in a way that is undetectable, such  as
 if documents are reverted to older versions or deleted. This protection
-requires that a global catalog of all the resource identifiers that belong  to a
-user, along with the most recent version, are stored and kept up to date by
-client software. Some clients may store a copy of this catalog locally (and
+requires that a global catalog of all the resource identifiers that belong to a
+user, along with the most recent version, are stored and kept up to date by the
+client. Some clients may store a copy of this catalog locally (and
 include integrity protection mechanism such as
 [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)) to guard against
 interference or deletion by the server.
@@ -489,7 +491,7 @@ production environments.
 
 ### Malicious or Accidental Modification of Data
 
-While a service provider is not able to read or modify data in an
+While a service provider is not able to read data in an
 Encrypted Data Vault, it is possible for a service provider to delete, add,
 or modify encrypted data. The deletion, addition, or modification of encrypted
 data can be prevented by keeping a global manifest of data in the data vault.
@@ -509,14 +511,14 @@ While it is normally difficult for a server to determine the identity of an
 entity as well as the purpose for which that entity is accessing the
 Encrypted Data Vault, there is always metadata related to access patterns,
 rough file sizes, and other information that is leaked when an entity accesses
-the vault. The system has been designed to not leak information that creates
-concerning privacy limitations and the approach protects against many, but
-not all, surveillance strategies utilized by servers that don't necessarily
-act in the best interest of the privacy of the vault's users.
+the vault. The system has been designed to not leak information that it creates
+concerning privacy limitations; an approach which protects against many, but
+not all, surveillance strategies that may be used by servers that are not
+acting in the best interest of the privacy of the vault's users.
 
 ### Encrypted Data on Public Networks
 
-Assuming that all encryption schemes are eventually broken is a safe
+Assuming that all encryption schemes will eventually be broken is a safe
 assumption to make when protecting one's data. For this reason, it is
 inadvisable that servers use any sort of public storage network to store
 encrypted data as a storage strategy.
@@ -556,8 +558,8 @@ provider:
 
 ## Future Work
 
-The following items were identified as things to consider during future
-work on this paper:
+The following items will be considered during our ongoing and future
+work on Encrypted Data Vaults:
 
 - Query details, sorting, pagination
 - Key management
@@ -565,15 +567,9 @@ work on this paper:
 - Choice of change control / conflict resolution strategy
 - Notification / pub-sub mechanisms
 - With respect to the authorization model, does the vault merely enforce authorization rules, or act as an authorization server.
-- What are the assumptions of trust the host the vault must provide, enforcement of authorization rules? Perhaps discuss potential attack vectors from the host of the vault?
-- Discuss if data vault should have the responsibility to sync with other data vault (and if so, how to resolve conflicts)
-- Determine how different authz mechanisms are used such as OAuth, ZCAPs, etc.
-- Encrypted searching relies on direct equality, ZKPs could provide range proofs, but do we need that sort of functionality?
-- What are the opportunities for encrypted searching (e.g. using Homomorphic encryption), and what are the dangers?
-- We don't have any way to retrieve the history of an object's updates, but some contemplate that this will be provided in time.
-- If a commit strategy is added, the hub provider must enforce the rules set out by the document type, i.e check the commit is valid. This varies for different commit strategies. The hub provider must also be able to assemble the current state of an object when requested.
-
-Lucidchart link (boxes that were on the whiteboard): https://www.lucidchart.com/invitations/accept/ce2fdea4-19ee-47fc-bf45-39d5a6628a9b
+- What are the assumptions of trust the host the vault must provide, enforcement of authorization rules? Potential attack vectors from the host of the vault?
+- What are the opportunities for encrypted searching (Homomorphic encryption, ZKPs), and what are the dangers?
+- Retrieval of the history of an object's updates
 
 # Conclusion
 
