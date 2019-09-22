@@ -186,37 +186,6 @@ should be able to synchronize between each other so data is up to date in both
 places regardless of how I create or update data, and this should happen
 automatically and without my help as much as possible.
 
-## Deployment Topologies
-
-Based on the use cases, we consider the following deployment topologies.
-
-### Mobile Device Only
-
-An Encrypted Data Vault can be realized on a mobile device as a library
-providing functionality via a binary API. This library can use local storage to
-provide an encrypted database. In this configuration, both the server and the
-client would reside on the same device.
-
-### Mobile Device Plus Cloud Storage
-
-A mobile device plays the role of a client, and
-the server is a remote cloud-based service
-provider that has exposed the storage via a network-based API (eg.
-REST over HTTPS). The mobile
-device uses a network-enabled library to communicate with the server, and the
-data is stored only on the server (not on the mobile device).
-
-### Multiple Devices (Single User) Plus Cloud Storage
-
-When adding more devices managed by a single user, the vault can be used to
-synchronize data across devices.
-
-### Multiple Devices (Multiple Users) Plus Cloud Storage
-
-When pairing multiple users with cloud storage, the vault can be used to
-synchronize data between multiple users with the help of replication
-and merge strategies.
-
 ## Requirements
 
 This section elaborates upon a number of requirements that have been gathered
@@ -312,22 +281,36 @@ while innovation can by carried out by clients.
 
 ## Architecture
 
-Encrypted Data Vaults define a client-server relationship, whereby the vault is
+This section describes the architecture of the Encrypted Data Vaults protocol.
+
+Encrypted Data Vaults defines a client-server relationship, whereby the vault is
 regarded as the server and the client acts as the interface used to interact
-with the vault. This architecture is required due to some of the unique
-properties of Encrypted Data Vaults.
+with the vault.
 
-> Note: Even though a client-server relationship exists with Encrypted Data
-> Vaults, nothing precludes both the server/vault and client from existing on
-> the same device. In fact, the expectation is that this will be a popular model
-> for running local vaults that replicate (via a client) to vaults that are
-> hosted elsewhere.
-
-The Encrypted Data Vault architecture is layered in nature, where the
+This architecture is layered in nature, where the
 foundational layer consists of an operational system with minimal features and
 more advanced features are layered on top. Implementations can choose to
 implement only the foundational layer, or optionally, additional layers
 consisting of a richer set of features for more advanced use cases.
+
+### Deployment Topologies
+
+Based on the use cases, we consider the following deployment topologies:
+
+* **Mobile Device Only:** The server and the client reside on the same device.
+The vault is a library providing functionality via a binary API, using local
+storage to provide an encrypted database.
+* **Mobile Device Plus Cloud Storage:** A mobile device plays the role of a
+client, and the server is a remote cloud-based service provider that has
+exposed the storage via a network-based API (eg. REST over HTTPS). Data is
+not stored on the mobile device.
+* **Multiple Devices (Single User) Plus Cloud Storage:** When adding more
+devices managed by a single user, the vault can be used to
+synchronize data across devices.
+* **Multiple Devices (Multiple Users) Plus Cloud Storage:** When pairing
+multiple users with cloud storage, the vault can be used to
+synchronize data between multiple users with the help of replication
+and merge strategies.
 
 ### Server Responsibilities
 
@@ -341,8 +324,7 @@ The client is responsible for providing an interface to the server, with
 bindings for each relevant protocol (HTTP, RPC, or binary over-the-wire
 protocols), as required by the use case.
 
-Since one of the primary design goals of this spec is privacy-preserving storage
-of data, it is essential that all encryption and decryption of data is done on
+All encryption and decryption of data is done on
 the client side, at the edges. The data (including metadata) MUST be opaque to
 the server, and the architecture is designed to prevent the server from being
 able to decrypt it.
