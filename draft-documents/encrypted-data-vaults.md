@@ -188,9 +188,7 @@ automatically and without my help as much as possible.
 
 ## Deployment Topologies
 
-This specification can be deployed in a number of topologies to support the
-variety of use cases listed above. The following topologies are specifically
-considered by this document.
+Based on the use cases, we consider the following deployment topologies.
 
 ### Mobile Device Only
 
@@ -201,12 +199,12 @@ client would reside on the same device.
 
 ### Mobile Device Plus Cloud Storage
 
-Another realization of this system consists of a mobile device running as an
-Encrypted Data Vault Client where the server is a remote cloud-based service
-provider that has exposed the Encrypted Data Vault as a network-based API (via
-REST over HTTPS, or any other supported protocol). In this scenario, the mobile
+A mobile device plays the role of a client, and
+the server is a remote cloud-based service
+provider that has exposed the storage via a network-based API (eg.
+REST over HTTPS). The mobile
 device uses a network-enabled library to communicate with the server, and the
-data is served only on the server (not on the mobile device).
+data is stored only on the server (not on the mobile device).
 
 ### Multiple Devices (Single User) Plus Cloud Storage
 
@@ -216,8 +214,8 @@ synchronize data across devices.
 ### Multiple Devices (Multiple Users) Plus Cloud Storage
 
 When pairing multiple users with cloud storage, the vault can be used to
-synchronize data between multiple users if an appropriate replication and merge
-strategy is used.
+synchronize data between multiple users with the help of replication
+and merge strategies.
 
 ## Requirements
 
