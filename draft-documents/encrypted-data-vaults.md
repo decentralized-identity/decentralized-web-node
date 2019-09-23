@@ -653,7 +653,6 @@ storage provider, such as reliable storage and retrieval of data.
 
 A vault has a global configuration that defines the following properties:
 
-* The controller of the vault
 * Stream chunk size
 * Other config metadata
 
@@ -716,6 +715,7 @@ done after the individual chunks are written to the server):
 * `id`
 * `index` - encrypted index tags prepared by the client (for use with
 privacy-preserving querying over encrypted resources)
+* _Chunk size_ (if different from the default in global config)
 * _Versioning metadata_ - such as sequence numbers, Git-like hashes, or other mechanisms
 * _Encrypted resource payload_ - encoded as a [`jwe`](https://tools.ietf.org/html/rfc7516),
 [`cwe`](https://tools.ietf.org/html/rfc8152#section-5) or other appropriate mechanism
