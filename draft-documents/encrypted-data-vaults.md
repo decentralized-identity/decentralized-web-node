@@ -36,8 +36,6 @@ to choose projects which are representative of the different types of approaches
 out there, as well as for practical reasons choosing ones with which the authors
 are most familiar.
 
-[table]
-
 ### Architectures and deployment
 
 Many architectures are designed around the idea of separating storage of data
@@ -73,6 +71,223 @@ Identity Hubs are responsible for additional things beyond just data storage,
 for example management of the end user's profile; transmission of human- or
 machine-readable messages through the Actions interface; pointers to external
 services.
+
+<table>
+  <tr>
+   <th>Project
+   </th>
+   <th>Type
+   </th>
+   <th>Data organized into
+   </th>
+   <th>Extended file metadata supported?
+   </th>
+   <th>Encryption required?
+   </th>
+   <th>Metadata encrypted?
+   </th>
+   <th>Query on metadata?
+   </th>
+  </tr>
+  <tr>
+   <td>DIF Identity Hubs
+   </td>
+   <td>Document based data store
+   </td>
+   <td>Collections
+   </td>
+   <td>Yes
+   </td>
+   <td>Unclear *
+   </td>
+   <td>No
+   </td>
+   <td>Yes
+   </td>
+  </tr>
+  <tr>
+   <td>Solid
+   </td>
+   <td>File and graph store
+   </td>
+   <td>Containers
+   </td>
+   <td>Yes
+   </td>
+   <td>No
+   </td>
+   <td>No
+   </td>
+   <td>No
+   </td>
+  </tr>
+  <tr>
+   <td>Nextcloud
+   </td>
+   <td>File store
+   </td>
+   <td>Directories
+   </td>
+   <td>Yes
+   </td>
+   <td>No
+   </td>
+   <td>No
+   </td>
+   <td>Yes
+   </td>
+  </tr>
+  <tr>
+   <td>IPFS
+   </td>
+   <td>Content-addressable distributed file store
+   </td>
+   <td>n/a
+   </td>
+   <td>No
+   </td>
+   <td>No
+   </td>
+   <td>n/a
+   </td>
+   <td>n/a
+   </td>
+  </tr>
+  <tr>
+   <td>Tahoe-LAFS
+   </td>
+   <td>Clustered distributed file system
+   </td>
+   <td>Directories
+   </td>
+   <td>No
+   </td>
+   <td>Yes
+   </td>
+   <td>n/a
+   </td>
+   <td>n/a
+   </td>
+  </tr>
+  <tr>
+   <td>Datashards
+   </td>
+   <td>Low-level encrypted storage protocol
+   </td>
+   <td>n/a
+   </td>
+   <td>No
+   </td>
+   <td>Yes
+   </td>
+   <td>n/a
+   </td>
+   <td>n/a</td>
+  </tr>
+</table>
+
+`*` - Unclear if Identity Hubs requires encryption. [Encryption proposal paper](https://github.com/decentralized-identity/papers/blob/master/Hub%20Encryption%20Proposal%20-%20Draft%201.pdf) suggests that it’s optional
+
+<table>
+  <tr>
+   <th>Project
+   </th>
+   <th>Read/write protocol
+   </th>
+   <th>Authn
+   </th>
+   <th>Access Control
+   </th>
+   <th>Data locality
+   </th>
+   <th>Replication
+   </th>
+  </tr>
+  <tr>
+   <td>DIF Identity Hubs
+   </td>
+   <td><a href="https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#api">custom</a>
+   </td>
+   <td>DID Auth
+   </td>
+   <td><a href="https://github.com/decentralized-identity/identity-hub/blob/master/docs/permissions.md">Custom</a>
+   </td>
+   <td>Server
+   </td>
+   <td><a href="https://hackmd.io/OInEIRLxQY2s48tze0E7IQ">Planned</a>
+   </td>
+  </tr>
+  <tr>
+   <td>Solid
+   </td>
+   <td>REST (LDP)
+   </td>
+   <td>WebID-OIDC
+   </td>
+   <td><a href="https://github.com/solid/web-access-control-spec">WAC</a>
+   </td>
+   <td>Server
+   </td>
+   <td>Planned
+   </td>
+  </tr>
+  <tr>
+   <td>Nextcloud
+   </td>
+   <td>WebDAV
+   </td>
+   <td>custom
+   </td>
+   <td><a href="https://docs.nextcloud.com/server/stable/admin_manual/file_workflows/access_control.html">Custom</a> (<a href="https://en.wikipedia.org/wiki/Role-based_access_control">RBAC</a>)
+   </td>
+   <td>Server
+   </td>
+   <td>Yes (Enterprise version, via MySQL clustering)
+   </td>
+  </tr>
+  <tr>
+   <td>IPFS
+   </td>
+   <td>cli / <a href="https://docs.ipfs.io/reference/api/http/">HTTP</a>
+   </td>
+   <td>n/a
+   </td>
+   <td><a href="https://github.com/ipfs/notes/issues/376">n/a</a>
+   </td>
+   <td>Public nodes
+   </td>
+   <td><a href="https://discuss.ipfs.io/t/replication-on-ipfs-or-the-backing-up-content-model/372">Peer-to-peer</a>
+   </td>
+  </tr>
+  <tr>
+   <td>Tahoe-LAFS
+   </td>
+   <td>Various (REST, WebDAV, others)
+   </td>
+   <td>n/a
+   </td>
+   <td>Capabilities
+   </td>
+   <td>Storage cluster
+   </td>
+   <td>Sharded chunks (multiple copies)
+   </td>
+  </tr>
+  <tr>
+   <td>Datashards
+   </td>
+   <td>cli / modular
+   </td>
+   <td>n/a
+   </td>
+   <td>Capabilities
+   </td>
+   <td>Modular ( server, public nodes, other)
+   </td>
+   <td>(depends on backend)
+   </td>
+  </tr>
+</table>
 
 ### Encryption policies
 
@@ -260,7 +475,7 @@ first time or in a later stage. The storage should only give access to others
 when I have explicitly given consent for each item.
 
 I want to be able to revoke the access of others at any time. When
-sharing data, I can include an expiration date for the 
+sharing data, I can include an expiration date for the
 access to my data by a third-party.
 
 #### Store the Same Data in More Than One Place
