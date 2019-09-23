@@ -31,31 +31,21 @@ they play. Encrypted Data Vaults fulfill a _storage_ role.
 ![Roles and interactions](media/edv.png)
 
 What follows is an outline of commonalities and differences between a selection
-of existing implementations.
+of existing implementations. This list is by no means comprehensive, but we tried
+to choose projects which are representative of the different types of approaches
+out there, as well as for practical reasons choosing ones with which the authors
+are most familiar.
 
-| Project | In-transit Encryption | At-rest Encryption Required? | Metadata | Queries  | Storage
-| ------- | -------------------- | ----------------- | ----------- | ----------------- | -------
-| NextCloud | TLS | no, [beta support](https://nextcloud.com/endtoend/) avail. |  | [WebDAV search](https://docs.nextcloud.com/server/16/developer_manual/client_apis/WebDAV/search.html) | database & device fs
-| Solid | TLS | no | binary or structured linked data | [experimental](https://github.com/solid/query-ldflex) | modular (currently device fs)
-| Blockstack | TLS | no (supported) | n/a |
-| Identity Hubs | custom | yes (but not metadata) | JWTs | yes | database & device fs
-| Datashards | n/a | yes | binary | no | modular (device fs)
-| IPFS | [custom non-TLS](https://github.com/ipfs/specs/issues/29) | no | binary? | no | public network
-| Tahoe LAFS |
+[table]
 
-| Project | Authn | Access Control | Read-write interface | Application ecosystem | Standard(s)
-| ------- | ---- | -------------- | -------------------- | --------------------- | ----------------
-| NextCloud | [custom](https://docs.nextcloud.com/server/16/developer_manual/client_apis/LoginFlow/) | ?? | WebDAV | yes | IETF & own
-| Solid | [WebID-OIDC](https://github.com/solid/webid-oidc-spec) | [WAC](https://github.com/solid/web-access-control-spec) | REST (LDP) | yes | W3C, IETF & own
-| Blockstack | bearer token | per-resource | REST | yes | own
-| Identity Hubs | DID Authn | JSON-LD Permissions API | JSON API | pending | own
-| Datashards | n/a | OCAP? | | no | not yet..
-| IPFS | | | | | own
-| Tahoe LAFS | | | | | own
+### Architectures and deployment
 
-Separating storage from applications which use the stored data is key to most of
-these architectures.
-[Blockstack](https://docs.blockstack.org/storage/overview.html),
+Many architectures are designed around the idea of separating storage of data
+from a layer of applications which make use of the stored data. We can think of
+these applications as clients, with varying levels of complexity, and the data
+stores as servers. Some projects expect an ecosystem of diverse applications to
+emerge and design their protocols with this in mind.
+
 [NextCloud](https://docs.nextcloud.com/server/16/developer_manual/client_apis/),
 [Solid](https://github.com/solid/solid-spec/) and [DIF's Identity
 Hubs](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md)
@@ -79,79 +69,136 @@ one or more device(s) they control, and data is stored locally to these devices.
 IPFS is peer-to-peer, so end users only install the read/write client, and data
 is stored across a public network.
 
-NextCloud uses WebDAV to allow client applications to read, write, and search
-data on the server's filesystem using a directory structure, and OCP for
-authentication. End-to-end encryption is currently in beta and can be enabled by
-users, but is not on by default. Spreading data across multiple instances for
-scalability is a [commercial enterprise
-offering](https://nextcloud.com/globalscale/). Different NextCloud servers do
-not talk to each other directly, but can do via applications installed by the
-user.
+Identity Hubs are responsible for additional things beyond just data storage,
+for example management of the end user's profile; transmission of human- or
+machine-readable messages through the Actions interface; pointers to external
+services.
 
-Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID
+### Encryption policies
+
+An important consideration of encrypted data stores is which components of the
+architecture have access to the (unencrypted) data, or who controls the private
+keys. There are roughly three approaches: storage-side encryption, client-side
+(edge) encryption, and gateway-side encryption (which is a hybrid of the
+previous two).
+
+Any data storage systems which let the user store arbitrary data support
+client-side encryption at the most basic level. That is, they let the user
+encrypt data themselves, and then store it. This doesn’t mean these systems are
+optimised for encrypted data however (eg. querying and sharing may be difficult),
+or that they won’t leak data in other ways (eg. through unencrypted metadata).
+Solid, NextCloud, Identity Hubs and IPFS take this approach.
+
+Storage-side encryption is usually implemented as whole-[disk encryption](https://en.wikipedia.org/wiki/Disk_encryption)
+or filesystem-level encryption. This is widely supported and understood, and any
+type of hosted cloud storage is likely to use storage-side encryption. In this
+scenario, the private keys are managed by the service provider or controller of
+the storage server, which may be a different entity than the user who is storing
+the data. Encrypting the data while it resides on disk is a useful security
+measure should physical access to the storage hardware be compromised, but does
+not guarantee _only_ the original user who stored the data has access.
+
+Conversely, client-side encryption - as with Datashards - offers a high level of
+security and privacy, especially if metadata can be encrypted as well. Encryption
+is done at the individual data object level, usually aided by a keychain or wallet
+client, so the user has direct access to the private keys. This comes at a cost,
+however, since the significant responsibility of key management and recovery falls
+squarely onto the end user. In addition, the question of key management becomes
+more complex when data needs to be shared.
+
+Gateway-side encryption systems like Tahoe-LAFS take an approach that combines
+techniques from storage-side and client-side encryption architectures. These
+storage systems, typically encountered among multi-server clusters or some
+"encryption as a platform" cloud service providers, recognize that client-side
+key management may be too difficult for some users and use cases, and offer to
+perform encryption and decryption themselves, in a way that is transparent to
+the client application. At the same time, they aim to minimize the number of
+components (storage servers) that have access to the private decryption keys.
+As a result, the keys usually reside on "gateway" servers, which encrypt the
+data before passing it to the storage servers. The encryption/decryption is
+transparent to the client, and the data is opaque to the storage servers, which
+can be modular/pluggable as a result. Gateway-side encryption provides some
+benefits over storage-side systems, but also share the drawbacks: the gateway
+sysadmin controls the keys, not the user.
+
+### Encrypted Metadata and Documents vs Blobs
+
+> We kill people based on metadata.
+> - General Michael Hayden, former director of the NSA and the CIA
+
+Whether or not metadata can be (or is required to be) encrypted has implications
+for privacy, security, and usability of a system.
+
+Some systems, including Solid, NextCloud and Data Hubs, support the inclusion of
+arbitrary metadata on binary data blobs. IPFS, Datashards and Tahoe-LAFS do not.
+Solid metadata is written by clients per-resource using RDF. Data Hubs uses JWTs
+for per-object metadata, as well as JSON documents for additional metadata in
+Collections (also the clients' responsibility). NextCloud clients can add
+metadata to documents using WebDAV custom properties. None of these options for
+including metadata allow for it to be encrypted.
+
+### Access Interface and Control
+
+Data objects tend to need globally unique identifiers.
+
+- For authorization and sharing across domains and trust zones, you either need a decentralized access control system (rare - only Solid/WAC?), or you use capabilities/bearer tokens (everybody else), and some also do ACLs within a particular server (and capabilities for outside).
+-NextCloud uses WebDAV to allow client applications to read, write, and search data on the server's filesystem using a directory structure, and OCP for authentication.
+- Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID
 Connect](https://github.com/solid/solid-auth-oidc) authentication and [Web
 Access Control](https://github.com/solid/web-access-control-spec) to enable
 users to sign into client applications, which discover the user's data store URI
 from their profile and can then read or write data. Resources (data objects) on
 Solid servers are represented by HTTP URIs, and Solid servers receive HTTP
 requests (`GET`, `POST`, `PUT`, `DELETE`) containing RDF payloads and create or
-modify the target URI accordingly. Resources are listed in `ldp:Container`s,
-which serve as indexes which can be updated by end users or client applications
-according to specific needs. Precisely how the data is stored is an
-implementation detail (e.g., a filesystem or a database). No search interface
-has been specified, but some implementations may expose a SPARQL endpoint or
-Triple Pattern Fragments. Data on Solid servers is not required to be encrypted
-at rest, but HTTPS is assumed for the connection between clients and servers.
-Different instances of Solid servers do not communicate with each other (client
-apps perform all communication between storage servers).
-
-Blockstack uses "storage hubs" called Gaia, which run as a service and write to
-a user's chosen storage once a user has authenticated with the client-side
-application they wish to use. Gaia writes the data exactly as given by the
-application, whether a valid or invalid data format, encrypted or not, so long
-as a valid bearer token is included in the request. Clients interact with Gaia
-through a REST API.
-
-Identity Hubs enable the end user to store their data in one or more locations
-which are linked to a DID. Creating and updating data and metadata in the Hub is
-done by posting JWTs to specified endpoints. The JWT headers include metadata
-for the data in the JWT body, as well as a signature. The read and write
-requests are encrypted on the wire, and data is encrypted on the Hub. Access
-control is carried out via posting to the Permissions interface and indexing is
-done via the Collections interface. Clients are responsible for writing
-appropriate metadata to Collections, which are not themselves encrypted,
-enabling the Hub to respond to queries. Reads require multiple requests, first
+modify the target URI accordingly.
+- Data hubs: Reads require multiple requests, first
 to retrieve metadata for the desired data object(s), and then to retrieve the
-sequence of commits which make up the actual data. Mechanisms for authentication
-and synchronization of changes and conflict resolution between Hub instances are
-still under development. Identity Hubs are responsible for additional things
-beyond just data storage, for example management of the end user's profile;
-transmission of human- or machine-readable messages through the Actions
-interface; pointers to external services.
-
-At a lower level, [Tahoe-LAFS](https://tahoe-lafs.org/trac/tahoe-lafs) uses a
+sequence of commits which make up the actual data. Mechanisms for authentication are
+still under development. 
+- Creating and updating data and metadata in the Hub is
+done by posting JWTs to specified endpoints. Access
+control is carried out via posting to the Permissions interface
+- [Tahoe-LAFS](https://tahoe-lafs.org/trac/tahoe-lafs) uses a
 client-server architecture, whereby a local client encrypts data, breaks it into
 pieces, and stores it on one or more servers on other devices. The client
 creates and stores redundant pieces of data so a system is resilient to
 corruption of some shards or servers going offline. Servers can neither read nor
 modify the data. Data is organized in a filesystem like directory structure and
-access control makes use of this. Data can be mutable or immutable, and is
-always encrypted.
-
-Datashards is concerned with encrypted storage and replication of data across
-devices. Datashards is similar to Tahoe-LAFS, but uses a more generalized URI
-scheme and object capabilities for sharing of data objects. Data is always
-encrypted.
-
-IPFS is a distributed content-addressed storage mechanism which breaks data up
+access control makes use of this.
+- IPFS is a distributed content-addressed storage mechanism which breaks data up
 into Merkel-DAGs. IPFS uses [IPLD](https://github.com/ipld/specs) to generate
 URIs for data from the content, and to link content together on the network; and
-uses DHTs to discover content on the network. IPFS does not encrypt data, and
-stores it across a public network.
+uses DHTs to discover content on the network.
 
-[Hyperledger Aries](https://github.com/hyperledger/aries-rfcs) is an
-infrastructure for agent interactions but does not provide a solution for data
-storage.
+### Indexing and Querying
+
+- Key/value stores - no indexing, at the most basic. (Datashards is here, as is IPFS).
+- Most systems have notion of folders/collections. Containers in Solid, directories in Tahoe-LAFS, WebDAV directories in NextCloud, buckets in AWS S3, collections in MongoDB and Data Hubs, sets in Perkeep.
+- Some allow querying on arbitrary tags/metadata. All databases and document stores, NextCloud's PROPSEARCH, Data Hubs. Solid is trying to have this (experimental). (Some only allow querying /within/ a collection, not across.)
+- Resources are listed in `ldp:Container`s,
+which serve as indexes which can be updated by end users or client applications
+according to specific needs. Precisely how the data is stored is an
+implementation detail (e.g., a filesystem or a database). No search interface
+has been specified, but some implementations may expose a SPARQL endpoint or
+Triple Pattern Fragments.
+- Data Hubs: indexing is
+done via the Collections interface. Clients are responsible for writing
+appropriate metadata to Collections, which are not themselves encrypted,
+enabling the Hub to respond to queries.
+
+### Availability, Replication and Conflict Resolution
+
+
+- Tahoe-LAFS, Datashards, Freenet, and many others, achieve high availability by chunking data, using content-addressable links, and storing many copies of the chunks. They don't handle replication / conflict resolution (since they are low-level protocols).
+- Peer-to-peer replication is really hard actually, and most databases do not support it (with some exceptions such as CouchDB, OrientDB, etc). Databases that do support it must provide conflict resolution mechanisms (such as CRDTs, or punt the problem to the user).
+- DIF Data Hubs intend to have replication. (And have a versioning system to support it.)
+- NextCloud Spreading data across multiple instances for scalability is a [commercial enterprise offering](https://nextcloud.com/globalscale/). Different NextCloud servers do not talk to each other directly, but can do via applications installed by the user.
+- Different instances of Solid servers do not communicate with each other (client
+apps perform all communication between storage servers).
+- Data Hubs synchronization of changes and conflict resolution between Hub instances under development
+
+### Summary
+
 
 ## Core Use Cases
 The following three use
