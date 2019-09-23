@@ -85,9 +85,8 @@ previous two).
 Any data storage systems which let the user store arbitrary data support
 client-side encryption at the most basic level. That is, they let the user
 encrypt data themselves, and then store it. This doesn’t mean these systems are
-optimised for encrypted data however (eg. querying and sharing may be difficult),
-or that they won’t leak data in other ways (eg. through unencrypted metadata).
-Solid, NextCloud, Identity Hubs and IPFS take this approach.
+optimized for encrypted data however. Querying and access control for encrypted
+data may be difficult (as is the case for Solid, NextCloud, Data Hubs and IPFS).
 
 Storage-side encryption is usually implemented as whole-[disk encryption](https://en.wikipedia.org/wiki/Disk_encryption)
 or filesystem-level encryption. This is widely supported and understood, and any
@@ -146,7 +145,9 @@ between implementations.
 
 NextCloud and Solid both make use of existing Web standards. NextCloud uses
 WebDAV to allow client applications to read, write, and search
-data on the server's filesystem using a directory structure, and OCP for authentication.
+data on the server's filesystem using a directory structure, and [a custom login
+flow](https://docs.nextcloud.com/server/16/developer_manual/client_apis/LoginFlow/)
+for authentication.
 Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID
 Connect](https://github.com/solid/solid-auth-oidc) authentication and [Web
 Access Control](https://github.com/solid/web-access-control-spec) to enable
@@ -161,8 +162,10 @@ to retrieve the sequence of commits which make up the actual data. Mechanisms fo
 authentication are still under development. Access control is carried out via
 posting to the Permissions interface.
 
-Tahoe-LAFS uses a client-server architecture, whereby a local client encrypts
-data, breaks it into pieces, and stores it on one or more servers on other devices.
+Tahoe-LAFS uses a client-gateway-storage server architecture, whereby a client
+passes data to a gateway server for encryption and chunking. The gateway, in
+turn, stores the individual chunks on a cluster of storage servers (several
+copies of the data are stored, for greater availability and disaster recovery).
 Services are identified with [Foolscap](https://foolscap.lothar.com/trac) URIs
 and the client can be configured to use HTTP, (S)FTP, or listen to a local
 directory ('magic folder') to create, update and delete data. Data is organized
@@ -181,8 +184,8 @@ with a certain amount of unencrypted metadata attached to the data objects.
 Another possibility is unencrypted listings of pointers to filtered subsets
 of data.
 
-Resources in Solid are listed by URI in `ldp:Container`s, which serve as indexes
-which can be updated by end users or client applications according to specific needs.
+Solid aims to provide a web accessible interface to a file system. Resources
+(RDF documents or arbitrary files) are organized into folder-like Containers.
 Precisely how the data is stored is an implementation detail (e.g., a filesystem
 or a database). No search interface has been specified, but some implementations
 may expose a SPARQL endpoint or Triple Pattern Fragments.
