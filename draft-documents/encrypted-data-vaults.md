@@ -124,7 +124,7 @@ sysadmin controls the keys, not the user.
 ### Encrypted Metadata and Documents vs Blobs
 
 > We kill people based on metadata.
-> - General Michael Hayden, former director of the NSA and the CIA
+> - _General Michael Hayden, former director of the NSA and the CIA_
 
 Whether or not metadata can be (or is required to be) encrypted has implications
 for privacy, security, and usability of a system.
@@ -139,65 +139,89 @@ including metadata allow for it to be encrypted.
 
 ### Access Interface and Control
 
-Data objects tend to need globally unique identifiers.
+Whether data is accessed over a network, or on a local device, data objects tend
+to need globally unique identifiers. Interfaces for reading and writing data in
+stores, as well as the mechanisms to restrict or grant the ability to do so, vary
+between implementations.
 
-- For authorization and sharing across domains and trust zones, you either need a decentralized access control system (rare - only Solid/WAC?), or you use capabilities/bearer tokens (everybody else), and some also do ACLs within a particular server (and capabilities for outside).
--NextCloud uses WebDAV to allow client applications to read, write, and search data on the server's filesystem using a directory structure, and OCP for authentication.
-- Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID
+NextCloud and Solid both make use of existing Web standards. NextCloud uses
+WebDAV to allow client applications to read, write, and search
+data on the server's filesystem using a directory structure, and OCP for authentication.
+Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID
 Connect](https://github.com/solid/solid-auth-oidc) authentication and [Web
 Access Control](https://github.com/solid/web-access-control-spec) to enable
-users to sign into client applications, which discover the user's data store URI
-from their profile and can then read or write data. Resources (data objects) on
-Solid servers are represented by HTTP URIs, and Solid servers receive HTTP
-requests (`GET`, `POST`, `PUT`, `DELETE`) containing RDF payloads and create or
-modify the target URI accordingly.
-- Data hubs: Reads require multiple requests, first
-to retrieve metadata for the desired data object(s), and then to retrieve the
-sequence of commits which make up the actual data. Mechanisms for authentication are
-still under development. 
-- Creating and updating data and metadata in the Hub is
-done by posting JWTs to specified endpoints. Access
-control is carried out via posting to the Permissions interface
-- [Tahoe-LAFS](https://tahoe-lafs.org/trac/tahoe-lafs) uses a
-client-server architecture, whereby a local client encrypts data, breaks it into
-pieces, and stores it on one or more servers on other devices. The client
-creates and stores redundant pieces of data so a system is resilient to
-corruption of some shards or servers going offline. Servers can neither read nor
-modify the data. Data is organized in a filesystem like directory structure and
-access control makes use of this.
-- IPFS is a distributed content-addressed storage mechanism which breaks data up
+users to sign into client applications, which can then read or write data.
+Resources (data objects) on Solid servers are represented by HTTP URIs, and Solid
+servers receive HTTP requests (`GET`, `POST`, `PUT`, `DELETE`) containing RDF
+payloads and create or modify the target URI accordingly.
+
+Data Hubs uses JSON Web Tokens (JWTs) and specified endpoints. Multiple requests
+are required, first to retrieve metadata for the desired data object(s), and then
+to retrieve the sequence of commits which make up the actual data. Mechanisms for
+authentication are still under development. Access control is carried out via
+posting to the Permissions interface.
+
+Tahoe-LAFS uses a client-server architecture, whereby a local client encrypts
+data, breaks it into pieces, and stores it on one or more servers on other devices.
+Services are identified with [Foolscap](https://foolscap.lothar.com/trac) URIs
+and the client can be configured to use HTTP, (S)FTP, or listen to a local
+directory ('magic folder') to create, update and delete data. Data is organized
+in a filesystem like directory structure and access control makes use of this.
+
+IPFS is a distributed content-addressed storage mechanism which breaks data up
 into Merkel-DAGs. IPFS uses [IPLD](https://github.com/ipld/specs) to generate
 URIs for data from the content, and to link content together on the network; and
 uses DHTs to discover content on the network.
 
 ### Indexing and Querying
 
-- Key/value stores - no indexing, at the most basic. (Datashards is here, as is IPFS).
-- Most systems have notion of folders/collections. Containers in Solid, directories in Tahoe-LAFS, WebDAV directories in NextCloud, buckets in AWS S3, collections in MongoDB and Data Hubs, sets in Perkeep.
-- Some allow querying on arbitrary tags/metadata. All databases and document stores, NextCloud's PROPSEARCH, Data Hubs. Solid is trying to have this (experimental). (Some only allow querying /within/ a collection, not across.)
-- Resources are listed in `ldp:Container`s,
-which serve as indexes which can be updated by end users or client applications
-according to specific needs. Precisely how the data is stored is an
-implementation detail (e.g., a filesystem or a database). No search interface
-has been specified, but some implementations may expose a SPARQL endpoint or
-Triple Pattern Fragments.
-- Data Hubs: indexing is
-done via the Collections interface. Clients are responsible for writing
-appropriate metadata to Collections, which are not themselves encrypted,
-enabling the Hub to respond to queries.
+Encrypted data which is opaque to the storage server introduces challenges for
+indexing and searching the contents of the data. Some systems work around this
+with a certain amount of unencrypted metadata attached to the data objects.
+Another possibility is unencrypted listings of pointers to particular subsets
+of data.
+
+Resources in Solid are listed by URI in `ldp:Container`s, which serve as indexes
+which can be updated by end users or client applications according to specific needs.
+Precisely how the data is stored is an implementation detail (e.g., a filesystem
+or a database). No search interface has been specified, but some implementations
+may expose a SPARQL endpoint or Triple Pattern Fragments.
+
+Data Hubs similarly uses a Collections interface for indexing. Clients are
+responsible for writing appropriate metadata to Collections, which are not
+themselves encrypted, enabling the Hub to respond to queries.
+
+NextCloud sorts data objects into directories, and clients can use WebDAV `SEARCH`
+and `PROPFIND` to query data.
+
+Datashards and IPFS are low level storage protocols, and do not provide for
+indexing or searching the data.
 
 ### Availability, Replication and Conflict Resolution
 
+Replication data across multiple storage locations is an important resilience
+and security mechanism. Systems which support peer-to-peer replication must
+provide conflict resolution mechanisms such as CRDTs, or require end-user
+intervention to merge files which get out of sync.
 
-- Tahoe-LAFS, Datashards, Freenet, and many others, achieve high availability by chunking data, using content-addressable links, and storing many copies of the chunks. They don't handle replication / conflict resolution (since they are low-level protocols).
-- Peer-to-peer replication is really hard actually, and most databases do not support it (with some exceptions such as CouchDB, OrientDB, etc). Databases that do support it must provide conflict resolution mechanisms (such as CRDTs, or punt the problem to the user).
-- DIF Data Hubs intend to have replication. (And have a versioning system to support it.)
-- NextCloud Spreading data across multiple instances for scalability is a [commercial enterprise offering](https://nextcloud.com/globalscale/). Different NextCloud servers do not talk to each other directly, but can do via applications installed by the user.
-- Different instances of Solid servers do not communicate with each other (client
-apps perform all communication between storage servers).
-- Data Hubs synchronization of changes and conflict resolution between Hub instances under development
+NextCloud provide spreading data across multiple instances for scalability as a
+[commercial enterprise offering](https://nextcloud.com/globalscale/). Different
+NextCloud servers do not talk to each other directly, but can do via applications
+installed by the user. Similarly, different instances of Solid servers do not
+communicate with each other; client apps can perform any communication necessary
+between storage servers, but these are usually servers belonging to different
+users, rather than stores with copies of the same data.
+
+IPFS, Tahoe-LAFS and Datashards achieve high availability by chunking data,
+using content-addressable links, and storing many copies of the chunks. They
+don't handle conflict resolution since they are low-level protocols and the data
+is opaque to the servers.
+
+Data Hubs synchronization of changes and conflict resolution between Hub instances
+is under development.
 
 ### Summary
+
 
 
 ## Core Use Cases
