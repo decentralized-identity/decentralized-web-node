@@ -301,7 +301,7 @@ Any data storage systems which let the user store arbitrary data support
 client-side encryption at the most basic level. That is, they let the user
 encrypt data themselves, and then store it. This doesn’t mean these systems are
 optimized for encrypted data however. Querying and access control for encrypted
-data may be difficult (as is the case for Solid, NextCloud, Data Hubs and IPFS).
+data may be difficult (as is the case for Solid, NextCloud, Identity Hubs and IPFS).
 
 Storage-side encryption is usually implemented as whole-[disk encryption](https://en.wikipedia.org/wiki/Disk_encryption)
 or filesystem-level encryption. This is widely supported and understood, and any
@@ -343,13 +343,13 @@ sysadmin controls the keys, not the user.
 Whether or not metadata can be (or is required to be) encrypted has implications
 for privacy, security, and usability of a system.
 
-Some systems, including Solid, NextCloud and Data Hubs, support the inclusion of
-arbitrary metadata on binary data blobs. IPFS, Datashards and Tahoe-LAFS do not.
-Solid metadata is written by clients per-resource using RDF. Data Hubs uses JWTs
-for per-object metadata, as well as JSON documents for additional metadata in
-Collections (also the clients' responsibility). NextCloud clients can add
-metadata to documents using WebDAV custom properties. None of these options for
-including metadata allow for it to be encrypted.
+Some systems, including Solid, NextCloud and Identity Hubs, support the
+inclusion of arbitrary metadata on binary data blobs. IPFS, Datashards and
+Tahoe-LAFS do not. Solid metadata is written by clients per-resource using RDF.
+Identity Hubs uses JWTs for per-object metadata, as well as JSON documents for
+additional metadata in Collections (also the clients' responsibility). NextCloud
+clients can add metadata to documents using WebDAV custom properties. None of
+these options for including metadata allow for it to be encrypted.
 
 ### Access Interface and Control
 
@@ -371,7 +371,7 @@ Resources (data objects) on Solid servers are represented by HTTP URIs, and Soli
 servers receive HTTP requests containing RDF payloads and create or modify the
 target URI accordingly.
 
-Data Hubs uses JSON Web Tokens (JWTs) and specified endpoints. Multiple requests
+Identity Hubs uses JSON Web Tokens (JWTs) and specified endpoints. Multiple requests
 are required, first to retrieve metadata for the desired data object(s), and then
 to retrieve the sequence of commits which make up the actual data. Mechanisms for
 authentication are still under development. Access control is carried out via
@@ -405,7 +405,7 @@ Precisely how the data is stored is an implementation detail (e.g., a filesystem
 or a database). No search interface has been specified, but some implementations
 may expose a SPARQL endpoint or Triple Pattern Fragments.
 
-Data Hubs similarly uses a Collections interface for indexing. Clients are
+Identity Hubs similarly uses a Collections interface for indexing. Clients are
 responsible for writing appropriate metadata to Collections, which are not
 themselves encrypted, enabling the Hub to respond to queries.
 
@@ -435,7 +435,7 @@ using content-addressable links, and storing many copies of the chunks. They
 don't handle conflict resolution since they are low-level protocols and the data
 is opaque to the servers.
 
-Data Hubs synchronization of changes and conflict resolution between Hub instances
+Identity Hubs synchronization of changes and conflict resolution between Hub instances
 is under development.
 
 ### Summary
