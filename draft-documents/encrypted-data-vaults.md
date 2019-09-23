@@ -152,8 +152,8 @@ Connect](https://github.com/solid/solid-auth-oidc) authentication and [Web
 Access Control](https://github.com/solid/web-access-control-spec) to enable
 users to sign into client applications, which can then read or write data.
 Resources (data objects) on Solid servers are represented by HTTP URIs, and Solid
-servers receive HTTP requests (`GET`, `POST`, `PUT`, `DELETE`) containing RDF
-payloads and create or modify the target URI accordingly.
+servers receive HTTP requests containing RDF payloads and create or modify the
+target URI accordingly.
 
 Data Hubs uses JSON Web Tokens (JWTs) and specified endpoints. Multiple requests
 are required, first to retrieve metadata for the desired data object(s), and then
@@ -178,7 +178,7 @@ uses DHTs to discover content on the network.
 Encrypted data which is opaque to the storage server introduces challenges for
 indexing and searching the contents of the data. Some systems work around this
 with a certain amount of unencrypted metadata attached to the data objects.
-Another possibility is unencrypted listings of pointers to particular subsets
+Another possibility is unencrypted listings of pointers to filtered subsets
 of data.
 
 Resources in Solid are listed by URI in `ldp:Container`s, which serve as indexes
@@ -192,9 +192,9 @@ responsible for writing appropriate metadata to Collections, which are not
 themselves encrypted, enabling the Hub to respond to queries.
 
 NextCloud sorts data objects into directories, and clients can use WebDAV `SEARCH`
-and `PROPFIND` to query data.
+and `PROPFIND` to query data and metadata.
 
-Datashards and IPFS are low level storage protocols, and do not provide for
+Tahoe-LAFS, Datashards and IPFS are low level storage protocols, and do not provide for
 indexing or searching the data.
 
 ### Availability, Replication and Conflict Resolution
@@ -223,7 +223,7 @@ is under development.
 ### Summary
 
 This section provides an overview of a subset of active projects in the personal
-data store ecosystem, which aim to give end users control over their data without
+data store ecosystem which aim to give end users control over their data without
 requiring centralized authorities or proprietary technologies.
 
 Requiring client-side (edge) encryption for all data and metadata, enabling the
