@@ -47,7 +47,7 @@ emerge and design their protocols with this in mind.
 [NextCloud](https://docs.nextcloud.com/server/16/developer_manual/client_apis/),
 [Solid](https://github.com/solid/solid-spec/) and [DIF's Identity
 Hubs](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md)
-all describe architectures for decoupled end-user applications from storage.
+all describe architectures for decoupling end-user applications from data storage.
 Such applications may be generic file management interfaces for browsing or
 sharing data, or specialized domain specific tools designed for particular tasks
 (eg. a calendar).
@@ -59,10 +59,7 @@ In the case of Solid, NextCloud, and Identity Hubs, end users have the option of
 installing and running the server portion of the data store on a device they
 control, or signing up to an already configured instance hosted by a trusted
 third-party (eg. a commercial provider, affiliated institution, or friend).
-Blockstack also uses this model for the "hub" interface between clients and
-storage servers, alongside a blockchain for transactional data, and permits the
-user to choose cloud storage (such as AWS or a Digital Ocean VPS) for the data
-itself. For Datashards and Tahoe-LAFS, end users install a native application on
+For Datashards and Tahoe-LAFS, end users install a native application on
 one or more device(s) they control, and data is stored locally to these devices.
 IPFS is peer-to-peer, so end users only install the read/write client, and data
 is stored across a public network.
