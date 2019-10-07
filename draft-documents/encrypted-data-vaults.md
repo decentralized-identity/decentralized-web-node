@@ -33,7 +33,7 @@ they play. Encrypted Data Vaults fulfill a _storage_ role.
 What follows is an outline of commonalities and differences between a selection
 of existing implementations. This list is by no means comprehensive, but we tried
 to choose projects which are representative of the different types of approaches
-out there, as well as for practical reasons choosing ones with which the authors
+out there, as well as, for practical reasons, choosing ones with which the authors
 are most familiar.
 
 ### Architectures and deployment
@@ -42,7 +42,7 @@ Many architectures are designed around the idea of separating storage of data
 from a layer of applications which make use of the stored data. We can think of
 these applications as clients, with varying levels of complexity, and the data
 stores as servers. Some projects expect an ecosystem of diverse applications to
-emerge and design their protocols with this in mind.
+emerge, and design their protocols with this in mind.
 
 [NextCloud](https://docs.nextcloud.com/server/16/developer_manual/client_apis/),
 [Solid](https://github.com/solid/solid-spec/) and [DIF's Identity
@@ -303,11 +303,11 @@ data may be difficult (as is the case for Solid, NextCloud, Identity Hubs and IP
 Storage-side encryption is usually implemented as whole-[disk encryption](https://en.wikipedia.org/wiki/Disk_encryption)
 or filesystem-level encryption. This is widely supported and understood, and any
 type of hosted cloud storage is likely to use storage-side encryption. In this
-scenario, the private keys are managed by the service provider or controller of
+scenario the private keys are managed by the service provider or controller of
 the storage server, which may be a different entity than the user who is storing
 the data. Encrypting the data while it resides on disk is a useful security
 measure should physical access to the storage hardware be compromised, but does
-not guarantee _only_ the original user who stored the data has access.
+not guarantee that _only_ the original user who stored the data has access.
 
 Conversely, client-side encryption - as with Datashards - offers a high level of
 security and privacy, especially if metadata can be encrypted as well. Encryption
@@ -322,7 +322,7 @@ techniques from storage-side and client-side encryption architectures. These
 storage systems, typically encountered among multi-server clusters or some
 "encryption as a platform" cloud service providers, recognize that client-side
 key management may be too difficult for some users and use cases, and offer to
-perform encryption and decryption themselves, in a way that is transparent to
+perform encryption and decryption themselves in a way that is transparent to
 the client application. At the same time, they aim to minimize the number of
 components (storage servers) that have access to the private decryption keys.
 As a result, the keys usually reside on "gateway" servers, which encrypt the
@@ -335,13 +335,14 @@ sysadmin controls the keys, not the user.
 ### Encrypted Metadata and Documents vs Blobs
 
 > We kill people based on metadata.
-> - _General Michael Hayden, former director of the NSA and the CIA_
+>
+> \- _General Michael Hayden, former director of the NSA and the CIA_
 
 Whether or not metadata can be (or is required to be) encrypted has implications
 for privacy, security, and usability of a system.
 
 Some systems, including Solid, NextCloud and Identity Hubs, support the
-inclusion of arbitrary metadata on binary data blobs. IPFS, Datashards and
+inclusion of arbitrary metadata on binary data blobs. IPFS, Datashards, and
 Tahoe-LAFS do not. Solid metadata is written by clients per-resource using RDF.
 Identity Hubs uses JWTs for per-object metadata, as well as JSON documents for
 additional metadata in Collections (also the clients' responsibility). NextCloud
@@ -350,7 +351,7 @@ these options for including metadata allow for it to be encrypted.
 
 ### Access Interface and Control
 
-Whether data is accessed over a network, or on a local device, data objects tend
+Whether data is accessed over a network or on a local device, data objects tend
 to need globally unique identifiers. Interfaces for reading and writing data in
 stores, as well as the mechanisms to restrict or grant the ability to do so, vary
 between implementations.
@@ -438,8 +439,8 @@ is under development.
 ### Summary
 
 This section provides an overview of a subset of active projects in the personal
-data store ecosystem which aim to give end users control over their data without
-requiring centralized authorities or proprietary technologies.
+data store ecosystem. These projects aim to give end users control over their
+data without requiring centralized authorities or proprietary technologies.
 
 Requiring client-side (edge) encryption for all data and metadata, enabling the
 user to store data on multiple devices and to share data with others, as well as
@@ -449,7 +450,7 @@ made which sacrifice privacy in favor of usability, or vice versa.
 
 Due to a number of maturing technologies and standards, we are hopeful that such
 tradeoffs are no longer necessary, and it is possible to design a protocol for
-encrypted, decentralized data storage which has broad practical appeal.
+encrypted decentralized data storage which has broad practical appeal.
 
 ## Core Use Cases
 The following three use
