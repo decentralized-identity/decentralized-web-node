@@ -1,5 +1,6 @@
 # Encrypted Data Vaults
-Authors (in alphabetical order): Daniel Bluhm, Kim Hamilton Duffy, Amy Guy, David Lamers, Tobias Looker, Manu Sporny, Dmitri Zagidulin
+Authors (in alphabetical order): Amy Guy, David Lamers, Tobias Looker, Manu Sporny, Dmitri Zagidulin  
+Contributors (in alphabetical order): Daniel Bluhm, Kim Hamilton Duffy
 
 We store a significant amount of sensitive data online, such as personally
 identifying information (PII), trade secrets, family pictures, and customer
@@ -45,14 +46,14 @@ stores as servers. Some projects expect an ecosystem of diverse applications to
 emerge, and design their protocols with this in mind.
 
 [NextCloud](https://docs.nextcloud.com/server/16/developer_manual/client_apis/),
-[Solid](https://github.com/solid/solid-spec/) and [DIF's Identity
+[Solid](https://github.com/solid/solid-spec/), and [DIF's Identity
 Hubs](https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md)
 all describe architectures for decoupling end-user applications from data storage.
 Such applications may be generic file management interfaces for browsing or
 sharing data, or specialized domain specific tools designed for particular tasks
-(eg. a calendar).
+(e.g., a calendar).
 [Datashards](https://github.com/WebOfTrustInfo/rwot9-prague/blob/master/topics-and-advance-readings/datashards-rationale.md),
-[Tahoe-LAFS](https://tahoe-lafs.org/trac/tahoe-lafs) and
+[Tahoe-LAFS](https://tahoe-lafs.org/trac/tahoe-lafs), and
 [IPFS](https://docs.ipfs.io) are only concerned with data storage and retrieval.
 
 In the case of Solid, NextCloud, and Identity Hubs, end users have the option of
@@ -183,7 +184,7 @@ services.
   </tr>
 </table>
 
-`*` - Unclear if Identity Hubs requires encryption. [Encryption proposal paper](https://github.com/decentralized-identity/papers/blob/master/Hub%20Encryption%20Proposal%20-%20Draft%201.pdf) suggests that it’s optional
+`*` - Unclear if Identity Hubs requires encryption. [Encryption proposal paper](https://github.com/decentralized-identity/papers/blob/master/Hub%20Encryption%20Proposal%20-%20Draft%201.pdf) suggests that it's optional
 
 <table>
   <tr>
@@ -203,7 +204,7 @@ services.
   <tr>
    <td>DIF Identity Hubs
    </td>
-   <td><a href="https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#api">custom</a>
+   <td><a href="https://github.com/decentralized-identity/identity-hub/blob/master/explainer.md#api">Custom</a>
    </td>
    <td>DID Auth
    </td>
@@ -233,7 +234,7 @@ services.
    </td>
    <td>WebDAV
    </td>
-   <td>custom
+   <td>Custom
    </td>
    <td><a href="https://docs.nextcloud.com/server/stable/admin_manual/file_workflows/access_control.html">Custom</a> (<a href="https://en.wikipedia.org/wiki/Role-based_access_control">RBAC</a>)
    </td>
@@ -296,7 +297,7 @@ previous two).
 
 Any data storage systems which let the user store arbitrary data support
 client-side encryption at the most basic level. That is, they let the user
-encrypt data themselves, and then store it. This doesn’t mean these systems are
+encrypt data themselves, and then store it. This doesn't mean these systems are
 optimized for encrypted data however. Querying and access control for encrypted
 data may be difficult (as is the case for Solid, NextCloud, Identity Hubs and IPFS).
 
@@ -341,7 +342,7 @@ sysadmin controls the keys, not the user.
 Whether or not metadata can be (or is required to be) encrypted has implications
 for privacy, security, and usability of a system.
 
-Some systems, including Solid, NextCloud and Identity Hubs, support the
+Some systems, including Solid, NextCloud, and Identity Hubs, support the
 inclusion of arbitrary metadata on binary data blobs. IPFS, Datashards, and
 Tahoe-LAFS do not. Solid metadata is written by clients per-resource using RDF.
 Identity Hubs uses JWTs for per-object metadata, as well as JSON documents for
@@ -438,33 +439,33 @@ is under development.
 
 ### Summary
 
-This section provides an overview of a subset of active projects in the personal
-data store ecosystem. These projects aim to give end users control over their
-data without requiring centralized authorities or proprietary technologies.
+The preceding sections provided an overview of a subset of active projects in
+the personal data store ecosystem. These projects aim to give end users control
+over their data without requiring centralized authorities or proprietary
+technologies.
 
 Requiring client-side (edge) encryption for all data and metadata, enabling the
-user to store data on multiple devices and to share data with others, as well as
-having searchable or queryable data, has been historically very difficult to
-implement in one system. We can see from this survey that tradeoffs are often
+user to store data on multiple devices, and to share data with others, as well
+as having searchable or queryable data, has been historically very difficult to
+implement in one system. We can see from this survey that trade-offs are often
 made which sacrifice privacy in favor of usability, or vice versa.
 
 Due to a number of maturing technologies and standards, we are hopeful that such
-tradeoffs are no longer necessary, and it is possible to design a protocol for
-encrypted decentralized data storage which has broad practical appeal.
+trade-offs are no longer necessary, and it is possible to design a
+privacy-preserving protocol for encrypted decentralized data storage which has
+broad practical appeal.
 
 ## Core Use Cases
-The following three use
-cases have been identified as representative of common usage patterns (though
-are by no means the only ones).
+The following three use cases have been identified as representative of common
+usage patterns (though are by no means the only ones).
 
-#### Use Data and Control Access to it
-As an end-user, I want to store my data in a safe location. I don’t want the
+#### Store and Use Data
+I want to store my data in a safe location. I don't want the
 storage provider to be able to see any data I store. This means that only I can
-see and use the data. I should have full control over who, besides me, has
-access to the data.
+see and use the data.
 
-A large amount of data will be stored which requires that I can do some
-searching, but I don't want the service provider to know what I'm searching for.
+#### Search Data
+Over time, I will store a large amount of data. I want to search the data, but don't want the service provider to know what I'm storing or searching for.
 
 #### Share Data With One or More Entities
 I want to share my data with other people and services. I can decide on giving
@@ -472,18 +473,17 @@ other entities access to data in my storage area when I save the data for the
 first time or in a later stage. The storage should only give access to others
 when I have explicitly given consent for each item.
 
-I want to be able to revoke the access of others at any time. When
-sharing data, I can include an expiration date for the
-access to my data by a third-party.
+I want to be able to revoke the access of others at any time. When sharing data,
+I can include an expiration date for the access to my data by a third-party.
 
 #### Store the Same Data in More Than One Place
-I want to backup my data across multiple
-storage locations in case one goes down. These locations can be hosted by
-different storage providers, and can be accessible over different protocols. One
-location could be local on my phone, while another is cloud-based. The locations
-should be able to synchronize between each other so data is up to date in both
-places regardless of how I create or update data, and this should happen
-automatically and without my help as much as possible.
+I want to backup my data across multiple storage locations in case one fails.
+These locations can be hosted by different storage providers, and can be
+accessible over different protocols. One location could be local on my phone,
+while another is cloud-based. The locations should be able to synchronize
+between each other so data is up to date in both places regardless of how I
+create or update data, and this should happen automatically and without my help
+as much as possible.
 
 ## Requirements
 
@@ -493,10 +493,11 @@ from the core use cases.
 ### Privacy and Multi-party Encryption
 
 One of the main goals of this system is ensuring the privacy of an entity's
-data, so that it cannot be accessed by unauthorized parties.
+data so that it cannot be accessed by unauthorized parties, including the
+storage provider.
 
 To accomplish this, the data must be encrypted both while it is in transit
-(being sent over a network) and while it is at rest (on disk).
+(being sent over a network) and while it is at rest (on a storage system).
 
 Since data could be shared with more than one entity, it is also necessary for
 the encryption mechanism to support encrypting data to multiple parties.
@@ -516,7 +517,7 @@ authorization schemes include OAuth2, Web Access Control, and
 The system should be identifier agnostic. In general, identifiers that are a
 form of URN or URL are preferred. While it is presumed that [Decentralized
 Identifiers](https://w3c-ccg.github.io/did-spec/) (DIDs) will be used by the
-system in a few important ways, hardcoding the implementations to DIDs would be
+system in a few important ways, hard-coding the implementations to DIDs would be
 an anti-pattern.
 
 ### Versioning and Replication
@@ -559,38 +560,38 @@ layered on top of the lower foundations.
 For example, Layer 1 might contain the mandatory features for the most basic
 system. Layer 2 contains useful features for most deployments. Layer 3 contains
 advanced features needed by a small subset of the ecosystem, and Layer 4
-contains extremely complex features that are needed by a very small subset of
-the ecosystem.
+could contain extremely complex features that are needed by a very small subset
+of the ecosystem.
 
 ### Prioritize Privacy
 
 This system is intended to protect an entity's privacy. When exploring new
 features, always ask "How would this impact privacy?". New features that
 negatively impact privacy are expected to undergo extreme scrutiny to determine
-if the tradeoffs are worth the new functionality.
+if the trade-offs are worth the new functionality.
 
 ### Push Implementation Complexity to the Client
 
-Servers in this system are expected to provide _only_ storage, with no
-additional logic. The more a server knows, the greater the risk to the privacy
-of the entity storing the data, and the more liability the service
-provider might have for hosting data. In addition, pushing complexity to the
-client enables service providers to provide stable server-side implementations
-while innovation can by carried out by clients.
+Servers in this system are expected to provide functionality strongly focused on
+the storage and retrieval of encrypted data. The more a server knows, the
+greater the risk to the privacy of the entity storing the data, and the more
+liability the service provider might have for hosting data. In addition, pushing
+complexity to the client enables service providers to provide stable server-side
+implementations while innovation can by carried out by clients.
 
 ## Architecture
 
-This section describes the architecture of the Encrypted Data Vaults protocol.
+This section describes the architecture of the Encrypted Data Vault protocol.
 
-Encrypted Data Vaults defines a client-server relationship, whereby the vault is
+This document defines a client-server relationship, whereby the vault is
 regarded as the server and the client acts as the interface used to interact
 with the vault.
 
-This architecture is layered in nature, where the
-foundational layer consists of an operational system with minimal features and
-more advanced features are layered on top. Implementations can choose to
-implement only the foundational layer, or optionally, additional layers
-consisting of a richer set of features for more advanced use cases.
+This architecture is layered in nature, where the foundational layer consists of
+an operational system with minimal features and more advanced features are
+layered on top. Implementations can choose to implement only the foundational
+layer, or optionally, additional layers consisting of a richer set of features
+for more advanced use cases.
 
 ### Deployment Topologies
 
@@ -604,31 +605,27 @@ client, and the server is a remote cloud-based service provider that has
 exposed the storage via a network-based API (eg. REST over HTTPS). Data is
 not stored on the mobile device.
 * **Multiple Devices (Single User) Plus Cloud Storage:** When adding more
-devices managed by a single user, the vault can be used to
-synchronize data across devices.
+devices managed by a single user, the vault can be used to synchronize data
+across devices.
 * **Multiple Devices (Multiple Users) Plus Cloud Storage:** When pairing
-multiple users with cloud storage, the vault can be used to
-synchronize data between multiple users with the help of replication
-and merge strategies.
+multiple users with cloud storage, the vault can be used to synchronize data
+between multiple users with the help of replication and merge strategies.
 
-### Server Responsibilities
+### Server and Client Responsibilities
 
 The server is assumed to be of low trust, and must have no visibility into the
 data that it persists. However, even in this model, the server still has a set
 of minimum responsibilities it must adhere to.
 
-### Client Responsibilities
-
 The client is responsible for providing an interface to the server, with
 bindings for each relevant protocol (HTTP, RPC, or binary over-the-wire
 protocols), as required by the implementation.
 
-All encryption and decryption of data is done on
-the client side, at the edges. The data (including metadata) MUST be opaque to
-the server, and the architecture is designed to prevent the server from being
-able to decrypt it.
+All encryption and decryption of data is done on the client side, at the edges.
+The data (including metadata) MUST be opaque to the server, and the architecture
+is designed to prevent the server from being able to decrypt it.
 
-### Layer 1 Responsibilities
+### Layer 1 (L1) Responsibilities
 
 Layer 1 consists of a client-server system that is capable of encrypting data in
 transit and at rest.
@@ -655,18 +652,18 @@ A vault has a global configuration that defines the following properties:
 * Other config metadata
 
 The configuration allows the the client to perform capability discovery
-regarding e.g. authorization, protocol and replication mechanisms, used by the
-server.
+regarding things like authorization, protocol, and replication mechanisms, used
+by the server.
 
 #### Server: Enforcement of Authorization Policies (L1)
 
-When a vault client makes a request to store, query, modify or delete data in
+When a client makes a request to store, query, modify or delete data in
 the vault, the server enforces any authorization policy that is associated with
 the request.
 
 #### Client: Encrypted Data Chunking (L1)
 
-Encrypted Data Vaults are capable of storing many different types of data,
+An Encrypted Data Vault is capable of storing many different types of data,
 including large unstructured binary data. This means that storing a file as a
 single entry would be challenging for systems that have limits on single record
 sizes. For example, some databases set the maximum size for a single record to
@@ -718,7 +715,7 @@ privacy-preserving querying over encrypted resources)
 * _Encrypted resource payload_ - encoded as a [`jwe`](https://tools.ietf.org/html/rfc7516),
 [`cwe`](https://tools.ietf.org/html/rfc8152#section-5) or other appropriate mechanism
 
-### Layer 2 Responsibilities
+### Layer 2 (L2) Responsibilities
 
 Layer 2 consists of a system that is capable of sharing data among multiple
 entities, versioning and replication, and performing privacy-preserving searches
@@ -750,19 +747,18 @@ An individual vault's choice of authorization mechanism determines how a client
 shares resources with other entities (authorization capability link or similar
 mechanism).
 
-### Layer 3 Responsibilities
+### Layer 3 (L3) Responsibilities
 
 #### Server: Notifications (L3)
 
-A commonly associated feature with data storage providers is a mechanism by
-which to notify about changes to the data it persists. A vault may optionally
-implement a mechanism by which clients can subscribe to changes in data from the
-vault.
+It is helpful if data storage providers are able to notify clients when  changes
+to persisted data occurs. A server may optionally implement a mechanism by which
+clients can subscribe to changes in the vault.
 
 #### Client: Vault-wide Integrity Protection (L3)
 
 Vault-wide integrity protection is provided to prevent a variety of storage
-provider attacks where data is modified in a way that is undetectable, such  as
+provider attacks where data is modified in a way that is undetectable, such as
 if documents are reverted to older versions or deleted. This protection
 requires that a global catalog of all the resource identifiers that belong to a
 user, along with the most recent version, are stored and kept up to date by the
@@ -776,9 +772,12 @@ interference or deletion by the server.
 Encrypted Data Vaults support a number of extension points:
 
 - Protocol/API - One or more protocols such as library APIs, HTTPS, gRPC, or Bluetooth can be used to access the system.
-- Encryption Strategies - One or more encryption strategies such as ECDH or XSalsaPoly1305 can be used to encrypt data.
-- Authorization Strategies - One or more authorization strategies such as OAuth2, HTTP Signatures, or Authorization Capabilities can be used to protect access to encrypted data.
-- Versioning Strategies and Replication Strategies - One or more versioning and replication strategies such as counters, cryptographic hashes, or CRDTs (Conflict-free Replicated Data Types) can be used to synchronize data.
+- Encryption Strategies - One or more encryption strategies such as AES-GCM or XSalsa20Poly1305 can be used to encrypt data.
+- Authorization Strategies - One or more authorization strategies such as
+OAuth2, HTTP Signatures, or Authorization Capabilities can be used to protect
+access to encrypted data.
+- Versioning Strategies and Replication Strategies - One or more versioning and replication strategies such as counters, cryptographic hashes, or CRDTs
+(Conflict-free Replicated Data Types) can be used to synchronize data.
 - Notification mechanisms - One or more notification mechanisms can be used to
 signal to clients that data has changed in the vault.
 
@@ -874,10 +873,10 @@ work on Encrypted Data Vaults:
 
 This paper has described current approaches and architectures for encrypted
 storage systems, provided derived requirements and design goals, and has
-highlighted dangers that implementers should be aware of when implementing data
-storage. This paper also explored the base assumptions of these sorts of systems
-such as providing privacy-respecting mechanisms for storing, indexing, and
-retrieving encrypted data, as well as data portability. The authors of  this
-paper expect to continue to work on these concepts and contribute them  to a
-pre-standards track specification that achieves the concepts and goals  outlined
-in this paper.
+highlighted dangers that implementers should be aware of when implementing
+privacy-preserving data storage systems. This paper also explored the base
+assumptions of these sorts of systems such as providing privacy-respecting
+mechanisms for storing, indexing, and retrieving encrypted data, as well as data
+portability. The authors of  this paper expect to continue to work on these
+concepts and contribute them  to a pre-standards track specification that
+achieves the concepts and goals  outlined in this paper.
