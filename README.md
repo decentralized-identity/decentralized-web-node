@@ -1,4 +1,4 @@
-## Secure Data Hubs Specification
+## Encrypted Data Vaults Specification
 
 This specification describes a privacy-respecting mechanism for storing,
 indexing, and retrieving encrypted data at a storage provider. It is often

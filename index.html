@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Secure Data Hubs 0.1</title>
+    <title>Encrypted Data Vaults 0.1</title>
     <meta http-equiv='Content-Type' content='text/html;charset=utf-8'/>
     <!--
       === NOTA BENE ===
@@ -16,7 +16,7 @@
         specStatus: "CG-DRAFT",
 
         // the specification's short name, as in http://www.w3.org/TR/short-name/
-        shortName: "data-hubs",
+        shortName: "encrypted-data-vaults",
 
         // subtitle for the spec
         subtitle: "Encrypted storage for the Web",
@@ -37,11 +37,11 @@
         localBiblio: ccg.localBiblio,
         doJsonLd: true,
 
-        github: "https://github.com/w3c-ccg/data-hubs/",
+        github: "https://github.com/digitalbazaar/encrypted-data-vaults/",
         includePermalinks: false,
 
         // if there a publicly available Editor's Draft, this is the link
-        edDraftURI: "https://w3c-ccg.github.io/data-hubs/",
+        edDraftURI: "https://digitalbazaar.github.io/encrypted-data-vaults/",
 
         // if this is a LCWD, uncomment and set the end of its review period
         // lcEnd: "2009-08-05",
@@ -118,7 +118,7 @@ from storage provider data breaches.
       <p>
 Comments regarding all aspects of this document are welcome.
 Please file issues
-directly on <a href="https://github.com/w3c-ccg/data-hubs/issues/">GitHub</a>,
+directly on <a href="https://github.com/digitalbazaar/encrypted-data-vaults/issues/">GitHub</a>,
 or send them to
 <a href="mailto:public-credentials@w3.org">public-credentials@w3.org</a>
 (<a href="mailto:public-credentials-request@w3.org?subject=subscribe">subscribe</a>,
@@ -144,7 +144,7 @@ from storage provider data breaches.
       </p>
 
       <section class="informative">
-        <h3>Why Do We Need Secure Data Hubs?</h3>
+        <h3>Why Do We Need Encrypted Data Vaults?</h3>
 
         <p class="issue">
 Explain why individuals and organizations that want to protect their privacy,
@@ -172,23 +172,23 @@ specification:
         </p>
 
         <dl>
-          <dt><dfn>data hub controller</dfn></dt>
+          <dt><dfn>data vault controller</dfn></dt>
           <dd>
 A role an <a>entity</a> might perform by creating, managing, and deleting
-data hubs. This entity is also responsible for granting and revoking
-authorization to <a>storage agents</a> to the data hubs that are under its
+data vaults. This entity is also responsible for granting and revoking
+authorization to <a>storage agents</a> to the data vaults that are under its
 control.
           </dd>
           <dt><dfn data-lt="storage agents">storage agent</dfn></dt>
           <dd>
 A role an <a>entity</a> might perform by creating, updating, and deleting
-data in a data hub. This entity is typically granted authorization to
-to access a data hub by a <a>data hub controller</a>.
+data in a data vault. This entity is typically granted authorization to
+to access a data vault by a <a>data vault controller</a>.
           </dd>
           <dt><dfn>storage provider</dfn></dt>
           <dd>
 A role an <a>entity</a> might perform by providing a raw data storage
-mechanism to a <a>data hub controller</a>. It is impossible for this entity
+mechanism to a <a>data vault controller</a>. It is impossible for this entity
 to see the data that it is storing due to all data being encrypted at rest
 and in transit to and from the <a>storage provider</a>.
           </dd>
@@ -258,7 +258,7 @@ control who has access to what data in a more fine grained way by doing this.
         <h2>Structured Documents</h2>
 
         <p>
-The fundamental unit of storage in data hubs is the encrypted
+The fundamental unit of storage in data vaults is the encrypted
 structured document which, when decrypted, provides a data structure that
 can be expressed in popular syntaxes such as JSON and CBOR. Documents can
 store structured data and metadata about the structured data. Structured
@@ -272,7 +272,7 @@ document sizes are limited to 16MB.
         <p>
 For files larger than 16MB or for raw binary data formats such as audio,
 video, and office productivity files, a streaming API is provided that
-enables data to be streamed to/from a data hub. Streams are described using
+enables data to be streamed to/from a data vault. Streams are described using
 structured documents, but the storage of the data is separated from the
 structured document using a hashlink to the encrypted content.
         </p>
@@ -282,11 +282,11 @@ structured document using a hashlink to the encrypted content.
         <h2>Indexing</h2>
 
         <p>
-Data hubs are expected to store a very large number of documents
+data vaults are expected to store a very large number of documents
 of varying kinds. This means that it is important to be able to search the
 documents in a timely way, which creates a challenge for the storage provider
 as the content is encrypted. An encrypted search scheme is provided for
-secure data hubs that enable data hub clients to do meta data indexing while
+secure data vaults that enable data vault clients to do meta data indexing while
 not leaking metadata to the storage provider.
         </p>
       </section>
@@ -297,20 +297,20 @@ not leaking metadata to the storage provider.
       <h2>Data Model</h2>
 
       <p>
-The following sections outlines the data model for data hubs.
+The following sections outlines the data model for data vaults.
       </p>
 
       <section>
-        <h3>DataHubConfiguration</h3>
+        <h3>DataVaultConfiguration</h3>
 
         <p class="issue">
-Data hub configuration isn't strictly necessary for using the other features
-of data hubs. This should have its own conformance section/class or potentially
+Data vault configuration isn't strictly necessary for using the other features
+of data vaults. This should have its own conformance section/class or potentially
 event be non-normative.
         </p>
 
         <p>
-A data hub configuration specifies the properties a particular data hub
+A data vault configuration specifies the properties a particular data vault
 will have.
         </p>
 
@@ -323,8 +323,8 @@ will have.
             <tr>
               <td>sequence</td>
               <td>
-A unique counter for the data hub in order to ensure that
-clients are properly synchronized to the data hub. The value is required and
+A unique counter for the data vault in order to ensure that
+clients are properly synchronized to the data vault. The value is required and
 MUST be an unsigned 64-bit number.
               </td>
             </tr>
@@ -332,14 +332,14 @@ MUST be an unsigned 64-bit number.
               <td>controller</td>
               <td>
 The entity or cryptographic key that is in control of the
-data hub. The value is required and MUST be a URI.
+data vault. The value is required and MUST be a URI.
               </td>
             </tr>
             <tr>
               <td>invoker</td>
               <td>
 The root entities or cryptographic key(s) that are authorized to invoke
-an authorization capability to modify the data hub's configuration or
+an authorization capability to modify the data vault's configuration or
 read or write to it. The value is optional, but if present, MUST be a URI
 or an array of URIs. When this value is not present, the value of controller
 property is used for the same purpose.
@@ -349,7 +349,7 @@ property is used for the same purpose.
               <td>delegator</td>
               <td>
 The root entities or cryptographic key(s) that are authorized to delegate
-authorization capabilities to modify the data hub's configuration or
+authorization capabilities to modify the data vault's configuration or
 read or write to it. The value is optional, but if present, MUST be a URI
 or an array of URIs. When this value is not present, the value of controller
 property is used for the same purpose.
@@ -392,11 +392,11 @@ a URI.
           </tbody>
         </table>
 
-        <pre class="example highlight" title="Example data hub configuration">
+        <pre class="example highlight" title="Example data vault configuration">
 {
   "sequence": 0,
   "controller": "did:example:123456789",
-  "referenceId": "my-primary-data-hub",
+  "referenceId": "my-primary-data-vault",
   "kek": {
     "id": "https://example.com/kms/12345",
     "type": "AesKeyWrappingKey2019"
@@ -416,7 +416,7 @@ a URI.
         <p>
 A structured document is used to store application data as well as metadata
 about the application data. This information is typically encrypted and then
-stored on the data hub.
+stored on the data vault.
         </p>
 
         <table class="simple">
@@ -492,8 +492,8 @@ URI.
             <tr>
               <td>sequence</td>
               <td>
-A unique counter for the data hub in order to ensure that
-clients are properly synchronized to the data hub. The value is required and
+A unique counter for the data vault in order to ensure that
+clients are properly synchronized to the data vault. The value is required and
 MUST be an unsigned 64-bit number.
               </td>
             </tr>
@@ -514,7 +514,7 @@ key agreement on a key wrapping key.
         </p>
 
         <p class="issue">
-Another section should detail that data hub servers may omit certain fields
+Another section should detail that data vault servers may omit certain fields
 or certain values in certain fields, such as the recipients field, based on
 whether or not the entity requesting an EncryptedDocument is authorized to
 see the field or its values. This can be finely controlled through the use
@@ -548,7 +548,7 @@ of Authorization Capabilities.
 
         <p>
 An encrypted stream is a raw binary stream that has been encrypted before
-being uploaded to a data hub. An encrypted stream MUST be associated
+being uploaded to a data vault. An encrypted stream MUST be associated
 with a <a>StructuredDocument</a> where the <code>content.id</code> is a
 hashlink for the encrypted stream.
         </p>
@@ -595,12 +595,12 @@ Key-value content for the structured document.
               <td>content.id</td>
               <td>
 The identifier for the content. The content identifier MUST be a URI that
-references a stream on the same data hub. Once the stream has been written
-to the data hub, the content identifier MUST be updated such that it is a
+references a stream on the same data vault. Once the stream has been written
+to the data vault, the content identifier MUST be updated such that it is a
 valid hashlink. To allow for streaming encryption, the value of the digest
 for the <a>EncryptedStream</a> is assumed to be unknowable until after the
 stream has been written. The hashlink MUST exist as a content hash for the
-stream that has been written to the data hub.
+stream that has been written to the data vault.
               </td>
             </tr>
           </tbody>
@@ -613,7 +613,7 @@ stream that has been written to the data hub.
     "contentType": "video/mpeg"
   },
   "content": {
-    "id": "https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp"
+    "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp"
   }
 }
         </pre>
@@ -623,7 +623,7 @@ stream that has been written to the data hub.
     </section>
 
     <section class="normative">
-      <h2>Data Hub HTTPS API</h2>
+      <h2>data vault HTTPS API</h2>
 
       <p>
 This section introduces some basic concepts for the specification...
@@ -647,10 +647,10 @@ top-most HTML web page (e.g. at <code>https://example.com/</code>):
     &lt;script src="script.js">&lt;/script>
     &lt;script type="application/ld+json">
 {
-  "@context": "https://w3id.org/data-hubs/v1",
+  "@context": "https://w3id.org/encrypted-data-vaults/v1",
   "id": "https://example.com/",
   "name": "Example Website",
-  "dataHubManagementService": "https://example.com/data-hubs"
+  "dataVaultManagementService": "https://example.com/data-vaults"
 }
     &lt;/script>
   &lt;/head>
@@ -668,22 +668,22 @@ In the following example a JSON-compatible service description is provided
 
         <pre class="example highlight" title="Example of a JSON-based service description">
 {
-  "@context": "https://w3id.org/data-hubs/v1",
+  "@context": "https://w3id.org/encrypted-data-vaults/v1",
   "id": "https://example.com/",
   "name": "Example Website",
-  "dataHubCreationService": "https://example.com/data-hubs"
+  "dataVaultCreationService": "https://example.com/data-vaults"
 }
         </pre>
 
       </section>
 
       <section class="normative">
-        <h2>Creating a Data Hub</h2>
+        <h2>Creating a data vault</h2>
 
         <p>
-A data hub is created by performing an HTTP POST of a
-<a href="#datahubconfiguration">DataHubConfiguration</a>
-to the <code>dataHubCreationService</code>. The following HTTP
+A data vault is created by performing an HTTP POST of a
+<a href="#datavaultconfiguration">DataVaultConfiguration</a>
+to the <code>dataVaultCreationService</code>. The following HTTP
 status codes are defined for this service:
         </p>
 
@@ -696,31 +696,31 @@ status codes are defined for this service:
             <tr>
               <td>201</td>
               <td>
-Data hub creation was successful. The HTTP <code>Location</code> header will
-contain the URL for the newly created data hub.
+data vault creation was successful. The HTTP <code>Location</code> header will
+contain the URL for the newly created data vault.
               </td>
             </tr>
             <tr>
               <td>400</td>
               <td>
-Data hub creation failed.
+data vault creation failed.
               </td>
             <tr>
             </tr>
               <td>409</td>
               <td>
-A duplicate data hub exists.
+A duplicate data vault exists.
               </td>
             </tr>
           </tbody>
         </table>
 
         <p>
-An example exchange of a data hub creation is shown below:
+An example exchange of a data vault creation is shown below:
         </p>
 
-        <pre class="example highlight" title="Data hub creation request">
-POST /data-hubs HTTP/1.1
+        <pre class="example highlight" title="data vault creation request">
+POST /data-vaults HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -744,17 +744,17 @@ Accept-Encoding: gzip, deflate
         <p class="issue">
 Explain the purpose of the controller property to root authority. Explain how
 Authorization Capabilities can be created and invoked via HTTP signatures to
-authorize reading and writing from/to data hubs.
+authorize reading and writing from/to data vaults.
         </p>
 
         <p>
-If the creation of the data hub was successful, an HTTP 201 status code is
+If the creation of the data vault was successful, an HTTP 201 status code is
 expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub creation response">
+        <pre class="example highlight" title="Successful data vault creation response">
 HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/z4sRgBJJLnYy
+Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -769,10 +769,10 @@ Transfer-Encoding: chunked
         <h2>Creating a Document</h2>
 
         <p>
-A structured document is stored in a data hub by encoding a
+A structured document is stored in a data vault by encoding a
 <a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
-an HTTP POST to a data hub endpoint created via
-<a href="#creating-a-data-hub"></a>.
+an HTTP POST to a data vault endpoint created via
+<a href="#creating-a-data-vault"></a>.
 The following HTTP status codes are defined for this service:
         </p>
 
@@ -809,8 +809,8 @@ document is encrypted, it can be sent to the document creation service.
 A protocol example of a document creation is shown below:
         </p>
 
-        <pre class="example highlight" title="Data hub document creation request">
-POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
+        <pre class="example highlight" title="data vault document creation request">
+POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -840,9 +840,9 @@ If the creation of the structured document was successful, an HTTP 201 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub document creation response">
+        <pre class="example highlight" title="Successful data vault document creation response">
 HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz
+Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -857,7 +857,7 @@ Transfer-Encoding: chunked
         <h2>Reading a Document</h2>
 
         <p>
-Reading a document from a data hub is performed by retrieving the
+Reading a document from a data vault is performed by retrieving the
 <a>EncryptedDocument</a> and then decrypting it to a
 <a>StructuredDocument</a>. The following HTTP status codes are defined for
 this service:
@@ -902,14 +902,14 @@ A protocol example of a document retrieval is shown below:
         </p>
 
         <p class="issue">
-Explain that the URL path structure is fixed for all data hubs to enable
+Explain that the URL path structure is fixed for all data vaults to enable
 portability and the use of stable URLs (such as through DID URLs) to reference
-certain documents while allowing users to change their data hub service
+certain documents while allowing users to change their data vault service
 providers. Explain how this enables portability.
         </p>
 
-        <pre class="example highlight" title="Data hub encrypted document retrieval">
-GET https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+        <pre class="example highlight" title="data vault encrypted document retrieval">
+GET https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
 Accept: application/json, text/plain, */*
 Accept-Encoding: gzip, deflate
@@ -920,7 +920,7 @@ If the retrieval of the encrypted document was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub document read response">
+        <pre class="example highlight" title="Successful data vault document read response">
 HTTP/1.1 200 OK
 Date: Fri, 14 Jun 2019 18:37:12 GMT
 Connection: keep-alive
@@ -950,10 +950,10 @@ Connection: keep-alive
         <h2>Updating a Document</h2>
 
         <p>
-A structured document is updated in a data hub by encoding the updated
+A structured document is updated in a data vault by encoding the updated
 <a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
-an HTTP POST to a data hub endpoint created via
-<a href="#creating-a-data-hub"></a>.
+an HTTP POST to a data vault endpoint created via
+<a href="#creating-a-data-vault"></a>.
 The following HTTP status codes are defined for this service:
         </p>
 
@@ -989,8 +989,8 @@ document is encrypted, it can be sent to the document creation service.
 A protocol example of a document update is shown below:
         </p>
 
-        <pre class="example highlight" title="Data hub document update request">
-POST  /data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+        <pre class="example highlight" title="data vault document update request">
+POST  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -1020,7 +1020,7 @@ If the update to the encrypted document was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub document creation response">
+        <pre class="example highlight" title="Successful data vault document creation response">
 HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:39:52 GMT
@@ -1033,8 +1033,8 @@ Connection: keep-alive
         <h2>Deleting a Document</h2>
 
         <p>
-A structured document is deleted by performing an HTTP DELETE to a data hub
-endpoint created via <a href="#creating-a-data-hub"></a>.
+A structured document is deleted by performing an HTTP DELETE to a data vault
+endpoint created via <a href="#creating-a-data-vault"></a>.
 The following HTTP status codes are defined for this service:
         </p>
 
@@ -1069,8 +1069,8 @@ Structured document was not found.
 A protocol example of a document deletion is shown below:
         </p>
 
-        <pre class="example highlight" title="Data hub document deletion request">
-DELETE  /data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+        <pre class="example highlight" title="data vault document deletion request">
+DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
         </pre>
 
@@ -1079,7 +1079,7 @@ If the deletion of the encrypted document was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub document deletion response">
+        <pre class="example highlight" title="Successful data vault document deletion response">
 HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:40:18 GMT
@@ -1091,8 +1091,8 @@ Connection: keep-alive
         <h2>Creating a Stream</h2>
 
         <p>
-A stream is stored in a data hub by writing a document containing metadata
-about the stream, encrypting the stream, writing it to a data hub, and then
+A stream is stored in a data vault by writing a document containing metadata
+about the stream, encrypting the stream, writing it to a data vault, and then
 updating the document containing metadata about the stream. The following
 HTTP status codes are defined for this service:
         </p>
@@ -1133,7 +1133,7 @@ Implementations first encode the metadata associated with the stream into a
     "contentLength": 56735817
   },
   "content": {
-    "id": "https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz"
+    "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz"
   }
 }
         </pre>
@@ -1141,7 +1141,7 @@ Implementations first encode the metadata associated with the stream into a
         <p class="note">
 In this case, the value of <code>content.id</code> is a reference to the
 stream located at
-<code>https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz</code>,
+<code>https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz</code>,
 which is the location that the stream MUST be written to. This content
 identifier MUST be updated to include a hashlink once the stream has been
 written and its digest is known.
@@ -1154,7 +1154,7 @@ The <a>StructuredDocument</a> above is then transformed to an
         </p>
 
         <pre class="example highlight" title="Encrypted document creation request for stream metadata">
-POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
+POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -1184,9 +1184,9 @@ If the creation of the structured document was successful, an HTTP 201 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub document creation response">
+        <pre class="example highlight" title="Successful data vault document creation response">
 HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zp4H8ekWn
+Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zp4H8ekWn
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -1206,7 +1206,7 @@ A protocol example of a stream creation is shown below:
         </p>
 
         <pre class="example highlight" title="Encrypted stream creation request">
-POST /data-hubs/z4sRgBJJLnYy/streams HTTP/1.1
+POST /encrypted-data-vaults/z4sRgBJJLnYy/streams HTTP/1.1
 Host: example.com
 Content-Type: application/octet-stream
 Transfer-Encoding: chunked
@@ -1223,7 +1223,7 @@ code is expected in return:
 
         <pre class="example highlight" title="Successful stream creation response">
 HTTP/1.1 201 Created
-Location: https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz
+Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -1234,7 +1234,7 @@ Transfer-Encoding: chunked
 
         <p>
 Once a stream is created, the metadata related to the stream can be updated
-in the data hub using the protocol defined in
+in the data vault using the protocol defined in
 <a href="#updating-a-document"></a>. An example of updating a link to a video
 file is shown below.
         </p>
@@ -1254,7 +1254,7 @@ Implementations update the metadata associated with the stream in its
     "contentLength": 56735817
   },
   "content": {
-    "id": "https://example.com/data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp",
+    "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp",
     "jwe": {
       "protected": "eyJlbmMiOiJDMjBQIn0",
       "recipients": [{
@@ -1283,7 +1283,7 @@ The <a>StructuredDocument</a> above is then transformed to an
         </p>
 
         <pre class="example highlight" title="Encrypted document update request for stream metadata">
-POST /data-hubs/z4sRgBJJLnYy/docs HTTP/1.1
+POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -1313,9 +1313,9 @@ If the creation of the structured document was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub document creation response">
+        <pre class="example highlight" title="Successful data vault document creation response">
 HTTP/1.1 200 OK
-Location: https://example.com/data-hubs/z4sRgBJJLnYy/docs/zp4H8ekWn
+Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zp4H8ekWn
 Cache-Control: no-cache, no-store, must-revalidate
 Pragma: no-cache
 Expires: 0
@@ -1330,7 +1330,7 @@ Transfer-Encoding: chunked
         <h2>Reading a Stream</h2>
 
         <p>
-Reading a stream from a data hub is performed by retrieving the associated
+Reading a stream from a data vault is performed by retrieving the associated
 metadata that is encrypted as an <a>EncryptedDocument</a>, decoding the
 hashlink information, and then retrieving the <a>EncryptedStream</a> and then
 decrypting it. The following HTTP status codes are defined for this service:
@@ -1379,8 +1379,8 @@ Implementers can perform random seeking in the stream by utilizing the
 A protocol example of a stream retrieval is shown below:
         </p>
 
-        <pre class="example highlight" title="Data hub encrypted stream retrieval">
-GET https://example.com/data-hubs/z4sRgBJJLnYy/streams/zn2XmSDzMbxz HTTP/1.1
+        <pre class="example highlight" title="data vault encrypted stream retrieval">
+GET https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zn2XmSDzMbxz HTTP/1.1
 Host: example.com
 Content-Range: 0-1048576
 Accept: application/octet-stream
@@ -1392,7 +1392,7 @@ If the retrieval of the encrypted stream was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub stream read response">
+        <pre class="example highlight" title="Successful data vault stream read response">
 HTTP/1.1 200 OK
 Date: Fri, 14 Jun 2019 18:37:12 GMT
 Content-Range: 0-1048576
@@ -1408,7 +1408,7 @@ Connection: keep-alive
         <h2>Deleting a Stream</h2>
 
         <p>
-A stream is deleted by performing an HTTP DELETE to a data hub
+A stream is deleted by performing an HTTP DELETE to a data vault
 stream endpoint created via <a href="#creating-a-stream"></a> and
 the corresponding metadata document created via
 <a href="#creating-a-document"></a>. The following HTTP status codes are
@@ -1446,8 +1446,8 @@ Stream was not found.
 A protocol example of a stream deletion is shown below:
         </p>
 
-        <pre class="example highlight" title="Data hub stream deletion request">
-DELETE  /data-hubs/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz HTTP/1.1
+        <pre class="example highlight" title="data vault stream deletion request">
+DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
 </pre>
         </pre>
@@ -1457,7 +1457,7 @@ If the deletion of the encrypted stream was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub stream deletion response">
+        <pre class="example highlight" title="Successful data vault stream deletion response">
 HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:40:18 GMT
@@ -1469,8 +1469,8 @@ Once the stream is deleted, implementations MUST also delete the corresponding
 metadata document:
         </p>
 
-        <pre class="example highlight" title="Data hub stream deletion request">
-DELETE  /data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+        <pre class="example highlight" title="data vault stream deletion request">
+DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
 Host: example.com
         </pre>
 
@@ -1479,7 +1479,7 @@ If the deletion of the encrypted stream was successful, an HTTP 200 status
 code is expected in return:
         </p>
 
-        <pre class="example highlight" title="Successful data hub stream deletion response">
+        <pre class="example highlight" title="Successful data vault stream deletion response">
 HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:40:18 GMT
@@ -1492,14 +1492,14 @@ Connection: keep-alive
         <h2>Creating Encrypted Indexes</h2>
 
         <p>
-It is often useful to search a data hub for structured documents that contain
+It is often useful to search a data vault for structured documents that contain
 specific metadata. Efficient searching requires the use of search indexes
 and local access to data. This poses an interesting challenge as the
 search has to be performed on the <a>storage provider</a> without leaking
 information that could violate the privacy of the entities that are storing
-information in the data hub. This section details how encrypted indexes
+information in the data vault. This section details how encrypted indexes
 can be created and used to perform efficient searching while protecting
-the privacy of entities that are storing information in the data hub.
+the privacy of entities that are storing information in the data vault.
         </p>
 
         <p>
@@ -1581,7 +1581,7 @@ Add a section showing the update index endpoint and how it works.
         <h2>Searching Encrypted Documents</h2>
 
         <p>
-The contents of a data hub can be searched using encrypted indexes created
+The contents of a data vault can be searched using encrypted indexes created
 using the processes described in <a href="#creating-encrypted-indexes"></a>.
 There are two primary ways of searching for encrypted documents. The first
 is to search for a specific value associated with a specific index. The
@@ -1593,8 +1593,8 @@ The example below demonstrates how to search for a specific value associated
 with a specific index.
         </p>
 
-        <pre class="example highlight" title="Data hub query for a specifically indexed value">
-POST https://example.com/data-hubs/z4sRgBJJLnYy HTTP/1.1
+        <pre class="example highlight" title="data vault query for a specifically indexed value">
+POST https://example.com/encrypted-data-vaults/z4sRgBJJLnYy HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -1614,22 +1614,22 @@ A successful query will result in a standard HTTP 200 response with a list of
 identifiers for all encrypted documents that match the query:
         </p>
 
-        <pre class="example highlight" title="Successful query response from a data hub">
+        <pre class="example highlight" title="Successful query response from a data vault">
 HTTP/1.1 200 OK
 Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:45:18 GMT
 Connection: keep-alive
 
-["https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
+["https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
         </pre>
 
         <p>
-The contents of a data hub can also be searched to see if a certain attribute
+The contents of a data vault can also be searched to see if a certain attribute
 name is indexed by using the <code>has</code> keyword.
         </p>
 
-        <pre class="example highlight" title="Data hub query for a particular attribute name">
-POST https://example.com/data-hubs/z4sRgBJJLnYy/queries HTTP/1.1
+        <pre class="example highlight" title="data vault query for a particular attribute name">
+POST https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/queries HTTP/1.1
 Host: example.com
 Content-Type: application/json
 Accept: application/json, text/plain, */*
@@ -1651,7 +1651,7 @@ Cache-Control: no-cache, no-store, must-revalidate
 Date: Fri, 14 Jun 2019 18:45:18 GMT
 Connection: keep-alive
 
-["https://example.com/data-hubs/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
+["https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
         </pre>
 
       </section>
