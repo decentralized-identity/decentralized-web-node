@@ -67,7 +67,7 @@ is stored across a public network.
 
 Identity Hubs are responsible for additional things beyond just data storage,
 for example management of the end user's profile; transmission of human- or
-machine-readable messages through the Actions interface; pointers to external
+machine-readable messages through the Actions interface; or pointers to external
 services.
 
 <table>
@@ -90,7 +90,7 @@ services.
   <tr>
    <td>DIF Identity Hubs
    </td>
-   <td>Document based data store
+   <td>Document-based data store
    </td>
    <td>Collections
    </td>
@@ -295,11 +295,11 @@ keys. There are roughly three approaches: storage-side encryption, client-side
 (edge) encryption, and gateway-side encryption (which is a hybrid of the
 previous two).
 
-Any data storage systems which let the user store arbitrary data support
+Any data storage systems that let the user store arbitrary data also support
 client-side encryption at the most basic level. That is, they let the user
 encrypt data themselves, and then store it. This doesn't mean these systems are
 optimized for encrypted data however. Querying and access control for encrypted
-data may be difficult (as is the case for Solid, NextCloud, Identity Hubs and IPFS).
+data may be difficult (as is the case for Solid, NextCloud, Identity Hubs, and IPFS).
 
 Storage-side encryption is usually implemented as whole-[disk encryption](https://en.wikipedia.org/wiki/Disk_encryption)
 or filesystem-level encryption. This is widely supported and understood, and any
@@ -359,7 +359,7 @@ between implementations.
 
 NextCloud and Solid both make use of existing Web standards. NextCloud uses
 WebDAV to allow client applications to read, write, and search
-data on the server's filesystem using a directory structure, and [a custom login
+data on the server's filesystem using a directory structure, supported by [a custom login
 flow](https://docs.nextcloud.com/server/16/developer_manual/client_apis/LoginFlow/)
 for authentication.
 Solid combines [LDP](https://www.w3.org/TR/ldp) with [OpenID
@@ -372,33 +372,33 @@ target URI accordingly.
 
 Identity Hubs uses JSON Web Tokens (JWTs) and specified endpoints. Multiple requests
 are required, first to retrieve metadata for the desired data object(s), and then
-to retrieve the sequence of commits which make up the actual data. Mechanisms for
+to retrieve the sequence of commits that make up the actual data. Mechanisms for
 authentication are still under development. Access control is carried out via
 posting to the Permissions interface.
 
 Tahoe-LAFS uses a client-gateway-storage server architecture, whereby a client
 passes data to a gateway server for encryption and chunking. The gateway, in
-turn, stores the individual chunks on a cluster of storage servers (several
-copies of the data are stored, for greater availability and disaster recovery).
-Services are identified with [Foolscap](https://foolscap.lothar.com/trac) URIs
-and the client can be configured to use HTTP, (S)FTP, or listen to a local
+turn, stores the individual chunks on a cluster of storage servers. Several
+copies of the data are stored, for greater availability and disaster recovery.
+Services are identified with [Foolscap](https://foolscap.lothar.com/trac) URIs,
+and the client can be configured to use HTTP or (S)FTP or to listen to a local
 directory ('magic folder') to create, update and delete data. Data is organized
-in a filesystem like directory structure and access control makes use of this.
+in a filesystem-like directory structure and access control makes use of this.
 
 IPFS is a distributed content-addressed storage mechanism which breaks data up
 into Merkel-DAGs. IPFS uses [IPLD](https://github.com/ipld/specs) to generate
-URIs for data from the content, and to link content together on the network; and
+URIs for data from the content and to link content together on the network and
 uses DHTs to discover content on the network.
 
 ### Indexing and Querying
 
-Encrypted data which is opaque to the storage server introduces challenges for
+Encrypted data that is opaque to the storage server introduces challenges for
 indexing and searching the contents of the data. Some systems work around this
 with a certain amount of unencrypted metadata attached to the data objects.
 Another possibility is unencrypted listings of pointers to filtered subsets
 of data.
 
-Solid aims to provide a web accessible interface to a file system. Resources
+Solid aims to provide a web-accessible interface to a file system. Resources
 (RDF documents or arbitrary files) are organized into folder-like Containers.
 Precisely how the data is stored is an implementation detail (e.g., a filesystem
 or a database). No search interface has been specified, but some implementations
@@ -411,25 +411,25 @@ themselves encrypted, enabling the Hub to respond to queries.
 NextCloud sorts data objects into directories, and clients can use WebDAV `SEARCH`
 and `PROPFIND` to query data and metadata.
 
-Tahoe-LAFS, Datashards and IPFS are low level storage protocols, and do not provide for
+Tahoe-LAFS, Datashards and IPFS are low-level storage protocols, and do not provide for
 indexing or searching the data.
 
 ### Availability, Replication and Conflict Resolution
 
-Replication data across multiple storage locations is an important resilience
+Replicating data across multiple storage locations is an important resilience
 and security mechanism. Systems which support peer-to-peer replication must
-provide conflict resolution mechanisms such as CRDTs, or require end-user
+provide conflict resolution mechanisms such as CRDTs or require end-user
 intervention to merge files which get out of sync.
 
-NextCloud provide spreading data across multiple instances for scalability as a
+NextCloud provides spreading data across multiple instances for scalability as a
 [commercial enterprise offering](https://nextcloud.com/globalscale/). Different
-NextCloud servers do not talk to each other directly, but can do via applications
+NextCloud servers do not talk to each other directly, but can do so via applications
 installed by the user. Similarly, different instances of Solid servers do not
 communicate with each other; client apps can perform any communication necessary
 between storage servers, but these are usually servers belonging to different
 users, rather than stores with copies of the same data.
 
-IPFS, Tahoe-LAFS and Datashards achieve high availability by chunking data,
+IPFS, Tahoe-LAFS, and Datashards achieve high availability by chunking data,
 using content-addressable links, and storing many copies of the chunks. They
 don't handle conflict resolution since they are low-level protocols and the data
 is opaque to the servers.
@@ -444,19 +444,19 @@ the personal data store ecosystem. These projects aim to give end users control
 over their data without requiring centralized authorities or proprietary
 technologies.
 
-Requiring client-side (edge) encryption for all data and metadata, enabling the
-user to store data on multiple devices, and to share data with others, as well
-as having searchable or queryable data, has been historically very difficult to
+Requiring client-side (edge) encryption for all data and metadata at the same time as enabling the
+user to store data on multiple devices and to share data with others, whilst also having 
+searchable or queryable data, has been historically very difficult to
 implement in one system. We can see from this survey that trade-offs are often
 made which sacrifice privacy in favor of usability, or vice versa.
 
 Due to a number of maturing technologies and standards, we are hopeful that such
-trade-offs are no longer necessary, and it is possible to design a
-privacy-preserving protocol for encrypted decentralized data storage which has
+trade-offs are no longer necessary, and that it is possible to design a
+privacy-preserving protocol for encrypted decentralized data storage that has
 broad practical appeal.
 
 ## Core Use Cases
-The following three use cases have been identified as representative of common
+The following four use cases have been identified as representative of common
 usage patterns (though are by no means the only ones).
 
 #### Store and Use Data
@@ -478,9 +478,9 @@ I can include an expiration date for the access to my data by a third-party.
 
 #### Store the Same Data in More Than One Place
 I want to backup my data across multiple storage locations in case one fails.
-These locations can be hosted by different storage providers, and can be
+These locations can be hosted by different storage providers and can be
 accessible over different protocols. One location could be local on my phone,
-while another is cloud-based. The locations should be able to synchronize
+while another might be cloud-based. The locations should be able to synchronize
 between each other so data is up to date in both places regardless of how I
 create or update data, and this should happen automatically and without my help
 as much as possible.
@@ -558,9 +558,9 @@ system is easy to implement while allowing more complex functionality to be
 layered on top of the lower foundations.
 
 For example, Layer 1 might contain the mandatory features for the most basic
-system. Layer 2 contains useful features for most deployments. Layer 3 contains
+system, Layer 2 might contain useful features for most deployments, Layer 3 might contain
 advanced features needed by a small subset of the ecosystem, and Layer 4
-could contain extremely complex features that are needed by a very small subset
+might contain extremely complex features that are needed by a very small subset
 of the ecosystem.
 
 ### Prioritize Privacy
@@ -588,7 +588,7 @@ regarded as the server and the client acts as the interface used to interact
 with the vault.
 
 This architecture is layered in nature, where the foundational layer consists of
-an operational system with minimal features and more advanced features are
+an operational system with minimal features, and where more advanced features are
 layered on top. Implementations can choose to implement only the foundational
 layer, or optionally, additional layers consisting of a richer set of features
 for more advanced use cases.
@@ -632,9 +632,9 @@ transit and at rest.
 
 #### Server: Validate Requests (L1)
 
-When a vault client makes a request to store, query, modify or delete data in
+When a vault client makes a request to store, query, modify, or delete data in
 the vault, the server validates the request. Since the actual data and metadata
-in any given request is encrypted, such validation is necessarily limited, and
+in any given request is encrypted, such validation is necessarily limited and
 largely depends on the protocol and the semantics of the request.
 
 #### Server: Persist Data (L1)
@@ -652,12 +652,12 @@ A vault has a global configuration that defines the following properties:
 * Other config metadata
 
 The configuration allows the the client to perform capability discovery
-regarding things like authorization, protocol, and replication mechanisms, used
+regarding things like authorization, protocol, and replication mechanisms that are used
 by the server.
 
 #### Server: Enforcement of Authorization Policies (L1)
 
-When a client makes a request to store, query, modify or delete data in
+When a client makes a request to store, query, modify, or delete data in
 the vault, the server enforces any authorization policy that is associated with
 the request.
 
@@ -704,8 +704,8 @@ a manifest-like listing of URIs to individual chunks (integrity-protected by
 
 #### Client: Encrypted Resource Structure (L1)
 
-Creating the Encrypted Resource (if the data was sharded into chunks, this is
-done after the individual chunks are written to the server):
+The process of creating the Encrypted Resource. If the data was sharded into chunks, this is
+done after the individual chunks are written to the server.
 
 * `id`
 * `index` - encrypted index tags prepared by the client (for use with
@@ -718,13 +718,13 @@ privacy-preserving querying over encrypted resources)
 ### Layer 2 (L2) Responsibilities
 
 Layer 2 consists of a system that is capable of sharing data among multiple
-entities, versioning and replication, and performing privacy-preserving searches
+entities, of versioning and replication, and of performing privacy-preserving searches
 in an efficient manner.
 
 #### Client: Encrypted Search Indexes (L2)
 
 To enable privacy-preserving querying (where the search index is opaque to the
-server), the client must prepare a list of encrypted index tags (that are stored
+server), the client must prepare a list of encrypted index tags (which are stored
 in the Encrypted Resource, alongside the encrypted data contents).
 
 * TODO: add details about the salting + encryption mechanism of the index tags
@@ -761,7 +761,7 @@ Vault-wide integrity protection is provided to prevent a variety of storage
 provider attacks where data is modified in a way that is undetectable, such as
 if documents are reverted to older versions or deleted. This protection
 requires that a global catalog of all the resource identifiers that belong to a
-user, along with the most recent version, are stored and kept up to date by the
+user, along with the most recent version, is stored and kept up to date by the
 client. Some clients may store a copy of this catalog locally (and
 include integrity protection mechanism such as
 [Hashlinks](https://tools.ietf.org/html/draft-sporny-hashlink)) to guard against
@@ -810,7 +810,7 @@ entity as well as the purpose for which that entity is accessing the
 Encrypted Data Vault, there is always metadata related to access patterns,
 rough file sizes, and other information that is leaked when an entity accesses
 the vault. The system has been designed to not leak information that it creates
-concerning privacy limitations; an approach which protects against many, but
+concerning privacy limitations, an approach that protects against many, but
 not all, surveillance strategies that may be used by servers that are not
 acting in the best interest of the privacy of the vault's users.
 
@@ -837,7 +837,7 @@ amount of information that is stored in an unencrypted fashion.
 The encrypted indexes used by this system are designed to maximize privacy.
 As a result, there are a number of operations that are common in search
 systems that are not available with encrypted indexes, such as partial
-matching on encrypted text fields, or searches over a scalar range. These
+matching on encrypted text fields or searches over a scalar range. These
 features might be added in the future through the use of zero-knowledge
 encryption schemes.
 
@@ -848,7 +848,7 @@ also important to understand what a malicious service provider can and
 cannot do. The following attacks are possible given a malicious service
 provider:
 
-- Correlation of entities accessing information in a vault.
+- Correlation of entities accessing information in a vault
 - Speculation about the types of files stored in a vault depending on file size and access patterns
 - Addition, deletion, and modification of encrypted data
 - Not enforcing authorization policy set on the encrypted data
@@ -864,15 +864,16 @@ work on Encrypted Data Vaults:
 - Choice of authorization strategy
 - Choice of change control / conflict resolution strategy
 - Notification / pub-sub mechanisms
-- With respect to the authorization model, does the vault merely enforce authorization rules, or act as an authorization server.
-- What are the assumptions of trust the host the vault must provide, enforcement of authorization rules? Potential attack vectors from the host of the vault?
+- With respect to the authorization model, does the vault merely enforce authorization rules or act as an authorization server?
+- How can end users be reassured of the trustworthiness of a vault host?
+- Further analysis of potential attack vectors of malicious servers, and mitigation techniques.
 - What are the opportunities for encrypted searching (Homomorphic encryption, ZKPs), and what are the dangers?
 - Retrieval of the history of an object's updates
 
 # Conclusion
 
 This paper has described current approaches and architectures for encrypted
-storage systems, provided derived requirements and design goals, and has
+storage systems, provided derived requirements and design goals, and 
 highlighted dangers that implementers should be aware of when implementing
 privacy-preserving data storage systems. This paper also explored the base
 assumptions of these sorts of systems such as providing privacy-respecting
