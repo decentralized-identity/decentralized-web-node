@@ -813,7 +813,7 @@ mechanism).
 
       <section>
         <h3>Layer 3 (L3) responsibilities</h3>
-        
+
         <section>
           <h4>Server: Notifications (L3)</h4>
           <p>
@@ -832,7 +832,7 @@ if documents are reverted to older versions or deleted. This protection
 requires that a global catalog of all the resource identifiers that belong to a
 user, along with the most recent version, is stored and kept up to date by the
 client. Some clients may store a copy of this catalog locally (and
-include integrity protection mechanism such as [[HASHLINKS]] to guard against
+include integrity protection mechanism such as [[HASHLINK]] to guard against
 interference or deletion by the server.
           </p>
         </section>
@@ -1070,20 +1070,40 @@ of Authorization Capabilities.
 
         <pre class="example highlight" title="Example encrypted document">
 {
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "sequence": 0,
-  "jwe": {
-    "protected": "eyJlbmMiOiJDMjBQIn0",
-    "recipients": [{
-      "header": {
-        "alg": "A256KW",
-        "kid": "https://example.com/kms/zSDn2MzzbxmX"
+  "id":"z19x9iFMnfo4YLsShKAvnJk4L",
+  "sequence":0,
+  "indexed":[
+    {
+      "hmac":{
+        "id":"did:ex:12345#key1",
+        "type":"Sha256HmacKey2019"
       },
-      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
-    }],
-    "iv": "i8Nins2vTI3PlrYW",
-    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
-    "tag": "pfZO0JulJcrc3trOZy8rjA"
+      "sequence":0,
+      "attributes":[
+      ]
+    }
+  ],
+  "jwe":{
+    "protected":"eyJlbmMiOiJDMjBQIn0",
+    "recipients":[
+      {
+        "header":{
+          "kid":"urn:123",
+          "alg":"ECDH-ES+A256KW",
+          "epk":{
+            "kty":"OKP",
+            "crv":"X25519",
+            "x":"d7rIddZWblHmCc0mYZJw39SGteink_afiLraUb-qwgs"
+          },
+          "apu":"d7rIddZWblHmCc0mYZJw39SGteink_afiLraUb-qwgs",
+          "apv":"dXJuOjEyMw"
+        },
+        "encrypted_key":"4PQsjDGs8IE3YqgcoGfwPTuVG25MKjojx4HSZqcjfkhr0qhwqkpUUw"
+      }
+    ],
+    "iv":"FoJ5uPIR6HDPFCtD",
+    "ciphertext":"tIupQ-9MeYLdkAc1Us0Mdlp1kZ5Dbavq0No-eJ91cF0R0hE",
+    "tag":"TMRcEPc74knOIbXhLDJA_w"
   }
 }
         </pre>
