@@ -65,6 +65,24 @@ var ccg = {
       status: 'Internet-Draft',
       publisher: 'Internet Engineering Task Force (IETF)'
     },
+    'DID-CORE': {
+      title: 'Decentralized Identifier Specification v1.0',
+      href: 'https://w3c.github.io/did-spec/',
+      // authors: [],
+      status: 'ED-DRAFT',
+      publisher: 'DID Working Group'
+    },
+    'ZCAP': {
+      title: 'Authorization Capabilities for Linked Data',
+      href: 'https://w3c-ccg.github.io/zcap-ld/',
+      authors: [
+        "Christopher Lemmer Webber",
+        "Manu Sporny",
+        "Mark S. Miller"
+      ],
+      status: 'CG-DRAFT',
+      publisher: 'Credentials Community Group'
+    },
     'IPFS': {
       title: 'InterPlanetary File System (IPFS)',
       href: 'https://en.wikipedia.org/wiki/InterPlanetary_File_System',
