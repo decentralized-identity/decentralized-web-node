@@ -59,7 +59,7 @@ User Agents that understand this scheme will leverage the Universal Resolver to 
 
 # Authentication
 
-The process of authenticating requests to identity hubs will follow the DIF/W3C DID Auth schemes. These standards are in early phases of formation - [more info is available here](https://github.com/WebOfTrustInfo/rebooting-the-web-of-trust-spring2018/blob/master/draft-documents/did_auth_draft.md). A draft implementation of DID auth for Identity Hubs is explained in the [authentication explainer](./docs/explainer.md).
+The process of authenticating requests to identity hubs will follow the DIF/W3C DID Auth schemes. These standards are in early phases of formation - [more info is available here](https://github.com/WebOfTrustInfo/rebooting-the-web-of-trust-spring2018/blob/master/draft-documents/did_auth_draft.md). A draft implementation of DID auth for Identity Hubs is explained in the [authentication explainer](./docs/authentication.md).
 
 # Authorization
 
