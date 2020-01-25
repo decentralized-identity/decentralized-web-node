@@ -920,16 +920,17 @@ optional and, if present, MUST be a string.
               </td>
             </tr>
             <tr>
-              <td>kek.id</td>
+              <td>keyAgreementKey.id</td>
               <td>
-An identifier for the key encryption key. The value is required and MUST be
-a URI.
+An identifier for the key agreement key. The value is required and MUST be
+a URI. The key agreement key is used to derive a secret that is then used to
+generate a key encryption key for the receiver.
               </td>
             </tr>
             <tr>
-              <td>kek.type</td>
+              <td>keyAgreementKey.type</td>
               <td>
-The type of key encryption key. The value is required and MUST be or map to
+The type of key agreement key. The value is required and MUST be or map to
 a URI.
               </td>
             </tr>
@@ -954,9 +955,9 @@ a URI.
   "sequence": 0,
   "controller": "did:example:123456789",
   "referenceId": "my-primary-data-vault",
-  "kek": {
+  "keyAgreementKey": {
     "id": "https://example.com/kms/12345",
-    "type": "AesKeyWrappingKey2019"
+    "type": "X25519KeyAgreementKey2019"
   },
   "hmac": {
     "id": "https://example.com/kms/67891",
@@ -1308,9 +1309,9 @@ Accept-Encoding: gzip, deflate
   "sequence": 0,
   "controller": "did:example:123456789",
   "referenceId": "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
-  "kek": {
+  "keyAgreementKey": {
     "id": "https://example.com/kms/12345",
-    "type": "AesKeyWrappingKey2019"
+    "type": "X25519KeyAgreementKey2019"
   },
   "hmac": {
     "id": "https://example.com/kms/67891",
