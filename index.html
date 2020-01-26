@@ -987,7 +987,7 @@ stored on the data vault.
               <td>id</td>
               <td>
 An identifier for the structured document. The value is required and MUST be a
-URI.
+Base58-encoded 128-bit random value.
               </td>
             </tr>
             <tr>
@@ -1017,6 +1017,60 @@ Key-value content for the structured document.
 }
         </pre>
 
+        <section>
+          <h4><dfn>Streams</dfn></h4>
+
+          <p>
+Streams can be used to store images, video, backup files, and any other
+binary data of arbitrary length. This is performed by using the
+<code>stream</code> property and additional metadata that further identifies
+the type of stream being stored. This table below provides the metadata
+to be stored in addition to the values specified in <a>StructuredDocument</a>.
+          </p>
+
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">Property</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>meta.chunks</td>
+                <td>
+Specifies the number of chunks in the stream.
+                </td>
+              </tr>
+              <tr>
+                <td>stream.id</td>
+                <td>
+The identifier for the stream. The stream identifier MUST be a URI that
+references a stream on the same data vault. Once the stream has been written
+to the data vault, the content identifier MUST be updated such that it is a
+valid hashlink. To allow for streaming encryption, the value of the digest
+for the stream is assumed to be unknowable until after the
+stream has been written. The hashlink MUST exist as a content hash for the
+stream that has been written to the data vault.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <pre class="example highlight" title="Example structured document containing a stream">
+{
+  "id": "urn:uuid:41289468-c42c-4b28-adb0-bf76044aec77",
+  "meta": {
+    "created": "2019-06-19",
+    "contentType": "video/mpeg",
+    "chunks": 16
+  },
+  "stream": {
+    "id": "https://example.com/encrypted-data-vaults/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp"
+  }
+}
+          </pre>
+
+        </section>
+
       </section>
 
       <section>
@@ -1044,7 +1098,7 @@ should it be present on an EncryptedDocument.
               <td>id</td>
               <td>
 An identifier for the encrypted document. The value is required and MUST be a
-URI.
+Base58-encoded 128-bit random value.
               </td>
             </tr>
             <tr>
@@ -1115,83 +1169,6 @@ of Authorization Capabilities.
     "iv":"FoJ5uPIR6HDPFCtD",
     "ciphertext":"tIupQ-9MeYLdkAc1Us0Mdlp1kZ5Dbavq0No-eJ91cF0R0hE",
     "tag":"TMRcEPc74knOIbXhLDJA_w"
-  }
-}
-        </pre>
-
-      </section>
-
-      <section>
-        <h3><dfn>EncryptedStream</dfn></h3>
-
-        <p>
-An encrypted stream is a raw binary stream that has been encrypted before
-being uploaded to a data vault. An encrypted stream MUST be associated
-with a <a>StructuredDocument</a> where the <code>content.id</code> is a
-hashlink for the encrypted stream.
-        </p>
-
-        <p class="issue">
-Properties about the file (such as contentType) may be moved to the content
-section of the document that describes the file. The metadata section may
-instead be considered metadata about the document that describes the file.
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">Property</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>id</td>
-              <td>
-An identifier for the structured document that is associated with the
-encrypted stream. The value is required and MUST be a URI.
-              </td>
-            </tr>
-            <tr>
-              <td>meta</td>
-              <td>
-Key-value metadata associated with the structured document.
-              </td>
-            </tr>
-            <tr>
-              <td>meta.contentType</td>
-              <td>
-The content type associated with the stream. The content type MUST be
-provided.
-              </td>
-            </tr>
-            <tr>
-              <td>content</td>
-              <td>
-Key-value content for the structured document.
-              </td>
-            </tr>
-            <tr>
-              <td>content.id</td>
-              <td>
-The identifier for the content. The content identifier MUST be a URI that
-references a stream on the same data vault. Once the stream has been written
-to the data vault, the content identifier MUST be updated such that it is a
-valid hashlink. To allow for streaming encryption, the value of the digest
-for the <a>EncryptedStream</a> is assumed to be unknowable until after the
-stream has been written. The hashlink MUST exist as a content hash for the
-stream that has been written to the data vault.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <pre class="example highlight" title="Example structured document referencing an encrypted stream">
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "meta": {
-    "contentType": "video/mpeg"
-  },
-  "content": {
-    "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp"
   }
 }
         </pre>
@@ -1670,6 +1647,10 @@ Connection: keep-alive
         <h2>Creating a Stream</h2>
 
         <p class="issue">
+This section is out of date, do not implement.
+        </p>
+
+        <p class="issue">
 Another design is being considered that would transform streams into a
 single index document and a collection of documents, each of which contains
 a chunk of the stream. This would be done to help prevent misuse of a
@@ -1920,6 +1901,10 @@ Transfer-Encoding: chunked
       <section class="normative">
         <h2>Reading a Stream</h2>
 
+        <p class="issue">
+This section is out of date, do not implement.
+        </p>
+
         <p>
 Reading a stream from a data vault is performed by retrieving the associated
 metadata that is encrypted as an <a>EncryptedDocument</a>, decoding the
@@ -1997,6 +1982,10 @@ Connection: keep-alive
 
       <section class="normative">
         <h2>Deleting a Stream</h2>
+
+        <p class="issue">
+This section is out of date, do not implement.
+        </p>
 
         <p>
 A stream is deleted by performing an HTTP DELETE to a data vault
