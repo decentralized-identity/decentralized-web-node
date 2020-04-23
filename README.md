@@ -2,7 +2,7 @@
 
 ## [Latest Editors Draft](https://identity.foundation/secure-data-store/)
 
-### From the Charter
+### From the Working Group Charter:
 
 > Create one or more specifications to establish a foundational layer for secure data storage (including personal data), specifically
 data models for storage and transport, syntax, data at rest protection, CRUD API, access control, synchronization, and at least a
