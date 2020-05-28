@@ -15,3 +15,4 @@ collaborative effort.
 
 - [Secure Data Storage Working Group Charter](https://drive.google.com/file/d/1vf2CsD9QZstzrd6CJ4WFVHw0WKwwNLHf/view)
 - [Mailing List](https://dif.groups.io/g/sds-wg/wiki/home)
+- [Working Group](https://dif.groups.io/g/sds-wg)
