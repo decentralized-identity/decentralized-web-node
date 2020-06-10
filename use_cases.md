@@ -100,6 +100,51 @@ is completely hidden from a service provider.
 
 Would it make sense to try and distill a Focal Use Case from Adrian Gropper's [Covid Use Case document](https://github.com/agropper/secure-data-store/blob/master/COVID-19_Health_Report_Use_Case.md)?  I'm happy to take a crack at the distillation into a first draft if I get confirmation that it's not wasted effort. I think it might be productive to double-check that the functional requirements 1.3 & 1.9, as well as the technical requirements of 3.2, make sense across a change of SDS provider.
 
+# 2.1 Virtual Safe Deposit Box
+
+## 2.1.1 Summary
+
+Virtual Asset Custody by analogy to safe deposit box in the physical world. Intentionally vague about mechanisms of delegation, multisig, authentication, and authorization-- should work across multiple version of all those. 
+
+## 2.1.2 Assumptions
+
+Each jurisdiction is different, but Alice is American and Bob works for an American bank so we can assume:
+
+* Alice is over 18 and has property rights as a legal resident
+* Proof of identity is required to meet KYC requirements
+* Bob's bank is an actual bank licensed to offer digital asset custody services
+* At no point does the bank know the contents of the storage-- it is an encrypted blob
+
+## 2.1.3 Opening a New Safe Deposit Box
+
+Bank customer Alice has some valuable digital assets (already-encrypted files containing blueprints for a missile) that she wants securely put into bank custody. She needs to know that the bank cannot access them in clear text. Bank manager Bob will be helping her set up her digital "safe deposit box". Alice needs to give access to her wife Carroll. Alice authenticates herself (with KYC) and signs an agreement for her custodial service, which includes assuming costs for key rotations/replacements. Alice also delegates access to Carroll, who is also authenticated and KYCed before receiving access as well. 
+
+### 2.1.4 Routine Access
+
+Once a month, Caroll checks out the contents out for an hour, decrypts them, sometimes adds or subtracts content before re-encrypting and filing them back in storage. Each time, she has to be authenticated. These events are timestamped and logged but otherwise privacy rights are preserved. There may be other restrictions on access in the contract, by analogy to real-world safe deposit boxes [1], or arbitrary frictions or delay having to do with relevant banking regulations [2].
+
+### 2.1.5 Lost Key
+
+Due to a severe fire, every electronic copy of Alice's key is lost. As per the contract, her access (and Carroll's) can be restored for a fee.
+
+### 2.1.6 Ugly Divorce with Carroll
+
+Carroll's key needs to be revoked without affecting any other aspects or assumptions. Carroll opens a separate account and places her own assets in it.
+
+### 2.1.7 Special Agent Dave's Subpoena
+
+Special Agent Dave has been investigating Alice's work at the missile plant, and decides her possession of those blueprints is a criminal act of industrial espionage. He gets a court order to sieze the assets, "drilling into" the virtual safe deposit box and extract the contents. After this point, Alice cannot get access to her files, although Dave's court order to get the necessary key material to decrypt them is out of scope.
+
+### 2.1.8 Bob's intervention due to nonpayment, or incompetence
+
+Without her ex's financial support, Caroll cannot stay on to of her banking bills. As per her contract, after a grace period, the contents are seized and become property of the bank, auctioned off to pay outstanding dues, encrypted or not.
+
+### 2.1.9 References
+
+[1] > We can restrict access to your box for any reason, including but not limited to past due rent and fees, information we receive in court documents, our inability to obtain information that satisfies our “Know Your Customer” requirements, and any unexpected circumstances (natural or manmade). The safe deposit vault will be open during Bank business hours except when access is prevented by reasons beyond our control or  we deem it prudent to deny or limit access. The bank’s business hours may be changed at any time without notice to you. (Source: Chase Safe Deposit Box Lease Agreement)
+Src: https://www.chase.com/content/dam/chase-ux/documents/personal/branch-disclosures/safe-deposit-box-lease-agreement.pdf
+[2] Draft report from Sovrin Compliance and Payments Task Force : https://docs.google.com/document/d/1SswHBZ1pwuIUcePeFe8czOoAOaHE78ij4okXuQq5OW0/edit
+
 # ​X.​ Deployment topologies
 
 Based on the use cases, we consider the following deployment topologies:
