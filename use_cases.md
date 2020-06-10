@@ -98,17 +98,28 @@ is completely hidden from a service provider.
 
 # ​2.​ Focal Use Cases
 
-Would it make sense to try and distill a Focal Use Case from Adrian Gropper's [Covid Use Case document](https://github.com/agropper/secure-data-store/blob/master/COVID-19_Health_Report_Use_Case.md)?  I'm happy to take a crack at the distillation into a first draft if I get confirmation that it's not wasted effort. I think it might be productive to double-check that the functional requirements 1.3 & 1.9, as well as the technical requirements of 3.2, make sense across a change of SDS provider.
+Would it make sense to try and distill a Focal Use Case from Adrian Gropper's 
+[Covid Use Case document](https://github.com/agropper/secure-data-store/blob/master/COVID-19_Health_Report_Use_Case.md)?  
+
+I'm happy to take a crack at the distillation into a first draft if I get 
+confirmation that it's not wasted effort. 
+
+I think it might be productive to double-check that the functional 
+requirements 1.3 & 1.9, as well as the technical requirements of 3.2, make sense 
+across a change of SDS provider.
 
 # 2.1 Virtual Safe Deposit Box
 
 ## 2.1.1 Summary
 
-Virtual Asset Custody by analogy to safe deposit box in the physical world. Intentionally vague about mechanisms of delegation, multisig, authentication, and authorization-- should work across multiple version of all those. 
+Virtual Asset Custody by analogy to safe deposit box in the physical world. 
+Intentionally vague about mechanisms of delegation, multisig, authentication, 
+and authorization-- should work across multiple version of all those. 
 
 ## 2.1.2 Assumptions
 
-Each jurisdiction is different, but Alice is American and Bob works for an American bank so we can assume:
+Each jurisdiction is different, but Alice is American and Bob works 
+for an American bank so we can assume:
 
 * Alice is over 18 and has property rights as a legal resident
 * Proof of identity is required to meet KYC requirements
@@ -117,33 +128,61 @@ Each jurisdiction is different, but Alice is American and Bob works for an Ameri
 
 ## 2.1.3 Opening a New Safe Deposit Box
 
-Bank customer Alice has some valuable digital assets (already-encrypted files containing blueprints for a missile) that she wants securely put into bank custody. She needs to know that the bank cannot access them in clear text. Bank manager Bob will be helping her set up her digital "safe deposit box". Alice needs to give access to her wife Carroll. Alice authenticates herself (with KYC) and signs an agreement for her custodial service, which includes assuming costs for key rotations/replacements. Alice also delegates access to Carroll, who is also authenticated and KYCed before receiving access as well. 
+Bank customer Alice has some valuable digital assets (already-encrypted files 
+containing blueprints for a missile) that she wants securely put into bank custody. 
+She needs to know that the bank cannot access them in clear text. 
+Bank manager Bob will be helping her set up her digital "safe deposit box". 
+Alice needs to give access to her wife Carroll. Alice authenticates herself 
+(with KYC) and signs an agreement for her custodial service, which includes 
+assuming costs for key rotations/replacements. Alice also delegates access 
+to Carroll, who is also authenticated and KYCed before receiving access as well. 
 
 ### 2.1.4 Routine Access
 
-Once a month, Caroll checks out the contents out for an hour, decrypts them, sometimes adds or subtracts content before re-encrypting and filing them back in storage. Each time, she has to be authenticated. These events are timestamped and logged but otherwise privacy rights are preserved. There may be other restrictions on access in the contract, by analogy to real-world safe deposit boxes [1], or arbitrary frictions or delay having to do with relevant banking regulations [2].
+Once a month, Caroll checks out the contents out for an hour, decrypts them, 
+sometimes adds or subtracts content before re-encrypting and filing them back 
+in storage. Each time, she has to be authenticated. These events are timestamped 
+and logged but otherwise privacy rights are preserved. There may be other 
+restrictions on access in the contract, by analogy to 
+real-world safe deposit boxes [1], or arbitrary frictions or delay having 
+to do with relevant banking regulations [2].
 
 ### 2.1.5 Lost Key
 
-Due to a severe fire, every electronic copy of Alice's key is lost. As per the contract, her access (and Carroll's) can be restored for a fee.
+Due to a severe fire, every electronic copy of Alice's key is lost. 
+As per the contract, her access (and Carroll's) can be restored for a fee.
 
 ### 2.1.6 Ugly Divorce with Carroll
 
-Carroll's key needs to be revoked without affecting any other aspects or assumptions. Carroll opens a separate account and places her own assets in it.
+Carroll's key needs to be revoked without affecting any other aspects or assumptions. 
+Carroll opens a separate account and places her own assets in it.
 
 ### 2.1.7 Special Agent Dave's Subpoena
 
-Special Agent Dave has been investigating Alice's work at the missile plant, and decides her possession of those blueprints is a criminal act of industrial espionage. He gets a court order to sieze the assets, "drilling into" the virtual safe deposit box and extract the contents. After this point, Alice cannot get access to her files, although Dave's court order to get the necessary key material to decrypt them is out of scope.
+Special Agent Dave has been investigating Alice's work at the missile plant, 
+and decides her possession of those blueprints is a criminal act of industrial espionage. 
+He gets a court order to sieze the assets, "drilling into" the virtual safe deposit box 
+and extract the contents. After this point, Alice cannot get access to her files, 
+although Dave's court order to get the necessary key material to decrypt them is out of scope.
 
 ### 2.1.8 Bob's intervention due to nonpayment, or incompetence
 
-Without her ex's financial support, Caroll cannot stay on to of her banking bills. As per her contract, after a grace period, the contents are seized and become property of the bank, auctioned off to pay outstanding dues, encrypted or not.
+Without her ex's financial support, Caroll cannot stay on to of her banking bills. 
+As per her contract, after a grace period, the contents are seized and become 
+property of the bank, auctioned off to pay outstanding dues, encrypted or not.
 
 ### 2.1.9 References
 
-[1] > We can restrict access to your box for any reason, including but not limited to past due rent and fees, information we receive in court documents, our inability to obtain information that satisfies our “Know Your Customer” requirements, and any unexpected circumstances (natural or manmade). The safe deposit vault will be open during Bank business hours except when access is prevented by reasons beyond our control or  we deem it prudent to deny or limit access. The bank’s business hours may be changed at any time without notice to you. (Source: Chase Safe Deposit Box Lease Agreement)
-Src: https://www.chase.com/content/dam/chase-ux/documents/personal/branch-disclosures/safe-deposit-box-lease-agreement.pdf
-[2] Draft report from Sovrin Compliance and Payments Task Force : https://docs.google.com/document/d/1SswHBZ1pwuIUcePeFe8czOoAOaHE78ij4okXuQq5OW0/edit
+[1] > We can restrict access to your box for any reason, including but not 
+limited to past due rent and fees, information we receive in court documents, 
+our inability to obtain information that satisfies our “Know Your Customer” 
+requirements, and any unexpected circumstances (natural or manmade). 
+The safe deposit vault will be open during Bank business hours except when access is prevented by reasons beyond our control or  we deem it prudent to deny or limit access. 
+The bank’s business hours may be changed at any time without notice to you. 
+
+(Source: [Chase Safe Deposit Box Lease Agreement](https://www.chase.com/content/dam/chase-ux/documents/personal/branch-disclosures/safe-deposit-box-lease-agreement.pdf))
+Source [Draft report from Sovrin Compliance and Payments Task Force](https://docs.google.com/document/d/1SswHBZ1pwuIUcePeFe8czOoAOaHE78ij4okXuQq5OW0/edit): 
+[2]
 
 # 2.2 Evidence of Steel Material Origins for Auto Parts
 
@@ -170,8 +209,6 @@ type of steel product, specification/grade, and location where it was melted and
 poured. These data fields are still securely stored with the rest of the mill
 certificate, but they do not require authentication to view.</p>
 
-
-
 # 2.3 Perishable Food Recall
 
 <p> Super Fresh Market had several customers get sick after consuming a
@@ -195,213 +232,123 @@ more information based on the urgency of the recall scenario. However on a daily
 basis he does not need to see trade route information for logistics companies, which is
 typically considered a trade secret. </p>
 
-# ​X.​ Deployment topologies
-
-Based on the use cases, we consider the following deployment topologies:
-
-## ​X.1.​ Mobile Device Only
-
-The server and the client reside on the same device. The vault is a library
-providing functionality via a binary API, using local storage to provide an
-encrypted database.
-
-## ​X.2.​ Mobile Device Plus Cloud Storage
-
-A mobile device plays the role of a client, and the server is a remote
-cloud-based service provider that has exposed the storage via a network-based
-API (eg. REST over HTTPS). Data is not stored on the mobile device.
-
-## ​X.3.​ Multiple Devices (Single User) Plus Cloud Storage
-
-When adding more devices managed by a single user, the vault can be used to
-synchronize data across devices.
-
-## ​X.4.​ Multiple Devices (Multiple Users) Plus Cloud Storage
-
-When pairing multiple users with cloud storage, the vault can be used to
-synchronize data between multiple users with the help of replication and merge
-strategies.
-
-## ​X.5.​ Cloud(s) Only? Controlling keys handled by a different Cloud Vault
-
-Some use cases (IoT / machine to machine / Skynet) require a non-human actor to delegate KMS/key control to a cloud vault for oversight or human intervention. In the case of some Password manager use case architectures or biometrically accessed/deployed key material storage, as well as some multi-cloud/hybrid-cloud architectures, key material will need to be retrieved from at least one other vault before accessing the vault being specified here.
-
-Keys in control of such an entity might still need to securely store signed credentials or data in a separate vault. Additional diagramming or specifications will be needed to show how this 2-vault solution could be constrained to be secure and feasible, even if non-normative.
-
-## ​X.6.​ Self-Hosted and/or Home-based Server?
-
-Alice wants to host her own SDS software instance, on her own server.
-
-## ​X.7​ Support Low Power Devices/Non-private computing
-
-To support users without access to private computing resources, the following
-three components need to be considered:
-
-* Secure Storage
-* Key vault - private key storage and recovery (Key management)
-* Trusted computing - computational resources which have access to private keys
-  and plain text private data
-
-# # 2.2 Electronic Medical Records 
+# 2.4 Electronic Medical Records 
 
 by Adrian Gropper, edited by Juan Caballero
 
-## 2.2.1 Summary
+## 2.4.1 Summary
 
-[Note: This is extracted from a longer, more detailed use case including helpful flow diagrams and an enrollment section which is stored here: https://github.com/agropper/secure-data-store/blob/master/COVID-19_Health_Report_Use_Case.md ]
+[Note: This is extracted from a longer, more detailed use case including helpful 
+flow diagrams and an enrollment section which is stored 
+[here](https://github.com/agropper/secure-data-store/blob/master/COVID-19_Health_Report_Use_Case.md):
 
-Alice’s health report is a short narrative impression of as little as one session of care signed by Dr. Bob to be presented to her employer and/or filed in her electronic health record for access by other care providers.
+Alice’s health report is a short narrative impression of as little as one session of care signed by Dr. 
+Bob to be presented to her employer and/or filed in her electronic health 
+record for access by other care providers.
 Alice's records are held in trust by a "personal record service" recommended to her by her local public library. 
 This service consists of an SDS and an authorization server she uses to access records in that SDS, as well as to grant read and/or write access to others. 
 This server does not need to use SSI, but it MUST be an interoperable one she can change for another at any time. 
 (This swappability of SSI for non-SSI authorization servers may well be a crucial investment in SSI migration for health records).
 For the sake of familiarity, we could use UMA as the server and OAuth as the interoperability standard for this server, but other forms of prior art might be more relevant in some contexts. [1]
 
-This use case's main virtues for the purposes of the SDS specification is that it has complex authorization requirements and data privacy requirements, some of which are best met by having a separation of concerns between authorization and storage which would ensure maximum prevention of vendor lock-in by ensuring authorization and storage are separately interchangeable/competitive.
+This use case's main virtues for the purposes of the SDS specification is that it 
+has complex authorization requirements and data privacy requirements, some of which
+are best met by having a separation of concerns between authorization and storage 
+which would ensure maximum prevention of vendor lock-in by ensuring authorization 
+and storage are separately interchangeable/competitive.
 
-## 2.2.2 Assumptions
+## 2.4.2 Assumptions
 
-* Each jurisdiction is different, but Alice is American and Dr. Bob practices so-called "direct medicine," meaning he needs direct access to a medical record under Alice's control rather than relying on a hospital-based or insurer-based medical record. 
+* Each jurisdiction is different, but Alice is American and Dr. Bob practices so-called "direct medicine,"
+meaning he needs direct access to a medical record under Alice's control rather than 
+relying on a hospital-based or insurer-based medical record. 
 
-* A trusted community institution, like a church or community center or, in this case, a public library, can operate a privacy-by-default server for people like Alice to manage their own health records. See the link above for a more detailed use-case about the enrollment/establishment of this small-scale trust framework. See also the MyData Operator paper linked in this use case's references section [2].
+* A trusted community institution, like a church or community center or, in this case, a public library, 
+can operate a privacy-by-default server for people like Alice to manage their own health records. 
+See the link above for a more detailed use-case about the enrollment/establishment of this small-scale 
+trust framework. See also the MyData Operator paper linked in this use case's references section [2].
 
-* Alice trusts the Library to recommend a compatible agent and/or secure data store. Bob trusts the Library to recommend a mobile wallet for signing health records as verified credentials.
-* Dr. Bob’s credentials, e.g. a medical license number, are public information that should be broadly accessible.
-* Public health authorities publish guidelines for a health report that Dr. Bob can follow and Alice’s employer accepts as a verifier.
+* Alice trusts the Library to recommend a compatible agent and/or secure data store. 
+Bob trusts the Library to recommend a mobile wallet for signing health records as verified credentials.
+* Dr. Bob’s credentials, e.g. a medical license number, are public information that 
+should be broadly accessible.
+* Public health authorities publish guidelines for a health report that Dr. Bob can 
+follow and Alice’s employer accepts as a verifier.
 
-### 2.2.3 Enrollments (Library, Bob, and Alice)
+### 2.4.3 Enrollments (Library, Bob, and Alice)
 
-Note: These steps are clarified greatly with an adoption-oriented flowchart included in the longer version of this use case [3].
+Note: These steps are clarified greatly with an adoption-oriented flowchart 
+included in the longer version of this use case [3].
 
-Library: The Library installs Issuer/Verifier software and displays a list of compatible mobile wallets and secure data stores. Secure data stores that enable **independent choice** of control agent and vice versa are called out as preferable by the library. For more detail and a flow diagram, see the more detailed use-case linked from the summary section above.
+Library: The Library installs Issuer/Verifier software and displays a list of compatible mobile wallets and secure data stores. 
+Secure data stores that enable **independent choice** of control agent and vice versa are called out as preferable by the library. 
+For more detail and a flow diagram, see the more detailed use-case linked from the summary section above.
 
-Dr. Bob installs a mobile identity wallet and is thus able to sign documents, post timestamps to a public blockchain or other timestamping service, and satisfy legal retention of documents and signature proofs by sending them to his secure email address. The Library’s issuer software enables Dr. Bob to self-assert his medical license and use a public notary to countersign the credential. The notary’s record can be verified online. Dr. Bob adds his notarized credential to his mobile wallet. 
+Dr. Bob installs a mobile identity wallet and is thus able to sign documents, 
+post timestamps to a public blockchain or other timestamping service, 
+and satisfy legal retention of documents and signature proofs by sending them to his secure email address. 
+The Library’s issuer software enables Dr. Bob to self-assert his medical license and 
+use a public notary to countersign the credential. 
+The notary’s record can be verified online. Dr. Bob adds his notarized credential to his mobile wallet. 
 
-Alice: Alice uses her mobile phone number to sign up for a secure data store chosen from the Library’s list. If she doesn’t have one already, Alice receives, via SMS, a link to her authorization agent as suggested by the secure data store and picks a password.
+Alice: Alice uses her mobile phone number to sign up for a secure data store chosen from the Library’s list. 
+If she doesn’t have one already, Alice receives, via SMS, a link to her authorization agent as suggested by the secure data store and picks a password.
 
-### 2.2.4 Alice seeks Dr. Bob's care 
+### 2.4.4 Alice seeks Dr. Bob's care 
 
-Alice contacts Dr. Bob (out of band), gets various tests and diagnoses (out of band) and asks Dr. Bob to issue her a health report via the Library Issuer service for self-sovereign storage and presentation. Dr. Bob accesses an Issuer service using his credentials, dictates the health report, adds Alice’s SMS number and signs the report, leaving a timestamp and a proof. Document and proof are sent to Dr. Bob’s secure email for legal retention. Alice gets an SMS or secure email from the Library with a link to the report and proof. Alice clicks the link which opens as a form on the Library site. Alice enters her authorization server endpoint onto the form. The Library server contacts Alice’s authorization server. Alice may have to sign-in. The health report and proof are sent to Alice’s secure data store. The Library deletes the documents that Dr. Bob had stored temporarily for Alice. Alice receives an SMS confirmation with a QR code that links to the document in the secure data store.
+Alice contacts Dr. Bob (out of band), gets various tests and diagnoses (out of band) and asks Dr. Bob to 
+issue her a health report via the Library Issuer service for self-sovereign storage and presentation. 
+Dr. Bob accesses an Issuer service using his credentials, dictates the health report, adds Alice’s SMS 
+number and signs the report, leaving a timestamp and a proof. Document and proof are sent to Dr. Bob’s 
+secure email for legal retention. Alice gets an SMS or secure email from the Library with a link to the  
+report and proof. Alice clicks the link which opens as a form on the Library site. Alice enters her 
+authorization server endpoint onto the form. The Library server contacts Alice’s authorization server. 
+Alice may have to sign-in. The health report and proof are sent to Alice’s secure data store. 
+The Library deletes the documents that Dr. Bob had stored temporarily for Alice. Alice receives an SMS 
+confirmation with a QR code that links to the document in the secure data store.
 
-### 2.2.5 Alice presents her health record to an employer
+### 2.4.5 Alice presents her health record to an employer
 
-Alice goes to her employer and displays the QR code in the SMS message. The employer’s browser takes them to the Library's verifier website. A capability or authorization issued by Alice MAY be involved in securing the report while it’s being copied from her data store to the verifier. The Library uses the capability/token/etc at Alice’s authorization server to get the document and proof from the secure data store. The library verifies the document for the employer. 
-[Optional:] The library deletes the document from local storage, if applicable. If the credential is intended to be presented only once, it may be revoked by the library.
+Alice goes to her employer and displays the QR code in the SMS message. 
+The employer’s browser takes them to the Library's verifier website. 
+A capability or authorization issued by Alice MAY be involved in securing the report 
+while it’s being copied from her data store to the verifier. 
+The Library uses the capability/token/etc at Alice’s authorization server to get the document 
+and proof from the secure data store. The library verifies the document for the employer. 
+[Optional:] The library deletes the document from local storage, if applicable. 
+If the credential is intended to be presented only once, it may be revoked by the library.
 
-### 2.2.6 Alice migrates SDS without changing authorization server
+### 2.4.6 Alice migrates SDS without changing authorization server
 
-Alice decides to keep her authorization server but use a different secure data store. Alice opens a new secure data store account and specifies her existing authorization server as her agent. Alice moves her document from the old store to the new one. If the employer wants to check Alice’s health report again after the change, the old QR code points to the same authorization server and a file that has moved to the new document store. Where it is impossible to persist old links and references, Alice should at least be notified and have the option to manually or systematically issue a new QR code.
+Alice decides to keep her authorization server but use a different secure data store. 
+Alice opens a new secure data store account and specifies her existing authorization server as her agent. 
+Alice moves her document from the old store to the new one. If the employer wants to check Alice’s health 
+report again after the change, the old QR code points to the same authorization server and a file that has 
+moved to the new document store. Where it is impossible to persist old links and references, Alice should 
+at least be notified and have the option to manually or systematically issue a new QR code.
 
-### 2.2.7 Alice migrates SDS without changing authorization server
+### 2.4.7 Alice migrates SDS without changing authorization server
 
-Alice decides to keep her new data store but change the authorization server. Alice opens a new authorization server account. Alice goes to the new data store via its current authorization server and specifies her new authorization server. The employer wants to check Alice’s health report again. The old QR code points to the old authorization server. Alice has to create a new QR code that points to the new authorization server. This may need to be a manual operation, but either way is beyond the scope of this specification.
+Alice decides to keep her new data store but change the authorization server. Alice opens a new 
+authorization server account. Alice goes to the new data store via its current authorization server 
+and specifies her new authorization server. The employer wants to check Alice’s health report again. 
+The old QR code points to the old authorization server. Alice has to create a new QR code that points 
+to the new authorization server. This may need to be a manual operation, but either way is beyond 
+the scope of this specification.
 
-### 2.2.8 Follow-up Visit
+### 2.4.8 Follow-up Visit
 
-A year later, Dr. Bob wants to see the old report before dictating a new report. Dr. Bob enters Alice’s SMS into a form at the Library. The Library sends Alice a message asking for her current authorization server and a request for the old report. Alice agrees and replies with links to her current authorization server and to the specific document in question. Dr. Bob, using the Library as a verifier, presents his credentials to Alice’s authorization server and retrieves the document.
+A year later, Dr. Bob wants to see the old report before dictating a new report. 
+Dr. Bob enters Alice’s SMS into a form at the Library. The Library sends Alice a message asking for 
+her current authorization server and a request for the old report. 
+Alice agrees and replies with links to her current authorization server and to the specific document 
+in question. Dr. Bob, using the Library as a verifier, presents his credentials to Alice’s 
+authorization server and retrieves the document.
 
-### 2.2.9 References
+### 2.4.9 References
 
 [1] https://oauth.xyz/
 [2] http://mydata.org/operators/
 [3] https://github.com/agropper/secure-data-store/raw/master/diagrams/Health_Report_Use_Case.png
 
-# ​3.​ Technical Requirements derived from previous sections
 
-The following sections elaborate on the requirements that have been gathered
-from the core use cases.
-
-## ​3.1.​ Privacy and multi-party encryption
-
-One of the main goals of this system is ensuring the privacy of an entity's data
-so that it cannot be accessed by unauthorized parties, including the storage
-provider.
-
-To accomplish this, the data must be encrypted both while it is in transit
-(being sent over a network) and while it is at rest (on a storage system).
-
-Since data could be shared with more than one entity, it is also necessary for
-the encryption mechanism to support encrypting data to multiple parties.
-
-As much metadata as possible should also be protected, including filenames, file
-sizes and directory topology.
-
-## ​3.2.​ Sharing and authorization
-
-It is necessary to have a mechanism that enables authorized sharing of encrypted
-information among one or more entities.
-
-The system is expected to specify one mandatory authorization scheme, but also
-allow other alternate authorization schemes. Examples of authorization schemes
-include OAuth2, Web Access Control, and ZCAPs (Authorization Capabilities).
-
-## ​3.3.​ Identifiers
-
-The system should be identifier agnostic. In general, identifiers that are a
-form of URN or URL are preferred. While it is presumed that [DID-CORE]
-(Decentralized Identifiers, DIDs) will be used by the system in a few important
-ways, hard-coding the implementations to DIDs would be an anti-pattern.
-
-## ​3.4.​ Versioning and replication
-
-It is expected that information can be backed up on a continuous basis. For this
-reason, it is necessary for the system to support at least one mandatory
-versioning strategy and one mandatory replication strategy, but also allow other
-alternate versioning and replication strategies.
-
-## ​3.5.​ Metadata and searching
-
-Large volumes of data are expected to be stored using this system, which then
-need to be efficiently and selectively retrieved. To that end, an encrypted
-search mechanism is a necessary feature of the system.
-
-It is important for clients to be able to associate metadata with the data such
-that it can be searched. At the same time, since privacy of both data and
-metadata is a key requirement, the metadata must be stored in an encrypted
-state, and service providers must be able to perform those searches in an opaque
-and privacy-preserving way, without being able to see the metadata.
-
-## ​3.6.​ Protocols
-
-Since this system can reside in a variety of operating environments, it is
-important that at least one protocol is mandatory, but that other protocols are
-also allowed by the design. Examples of protocols include HTTP, gRPC, Bluetooth,
-and various binary on-the-wire protocols. At least an  HTTPS API must be defined
-by the specification.
-
-## 3.7. Cryptographic Agility (or lack thereof)
-
-At least one mandatory format for encrypted data, and then some optional ones?
-
-# ​4.​ Design goals
-
-This section elaborates upon a number of guiding principles and design goals
-that shape Encrypted Data Vaults.
-
-## ​4.1.​ Layered and modular architecture
-
-A layered architectural approach is used to ensure that the foundation for the
-system is easy to implement while allowing more complex functionality to be
-layered on top of the lower foundations.
-
-For example, Layer 1 might contain the mandatory features for the most basic
-system, Layer 2 might contain useful features for most deployments, Layer 3
-might contain advanced features needed by a small subset of the ecosystem, and
-Layer 4 might contain extremely complex features that are needed by a very small
-subset of the ecosystem.
-
-## ​4.2.​ Prioritize privacy
-
-This system is intended to protect an entity's privacy. When exploring new
-features, always ask "How would this impact privacy?". New features that
-negatively impact privacy are expected to undergo extreme scrutiny to determine
-if the trade-offs are worth the new functionality.
-
-## ​4.3.​ Push implementation complexity to the client
-
-Servers in this system are expected to provide functionality strongly focused on
-the storage and retrieval of encrypted data. The more a server knows, the
-greater the risk to the privacy of the entity storing the data, and the more
-liability the service provider might have for hosting data. In addition, pushing
-complexity to the client enables service providers to provide stable server-side
-implementations while innovation can be carried out by clients.
