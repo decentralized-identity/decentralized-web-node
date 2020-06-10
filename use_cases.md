@@ -145,6 +145,56 @@ Without her ex's financial support, Caroll cannot stay on to of her banking bill
 Src: https://www.chase.com/content/dam/chase-ux/documents/personal/branch-disclosures/safe-deposit-box-lease-agreement.pdf
 [2] Draft report from Sovrin Compliance and Payments Task Force : https://docs.google.com/document/d/1SswHBZ1pwuIUcePeFe8czOoAOaHE78ij4okXuQq5OW0/edit
 
+# 2.2 Evidence of Steel Material Origins for Auto Parts
+
+<b>Evidence of Steel Material Origins for Auto Parts</b> 
+
+The following company names and scenarios are hypothetical. 
+
+<p>In order to benefit from NAFTA (North American Free Trade Agreement) per revised
+rules, auto manufacturers will now be required to demonstrate that seventy
+percent of their steel and aluminum purchases originated in North America. They
+need to make this information available to regulators and customers, without
+providing unnecessary visibility to competitors. US-based steel manufacturer
+Steel Inc can generate a mill test report as evidence of steel origins across
+all processing steps. This mill report (potentially structured as a verifiable 
+credential issued by Steel Inc.’s decentralized identifier keys) can be saved in
+a secure data store (stored in a discoverable way, one or more locations). Steel
+Inc can specify that only keys held by their customer Advanced Automotive, as
+well as audit and regulatory bodies in the US Government (like USTR), will be
+accepted to decrypt and access the plain text mill certificate data (sharing
+with explicit consent). Other parties will be required to request access, which
+Steel Inc may choose to provide depending on the audience. Some attributes
+included in the mill certificate may be more publicly available, such as the
+type of steel product, specification/grade, and location where it was melted and
+poured. These data fields are still securely stored with the rest of the mill
+certificate, but they do not require authentication to view.</p>
+
+
+
+# 2.3 Perishable Food Recall
+
+<p> Super Fresh Market had several customers get sick after consuming a
+cabbage and romaine lettuce mix. The company is worried about another E. coli
+scare and wants to quickly identify where the product came and what other stores
+it may be in. Their staff member Carlos scans a QR code on the salad mix and
+authenticates as an employee. After logging in he can see origin and
+transport details not available to the general public, such as the fact that the
+lettuce came from Sunbright Farms in California, and that it was transported in
+refrigerated vehicles the prior week by two different third party
+logistics providers. Carlos can reach out to request that these logistics companies
+provide more detailed information about their cold storage temperature readings
+and transit routes. Given the potential recall situation each logistics company chooses to
+grant Carlos access to view this information. Carlos is able to identify a spike in
+produce temperature during the final leg of distribution, meaning that product
+in three of their stores may be impacted. The salad mix is immediately removed
+from the three stores as the investigation continues. In this scenario Carlos,
+acting as a Super Fresh Market employee, is already able to authenticate and view some
+information in a secure data store. He can also quickly be granted access to
+more information based on the urgency of the recall scenario. However on a daily
+basis he does not need to see trade route information for logistics companies, which is
+typically considered a trade secret. </p>
+
 # ​X.​ Deployment topologies
 
 Based on the use cases, we consider the following deployment topologies:
