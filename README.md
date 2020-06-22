@@ -1,5 +1,7 @@
 # Secure Data Store
 
+![Vendor Interoperability](https://github.com/decentralized-identity/secure-data-store/workflows/Vendor%20Interoperability/badge.svg)
+
 ## [Latest Editors Draft](https://identity.foundation/secure-data-store/)
 
 ### From the Working Group Charter:
