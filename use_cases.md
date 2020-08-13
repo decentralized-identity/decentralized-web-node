@@ -34,7 +34,7 @@ when I have explicitly given consent for each item.
 I want to be able to revoke the access of others at any time. When sharing data,
 I can include an expiration date for the access to my data by a third-party.
 
-### ​1.4.​ Store the same data in more than one place
+### 1.4 Replication - Store the same data in more than one place
 
 I want to back up my data across multiple storage locations in case one fails.
 These locations can be hosted by different storage providers and can be
@@ -43,6 +43,48 @@ while another might be cloud-based. The locations should be able to masterless
 synchronize between each other so data is up to date in both places regardless
 of how I create or update data, and this should happen automatically and without
 my help as much as possible.
+
+#### 1.4.1 Backup / Disaster Recovery
+
+Alice sets up replication to a backup instance so that she does not lose her
+data in case her primary instance is damaged/lost etc.
+
+* Replication for purposes of data backup
+* Either involves periodic full-sync replications, or a combination of realtime
+  replication and full-syncs.
+* Typically involves unidirectional replication (from an "active" source
+  instance to the target backup instance).
+
+#### 1.4.2 Continuous Replication / Replication on Reconnect
+
+Alice has multiple instances, and would like to synchronize their contents among
+all of them. When her local instance is offline, Alice wants to still be able to
+make updates to it. When that instance reconnects, it is expected to hand off
+all of the changes that occurred while it was disconnected (and receive changes
+from the other instances). This is useful for many different situations:
+
+- Airplane / any other vehicle
+- Sleeping with the phone off
+- Cloud vendor experiences technical difficulties
+- Power outage at home
+
+Notes:
+
+* A combination of full-sync and realtime replication.
+* Bidirectional replication among two or more instances.
+* Updates to objects can occur at any instance, and are expected to propagate
+  to all the other ones.
+
+#### 1.4.3 Geographic Availability
+
+An organization has two geographically distributed instances. Updates to one
+instance are expected to propagate as soon as possible to the other instance. If
+one of those goes down, read and write traffic can be redirected to the
+remaining one, with minimal interruption in data availability.
+
+* Primarily realtime replication (with fallback to full-sync if connection is
+  ever severed).
+* Bidirectional replication among one or more active instances.
 
 ### ​1.5.​ Alice wants to publish public plaintext about Bob or Carl in a censorship resistant manner.
 
