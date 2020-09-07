@@ -341,12 +341,12 @@ export const testServer = (mock: any) => {
       invocationSigner: mock.invocationSigner,
       keyResolver: mock.keyResolver,
     });
-    const docs = await client.find({
+    const { documents } = await client.find({
       has: 'content.indexedKey',
       invocationSigner: mock.invocationSigner,
     });
-    expect(docs.length).toBe(1);
-    const decrypted = docs[0];
+    expect(documents.length).toBe(1);
+    const decrypted = documents[0];
     expect(decrypted.id).toBe(testId);
     expect(decrypted.content).toEqual({ indexedKey: 'value1' });
   });
@@ -369,13 +369,13 @@ export const testServer = (mock: any) => {
       invocationSigner: mock.invocationSigner,
       keyResolver: mock.keyResolver,
     });
-    const docs = await client.find({
+    const { documents } = await client.find({
       invocationSigner: mock.invocationSigner,
       has: 'content.indexedKey',
     });
-    expect(docs.length).toBe(2);
-    expect(docs[0].content).toEqual({ indexedKey: 'value1' });
-    expect(docs[1].content).toEqual({ indexedKey: 'value2' });
+    expect(documents.length).toBe(2);
+    expect(documents[0].content).toEqual({ indexedKey: 'value1' });
+    expect(documents[1].content).toEqual({ indexedKey: 'value2' });
   });
 
   // https://github.com/digitalbazaar/edv-client/blob/master/tests/10-EdvClient.spec.js#L402
@@ -389,11 +389,11 @@ export const testServer = (mock: any) => {
       invocationSigner: mock.invocationSigner,
       keyResolver: mock.keyResolver,
     });
-    const docs = await client.find({
+    const { documents } = await client.find({
       invocationSigner: mock.invocationSigner,
       equals: { 'content.indexedKey': 'value1' },
     });
-    expect(docs[0].content).toEqual(expected.content);
+    expect(documents[0].content).toEqual(expected.content);
     // docs.should.be.an("array");
     // docs.length.should.equal(1);
     // docs[0].should.be.an("object");
@@ -416,13 +416,13 @@ export const testServer = (mock: any) => {
       invocationSigner: mock.invocationSigner,
       keyResolver: mock.keyResolver,
     });
-    const docs = await client.find({
+    const { documents } = await client.find({
       invocationSigner: mock.invocationSigner,
       equals: {
         'content.https://schema\\.org/': 'value1',
       },
     });
-    expect(docs[0].content).toEqual(expected.content);
+    expect(documents[0].content).toEqual(expected.content);
     // docs.should.be.an("array");
     // docs.length.should.equal(1);
     // docs[0].should.be.an("object");
@@ -456,26 +456,26 @@ export const testServer = (mock: any) => {
     });
 
     // find with first value
-    let docs = await client.find({
+    let { documents } = await client.find({
       invocationSigner: mock.invocationSigner,
       equals: {
         'content.nested.array.foo': 'bar',
       },
     });
-    expect(docs[0].content).toEqual(expected.content);
+    expect(documents[0].content).toEqual(expected.content);
     // docs.should.be.an("array");
     // docs.length.should.equal(1);
     // docs[0].should.be.an("object");
     // docs[0].content.should.deep.equal(expected.content);
 
     // find with second value
-    docs = await client.find({
+    ({ documents } = await client.find({
       invocationSigner: mock.invocationSigner,
       equals: {
         'content.nested.array.foo': 'baz',
       },
-    });
-    expect(docs[0].content).toEqual(expected.content);
+    }));
+    expect(documents[0].content).toEqual(expected.content);
     // docs.should.be.an("array");
     // docs.length.should.equal(1);
     // docs[0].should.be.an("object");
@@ -500,7 +500,7 @@ export const testServer = (mock: any) => {
       invocationSigner: mock.invocationSigner,
       keyResolver: mock.keyResolver,
     });
-    const docs = await client.find({
+    const { documents } = await client.find({
       invocationSigner: mock.invocationSigner,
       equals: [
         { 'content.indexedKey': 'value1' },
@@ -511,8 +511,8 @@ export const testServer = (mock: any) => {
     // docs.length.should.equal(2);
     // docs[0].should.be.an("object");
     // docs[1].should.be.an("object");
-    expect(docs[0].content).toEqual({ indexedKey: 'value1' });
-    expect(docs[1].content).toEqual({ indexedKey: 'value2' });
+    expect(documents[0].content).toEqual({ indexedKey: 'value1' });
+    expect(documents[1].content).toEqual({ indexedKey: 'value2' });
     // docs[0].content.should.deep.equal({ indexedKey: "value1" });
     // docs[1].content.should.deep.equal({ indexedKey: "value2" });
   });

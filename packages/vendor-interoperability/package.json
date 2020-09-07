@@ -2,6 +2,10 @@
   "name": "vendor-interoperability",
   "author": "Orie Steele",
   "module": "dist/vendor-interoperability.esm.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/decentralized-identity/secure-data-store.git"
+  },
   "version": "0.1.0",
   "license": "Apache-2.0",
   "main": "dist/index.js",
@@ -35,6 +39,7 @@
   "devDependencies": {
     "husky": "^4.2.5",
     "jest-html-reporter": "^3.1.3",
+    "serialize-javascript": ">=3.1.0",
     "tsdx": "^0.13.2",
     "tslib": "^2.0.0",
     "typescript": "^3.9.5"
@@ -44,7 +49,7 @@
     "base64url-universal": "^1.1.0",
     "crypto-ld": "^3.7.0",
     "did-method-key": "^0.6.1",
-    "edv-client": "^3.0.0",
+    "edv-client": "4.0.1",
     "isomorphic-webcrypto": "^2.3.6",
     "node-forge": "^0.9.1",
     "tweetnacl": "^1.0.3",
