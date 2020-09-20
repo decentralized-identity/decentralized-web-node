@@ -51,7 +51,7 @@
     "did-method-key": "^0.6.1",
     "edv-client": "4.0.1",
     "isomorphic-webcrypto": "^2.3.6",
-    "node-forge": "^0.9.1",
+    "node-forge": "^0.10.0",
     "tweetnacl": "^1.0.3",
     "x25519-key-pair": "^2.0.0"
   }
