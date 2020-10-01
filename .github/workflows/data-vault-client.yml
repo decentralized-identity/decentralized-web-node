@@ -1,0 +1,23 @@
+name: Data Vault Client
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./packages/data-vault-client
+    steps:
+      - name: Begin CI...
+        uses: actions/checkout@v2
+      - name: Use Node 12
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12.x
+      - name: Install
+        working-directory: ${{ env.working-directory }}
+        run: npm install
+      - name: Lint
+        working-directory: ${{ env.working-directory }}
+        run: npm run lint
+      - name: Test
+        working-directory: ${{ env.working-directory }}
+        run: npm run test
