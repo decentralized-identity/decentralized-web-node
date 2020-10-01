@@ -2215,6 +2215,160 @@ efficient indexes on encrypted properties while enabling
 that would create privacy concerns.
         </p>
 
+        <div class="issue">
+<p>
+Document the following in this section:
+</p>
+
+<p>
+The `equals` filter is an object with key-value attribute pairs. Any document
+that matches *all* given key-value attribute pairs will be returned. If equals
+is an array, it may contain multiple such filters -- whereby the results will be
+all documents that matched any one of the filters. If the document's value for a
+matching a key is an array and the array contains a matching value, the document
+will be considered a match (provided that other key-value attribute pairs also
+match).
+</p>
+
+<p>
+Here are some examples:
+</p>
+
+<pre class="example nohighlight">
+// for the query:
+{equals: {"content.foo": "bar"}}
+// this will match documents that look like this:
+{"content": {"foo": "bar"}}
+{"content": {"foo": ["bar"]}}
+{"content": {"foo": ["bar", "other"]}}
+
+// for the query:
+{equals: [{"content.foo": "bar"}, {"content.foo": "baz"}]}
+// this will match documents that look like this:
+{"content": {"foo": "bar"}}
+{"content": {"foo": ["bar"]}}
+{"content": {"foo": ["bar", "other"]}}
+{"content": {"foo": "baz"}}
+{"content": {"foo": ["baz"]}}
+{"content": {"foo": ["baz", "other"]}}
+
+// for the query:
+{equals: {"content.foo": ["bar", "baz"]}}
+// this will match documents that look like this:
+{"content": {"foo": ["bar", "baz"]}}
+{"content": {"foo": [["bar", "baz"]]}}
+{"content": {"foo": [["bar", "baz"], "other"]}}
+
+// for the query:
+{equals: {"content.https://schema\\.org/": "bar"}}
+// this will match documents that look like this:
+{"content": {"https://schema.org": "bar"}}
+{"content": {"https://schema.org": ["bar"]}}
+{"content": {"https://schema.org": ["bar", "other"]}}
+
+// for the query:
+{equals: {"content.foo": {"a": 4, "b": 5}}}
+// this will match documents that look like this:
+{"content": {"foo": {"a": 4, "b": 5}}}
+{"content": {"foo": [{"a": 4, "b": 5}]}}
+{"content": {"foo": [{"a": 4, "b": 5}, "other"]}}
+{"content": {"foo": {"b": 5, "a": 4}}} // note key order does not matter
+{"content": {"foo": [{"b": 5, "a": 4}]}}
+{"content": {"foo": [{"b": 5, "a": 4}, "other"]}}
+</pre>
+
+<p>
+The HMAC blinding process is very close to what @OR13 described above. There are
+two minor differences that are important:
+</p>
+
+<ol>
+  <li>
+Before a value is HMAC'd, it is namespaced to its key to prevent leaking information about same values across different keys. This is done by doing `HMAC({key: value})` instead of just `HMAC(value)`.
+  </li>
+  <li>
+The input to HMAC for values is run through the JSON canonicalization algorithm, [JCS - RFC8785](https://tools.ietf.org/html/rfc8785) to ensure that property insertion order in the value will not matter. This matters when the value is not a simple primitive such as a string, but instead it is an object such as `{a: 4, b: 5}`.
+  <li>
+</ol>
+
+<p>
+By way of example, for `equals: [{"content.foo": "bar"}]`, the process is:
+</p>
+
+<pre>
+1. Set `blinded` to an empty array `[]`.
+2. For every element (`{"content.foo": "bar"}`) in the `equals` array:
+2.1. For every key (`"content.foo"`) and its value (`"bar"`) in the object:
+2.1.1. Set `value` to an object with `key` and its value (`{"content.foo": "bar"}`).
+2.1.2. Canonicalize `value` using [JCS](https://tools.ietf.org/html/rfc8785).
+2.1.3. Append the object `{[HMAC(key): HMAC(value)]}` to `blinded`.
+3. Return `{equals: blinded}`.
+</pre>
+
+<p>
+Note that the HMAC output is base64url-encoded so it can be treated as string.
+Also note that indexes may be marked as "unique", enabling storage servers to
+reject documents that include certain duplicate attribute values. Additionally,
+an index can be "compound" and unique, allowing storage servers to reject
+documents that include certain duplicate attribute values within some other
+group. For example, you can create a compound, unique index on `["content.type",
+"content.name"]`. This would ensure that only one document with the same
+`"content.type"` and `"content.name"` could be inserted into storage. But many
+documents with the same `"content.type"` can be inserted, provided that they do
+not have the same `"content.name"` for that `"content.type"`. This is a very
+useful feature for storing different collections of items in a single EDV.
+</p>
+
+<p>
+Compound index values are computed by HMACing together every blinded value for
+each attribute. For example, for this unique, compound index: `["content.type",
+"content.country", "content.region"]`, a document like this:
+</p>
+
+<pre>
+{content: {type: "Location", country: "AU", region: "NSW"}}
+</pre>
+
+<p>
+Would be indexed by first blinding `{"content.type": "Location"}`,
+`{"content.country": "AU"}`, and `{"content.region": "NSW"}` just like above.
+Then index entries would be created for the blinded entry for "content.type",
+the combination of the blinded entries for "content.type" and "content.country",
+and finally, the combination of the blinded entries for "content.type",
+"content.country", and "country.region". The combinations are built by HMACing
+the concatenated the blinded attribute names using a colon (`:`) and HMACing the
+concatenated blinded attribute values using a colon (`:`). Note that a colon
+(`:`) was selected because it is not a character in the base64url alphabet. In
+pseudo code, blinded compound indexes entries look like:
+</p>
+
+<pre>
+key = HMAC(blinded1.name):HMAC(blinded2.name):...
+value = HMAC(blinded1.value):HMAC(blinded2.value):...
+Return {key, value}.
+</pre>
+
+<p>
+For clarity, the above would be repeated twice for type, country, region example
+-- both for the type+country combination and the type+country+region
+combination. The first time it would use blinded entries 1 (type) and 2
+(country), and the second time it would use 1 (type), 2 (country), and 3
+(region).
+</p>
+
+<p>
+This same process is repeated when building a query that targets a compound
+index. The server sees no difference between a compound index and a regular
+index, but it does have to be made aware of whether or not an index is unique.
+</p>
+
+<p>
+Index entries are stored along with a document in an index field that is
+identified by an identifier for the HMAC used. A document can have N many such
+indexes, each using different HMAC keys (and access to those keys may differ).
+        </p>
+      </div>
+
         <p class="issue">
 Provide instructions and examples for how indexes are blinded using an
 HMAC key.
