@@ -242,7 +242,67 @@ and in transit to and from the <a>storage provider</a>.
         </dl>
 
       </section>
+      <section class="informative">
+      <h3>
+Prior Art
+        </h3>
 
+        <h4>
+          Peergos
+        </h4>
+        <p>
+          <a href="https://github.com/peergos/peergos">Peergos</a> has many of the same requirements as SDS (actually stronger privacy requirements, especially against a quantum computer) and is built on top of ipfs.
+          In summary, its properties include:
+          <ul>
+            <li>
+              global p2p private filesystem
+            </li>
+            <li>
+              strong end to end encryption, and fine grained access control (read only and writable) (capability based, so server's are trustless)
+            </li>
+            <li>
+              data model is hash linked data (IPLD) with updates signed by a keypair
+            </li>
+            <li>
+              hide metadata from server including file names, mime-types, file sizes, directory topology 
+            </li>
+            <li>
+              hide social graph from server (the server cannot see who has been granted access to what)
+            </li>
+            <li>
+              directories are indistinguishable from small files to the server
+            </li>
+            <li>
+              independent of DNS and TLS certificate authorities (though there is a web interface if you trust them)
+            </li>
+            <li>
+              handle arbitrarily large files, including streaming, and O(1) seeking
+            </li>
+            <li>
+              data can be trivially mirrored which provides live redundancy over the ipfs protocol
+            </li>
+            <li>
+              efficient modification of large files without having to re-encrypt the entire file
+            </li>
+            <li>
+              resistant to quantum computer based attacks - unshared files are already fully post-quantum, shared files currently have a limited time window of vulnerability to a large quantum computer
+            </li>
+            <li>
+              access control is done with a version of <a href="https://github.com/Peergos/Peergos/raw/master/papers/wuala-cryptree.pdf">cryptree</a>, improved to fit in the ipfs data model, which is a stunning data structure. More details can be read <a href="https://book.peergos.org/security/cryptree.html">here</a>.
+            </li>
+            <li>
+              all data is in a merkle-champ (compressed hash-array mapped prefix-trie) which is a great data structure for content addressed mutable data, and plays very well with CRDTs as well. The original paper on the CHAMP structure is https://michael.steindorfer.name/publications/oopsla15.pdf. The properties of champs that are useful are insertion order indepdendence (giving a canonical root for a given set of mappings), and balanced structure. 
+            </li>
+            <li>
+              Unshared files are safe from exposure by a large quantum computer (this is because their privacy only relies on hashing and symmetric encryption, neither of which are significantly weakened by a quantum computer). 
+            </li>
+            <li>
+              Peergos servers are trustless. The worst that a malicious server could do is delete your data or withhold valid updates, both of which are easily detected and mitigated by running a mirror. 
+            </li>
+          </ul>
+        More technical descriptions are available <a href="https://book.peergos.org">here</a>
+        </p>
+      </section>
       <section class="informative">
         <h3>
 Use Cases
