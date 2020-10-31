@@ -2399,6 +2399,324 @@ Connection: keep-alive
 
     </section>
 
+  <section class="normative">
+    <h2>Identity Hubs</h2>
+
+    <p>
+      Identity Hubs are a formulation of Encrypted Datastores that provide additional application and 
+      service-focused functionality. Identity Hubs aim to serve as the backbone of decentralized apps (Dapps), 
+      wherein a developer of an application or service stores the data for a Subject with that Subject, in 
+      their Identity Hub, instead of in a traditional centralized location owned and controlled by a third-party.
+      Identity Hubs are primarily concerned with message relay, data storage, and facilitiating data coordination 
+      processes with apps, services, and authorized parties who are allowed to create, update, read, and delete 
+      portions of the data and messages they contain. All data in a Hub is represented with semantic objects. Some 
+      types of data objects within a Hub are simply stored and managed, while others are processed in accordance 
+      with logical processes defined in a set of standard Interfaces. Each object in a Hub is accessible via a 
+      globally recognized API that provides inferrential knowability through implicit adderessing of objects based 
+      on their semantic type.
+    </p>
+
+    <section>
+      <h3>Instance Discovery</h3>
+    </section>
+
+    <section>
+      <h3>Object IDs & Relationships</h3>
+
+      <ol>
+        <li>
+          All objects Identity Hubs interact with are identified by the hash of their content. To derive an ID for 
+          an object in the system. To derive the ID of an object, generate a Base64URL-encoded SHA-256 multihash 
+          representation of the object
+        </li>
+        <li>
+          All objects are one of to types: 1) newly initialized logical objects being added to the system, or 2) 
+          a modification of an existing object in the system. Initializing objects MUST NOT have a `root` or 
+          `parent` property, as they are the root of the new object in the system and have no parents. Any object 
+          in the system that is a modification of another object (e.g. updating a part of whole of an existing 
+          object) MUST include a `root` and `parent` property. The `root` property MUST be the hash ID value of 
+          the initializing object, and the `parent` property MUST be the hash ID of the last decendant object in 
+          the lineage of a logical object in the system.
+
+          Example of a newly initialized logical object:
+          <pre class="example">
+{ //  Assume the object hash ID is 123
+  "iss": "did:foo:a5b4c3",
+  "@context": "https://identity.foundation/schemas/hub/v0.1",
+  "@type": "Write",
+  "interface": "Collections",
+  "commit": {
+    "strategy": "crdt-delta",
+    "data": {...}
+  }
+}
+          </pre>
+
+          Example of the first decendant modification of a logical object:
+          <pre class="example">
+{ //  Assume the object hash ID is 456
+  "iss": "did:foo:a5b4c3",
+  "@context": "https://identity.foundation/schemas/hub/v0.1",
+  "@type": "Write",
+  "interface": "Collections",
+  "commit": {
+    "strategy": "crdt-delta",
+    "root": "123",
+    "parent": "123",
+    "data": {...}
+  }
+}
+          </pre>
+
+          Example of an additional decendant modification of a logical object:
+          <pre class="example">
+{ //  Assume the object hash ID is 789
+  "iss": "did:foo:a5b4c3",
+  "@context": "https://identity.foundation/schemas/hub/v0.1",
+  "@type": "Write",
+  "interface": "Collections",
+  "commit": {
+    "strategy": "crdt-delta",
+    "root": "123",
+    "parent": "456",
+    "data": {...}
+  }
+}
+          </pre>
+
+        </li>
+        <li>
+          All `Write`-type objects MUST declare a commit `strategy` property value, and if the object is a modifcation 
+          of an existing logical object in the system, the value MUST match the initializing object's declared `strategy`. 
+        </li>
+      </ol>
+    </section>
+
+    <section>
+      <h3>Data Replication</h3>
+
+      <p>
+        A single entity may have one or more instances of a Hub that can span across devices, clouds, and other 
+        locations, all of which are addressable via a URI routing mechanism linked to the entity's Decentralized 
+        Identitfier. Hub instances sync state changes to all objects they contain, ensuring the owner can access 
+        their data from anywhere, even when they are offline.
+      </p>
+
+      <p>
+        The following replication protocol defines how Hub instances replicate data between them to arrive at the 
+        same state for the objects they are tasked with maintaining within them. An instance of an entity's logical 
+        set of Hubs may not be tasked with maintaining the full set of unique logical objects that exist across all 
+        instances, as some instances many be storage or activity limited.
+      </p>
+
+      <p>
+        Replication begins with awareness of how Hub instances connect to other instances for the purpose of 
+        syncronization, which begins with the DID Document of the controlling entity. The DID Document of a 
+        Hub controller MUST include Service Endpoint entries that allow Hub instances to locate and actively 
+        initiate syncronization amongst themselves.
+
+        These Service Endpoints are defined as follows: ...
+      </p>
+    </section>
+
+    <section>
+      <h3>Object State Syncronization</h3>
+
+      <p>
+        The syncronization of state for objects in the system is accomplished via a model of extensible Sync 
+        Strategies. Objects, and their subsequent modifications, MUST use a standardized Sync Strategy to ensure 
+        other Hub instances are able to converge the state of objects in the system and achieve the same shared 
+        state.
+      </p>
+
+      <section>
+        <h4>Last Write Wins</h4>
+      </section>
+
+      <section>
+        <h4>Delta-Based CRDT</h4>
+      </section>
+
+    </section>
+
+    <section>
+      <h3>Authentication</h3>
+    </section>
+
+    <section>
+      <h3>Access Control</h3>
+    </section>
+
+    <section>
+      <h3>Data Models</h3>
+
+      <section>
+        <h4>Profile</h4>
+      </section>
+      <section>
+        <h4>Collections</h4>
+      </section>
+      <section>
+        <h4>Actions</h4>
+      </section>
+      <section>
+        <h4>Permissions</h4>
+      </section>
+    </section>
+
+    <section>
+      <h3>Interfaces</h3>
+
+      <p>
+        The following set of interfaces facilitate application-level functionality by defining logic for how 
+        specific semantically encoded objects are handled and transacted.
+      </p>
+
+      <section>
+        <h4>Profile</h4>
+  
+        <p>
+          An entity MAY choose to populate their logical Hub (referring to all instances as a singular mechanism) 
+          with a Profile object that describes the owning entity. The profile object SHOULD use whatever schema(s) 
+          and values that best describe them. The Profile interface is addressed via the following methods:
+        </p>
+
+        <section>
+          <h5>Write</h5>
+          <pre class="example">
+{
+  "iss": "did:foo:123",
+  "@context": "https://identity.foundation/schemas/hub/v0.1",
+  "@type": "Write",
+  "interface": "Profile",
+  "commit": {
+    "strategy": "last-write-wins",
+    "timestamp": 3463557567,
+    "data": {
+      "@context": "https://identity.foundation/schemas/hub/v0.1",
+      "@type": "Profile",
+      "did": "did:foo:123"
+      "descriptors": [
+        {
+          "@context": "http://schema.org",
+          "@type": "Person",
+          "name": "Jeffrey Lebowski",
+          "description": "That's just, like, your opinion, man.",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "5227 Santa Monica Boulevard",
+            "addressLocality": "Los Angeles",
+            "addressRegion": "CA"
+          }
+        },
+        {...}
+      ]
+    }
+  }
+}
+          </pre>
+      </section>
+
+      <section>
+        <h5>Read</h5>
+        <pre class="example">
+{
+  "iss": "bar:bar:456",
+  "@context": "https://identity.foundation/schemas/hub/v0.1",
+  "@type": "Read",
+  "interface": "Profile"
+}
+        </pre>
+      </section>
+
+
+      <section>
+        <h5>Delete</h5>
+        <pre class="example">
+{
+  "iss": "bar:foo:123",
+  "@context": "https://identity.foundation/schemas/hub/v0.1",
+  "@type": "Delete",
+  "interface": "Profile"
+}
+        </pre>
+      </section>
+
+  </section>
+
+
+  <section>
+    <h4>Collections</h4>
+
+    <p>
+      An entity MAY choose to populate their logical Hub (referring to all instances as a singular mechanism) 
+      with a Profile object that describes the owning entity. The profile object SHOULD use whatever schema(s) 
+      and values that best describe them. The Profile interface is addressed via the following methods:
+    </p>
+
+      <section>
+        <h5>Write</h5>
+        <pre class="example">
+{
+  "iss": "did:foo:123",
+  "@context": "https://identity.foundation/schemas/hub/v0.1",
+  "@type": "Write",
+  "interface": "Profile",
+  "commit": {
+    "strategy": "last-write-wins",
+    "timestamp": 3463557567,
+    "data": {
+      "@context": "https://schema.org/",
+      "@type": "SocialMediaPosting",
+      "@id":"https://www.pinterest.com/pin/201887995769400347/",
+      "datePublished":"2014-03-04",
+      "headline":"Leaked new BMW 2 series (m235i)",
+      "sharedContent":{
+        "@type":"WebPage",
+        "headline":"Leaked new BMW 2 series (m235i) ahead of oct 25 reveal",
+        "url":"http://www.reddit.com/r/BMW/comments/1oyh6j/leaked_new_bmw_2_series_m235i_ahead_of_oct_25/",
+        "author":{
+          "@type":"Person",
+          "name":"threal135i"
+        }
+      }
+    }
+  }
+}
+        </pre>
+    </section>
+
+    <section>
+      <h5>Read</h5>
+      <pre class="example">
+{
+"iss": "bar:bar:456",
+"@context": "https://identity.foundation/schemas/hub/v0.1",
+"@type": "Read",
+"interface": "Profile"
+}
+      </pre>
+    </section>
+
+
+    <section>
+      <h5>Delete</h5>
+      <pre class="example">
+{
+"iss": "bar:foo:123",
+"@context": "https://identity.foundation/schemas/hub/v0.1",
+"@type": "Delete",
+"interface": "Profile"
+}
+      </pre>
+    </section>
+
+  </section>
+
+    
+  </section>
+</section>
+
   <section class="informative">
     <h2>Extension points
           </h2>
