@@ -825,190 +825,34 @@ interference or deletion by the server.
 
     <section class="normative">
       <h2>
-Data Model
+Encrypted Data Vault
       </h2>
 
-      <p>
-The following sections outlines the data model for data vaults.
-      </p>
-
-      <section>
+      <section class="normative">
         <h3>
-DataVaultConfiguration
+  Data Model
         </h3>
-
-        <p class="issue">
-Data vault configuration isn't strictly necessary for using the other features
-of data vaults. This should have its own conformance section/class or potentially
-event be non-normative.
-        </p>
-
+  
         <p>
-A data vault configuration specifies the properties a particular data vault
-will have.
+  The following sections outlines the data model for data vaults.
         </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">Property</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>sequence</td>
-              <td>
-A unique counter for the data vault in order to ensure that
-clients are properly synchronized to the data vault. The value is required and
-MUST be an unsigned 64-bit number.
-              </td>
-            </tr>
-            <tr>
-              <td>controller</td>
-              <td>
-The entity or cryptographic key that is in control of the
-data vault. The value is required and MUST be a URI.
-              </td>
-            </tr>
-            <tr>
-              <td>invoker</td>
-              <td>
-The root entities or cryptographic key(s) that are authorized to invoke
-an authorization capability to modify the data vault's configuration or
-read or write to it. The value is optional, but if present, MUST be a URI
-or an array of URIs. When this value is not present, the value of controller
-property is used for the same purpose.
-              </td>
-            </tr>
-            <tr>
-              <td>delegator</td>
-              <td>
-The root entities or cryptographic key(s) that are authorized to delegate
-authorization capabilities to modify the data vault's configuration or
-read or write to it. The value is optional, but if present, MUST be a URI
-or an array of URIs. When this value is not present, the value of controller
-property is used for the same purpose.
-              </td>
-            </tr>
-            <tr>
-              <td>referenceId</td>
-              <td>
-Used to express an application-specific reference identifier. The value is
-optional and, if present, MUST be a string.
-              </td>
-            </tr>
-            <tr>
-              <td>keyAgreementKey.id</td>
-              <td>
-An identifier for the key agreement key. The value is required and MUST be
-a URI. The key agreement key is used to derive a secret that is then used to
-generate a key encryption key for the receiver.
-              </td>
-            </tr>
-            <tr>
-              <td>keyAgreementKey.type</td>
-              <td>
-The type of key agreement key. The value is required and MUST be or map to
-a URI.
-              </td>
-            </tr>
-            <tr>
-              <td>hmac.id</td>
-              <td>
-An identifier for the HMAC key. The value is required a MUST be or map to a URI.
-              </td>
-            </tr>
-            <tr>
-              <td>hmac.type</td>
-              <td>
-The type of HMAC key. The value is required and MUST be or map to
-a URI.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <pre class="example highlight" title="Example data vault configuration">
-{
-  "sequence": 0,
-  "controller": "did:example:123456789",
-  "referenceId": "my-primary-data-vault",
-  "keyAgreementKey": {
-    "id": "https://example.com/kms/12345",
-    "type": "X25519KeyAgreementKey2019"
-  },
-  "hmac": {
-    "id": "https://example.com/kms/67891",
-    "type": "Sha256HmacKey2019"
-  }
-}
-        </pre>
-
-      </section>
-
-      <section>
-        <h3>
-  <dfn>StructuredDocument</dfn>
-        </h3>
-
-        <p>
-A structured document is used to store application data as well as metadata
-about the application data. This information is typically encrypted and then
-stored on the data vault.
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">Property</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>id</td>
-              <td>
-An identifier for the structured document. The value is required and MUST be a
-Base58-encoded 128-bit random value.
-              </td>
-            </tr>
-            <tr>
-              <td>meta</td>
-              <td>
-Key-value metadata associated with the structured document.
-              </td>
-            </tr>
-            <tr>
-              <td>content</td>
-              <td>
-Key-value content for the structured document.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <pre class="example highlight" title="Example structured document">
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "meta": {
-    "created": "2019-06-18"
-  },
-  "content": {
-    "message": "Hello World!"
-  }
-}
-        </pre>
-
+  
         <section>
           <h4>
-  <dfn>Streams</dfn>
+  DataVaultConfiguration
           </h4>
-
-          <p>
-Streams can be used to store images, video, backup files, and any other
-binary data of arbitrary length. This is performed by using the
-<code>stream</code> property and additional metadata that further identifies
-the type of stream being stored. This table below provides the metadata
-to be stored in addition to the values specified in <a>StructuredDocument</a>.
+  
+          <p class="issue">
+  Data vault configuration isn't strictly necessary for using the other features
+  of data vaults. This should have its own conformance section/class or potentially
+  event be non-normative.
           </p>
-
+  
+          <p>
+  A data vault configuration specifies the properties a particular data vault
+  will have.
+          </p>
+  
           <table class="simple">
             <thead>
               <th style="white-space: nowrap">Property</th>
@@ -1016,816 +860,517 @@ to be stored in addition to the values specified in <a>StructuredDocument</a>.
             </thead>
             <tbody>
               <tr>
-                <td>meta.chunks</td>
+                <td>sequence</td>
                 <td>
-Specifies the number of chunks in the stream.
+  A unique counter for the data vault in order to ensure that
+  clients are properly synchronized to the data vault. The value is required and
+  MUST be an unsigned 64-bit number.
                 </td>
               </tr>
               <tr>
-                <td>stream.id</td>
+                <td>controller</td>
                 <td>
-The identifier for the stream. The stream identifier MUST be a URI that
-references a stream on the same data vault. Once the stream has been written
-to the data vault, the content identifier MUST be updated such that it is a
-valid hashlink. To allow for streaming encryption, the value of the digest
-for the stream is assumed to be unknowable until after the
-stream has been written. The hashlink MUST exist as a content hash for the
-stream that has been written to the data vault.
+  The entity or cryptographic key that is in control of the
+  data vault. The value is required and MUST be a URI.
+                </td>
+              </tr>
+              <tr>
+                <td>invoker</td>
+                <td>
+  The root entities or cryptographic key(s) that are authorized to invoke
+  an authorization capability to modify the data vault's configuration or
+  read or write to it. The value is optional, but if present, MUST be a URI
+  or an array of URIs. When this value is not present, the value of controller
+  property is used for the same purpose.
+                </td>
+              </tr>
+              <tr>
+                <td>delegator</td>
+                <td>
+  The root entities or cryptographic key(s) that are authorized to delegate
+  authorization capabilities to modify the data vault's configuration or
+  read or write to it. The value is optional, but if present, MUST be a URI
+  or an array of URIs. When this value is not present, the value of controller
+  property is used for the same purpose.
+                </td>
+              </tr>
+              <tr>
+                <td>referenceId</td>
+                <td>
+  Used to express an application-specific reference identifier. The value is
+  optional and, if present, MUST be a string.
+                </td>
+              </tr>
+              <tr>
+                <td>keyAgreementKey.id</td>
+                <td>
+  An identifier for the key agreement key. The value is required and MUST be
+  a URI. The key agreement key is used to derive a secret that is then used to
+  generate a key encryption key for the receiver.
+                </td>
+              </tr>
+              <tr>
+                <td>keyAgreementKey.type</td>
+                <td>
+  The type of key agreement key. The value is required and MUST be or map to
+  a URI.
+                </td>
+              </tr>
+              <tr>
+                <td>hmac.id</td>
+                <td>
+  An identifier for the HMAC key. The value is required a MUST be or map to a URI.
+                </td>
+              </tr>
+              <tr>
+                <td>hmac.type</td>
+                <td>
+  The type of HMAC key. The value is required and MUST be or map to
+  a URI.
                 </td>
               </tr>
             </tbody>
           </table>
-
-          <pre class="example highlight" title="Example structured document containing a stream">
-{
-  "id": "urn:uuid:41289468-c42c-4b28-adb0-bf76044aec77",
-  "meta": {
-    "created": "2019-06-19",
-    "contentType": "video/mpeg",
-    "chunks": 16
-  },
-  "stream": {
-    "id": "https://example.com/encrypted-data-vaults/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp"
-  }
-}
-          </pre>
-
-        </section>
-
-      </section>
-
-      <section>
-        <h3>
-  <dfn>EncryptedDocument</dfn>
-        </h3>
-
-        <p>
-An encrypted document is used to store a structured document in a way that
-ensures that no entity can read the information without the consent of the
-data controller.
-        </p>
-
-        <p class="issue">
-While the table below is a simple version of an EncryptedDocument, there is
-no other table that yet describes the indexed property and its subproperties,
-should it be present on an EncryptedDocument.
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">Property</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>id</td>
-              <td>
-An identifier for the encrypted document. The value is required and MUST be a
-Base58-encoded 128-bit random value.
-              </td>
-            </tr>
-            <tr>
-              <td>sequence</td>
-              <td>
-A unique counter for the data vault in order to ensure that
-clients are properly synchronized to the data vault. The value is required and
-MUST be an unsigned 64-bit number.
-              </td>
-            </tr>
-            <tr>
-              <td>jwe or cwe</td>
-              <td>
-A JSON Web Encryption or COSE Encrypted value that, if decoded, results in
-the corresponding <a>StructuredDocument</a>.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p class="issue">
-Another example should be added that shows that a Diffie-Hellman key can
-be identified in the JWE recipients field. This type of key can be used for
-key agreement on a key wrapping key.
-        </p>
-
-        <p class="issue">
-Another section should detail that data vault servers may omit certain fields
-or certain values in certain fields, such as the recipients field, based on
-whether or not the entity requesting an EncryptedDocument is authorized to
-see the field or its values. This can be finely controlled through the use
-of Authorization Capabilities.
-        </p>
-
-        <pre class="example highlight" title="Example encrypted document">
-{
-  "id":"z19x9iFMnfo4YLsShKAvnJk4L",
-  "sequence":0,
-  "indexed":[
-    {
-      "hmac":{
-        "id":"did:ex:12345#key1",
-        "type":"Sha256HmacKey2019"
-      },
-      "sequence":0,
-      "attributes":[
-      ]
+  
+          <pre class="example highlight" title="Example data vault configuration">
+  {
+    "sequence": 0,
+    "controller": "did:example:123456789",
+    "referenceId": "my-primary-data-vault",
+    "keyAgreementKey": {
+      "id": "https://example.com/kms/12345",
+      "type": "X25519KeyAgreementKey2019"
+    },
+    "hmac": {
+      "id": "https://example.com/kms/67891",
+      "type": "Sha256HmacKey2019"
     }
-  ],
-  "jwe":{
-    "protected":"eyJlbmMiOiJDMjBQIn0",
-    "recipients":[
+  }
+          </pre>
+  
+        </section>
+  
+        <section>
+          <h4>
+    <dfn>StructuredDocument</dfn>
+          </h4>
+  
+          <p>
+  A structured document is used to store application data as well as metadata
+  about the application data. This information is typically encrypted and then
+  stored on the data vault.
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">Property</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>id</td>
+                <td>
+  An identifier for the structured document. The value is required and MUST be a
+  Base58-encoded 128-bit random value.
+                </td>
+              </tr>
+              <tr>
+                <td>meta</td>
+                <td>
+  Key-value metadata associated with the structured document.
+                </td>
+              </tr>
+              <tr>
+                <td>content</td>
+                <td>
+  Key-value content for the structured document.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <pre class="example highlight" title="Example structured document">
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+    "meta": {
+      "created": "2019-06-18"
+    },
+    "content": {
+      "message": "Hello World!"
+    }
+  }
+          </pre>
+  
+          <section>
+            <h5>
+    <dfn>Streams</dfn>
+            </h5>
+  
+            <p>
+  Streams can be used to store images, video, backup files, and any other
+  binary data of arbitrary length. This is performed by using the
+  <code>stream</code> property and additional metadata that further identifies
+  the type of stream being stored. This table below provides the metadata
+  to be stored in addition to the values specified in <a>StructuredDocument</a>.
+            </p>
+  
+            <table class="simple">
+              <thead>
+                <th style="white-space: nowrap">Property</th>
+                <th>Description</th>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>meta.chunks</td>
+                  <td>
+  Specifies the number of chunks in the stream.
+                  </td>
+                </tr>
+                <tr>
+                  <td>stream.id</td>
+                  <td>
+  The identifier for the stream. The stream identifier MUST be a URI that
+  references a stream on the same data vault. Once the stream has been written
+  to the data vault, the content identifier MUST be updated such that it is a
+  valid hashlink. To allow for streaming encryption, the value of the digest
+  for the stream is assumed to be unknowable until after the
+  stream has been written. The hashlink MUST exist as a content hash for the
+  stream that has been written to the data vault.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+  
+            <pre class="example highlight" title="Example structured document containing a stream">
+  {
+    "id": "urn:uuid:41289468-c42c-4b28-adb0-bf76044aec77",
+    "meta": {
+      "created": "2019-06-19",
+      "contentType": "video/mpeg",
+      "chunks": 16
+    },
+    "stream": {
+      "id": "https://example.com/encrypted-data-vaults/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp"
+    }
+  }
+            </pre>
+  
+          </section>
+  
+        </section>
+  
+        <section>
+          <h4>
+    <dfn>EncryptedDocument</dfn>
+          </h4>
+  
+          <p>
+  An encrypted document is used to store a structured document in a way that
+  ensures that no entity can read the information without the consent of the
+  data controller.
+          </p>
+  
+          <p class="issue">
+  While the table below is a simple version of an EncryptedDocument, there is
+  no other table that yet describes the indexed property and its subproperties,
+  should it be present on an EncryptedDocument.
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">Property</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>id</td>
+                <td>
+  An identifier for the encrypted document. The value is required and MUST be a
+  Base58-encoded 128-bit random value.
+                </td>
+              </tr>
+              <tr>
+                <td>sequence</td>
+                <td>
+  A unique counter for the data vault in order to ensure that
+  clients are properly synchronized to the data vault. The value is required and
+  MUST be an unsigned 64-bit number.
+                </td>
+              </tr>
+              <tr>
+                <td>jwe or cwe</td>
+                <td>
+  A JSON Web Encryption or COSE Encrypted value that, if decoded, results in
+  the corresponding <a>StructuredDocument</a>.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p class="issue">
+  Another example should be added that shows that a Diffie-Hellman key can
+  be identified in the JWE recipients field. This type of key can be used for
+  key agreement on a key wrapping key.
+          </p>
+  
+          <p class="issue">
+  Another section should detail that data vault servers may omit certain fields
+  or certain values in certain fields, such as the recipients field, based on
+  whether or not the entity requesting an EncryptedDocument is authorized to
+  see the field or its values. This can be finely controlled through the use
+  of Authorization Capabilities.
+          </p>
+  
+          <pre class="example highlight" title="Example encrypted document">
+  {
+    "id":"z19x9iFMnfo4YLsShKAvnJk4L",
+    "sequence":0,
+    "indexed":[
       {
-        "header":{
-          "kid":"urn:123",
-          "alg":"ECDH-ES+A256KW",
-          "epk":{
-            "kty":"OKP",
-            "crv":"X25519",
-            "x":"d7rIddZWblHmCc0mYZJw39SGteink_afiLraUb-qwgs"
-          },
-          "apu":"d7rIddZWblHmCc0mYZJw39SGteink_afiLraUb-qwgs",
-          "apv":"dXJuOjEyMw"
+        "hmac":{
+          "id":"did:ex:12345#key1",
+          "type":"Sha256HmacKey2019"
         },
-        "encrypted_key":"4PQsjDGs8IE3YqgcoGfwPTuVG25MKjojx4HSZqcjfkhr0qhwqkpUUw"
+        "sequence":0,
+        "attributes":[
+        ]
       }
     ],
-    "iv":"FoJ5uPIR6HDPFCtD",
-    "ciphertext":"tIupQ-9MeYLdkAc1Us0Mdlp1kZ5Dbavq0No-eJ91cF0R0hE",
-    "tag":"TMRcEPc74knOIbXhLDJA_w"
+    "jwe":{
+      "protected":"eyJlbmMiOiJDMjBQIn0",
+      "recipients":[
+        {
+          "header":{
+            "kid":"urn:123",
+            "alg":"ECDH-ES+A256KW",
+            "epk":{
+              "kty":"OKP",
+              "crv":"X25519",
+              "x":"d7rIddZWblHmCc0mYZJw39SGteink_afiLraUb-qwgs"
+            },
+            "apu":"d7rIddZWblHmCc0mYZJw39SGteink_afiLraUb-qwgs",
+            "apv":"dXJuOjEyMw"
+          },
+          "encrypted_key":"4PQsjDGs8IE3YqgcoGfwPTuVG25MKjojx4HSZqcjfkhr0qhwqkpUUw"
+        }
+      ],
+      "iv":"FoJ5uPIR6HDPFCtD",
+      "ciphertext":"tIupQ-9MeYLdkAc1Us0Mdlp1kZ5Dbavq0No-eJ91cF0R0hE",
+      "tag":"TMRcEPc74knOIbXhLDJA_w"
+    }
   }
-}
-        </pre>
-
+          </pre>
+  
+        </section>
+  
       </section>
 
-    </section>
-
-    <section class="normative">
-      <h2>
-Data vault HTTPS API
-      </h2>
-
-      <p>
-This section introduces the HTTPS API for interacting with data vaults and
-their contents.
-      </p>
-
-      <section>
+      <section class="normative">
         <h3>
-Discovering Service Endpoints
+  HTTP API
         </h3>
-
+  
         <p>
-A website may provide service endpoint discovery by embedding JSON-LD in their
-top-most HTML web page (e.g. at <code>https://example.com/</code>):
+  This section introduces the HTTPS API for interacting with data vaults and
+  their contents.
         </p>
-
-        <pre class="example highlight" title="Example of HTML-based service description">
-&lt;!DOCTYPE html>
-&lt;html lang="en">
-  &lt;head>
-    &lt;meta charset="utf-8">
-    &lt;title>Example Website&lt;/title>
-    &lt;link rel="stylesheet" href="style.css">
-    &lt;script src="script.js">&lt;/script>
-    &lt;script type="application/ld+json">
-{
-  "@context": "https://w3id.org/encrypted-data-vaults/v1",
-  "id": "https://example.com/",
-  "name": "Example Website",
-  "dataVaultManagementService": "https://example.com/data-vaults"
-}
-    &lt;/script>
-  &lt;/head>
-  &lt;body>
-    &lt;!-- page content -->
-  &lt;/body>
-&lt;/html>
-        </pre>
-
-        <p>
-Service descriptions may also be requested via content negotiation.
-In the following example a JSON-compatible service description is provided
-(e.g. <code>curl -H "Accept: application/json" https://example.com/</code>):
-        </p>
-
-        <pre class="example highlight" title="Example of a JSON-based service description">
-{
-  "@context": "https://w3id.org/encrypted-data-vaults/v1",
-  "id": "https://example.com/",
-  "name": "Example Website",
-  "dataVaultCreationService": "https://example.com/data-vaults"
-}
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Creating a data vault
-      </h2>
-
-        <p>
-A data vault is created by performing an HTTP POST of a
-<a href="#datavaultconfiguration">DataVaultConfiguration</a>
-to the <code>dataVaultCreationService</code>. The following HTTP
-status codes are defined for this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>201</td>
-              <td>
-data vault creation was successful. The HTTP <code>Location</code> header will
-contain the URL for the newly created data vault.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-data vault creation failed.
-              </td>
-            <tr>
-            </tr>
-              <td>409</td>
-              <td>
-A duplicate data vault exists.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-An example exchange of a data vault creation is shown below:
-        </p>
-
-        <pre class="example highlight" title="data vault creation request">
-POST /data-vaults HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-{
-  "sequence": 0,
-  "controller": "did:example:123456789",
-  "referenceId": "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
-  "keyAgreementKey": {
-    "id": "https://example.com/kms/12345",
-    "type": "X25519KeyAgreementKey2019"
-  },
-  "hmac": {
-    "id": "https://example.com/kms/67891",
-    "type": "Sha256HmacKey2019"
+  
+        <section>
+          <h4>
+  Discovering Service Endpoints
+          </h4>
+  
+          <p>
+  A website may provide service endpoint discovery by embedding JSON-LD in their
+  top-most HTML web page (e.g. at <code>https://example.com/</code>):
+          </p>
+  
+          <pre class="example highlight" title="Example of HTML-based service description">
+  &lt;!DOCTYPE html>
+  &lt;html lang="en">
+    &lt;head>
+      &lt;meta charset="utf-8">
+      &lt;title>Example Website&lt;/title>
+      &lt;link rel="stylesheet" href="style.css">
+      &lt;script src="script.js">&lt;/script>
+      &lt;script type="application/ld+json">
+  {
+    "@context": "https://w3id.org/encrypted-data-vaults/v1",
+    "id": "https://example.com/",
+    "name": "Example Website",
+    "dataVaultManagementService": "https://example.com/data-vaults"
   }
-}
-        </pre>
-
-        <p class="issue">
-Explain the purpose of the controller property to root authority. Explain how
-Authorization Capabilities can be created and invoked via HTTP signatures to
-authorize reading and writing from/to data vaults.
-        </p>
-
-        <p>
-If the creation of the data vault was successful, an HTTP 201 status code is
-expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault creation response">
-HTTP/1.1 201 Created
-Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy
-Cache-Control: no-cache, no-store, must-revalidate
-Pragma: no-cache
-Expires: 0
-Date: Fri, 14 Jun 2019 18:35:33 GMT
-Connection: keep-alive
-Transfer-Encoding: chunked
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Creating a Document
-      </h2>
-
-        <p>
-A structured document is stored in a data vault by encoding a
-<a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
-an HTTP POST to a data vault endpoint created via
-<a href="#creating-a-data-vault"></a>.
-The following HTTP status codes are defined for this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>201</td>
-              <td>
-Structured document creation was successful. The HTTP <code>Location</code>
-header will contain the URL for the newly created document.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-Structured document creation failed.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-In order to convert a <a>StructuredDocument</a> to an
-<a>EncryptedDocument</a> an implementer MUST encode the
-<a>StructuredDocument</a> as a JWE or a COSE Encrypted object. Once the
-document is encrypted, it can be sent to the document creation service.
-        </p>
-
-        <p>
-A protocol example of a document creation is shown below:
-        </p>
-
-        <pre class="example highlight" title="data vault document creation request">
-POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "sequence": 0,
-  "jwe": {
-    "protected": "eyJlbmMiOiJDMjBQIn0",
-    "recipients": [{
-      "header": {
-        "alg": "A256KW",
-        "kid": "https://example.com/kms/zSDn2MzzbxmX"
-      },
-      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
-    }],
-    "iv": "i8Nins2vTI3PlrYW",
-    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
-    "tag": "pfZO0JulJcrc3trOZy8rjA"
+      &lt;/script>
+    &lt;/head>
+    &lt;body>
+      &lt;!-- page content -->
+    &lt;/body>
+  &lt;/html>
+          </pre>
+  
+          <p>
+  Service descriptions may also be requested via content negotiation.
+  In the following example a JSON-compatible service description is provided
+  (e.g. <code>curl -H "Accept: application/json" https://example.com/</code>):
+          </p>
+  
+          <pre class="example highlight" title="Example of a JSON-based service description">
+  {
+    "@context": "https://w3id.org/encrypted-data-vaults/v1",
+    "id": "https://example.com/",
+    "name": "Example Website",
+    "dataVaultCreationService": "https://example.com/data-vaults"
   }
-}
-        </pre>
-
-        <p>
-If the creation of the structured document was successful, an HTTP 201 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault document creation response">
-HTTP/1.1 201 Created
-Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz
-Cache-Control: no-cache, no-store, must-revalidate
-Pragma: no-cache
-Expires: 0
-Date: Fri, 14 Jun 2019 18:37:12 GMT
-Connection: keep-alive
-Transfer-Encoding: chunked
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Reading a Document
-      </h2>
-
-        <p>
-Reading a document from a data vault is performed by retrieving the
-<a>EncryptedDocument</a> and then decrypting it to a
-<a>StructuredDocument</a>. The following HTTP status codes are defined for
-this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>200</td>
-              <td>
-EncryptedDocument retrieval was successful.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-EncryptedDocument retrieval failed.
-              </td>
-            </tr>
-            <tr>
-              <td>404</td>
-              <td>
-EncryptedDocument with given id was not found.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-In order to convert an <a>EncryptedDocument</a> to a
-<a>StructuredDocument</a> an implementer MUST decode the
-<a>EncryptedDocument</a> from a JWE or a COSE Encrypted object. Once the
-document is decrypted, it can be processed by the web application.
-        </p>
-
-        <p>
-A protocol example of a document retrieval is shown below:
-        </p>
-
-        <p class="issue">
-Explain that the URL path structure is fixed for all data vaults to enable
-portability and the use of stable URLs (such as through DID URLs) to reference
-certain documents while allowing users to change their data vault service
-providers. Explain how this enables portability.
-        </p>
-
-        <pre class="example highlight" title="data vault encrypted document retrieval">
-GET https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
-Host: example.com
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-        </pre>
-
-        <p>
-If the retrieval of the encrypted document was successful, an HTTP 200 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault document read response">
-HTTP/1.1 200 OK
-Date: Fri, 14 Jun 2019 18:37:12 GMT
-Connection: keep-alive
-
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "sequence": 0,
-  "jwe": {
-    "protected": "eyJlbmMiOiJDMjBQIn0",
-    "recipients": [{
-      "header": {
-        "alg": "A256KW",
-        "kid": "https://example.com/kms/zSDn2MzzbxmX"
-      },
-      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
-    }],
-    "iv": "i8Nins2vTI3PlrYW",
-    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
-    "tag": "pfZO0JulJcrc3trOZy8rjA"
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Creating a data vault
+        </h3>
+  
+          <p>
+  A data vault is created by performing an HTTP POST of a
+  <a href="#datavaultconfiguration">DataVaultConfiguration</a>
+  to the <code>dataVaultCreationService</code>. The following HTTP
+  status codes are defined for this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>201</td>
+                <td>
+  data vault creation was successful. The HTTP <code>Location</code> header will
+  contain the URL for the newly created data vault.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  data vault creation failed.
+                </td>
+              <tr>
+              </tr>
+                <td>409</td>
+                <td>
+  A duplicate data vault exists.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  An example exchange of a data vault creation is shown below:
+          </p>
+  
+          <pre class="example highlight" title="data vault creation request">
+  POST /data-vaults HTTP/1.1
+  Host: example.com
+  Content-Type: application/json
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  {
+    "sequence": 0,
+    "controller": "did:example:123456789",
+    "referenceId": "urn:uuid:abc5a436-21f9-4b4c-857d-1f5569b2600d",
+    "keyAgreementKey": {
+      "id": "https://example.com/kms/12345",
+      "type": "X25519KeyAgreementKey2019"
+    },
+    "hmac": {
+      "id": "https://example.com/kms/67891",
+      "type": "Sha256HmacKey2019"
+    }
   }
-}
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Updating a Document
-      </h2>
-
-        <p>
-A structured document is updated in a data vault by encoding the updated
-<a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
-an HTTP POST to a data vault endpoint created via
-<a href="#creating-a-data-vault"></a>.
-The following HTTP status codes are defined for this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>200</td>
-              <td>
-Structured document update was successful.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-Structured document update failed.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-In order to convert a <a>StructuredDocument</a> to an
-<a>EncryptedDocument</a> an implementer MUST encode the
-<a>StructuredDocument</a> as a JWE or a COSE Encrypted object. Once the
-document is encrypted, it can be sent to the document creation service.
-        </p>
-
-        <p>
-A protocol example of a document update is shown below:
-        </p>
-
-        <pre class="example highlight" title="data vault document update request">
-POST  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "sequence": 1,
-  "jwe": {
-    "protected": "eyJlbmMiOiJDMjBQIn0",
-    "recipients": [{
-      "header": {
-        "alg": "A256KW",
-        "kid": "https://example.com/kms/zSDn2MzzbxmX"
-      },
-      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
-    }],
-    "iv": "i8Nins2vTI3PlrYW",
-    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
-    "tag": "pfZO0JulJcrc3trOZy8rjA"
-  }
-}
-        </pre>
-
-        <p>
-If the update to the encrypted document was successful, an HTTP 200 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault document creation response">
-HTTP/1.1 200 OK
-Cache-Control: no-cache, no-store, must-revalidate
-Date: Fri, 14 Jun 2019 18:39:52 GMT
-Connection: keep-alive
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Deleting a Document
-      </h2>
-
-        <p>
-A structured document is deleted by performing an HTTP DELETE to a data vault
-endpoint created via <a href="#creating-a-data-vault"></a>.
-The following HTTP status codes are defined for this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>200</td>
-              <td>
-Structured document was deleted successfully.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-Structured document deletion failed.
-              </td>
-            </tr>
-            <tr>
-              <td>404</td>
-              <td>
-Structured document was not found.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-A protocol example of a document deletion is shown below:
-        </p>
-
-        <pre class="example highlight" title="data vault document deletion request">
-DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
-Host: example.com
-        </pre>
-
-        <p>
-If the deletion of the encrypted document was successful, an HTTP 200 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault document deletion response">
-HTTP/1.1 200 OK
-Cache-Control: no-cache, no-store, must-revalidate
-Date: Fri, 14 Jun 2019 18:40:18 GMT
-Connection: keep-alive
-        </pre>
-      </section>
-
-      <section class="normative">
-        <h2>
-  Creating a Stream
-      </h2>
-
-        <p class="issue">
-This section is out of date, do not implement.
-        </p>
-
-        <p class="issue">
-Another design is being considered that would transform streams into a
-single index document and a collection of documents, each of which contains
-a chunk of the stream. This would be done to help prevent misuse of a
-decryption stream prior to its authentication. In order for this approach to
-be implemented in a Web browser, it also requires certain File or Blob APIs.
-Further investigation is needed to ensure that support of these APIs would be
-sufficient for this design approach, as it would be preferred to prevent data
-misuse and to make better use of native implementations of authenticated
-encryption modes.
-        </p>
-
-        <p>
-A stream is stored in a data vault by writing a document containing metadata
-about the stream, encrypting the stream, writing it to a data vault, and then
-updating the document containing metadata about the stream. The following
-HTTP status codes are defined for this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>201</td>
-              <td>
-Stream creation was successful. The HTTP <code>Location</code>
-header will contain the URL for the newly created stream.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-Stream creation failed.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-Implementations first encode the metadata associated with the stream into a
-<a>StructuredDocument</a>:
-        </p>
-
-        <pre class="example highlight" title="StructuredDocument associated with a stream">
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "meta": {
-    "created": "2019-06-18",
-    "contentType": "video/mpeg",
-    "contentLength": 56735817
-  },
-  "content": {
-    "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz"
-  }
-}
-        </pre>
-
-        <p class="note">
-In this case, the value of <code>content.id</code> is a reference to the
-stream located at
-<code>https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz</code>,
-which is the location that the stream MUST be written to. This content
-identifier MUST be updated to include a hashlink once the stream has been
-written and its digest is known.
-        </p>
-
-        <p>
-The <a>StructuredDocument</a> above is then transformed to an
-<a>EncryptedDocument</a> and the procedure in
-<a href="#creating-a-document"></a> is executed:
-        </p>
-
-        <pre class="example highlight" title="Encrypted document creation request for stream metadata">
-POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "sequence": 0,
-  "jwe": {
-    "protected": "eyJlbmMiOiJDMjBQIn0",
-    "recipients": [{
-      "header": {
-        "alg": "A256KW",
-        "kid": "https://example.com/kms/zSDn2MzzbxmX"
-      },
-      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
-    }],
-    "iv": "i8Nins2vTI3PlrYW",
-    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
-    "tag": "pfZO0JulJcrc3trOZy8rjA"
-  }
-}
-        </pre>
-
-        <p>
-If the creation of the structured document was successful, an HTTP 201 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault document creation response">
-HTTP/1.1 201 Created
-Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zp4H8ekWn
-Cache-Control: no-cache, no-store, must-revalidate
-Pragma: no-cache
-Expires: 0
-Date: Fri, 14 Jun 2019 18:37:12 GMT
-Connection: keep-alive
-Transfer-Encoding: chunked
-        </pre>
-
-        <p>
-Next, in order to convert a stream to an <a>EncryptedStream</a> an implementer
-MUST encrypt the stream. Once the stream is encrypted (or as it is encrypted),
-it can be sent to the stream creation service.
-        </p>
-
-        <p>
-A protocol example of a stream creation is shown below:
-        </p>
-
-        <pre class="example highlight" title="Encrypted stream creation request">
-POST /encrypted-data-vaults/z4sRgBJJLnYy/streams HTTP/1.1
-Host: example.com
-Content-Type: application/octet-stream
-Transfer-Encoding: chunked
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-TBD
-        </pre>
-
-        <p>
-If the creation of the stream was successful, an HTTP 201 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful stream creation response">
-HTTP/1.1 201 Created
-Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz
-Cache-Control: no-cache, no-store, must-revalidate
-Pragma: no-cache
-Expires: 0
-Date: Fri, 14 Jun 2019 18:37:12 GMT
-Connection: keep-alive
-Transfer-Encoding: chunked
-        </pre>
-
-        <p>
-Once a stream is created, the metadata related to the stream can be updated
-in the data vault using the protocol defined in
-<a href="#updating-a-document"></a>. An example of updating a link to a video
-file is shown below.
-        </p>
-
-        <p>
-Implementations update the metadata associated with the stream in its
-<a>StructuredDocument</a>:
-        </p>
-
-        <pre class="example highlight" title="Updating StructuredDocument associated with a stream">
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "sequence": 1,
-  "meta": {
-    "created": "2019-06-18",
-    "contentType": "video/mpeg",
-    "contentLength": 56735817
-  },
-  "content": {
-    "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp",
+          </pre>
+  
+          <p class="issue">
+  Explain the purpose of the controller property to root authority. Explain how
+  Authorization Capabilities can be created and invoked via HTTP signatures to
+  authorize reading and writing from/to data vaults.
+          </p>
+  
+          <p>
+  If the creation of the data vault was successful, an HTTP 201 status code is
+  expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault creation response">
+  HTTP/1.1 201 Created
+  Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  Date: Fri, 14 Jun 2019 18:35:33 GMT
+  Connection: keep-alive
+  Transfer-Encoding: chunked
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Creating a Document
+        </h3>
+  
+          <p>
+  A structured document is stored in a data vault by encoding a
+  <a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
+  an HTTP POST to a data vault endpoint created via
+  <a href="#creating-a-data-vault"></a>.
+  The following HTTP status codes are defined for this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>201</td>
+                <td>
+  Structured document creation was successful. The HTTP <code>Location</code>
+  header will contain the URL for the newly created document.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  Structured document creation failed.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  In order to convert a <a>StructuredDocument</a> to an
+  <a>EncryptedDocument</a> an implementer MUST encode the
+  <a>StructuredDocument</a> as a JWE or a COSE Encrypted object. Once the
+  document is encrypted, it can be sent to the document creation service.
+          </p>
+  
+          <p>
+  A protocol example of a document creation is shown below:
+          </p>
+  
+          <pre class="example highlight" title="data vault document creation request">
+  POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
+  Host: example.com
+  Content-Type: application/json
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+    "sequence": 0,
     "jwe": {
       "protected": "eyJlbmMiOiJDMjBQIn0",
       "recipients": [{
@@ -1836,571 +1381,1091 @@ Implementations update the metadata associated with the stream in its
         "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
       }],
       "iv": "i8Nins2vTI3PlrYW",
+      "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
       "tag": "pfZO0JulJcrc3trOZy8rjA"
     }
   }
-}
-        </pre>
-
-        <p class="note">
-The value of <code>content.id</code> MUST be updated to include a hashlink
-now that the stream has been written and its digest is known.
-        </p>
-
-        <p>
-The <a>StructuredDocument</a> above is then transformed to an
-<a>EncryptedDocument</a> and the procedure in
-<a href="#updating-a-document"></a> is executed:
-        </p>
-
-        <pre class="example highlight" title="Encrypted document update request for stream metadata">
-POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-{
-  "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
-  "sequence": 1,
-  "jwe": {
-    "protected": "eyJlbmMiOiJDMjBQIn0",
-    "recipients": [{
-      "header": {
-        "alg": "A256KW",
-        "kid": "https://example.com/kms/zSDn2MzzbxmX"
-      },
-      "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
-    }],
-    "iv": "i8Nins2vTI3PlrYW",
-    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
-    "tag": "pfZO0JulJcrc3trOZy8rjA"
-  }
-}
-        </pre>
-
-        <p>
-If the creation of the structured document was successful, an HTTP 200 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault document creation response">
-HTTP/1.1 200 OK
-Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zp4H8ekWn
-Cache-Control: no-cache, no-store, must-revalidate
-Pragma: no-cache
-Expires: 0
-Date: Fri, 14 Jun 2019 18:37:12 GMT
-Connection: keep-alive
-Transfer-Encoding: chunked
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Reading a Stream
-      </h2>
-
-        <p class="issue">
-This section is out of date, do not implement.
-        </p>
-
-        <p>
-Reading a stream from a data vault is performed by retrieving the associated
-metadata that is encrypted as an <a>EncryptedDocument</a>, decoding the
-hashlink information, and then retrieving the <a>EncryptedStream</a> and then
-decrypting it. The following HTTP status codes are defined for this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>200</td>
-              <td>
-Encrypted stream retrieval was successful.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-Encrypted stream retrieval failed.
-              </td>
-            </tr>
-            <tr>
-              <td>404</td>
-              <td>
-Encrypted stream with given id was not found.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-In order to convert an <a>EncryptedStream</a> to a stream
-an implementer MUST decode the <a>EncryptedStream</a> using the information
-provided in the associated <a>EncryptedDocument</a>. Once the stream is
-decrypted, it can be processed by the web application.
-        </p>
-
-        <p class="note">
-Implementers can perform random seeking in the stream by using the
-<code>Content-Range</code> HTTP Header.
-        </p>
-
-        <p>
-A protocol example of a stream retrieval is shown below:
-        </p>
-
-        <pre class="example highlight" title="data vault encrypted stream retrieval">
-GET https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zn2XmSDzMbxz HTTP/1.1
-Host: example.com
-Content-Range: 0-1048576
-Accept: application/octet-stream
-Accept-Encoding: gzip, deflate
-        </pre>
-
-        <p>
-If the retrieval of the encrypted stream was successful, an HTTP 200 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault stream read response">
-HTTP/1.1 200 OK
-Date: Fri, 14 Jun 2019 18:37:12 GMT
-Content-Range: 0-1048576
-Content-Length: 1048576
-Connection: keep-alive
-
-...
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Deleting a Stream
-      </h2>
-
-        <p class="issue">
-This section is out of date, do not implement.
-        </p>
-
-        <p>
-A stream is deleted by performing an HTTP DELETE to a data vault
-stream endpoint created via <a href="#creating-a-stream"></a> and
-the corresponding metadata document created via
-<a href="#creating-a-document"></a>. The following HTTP status codes are
-defined for this service:
-        </p>
-
-        <table class="simple">
-          <thead>
-            <th style="white-space: nowrap">HTTP Status</th>
-            <th>Description</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>200</td>
-              <td>
-Stream was deleted successfully.
-              </td>
-            </tr>
-            <tr>
-              <td>400</td>
-              <td>
-Stream deletion failed.
-              </td>
-            </tr>
-            <tr>
-              <td>404</td>
-              <td>
-Stream was not found.
-              </td>
-            </tr>
-          </tbody>
-        </table>
-
-        <p>
-A protocol example of a stream deletion is shown below:
-        </p>
-
-        <pre class="example highlight" title="data vault stream deletion request">
-DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz HTTP/1.1
-Host: example.com
-</pre>
-        </pre>
-
-        <p>
-If the deletion of the encrypted stream was successful, an HTTP 200 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault stream deletion response">
-HTTP/1.1 200 OK
-Cache-Control: no-cache, no-store, must-revalidate
-Date: Fri, 14 Jun 2019 18:40:18 GMT
-Connection: keep-alive
-        </pre>
-
-        <p>
-Once the stream is deleted, implementations MUST also delete the corresponding
-metadata document:
-        </p>
-
-        <pre class="example highlight" title="data vault stream deletion request">
-DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
-Host: example.com
-        </pre>
-
-        <p>
-If the deletion of the encrypted stream was successful, an HTTP 200 status
-code is expected in return:
-        </p>
-
-        <pre class="example highlight" title="Successful data vault stream deletion response">
-HTTP/1.1 200 OK
-Cache-Control: no-cache, no-store, must-revalidate
-Date: Fri, 14 Jun 2019 18:40:18 GMT
-Connection: keep-alive
-        </pre>
-
-      </section>
-
-      <section class="normative">
-        <h2>
-  Creating Encrypted Indexes
-      </h2>
-
-        <p>
-It is often useful to search a data vault for structured documents that contain
-specific metadata. Efficient searching requires the use of search indexes
-and local access to data. This poses an interesting challenge as the
-search has to be performed on the <a>storage provider</a> without leaking
-information that could violate the privacy of the entities that are storing
-information in the data vault. This section details how encrypted indexes
-can be created and used to perform efficient searching while protecting
-the privacy of entities that are storing information in the data vault.
-        </p>
-
-        <p>
-When creating an <a>EncryptedDocument</a>, blinded index properties MAY
-be used to perform efficient searches. An example of the use of these
-properties is shown below:
-        </p>
-
-        <pre class="example highlight" title="Example encrypted document with encrypted indexes">
-{
-  "id": "urn:uuid:698f3fb6-592f-4d22-9e04-462cc4606a23",
-  "sequence": 0,
-  "indexed": [{
+          </pre>
+  
+          <p>
+  If the creation of the structured document was successful, an HTTP 201 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault document creation response">
+  HTTP/1.1 201 Created
+  Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  Date: Fri, 14 Jun 2019 18:37:12 GMT
+  Connection: keep-alive
+  Transfer-Encoding: chunked
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Reading a Document
+        </h3>
+  
+          <p>
+  Reading a document from a data vault is performed by retrieving the
+  <a>EncryptedDocument</a> and then decrypting it to a
+  <a>StructuredDocument</a>. The following HTTP status codes are defined for
+  this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>200</td>
+                <td>
+  EncryptedDocument retrieval was successful.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  EncryptedDocument retrieval failed.
+                </td>
+              </tr>
+              <tr>
+                <td>404</td>
+                <td>
+  EncryptedDocument with given id was not found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  In order to convert an <a>EncryptedDocument</a> to a
+  <a>StructuredDocument</a> an implementer MUST decode the
+  <a>EncryptedDocument</a> from a JWE or a COSE Encrypted object. Once the
+  document is decrypted, it can be processed by the web application.
+          </p>
+  
+          <p>
+  A protocol example of a document retrieval is shown below:
+          </p>
+  
+          <p class="issue">
+  Explain that the URL path structure is fixed for all data vaults to enable
+  portability and the use of stable URLs (such as through DID URLs) to reference
+  certain documents while allowing users to change their data vault service
+  providers. Explain how this enables portability.
+          </p>
+  
+          <pre class="example highlight" title="data vault encrypted document retrieval">
+  GET https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+  Host: example.com
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+          </pre>
+  
+          <p>
+  If the retrieval of the encrypted document was successful, an HTTP 200 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault document read response">
+  HTTP/1.1 200 OK
+  Date: Fri, 14 Jun 2019 18:37:12 GMT
+  Connection: keep-alive
+  
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
     "sequence": 0,
-    "hmac": {
-      "id": "https://example.com/kms/z7BgF536GaR",
-      "type": "Sha256HmacKey2019"
-    },
-    "attributes": [{
-      "name": "CUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
-      "value": "RV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro",
-      "unique": true
-    }, {
-      "name": "DUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
-      "value": "QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro"
-    }]
-  }],
-  "jwe": {
-    "protected": "eyJlbmMiOiJDMjBQIn0",
-    "recipients": [
-      {
+    "jwe": {
+      "protected": "eyJlbmMiOiJDMjBQIn0",
+      "recipients": [{
         "header": {
           "alg": "A256KW",
-          "kid": "https://example.com/kms/z7BgF536GaR"
+          "kid": "https://example.com/kms/zSDn2MzzbxmX"
         },
-        "encrypted_key":
-          "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
-      }
-    ],
-    "iv": "i8Nins2vTI3PlrYW",
-    "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
-    "tag": "pfZO0JulJcrc3trOZy8rjA"
+        "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+      }],
+      "iv": "i8Nins2vTI3PlrYW",
+      "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+      "tag": "pfZO0JulJcrc3trOZy8rjA"
+    }
   }
-}
-        </pre>
-
-        <p class="note">
-The example above demonstrates the use of unique index values as well as
-non-unique indexes.
-        </p>
-
-        <p>
-The example above enables the <a>storage provider</a> to build
-efficient indexes on encrypted properties while enabling
-<a>storage agents</a> to search the information without leaking information
-that would create privacy concerns.
-        </p>
-
-        <div class="issue">
-<p>
-Document the following in this section:
-</p>
-
-<p>
-The `equals` filter is an object with key-value attribute pairs. Any document
-that matches *all* given key-value attribute pairs will be returned. If equals
-is an array, it may contain multiple such filters -- whereby the results will be
-all documents that matched any one of the filters. If the document's value for a
-matching a key is an array and the array contains a matching value, the document
-will be considered a match (provided that other key-value attribute pairs also
-match).
-</p>
-
-<p>
-Here are some examples:
-</p>
-
-<pre class="example nohighlight">
-// for the query:
-{equals: {"content.foo": "bar"}}
-// this will match documents that look like this:
-{"content": {"foo": "bar"}}
-{"content": {"foo": ["bar"]}}
-{"content": {"foo": ["bar", "other"]}}
-
-// for the query:
-{equals: [{"content.foo": "bar"}, {"content.foo": "baz"}]}
-// this will match documents that look like this:
-{"content": {"foo": "bar"}}
-{"content": {"foo": ["bar"]}}
-{"content": {"foo": ["bar", "other"]}}
-{"content": {"foo": "baz"}}
-{"content": {"foo": ["baz"]}}
-{"content": {"foo": ["baz", "other"]}}
-
-// for the query:
-{equals: {"content.foo": ["bar", "baz"]}}
-// this will match documents that look like this:
-{"content": {"foo": ["bar", "baz"]}}
-{"content": {"foo": [["bar", "baz"]]}}
-{"content": {"foo": [["bar", "baz"], "other"]}}
-
-// for the query:
-{equals: {"content.https://schema\\.org/": "bar"}}
-// this will match documents that look like this:
-{"content": {"https://schema.org": "bar"}}
-{"content": {"https://schema.org": ["bar"]}}
-{"content": {"https://schema.org": ["bar", "other"]}}
-
-// for the query:
-{equals: {"content.foo": {"a": 4, "b": 5}}}
-// this will match documents that look like this:
-{"content": {"foo": {"a": 4, "b": 5}}}
-{"content": {"foo": [{"a": 4, "b": 5}]}}
-{"content": {"foo": [{"a": 4, "b": 5}, "other"]}}
-{"content": {"foo": {"b": 5, "a": 4}}} // note key order does not matter
-{"content": {"foo": [{"b": 5, "a": 4}]}}
-{"content": {"foo": [{"b": 5, "a": 4}, "other"]}}
-</pre>
-
-<p>
-The HMAC blinding process is very close to what @OR13 described above. There are
-two minor differences that are important:
-</p>
-
-<ol>
-  <li>
-Before a value is HMAC'd, it is namespaced to its key to prevent leaking information about same values across different keys. This is done by doing `HMAC({key: value})` instead of just `HMAC(value)`.
-  </li>
-  <li>
-The input to HMAC for values is run through the JSON canonicalization algorithm, [JCS - RFC8785](https://tools.ietf.org/html/rfc8785) to ensure that property insertion order in the value will not matter. This matters when the value is not a simple primitive such as a string, but instead it is an object such as `{a: 4, b: 5}`.
-  <li>
-</ol>
-
-<p>
-By way of example, for `equals: [{"content.foo": "bar"}]`, the process is:
-</p>
-
-<pre>
-1. Set `blinded` to an empty array `[]`.
-2. For every element (`{"content.foo": "bar"}`) in the `equals` array:
-2.1. For every key (`"content.foo"`) and its value (`"bar"`) in the object:
-2.1.1. Set `value` to an object with `key` and its value (`{"content.foo": "bar"}`).
-2.1.2. Canonicalize `value` using [JCS](https://tools.ietf.org/html/rfc8785).
-2.1.3. Append the object `{[HMAC(key): HMAC(value)]}` to `blinded`.
-3. Return `{equals: blinded}`.
-</pre>
-
-<p>
-Note that the HMAC output is base64url-encoded so it can be treated as string.
-Also note that indexes may be marked as "unique", enabling storage servers to
-reject documents that include certain duplicate attribute values. Additionally,
-an index can be "compound" and unique, allowing storage servers to reject
-documents that include certain duplicate attribute values within some other
-group. For example, you can create a compound, unique index on `["content.type",
-"content.name"]`. This would ensure that only one document with the same
-`"content.type"` and `"content.name"` could be inserted into storage. But many
-documents with the same `"content.type"` can be inserted, provided that they do
-not have the same `"content.name"` for that `"content.type"`. This is a very
-useful feature for storing different collections of items in a single EDV.
-</p>
-
-<p>
-Compound index values are computed by HMACing together every blinded value for
-each attribute. For example, for this unique, compound index: `["content.type",
-"content.country", "content.region"]`, a document like this:
-</p>
-
-<pre>
-{content: {type: "Location", country: "AU", region: "NSW"}}
-</pre>
-
-<p>
-Would be indexed by first blinding `{"content.type": "Location"}`,
-`{"content.country": "AU"}`, and `{"content.region": "NSW"}` just like above.
-Then index entries would be created for the blinded entry for "content.type",
-the combination of the blinded entries for "content.type" and "content.country",
-and finally, the combination of the blinded entries for "content.type",
-"content.country", and "country.region". The combinations are built by HMACing
-the concatenated the blinded attribute names using a colon (`:`) and HMACing the
-concatenated blinded attribute values using a colon (`:`). Note that a colon
-(`:`) was selected because it is not a character in the base64url alphabet. In
-pseudo code, blinded compound indexes entries look like:
-</p>
-
-<pre>
-key = HMAC(blinded1.name):HMAC(blinded2.name):...
-value = HMAC(blinded1.value):HMAC(blinded2.value):...
-Return {key, value}.
-</pre>
-
-<p>
-For clarity, the above would be repeated twice for type, country, region example
--- both for the type+country combination and the type+country+region
-combination. The first time it would use blinded entries 1 (type) and 2
-(country), and the second time it would use 1 (type), 2 (country), and 3
-(region).
-</p>
-
-<p>
-This same process is repeated when building a query that targets a compound
-index. The server sees no difference between a compound index and a regular
-index, but it does have to be made aware of whether or not an index is unique.
-</p>
-
-<p>
-Index entries are stored along with a document in an index field that is
-identified by an identifier for the HMAC used. A document can have N many such
-indexes, each using different HMAC keys (and access to those keys may differ).
-        </p>
-      </div>
-
-        <p class="issue">
-Provide instructions and examples for how indexes are blinded using an
-HMAC key.
-        </p>
-
-        <p class="issue">
-Explain that multiple entities can maintain their own independent indexes
-(using their own HMAC key) provided they have been granted this capability.
-Explain that indexes can be sparse/partial. Explain that indexes have their
-own sequence number and that it will match the document's sequence number
-once it is updated.
-        </p>
-
-        <p class="issue">
-Add a section showing the update index endpoint and how it works.
-        </p>
-
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Updating a Document
+        </h3>
+  
+          <p>
+  A structured document is updated in a data vault by encoding the updated
+  <a>StructuredDocument</a> as an <a>EncryptedDocument</a> and then performing
+  an HTTP POST to a data vault endpoint created via
+  <a href="#creating-a-data-vault"></a>.
+  The following HTTP status codes are defined for this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>200</td>
+                <td>
+  Structured document update was successful.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  Structured document update failed.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  In order to convert a <a>StructuredDocument</a> to an
+  <a>EncryptedDocument</a> an implementer MUST encode the
+  <a>StructuredDocument</a> as a JWE or a COSE Encrypted object. Once the
+  document is encrypted, it can be sent to the document creation service.
+          </p>
+  
+          <p>
+  A protocol example of a document update is shown below:
+          </p>
+  
+          <pre class="example highlight" title="data vault document update request">
+  POST  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+  Host: example.com
+  Content-Type: application/json
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+    "sequence": 1,
+    "jwe": {
+      "protected": "eyJlbmMiOiJDMjBQIn0",
+      "recipients": [{
+        "header": {
+          "alg": "A256KW",
+          "kid": "https://example.com/kms/zSDn2MzzbxmX"
+        },
+        "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+      }],
+      "iv": "i8Nins2vTI3PlrYW",
+      "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+      "tag": "pfZO0JulJcrc3trOZy8rjA"
+    }
+  }
+          </pre>
+  
+          <p>
+  If the update to the encrypted document was successful, an HTTP 200 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault document creation response">
+  HTTP/1.1 200 OK
+  Cache-Control: no-cache, no-store, must-revalidate
+  Date: Fri, 14 Jun 2019 18:39:52 GMT
+  Connection: keep-alive
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Deleting a Document
+        </h3>
+  
+          <p>
+  A structured document is deleted by performing an HTTP DELETE to a data vault
+  endpoint created via <a href="#creating-a-data-vault"></a>.
+  The following HTTP status codes are defined for this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>200</td>
+                <td>
+  Structured document was deleted successfully.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  Structured document deletion failed.
+                </td>
+              </tr>
+              <tr>
+                <td>404</td>
+                <td>
+  Structured document was not found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  A protocol example of a document deletion is shown below:
+          </p>
+  
+          <pre class="example highlight" title="data vault document deletion request">
+  DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+  Host: example.com
+          </pre>
+  
+          <p>
+  If the deletion of the encrypted document was successful, an HTTP 200 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault document deletion response">
+  HTTP/1.1 200 OK
+  Cache-Control: no-cache, no-store, must-revalidate
+  Date: Fri, 14 Jun 2019 18:40:18 GMT
+  Connection: keep-alive
+          </pre>
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Creating a Stream
+        </h3>
+  
+          <p class="issue">
+  This section is out of date, do not implement.
+          </p>
+  
+          <p class="issue">
+  Another design is being considered that would transform streams into a
+  single index document and a collection of documents, each of which contains
+  a chunk of the stream. This would be done to help prevent misuse of a
+  decryption stream prior to its authentication. In order for this approach to
+  be implemented in a Web browser, it also requires certain File or Blob APIs.
+  Further investigation is needed to ensure that support of these APIs would be
+  sufficient for this design approach, as it would be preferred to prevent data
+  misuse and to make better use of native implementations of authenticated
+  encryption modes.
+          </p>
+  
+          <p>
+  A stream is stored in a data vault by writing a document containing metadata
+  about the stream, encrypting the stream, writing it to a data vault, and then
+  updating the document containing metadata about the stream. The following
+  HTTP status codes are defined for this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>201</td>
+                <td>
+  Stream creation was successful. The HTTP <code>Location</code>
+  header will contain the URL for the newly created stream.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  Stream creation failed.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  Implementations first encode the metadata associated with the stream into a
+  <a>StructuredDocument</a>:
+          </p>
+  
+          <pre class="example highlight" title="StructuredDocument associated with a stream">
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+    "meta": {
+      "created": "2019-06-18",
+      "contentType": "video/mpeg",
+      "contentLength": 56735817
+    },
+    "content": {
+      "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz"
+    }
+  }
+          </pre>
+  
+          <p class="note">
+  In this case, the value of <code>content.id</code> is a reference to the
+  stream located at
+  <code>https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz</code>,
+  which is the location that the stream MUST be written to. This content
+  identifier MUST be updated to include a hashlink once the stream has been
+  written and its digest is known.
+          </p>
+  
+          <p>
+  The <a>StructuredDocument</a> above is then transformed to an
+  <a>EncryptedDocument</a> and the procedure in
+  <a href="#creating-a-document"></a> is executed:
+          </p>
+  
+          <pre class="example highlight" title="Encrypted document creation request for stream metadata">
+  POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
+  Host: example.com
+  Content-Type: application/json
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+    "sequence": 0,
+    "jwe": {
+      "protected": "eyJlbmMiOiJDMjBQIn0",
+      "recipients": [{
+        "header": {
+          "alg": "A256KW",
+          "kid": "https://example.com/kms/zSDn2MzzbxmX"
+        },
+        "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+      }],
+      "iv": "i8Nins2vTI3PlrYW",
+      "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+      "tag": "pfZO0JulJcrc3trOZy8rjA"
+    }
+  }
+          </pre>
+  
+          <p>
+  If the creation of the structured document was successful, an HTTP 201 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault document creation response">
+  HTTP/1.1 201 Created
+  Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zp4H8ekWn
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  Date: Fri, 14 Jun 2019 18:37:12 GMT
+  Connection: keep-alive
+  Transfer-Encoding: chunked
+          </pre>
+  
+          <p>
+  Next, in order to convert a stream to an <a>EncryptedStream</a> an implementer
+  MUST encrypt the stream. Once the stream is encrypted (or as it is encrypted),
+  it can be sent to the stream creation service.
+          </p>
+  
+          <p>
+  A protocol example of a stream creation is shown below:
+          </p>
+  
+          <pre class="example highlight" title="Encrypted stream creation request">
+  POST /encrypted-data-vaults/z4sRgBJJLnYy/streams HTTP/1.1
+  Host: example.com
+  Content-Type: application/octet-stream
+  Transfer-Encoding: chunked
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  TBD
+          </pre>
+  
+          <p>
+  If the creation of the stream was successful, an HTTP 201 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful stream creation response">
+  HTTP/1.1 201 Created
+  Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  Date: Fri, 14 Jun 2019 18:37:12 GMT
+  Connection: keep-alive
+  Transfer-Encoding: chunked
+          </pre>
+  
+          <p>
+  Once a stream is created, the metadata related to the stream can be updated
+  in the data vault using the protocol defined in
+  <a href="#updating-a-document"></a>. An example of updating a link to a video
+  file is shown below.
+          </p>
+  
+          <p>
+  Implementations update the metadata associated with the stream in its
+  <a>StructuredDocument</a>:
+          </p>
+  
+          <pre class="example highlight" title="Updating StructuredDocument associated with a stream">
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+    "sequence": 1,
+    "meta": {
+      "created": "2019-06-18",
+      "contentType": "video/mpeg",
+      "contentLength": 56735817
+    },
+    "content": {
+      "id": "https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz?hl=zb47JhaKJ3hJ5Jkw8oan35jK23289Hp",
+      "jwe": {
+        "protected": "eyJlbmMiOiJDMjBQIn0",
+        "recipients": [{
+          "header": {
+            "alg": "A256KW",
+            "kid": "https://example.com/kms/zSDn2MzzbxmX"
+          },
+          "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+        }],
+        "iv": "i8Nins2vTI3PlrYW",
+        "tag": "pfZO0JulJcrc3trOZy8rjA"
+      }
+    }
+  }
+          </pre>
+  
+          <p class="note">
+  The value of <code>content.id</code> MUST be updated to include a hashlink
+  now that the stream has been written and its digest is known.
+          </p>
+  
+          <p>
+  The <a>StructuredDocument</a> above is then transformed to an
+  <a>EncryptedDocument</a> and the procedure in
+  <a href="#updating-a-document"></a> is executed:
+          </p>
+  
+          <pre class="example highlight" title="Encrypted document update request for stream metadata">
+  POST /encrypted-data-vaults/z4sRgBJJLnYy/docs HTTP/1.1
+  Host: example.com
+  Content-Type: application/json
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  {
+    "id": "urn:uuid:94684128-c42c-4b28-adb0-aec77bf76044",
+    "sequence": 1,
+    "jwe": {
+      "protected": "eyJlbmMiOiJDMjBQIn0",
+      "recipients": [{
+        "header": {
+          "alg": "A256KW",
+          "kid": "https://example.com/kms/zSDn2MzzbxmX"
+        },
+        "encrypted_key": "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+      }],
+      "iv": "i8Nins2vTI3PlrYW",
+      "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+      "tag": "pfZO0JulJcrc3trOZy8rjA"
+    }
+  }
+          </pre>
+  
+          <p>
+  If the creation of the structured document was successful, an HTTP 200 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault document creation response">
+  HTTP/1.1 200 OK
+  Location: https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zp4H8ekWn
+  Cache-Control: no-cache, no-store, must-revalidate
+  Pragma: no-cache
+  Expires: 0
+  Date: Fri, 14 Jun 2019 18:37:12 GMT
+  Connection: keep-alive
+  Transfer-Encoding: chunked
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Reading a Stream
+        </h3>
+  
+          <p class="issue">
+  This section is out of date, do not implement.
+          </p>
+  
+          <p>
+  Reading a stream from a data vault is performed by retrieving the associated
+  metadata that is encrypted as an <a>EncryptedDocument</a>, decoding the
+  hashlink information, and then retrieving the <a>EncryptedStream</a> and then
+  decrypting it. The following HTTP status codes are defined for this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>200</td>
+                <td>
+  Encrypted stream retrieval was successful.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  Encrypted stream retrieval failed.
+                </td>
+              </tr>
+              <tr>
+                <td>404</td>
+                <td>
+  Encrypted stream with given id was not found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  In order to convert an <a>EncryptedStream</a> to a stream
+  an implementer MUST decode the <a>EncryptedStream</a> using the information
+  provided in the associated <a>EncryptedDocument</a>. Once the stream is
+  decrypted, it can be processed by the web application.
+          </p>
+  
+          <p class="note">
+  Implementers can perform random seeking in the stream by using the
+  <code>Content-Range</code> HTTP Header.
+          </p>
+  
+          <p>
+  A protocol example of a stream retrieval is shown below:
+          </p>
+  
+          <pre class="example highlight" title="data vault encrypted stream retrieval">
+  GET https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/streams/zn2XmSDzMbxz HTTP/1.1
+  Host: example.com
+  Content-Range: 0-1048576
+  Accept: application/octet-stream
+  Accept-Encoding: gzip, deflate
+          </pre>
+  
+          <p>
+  If the retrieval of the encrypted stream was successful, an HTTP 200 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault stream read response">
+  HTTP/1.1 200 OK
+  Date: Fri, 14 Jun 2019 18:37:12 GMT
+  Content-Range: 0-1048576
+  Content-Length: 1048576
+  Connection: keep-alive
+  
+  ...
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Deleting a Stream
+        </h3>
+  
+          <p class="issue">
+  This section is out of date, do not implement.
+          </p>
+  
+          <p>
+  A stream is deleted by performing an HTTP DELETE to a data vault
+  stream endpoint created via <a href="#creating-a-stream"></a> and
+  the corresponding metadata document created via
+  <a href="#creating-a-document"></a>. The following HTTP status codes are
+  defined for this service:
+          </p>
+  
+          <table class="simple">
+            <thead>
+              <th style="white-space: nowrap">HTTP Status</th>
+              <th>Description</th>
+            </thead>
+            <tbody>
+              <tr>
+                <td>200</td>
+                <td>
+  Stream was deleted successfully.
+                </td>
+              </tr>
+              <tr>
+                <td>400</td>
+                <td>
+  Stream deletion failed.
+                </td>
+              </tr>
+              <tr>
+                <td>404</td>
+                <td>
+  Stream was not found.
+                </td>
+              </tr>
+            </tbody>
+          </table>
+  
+          <p>
+  A protocol example of a stream deletion is shown below:
+          </p>
+  
+          <pre class="example highlight" title="data vault stream deletion request">
+  DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/streams/zMbxmSDn2Xzz HTTP/1.1
+  Host: example.com
+  </pre>
+          </pre>
+  
+          <p>
+  If the deletion of the encrypted stream was successful, an HTTP 200 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault stream deletion response">
+  HTTP/1.1 200 OK
+  Cache-Control: no-cache, no-store, must-revalidate
+  Date: Fri, 14 Jun 2019 18:40:18 GMT
+  Connection: keep-alive
+          </pre>
+  
+          <p>
+  Once the stream is deleted, implementations MUST also delete the corresponding
+  metadata document:
+          </p>
+  
+          <pre class="example highlight" title="data vault stream deletion request">
+  DELETE  /encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz HTTP/1.1
+  Host: example.com
+          </pre>
+  
+          <p>
+  If the deletion of the encrypted stream was successful, an HTTP 200 status
+  code is expected in return:
+          </p>
+  
+          <pre class="example highlight" title="Successful data vault stream deletion response">
+  HTTP/1.1 200 OK
+  Cache-Control: no-cache, no-store, must-revalidate
+  Date: Fri, 14 Jun 2019 18:40:18 GMT
+  Connection: keep-alive
+          </pre>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Creating Encrypted Indexes
+        </h3>
+  
+          <p>
+  It is often useful to search a data vault for structured documents that contain
+  specific metadata. Efficient searching requires the use of search indexes
+  and local access to data. This poses an interesting challenge as the
+  search has to be performed on the <a>storage provider</a> without leaking
+  information that could violate the privacy of the entities that are storing
+  information in the data vault. This section details how encrypted indexes
+  can be created and used to perform efficient searching while protecting
+  the privacy of entities that are storing information in the data vault.
+          </p>
+  
+          <p>
+  When creating an <a>EncryptedDocument</a>, blinded index properties MAY
+  be used to perform efficient searches. An example of the use of these
+  properties is shown below:
+          </p>
+  
+          <pre class="example highlight" title="Example encrypted document with encrypted indexes">
+  {
+    "id": "urn:uuid:698f3fb6-592f-4d22-9e04-462cc4606a23",
+    "sequence": 0,
+    "indexed": [{
+      "sequence": 0,
+      "hmac": {
+        "id": "https://example.com/kms/z7BgF536GaR",
+        "type": "Sha256HmacKey2019"
+      },
+      "attributes": [{
+        "name": "CUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
+        "value": "RV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro",
+        "unique": true
+      }, {
+        "name": "DUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
+        "value": "QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro"
+      }]
+    }],
+    "jwe": {
+      "protected": "eyJlbmMiOiJDMjBQIn0",
+      "recipients": [
+        {
+          "header": {
+            "alg": "A256KW",
+            "kid": "https://example.com/kms/z7BgF536GaR"
+          },
+          "encrypted_key":
+            "OR1vdCNvf_B68mfUxFQVT-vyXVrBembuiM40mAAjDC1-Qu5iArDbug"
+        }
+      ],
+      "iv": "i8Nins2vTI3PlrYW",
+      "ciphertext": "Cb-963UCXblINT8F6MDHzMJN9EAhK3I",
+      "tag": "pfZO0JulJcrc3trOZy8rjA"
+    }
+  }
+          </pre>
+  
+          <p class="note">
+  The example above demonstrates the use of unique index values as well as
+  non-unique indexes.
+          </p>
+  
+          <p>
+  The example above enables the <a>storage provider</a> to build
+  efficient indexes on encrypted properties while enabling
+  <a>storage agents</a> to search the information without leaking information
+  that would create privacy concerns.
+          </p>
+  
+          <div class="issue">
+  <p>
+  Document the following in this section:
+  </p>
+  
+  <p>
+  The `equals` filter is an object with key-value attribute pairs. Any document
+  that matches *all* given key-value attribute pairs will be returned. If equals
+  is an array, it may contain multiple such filters -- whereby the results will be
+  all documents that matched any one of the filters. If the document's value for a
+  matching a key is an array and the array contains a matching value, the document
+  will be considered a match (provided that other key-value attribute pairs also
+  match).
+  </p>
+  
+  <p>
+  Here are some examples:
+  </p>
+  
+  <pre class="example nohighlight">
+  // for the query:
+  {equals: {"content.foo": "bar"}}
+  // this will match documents that look like this:
+  {"content": {"foo": "bar"}}
+  {"content": {"foo": ["bar"]}}
+  {"content": {"foo": ["bar", "other"]}}
+  
+  // for the query:
+  {equals: [{"content.foo": "bar"}, {"content.foo": "baz"}]}
+  // this will match documents that look like this:
+  {"content": {"foo": "bar"}}
+  {"content": {"foo": ["bar"]}}
+  {"content": {"foo": ["bar", "other"]}}
+  {"content": {"foo": "baz"}}
+  {"content": {"foo": ["baz"]}}
+  {"content": {"foo": ["baz", "other"]}}
+  
+  // for the query:
+  {equals: {"content.foo": ["bar", "baz"]}}
+  // this will match documents that look like this:
+  {"content": {"foo": ["bar", "baz"]}}
+  {"content": {"foo": [["bar", "baz"]]}}
+  {"content": {"foo": [["bar", "baz"], "other"]}}
+  
+  // for the query:
+  {equals: {"content.https://schema\\.org/": "bar"}}
+  // this will match documents that look like this:
+  {"content": {"https://schema.org": "bar"}}
+  {"content": {"https://schema.org": ["bar"]}}
+  {"content": {"https://schema.org": ["bar", "other"]}}
+  
+  // for the query:
+  {equals: {"content.foo": {"a": 4, "b": 5}}}
+  // this will match documents that look like this:
+  {"content": {"foo": {"a": 4, "b": 5}}}
+  {"content": {"foo": [{"a": 4, "b": 5}]}}
+  {"content": {"foo": [{"a": 4, "b": 5}, "other"]}}
+  {"content": {"foo": {"b": 5, "a": 4}}} // note key order does not matter
+  {"content": {"foo": [{"b": 5, "a": 4}]}}
+  {"content": {"foo": [{"b": 5, "a": 4}, "other"]}}
+  </pre>
+  
+  <p>
+  The HMAC blinding process is very close to what @OR13 described above. There are
+  two minor differences that are important:
+  </p>
+  
+  <ol>
+    <li>
+  Before a value is HMAC'd, it is namespaced to its key to prevent leaking information about same values across different keys. This is done by doing `HMAC({key: value})` instead of just `HMAC(value)`.
+    </li>
+    <li>
+  The input to HMAC for values is run through the JSON canonicalization algorithm, [JCS - RFC8785](https://tools.ietf.org/html/rfc8785) to ensure that property insertion order in the value will not matter. This matters when the value is not a simple primitive such as a string, but instead it is an object such as `{a: 4, b: 5}`.
+    <li>
+  </ol>
+  
+  <p>
+  By way of example, for `equals: [{"content.foo": "bar"}]`, the process is:
+  </p>
+  
+  <pre>
+  1. Set `blinded` to an empty array `[]`.
+  2. For every element (`{"content.foo": "bar"}`) in the `equals` array:
+  2.1. For every key (`"content.foo"`) and its value (`"bar"`) in the object:
+  2.1.1. Set `value` to an object with `key` and its value (`{"content.foo": "bar"}`).
+  2.1.2. Canonicalize `value` using [JCS](https://tools.ietf.org/html/rfc8785).
+  2.1.3. Append the object `{[HMAC(key): HMAC(value)]}` to `blinded`.
+  3. Return `{equals: blinded}`.
+  </pre>
+  
+  <p>
+  Note that the HMAC output is base64url-encoded so it can be treated as string.
+  Also note that indexes may be marked as "unique", enabling storage servers to
+  reject documents that include certain duplicate attribute values. Additionally,
+  an index can be "compound" and unique, allowing storage servers to reject
+  documents that include certain duplicate attribute values within some other
+  group. For example, you can create a compound, unique index on `["content.type",
+  "content.name"]`. This would ensure that only one document with the same
+  `"content.type"` and `"content.name"` could be inserted into storage. But many
+  documents with the same `"content.type"` can be inserted, provided that they do
+  not have the same `"content.name"` for that `"content.type"`. This is a very
+  useful feature for storing different collections of items in a single EDV.
+  </p>
+  
+  <p>
+  Compound index values are computed by HMACing together every blinded value for
+  each attribute. For example, for this unique, compound index: `["content.type",
+  "content.country", "content.region"]`, a document like this:
+  </p>
+  
+  <pre>
+  {content: {type: "Location", country: "AU", region: "NSW"}}
+  </pre>
+  
+  <p>
+  Would be indexed by first blinding `{"content.type": "Location"}`,
+  `{"content.country": "AU"}`, and `{"content.region": "NSW"}` just like above.
+  Then index entries would be created for the blinded entry for "content.type",
+  the combination of the blinded entries for "content.type" and "content.country",
+  and finally, the combination of the blinded entries for "content.type",
+  "content.country", and "country.region". The combinations are built by HMACing
+  the concatenated the blinded attribute names using a colon (`:`) and HMACing the
+  concatenated blinded attribute values using a colon (`:`). Note that a colon
+  (`:`) was selected because it is not a character in the base64url alphabet. In
+  pseudo code, blinded compound indexes entries look like:
+  </p>
+  
+  <pre>
+  key = HMAC(blinded1.name):HMAC(blinded2.name):...
+  value = HMAC(blinded1.value):HMAC(blinded2.value):...
+  Return {key, value}.
+  </pre>
+  
+  <p>
+  For clarity, the above would be repeated twice for type, country, region example
+  -- both for the type+country combination and the type+country+region
+  combination. The first time it would use blinded entries 1 (type) and 2
+  (country), and the second time it would use 1 (type), 2 (country), and 3
+  (region).
+  </p>
+  
+  <p>
+  This same process is repeated when building a query that targets a compound
+  index. The server sees no difference between a compound index and a regular
+  index, but it does have to be made aware of whether or not an index is unique.
+  </p>
+  
+  <p>
+  Index entries are stored along with a document in an index field that is
+  identified by an identifier for the HMAC used. A document can have N many such
+  indexes, each using different HMAC keys (and access to those keys may differ).
+          </p>
+        </div>
+  
+          <p class="issue">
+  Provide instructions and examples for how indexes are blinded using an
+  HMAC key.
+          </p>
+  
+          <p class="issue">
+  Explain that multiple entities can maintain their own independent indexes
+  (using their own HMAC key) provided they have been granted this capability.
+  Explain that indexes can be sparse/partial. Explain that indexes have their
+  own sequence number and that it will match the document's sequence number
+  once it is updated.
+          </p>
+  
+          <p class="issue">
+  Add a section showing the update index endpoint and how it works.
+          </p>
+  
+        </section>
+  
+        <section class="normative">
+          <h3>
+    Searching Encrypted Documents
+        </h3>
+  
+          <p>
+  The contents of a data vault can be searched using encrypted indexes created
+  using the processes described in <a href="#creating-encrypted-indexes"></a>.
+  There are two primary ways of searching for encrypted documents. The first
+  is to search for a specific value associated with a specific index. The
+  second is to search to see if a specific index exists on a document.
+          </p>
+  
+          <p>
+  The example below demonstrates how to search for a specific value associated
+  with a specific index.
+          </p>
+  
+          <pre class="example highlight" title="data vault query for a specifically indexed value">
+  POST https://example.com/encrypted-data-vaults/z4sRgBJJLnYy HTTP/1.1
+  Host: example.com
+  Content-Type: application/json
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  {
+    "index": "DUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
+    "equals": [
+      {"QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro":
+        "dh327d234h8437hc34f43f43ZXGHDXG"}
+    ]
+  }
+          </pre>
+  
+          <p>
+  A successful query will result in a standard HTTP 200 response with a list of
+  identifiers for all encrypted documents that match the query:
+          </p>
+  
+          <pre class="example highlight" title="Successful query response from a data vault">
+  HTTP/1.1 200 OK
+  Cache-Control: no-cache, no-store, must-revalidate
+  Date: Fri, 14 Jun 2019 18:45:18 GMT
+  Connection: keep-alive
+  
+  ["https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
+          </pre>
+  
+          <p>
+  The contents of a data vault can also be searched to see if a certain attribute
+  name is indexed by using the <code>has</code> keyword.
+          </p>
+  
+          <pre class="example highlight" title="data vault query for a particular attribute name">
+  POST https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/queries HTTP/1.1
+  Host: example.com
+  Content-Type: application/json
+  Accept: application/json, text/plain, */*
+  Accept-Encoding: gzip, deflate
+  
+  {
+    "has": ["CUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ"]
+  }
+          </pre>
+  
+          <p>
+  If the query above is successful, an HTTP 200 code is expected with a list
+  of <a>EncryptedDocument</a> identifiers that contain the value.
+          </p>
+  
+          <pre class="example highlight" title="Successful query response for a specific attribute name">
+  HTTP/1.1 200 OK
+  Cache-Control: no-cache, no-store, must-revalidate
+  Date: Fri, 14 Jun 2019 18:45:18 GMT
+  Connection: keep-alive
+  
+  ["https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
+          </pre>
+  
+        </section>
+  
       </section>
 
-      <section class="normative">
-        <h2>
-  Searching Encrypted Documents
-      </h2>
-
+      <section class="informative">
+        <h2>Extension Points
+              </h2>
         <p>
-The contents of a data vault can be searched using encrypted indexes created
-using the processes described in <a href="#creating-encrypted-indexes"></a>.
-There are two primary ways of searching for encrypted documents. The first
-is to search for a specific value associated with a specific index. The
-second is to search to see if a specific index exists on a document.
+    Encrypted Data Vaults support a number of extension points:
         </p>
-
-        <p>
-The example below demonstrates how to search for a specific value associated
-with a specific index.
-        </p>
-
-        <pre class="example highlight" title="data vault query for a specifically indexed value">
-POST https://example.com/encrypted-data-vaults/z4sRgBJJLnYy HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-{
-  "index": "DUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ",
-  "equals": [
-    {"QV58Va4904K-18_L5g_vfARXRWEB00knFSGPpukUBro":
-      "dh327d234h8437hc34f43f43ZXGHDXG"}
-  ]
-}
-        </pre>
-
-        <p>
-A successful query will result in a standard HTTP 200 response with a list of
-identifiers for all encrypted documents that match the query:
-        </p>
-
-        <pre class="example highlight" title="Successful query response from a data vault">
-HTTP/1.1 200 OK
-Cache-Control: no-cache, no-store, must-revalidate
-Date: Fri, 14 Jun 2019 18:45:18 GMT
-Connection: keep-alive
-
-["https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
-        </pre>
-
-        <p>
-The contents of a data vault can also be searched to see if a certain attribute
-name is indexed by using the <code>has</code> keyword.
-        </p>
-
-        <pre class="example highlight" title="data vault query for a particular attribute name">
-POST https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/queries HTTP/1.1
-Host: example.com
-Content-Type: application/json
-Accept: application/json, text/plain, */*
-Accept-Encoding: gzip, deflate
-
-{
-  "has": ["CUQaxPtSLtd8L3WBAIkJ4DiVJeqoF6bdnhR7lSaPloZ"]
-}
-        </pre>
-
-        <p>
-If the query above is successful, an HTTP 200 code is expected with a list
-of <a>EncryptedDocument</a> identifiers that contain the value.
-        </p>
-
-        <pre class="example highlight" title="Successful query response for a specific attribute name">
-HTTP/1.1 200 OK
-Cache-Control: no-cache, no-store, must-revalidate
-Date: Fri, 14 Jun 2019 18:45:18 GMT
-Connection: keep-alive
-
-["https://example.com/encrypted-data-vaults/z4sRgBJJLnYy/docs/zMbxmSDn2Xzz"]
-        </pre>
-
+        <ul>
+          <li>
+    Protocol/API - One or more protocols such as library APIs, HTTPS, gRPC, or Bluetooth can be used to access the system.
+          </li>
+          <li>
+    Encryption Strategies - One or more encryption strategies such as AES-GCM or XSalsa20Poly1305 can be used to encrypt data.
+          </li>
+          <li>
+    Authorization Strategies - One or more authorization strategies such as
+    OAuth2, HTTP Signatures, or Authorization Capabilities can be used to protect
+    access to encrypted data.
+          </li>
+          <li>
+    Versioning Strategies and Replication Strategies - One or more versioning and replication strategies such as counters, cryptographic hashes, or CRDTs
+    (Conflict-free Replicated Data Types) can be used to synchronize data.
+          </li>
+          <li>
+    Notification mechanisms - One or more notification mechanisms can be used to
+    signal to clients that data has changed in the vault.
+          </li>
+        </ul>
       </section>
+
 
     </section>
 
+  
   <section class="normative">
-    <h2>Identity Hubs</h2>
+    <h2>Identity Hub</h2>
+
+    <div class="issue" data-number="128">This issues content must be merged.</div>
+
+    <section>
+      <h3>Data Model</h3>
+
+      <section>
+        <h4>Profile</h4>
+      </section>
+      <section>
+        <h4>Collections</h4>
+      </section>
+      <section>
+        <h4>Actions</h4>
+      </section>
+      <section>
+        <h4>Permissions</h4>
+      </section>
+    </section>
+
+    <section>
+      <h3>HTTP API</h3>
+    </section>
+
+
+    <section class="informative">
+      <h2>Appendix</h2>
 
     <p>
       Identity Hubs are a formulation of Encrypted Datastores that provide additional application and 
@@ -2547,23 +2612,7 @@ Connection: keep-alive
       <h3>Access Control</h3>
     </section>
 
-    <section>
-      <h3>Data Models</h3>
-
-      <section>
-        <h4>Profile</h4>
-      </section>
-      <section>
-        <h4>Collections</h4>
-      </section>
-      <section>
-        <h4>Actions</h4>
-      </section>
-      <section>
-        <h4>Permissions</h4>
-      </section>
-    </section>
-
+    
     <section>
       <h3>Interfaces</h3>
 
@@ -2717,34 +2766,10 @@ Connection: keep-alive
   </section>
 </section>
 
-  <section class="informative">
-    <h2>Extension points
-          </h2>
-    <p>
-Encrypted Data Vaults support a number of extension points:
-    </p>
-    <ul>
-      <li>
-Protocol/API - One or more protocols such as library APIs, HTTPS, gRPC, or Bluetooth can be used to access the system.
-      </li>
-      <li>
-Encryption Strategies - One or more encryption strategies such as AES-GCM or XSalsa20Poly1305 can be used to encrypt data.
-      </li>
-      <li>
-Authorization Strategies - One or more authorization strategies such as
-OAuth2, HTTP Signatures, or Authorization Capabilities can be used to protect
-access to encrypted data.
-      </li>
-      <li>
-Versioning Strategies and Replication Strategies - One or more versioning and replication strategies such as counters, cryptographic hashes, or CRDTs
-(Conflict-free Replicated Data Types) can be used to synchronize data.
-      </li>
-      <li>
-Notification mechanisms - One or more notification mechanisms can be used to
-signal to clients that data has changed in the vault.
-      </li>
-    </ul>
+  
   </section>
+
+  
 
   <section class="informative">
     <h2>Privacy Considerations
@@ -2944,1135 +2969,6 @@ Write i18n considerations.
 
     </section>
 
-    <section class="informative appendix">
-      <h2>
-Identity Hubs
-      </h2>
-      <p>
-Hubs let you securely store and share data. A Hub is a datastore containing semantic data objects at well-known locations.  Each object in a Hub is signed by an identity and accessible via a globally recognized API format that explicitly maps to semantic data objects.  Hubs are addressable via unique identifiers maintained in a global namespace.
-      </p>
-      <section>
-        <h3>
-One DID to Many Hub Instances
-        </h3>
-        <p>
-A single entity may have one or more instances of a Hub, all of which are addressable via a URI routing mechanism linked to the entity's identifier.  Hub instances sync state changes, ensuring the owner can access data and attestations from anywhere, even when offline.
-        </p>
-        <section>
-          <h4>
-DID Document Service Endpoint Descriptors
-          </h4>
-          <p>
-There are two different variations of Hub-specific DID Document Service Endpoint descriptors, one that users associate with their DIDs, and another that Hosts use to direct requests to locations where their Hub infrastructure resides.
-          </p>
-          <p>
-Users specify their Hub instances (different Hub Hosts) via the <code>UserServiceEndpoint</code> descriptor:
-          </p>
-          <pre class="example">
-  "service": [{
-  "type": "IdentityHub",
-  "publicKey": "did:foo:123#key-1",
-  "serviceEndpoint": {
-    "@context": "schema.identity.foundation/hub",
-    "@type": "UserServiceEndpoint",
-    "instances": ["did:bar:456", "did:zaz:789"]
-  }
-}]
-          </pre>
-          <p>
-Hosts specify the locations of their Hub offerings via the <code>HostServiceEndpoint</code> descriptor:
-          </p>
-          <pre class="example">
-"service": [{
-  "type": "IdentityHub",
-  "publicKey": "did:bar:456#key-1",
-  "serviceEndpoint": {
-    "@context": "schema.identity.foundation/hub",
-    "@type": "HostServiceEndpoint",
-    "locations": ["https://hub1.bar.com/.identity", "https://hub2.bar.com/blah/.identity"]
-  }
-}]
-          </pre>
-        </section>
-        <section>
-          <h4>
-Syncing data between Hubs
-          </h4>
-          <p>
-Hub instances must sync data without requiring master-slave relationships or forcing a single implementation for storage or application logic. This requires a shared replication protocol for broadcasting and resolving changes. The protocol for reproducing Hub state across multiple instances is in the formative phases of definition/selection, but should be relatively straightforward to integrate on top of any NoSQL datastore.
-          </p>
-        </section>
-        <section>
-          <h4>
-Hub data serialization and export
-          </h4>
-          <p>
-All Hubs must support the export of their serialized state. This is to ensure the user retains full control over the portability of their data. A later revision to this document will specify the process for invoking this intent and retrieving the serialized data from a Hub instance.
-          </p>
-        </section>
-      </section>
-      <section>
-        <h3>
-Hub Protocol Schemes
-        </h3>
-        <section>
-          <h4>
-Hub URI Scheme
-          </h4>
-          <p>
-In addition to the URL path convention for individual Hubs instances, it is important that links to an identity owner's data not be encoded with a dependency on a specific Hub instance. To make this possible, we propose the introduction of the following Hub URI scheme:
-          </p>
-          <pre class="example">
-hub://did:foo:123abc/
-          </pre>
-          <p>
-User Agents that understand this scheme will leverage the Universal Resolver to lookup the Hub instances of the target DID and address the Hub endpoints via the Service Endpoints it finds within. This allows the formation of URIs that are not Hub instance-specific, allowing a more natural way to link to a DID's data, without having to specify a specific instance. This also prevents the circulation of dead links across the Web, given an identity owner can choose to add/remove new Hub instances at any time.
-          </p>
-        </section>
-      </section>
-      <section>
-        <h3>
-Authentication
-        </h3>
-        <p>
-The process of authenticating requests to identity hubs will follow the DIF/W3C DID Auth schemes. These standards are in early phases of formation - <a href="https://github.com/WebOfTrustInfo/rebooting-the-web-of-trust-spring2018/blob/master/draft-documents/did_auth_draft.md">more info is available here</a>.
-        </p>
-
-        <p>
-The current Identity Hub authentication scheme seeks to accomplish two tasks:
-        </p>
-        <ul>
-          <li>
-mutually authenticate the client and the Hub using each's respective DID and associated keys.
-          </li>
-          <li>
-encrypt all Hub requests and responses such that their contents are only available to the holders of the DID keys involved in the message exchange.
-          </li>
-        </ul>
-        <p>
-The current authentication scheme is an implementation of DID Auth, <a
-href="https://gitHub.com/WebOfTrustInfo/rwot6-santabarbara/blob/master/final-documents/did-auth.md">as
-described here</a>. This document will outline how to authenticate Hub requests
-and responses. For full details on the authentication protocol used, and for a
-reference implementation of the protocol, please refer to the <a
-href="https://gitHub.com/decentralized-identity/did-auth-jose/blob/master/docs/Authentication.md">`did-auth-jose`
-library</a>.
-        </p>
-
-        <section>
-          <h4>
-Authenticating a Hub request
-          </h4>
-          <p>
-Identity Hub requests and responses are signed and encrypted using the DID keys
-of the sender and the recipient. This protects the message over any
-transportation medium. All encrypted requests and responses follow the
-<a href="https://tools.ietf.org/html/rfc7516">JSON Web Encryption (JWE)
-standard</a>.
-          </p>
-          <p>
-The steps to construct a JWE are as follows. First, construct a JWT. This JWT
-will be signed by the sender of the Hub request; the `iss`. This JWT must have
-the following form:
-          </p>
-
-          <pre class="example">
-// JWT headers
-{
-  "alg": "RS256",
-  "kid": "did:example:abc123#key-abc",
-  "did-requester-nonce": "randomized-string",
-  "did-access-token": "eyJhbGciOiJSUzI1N...",
-}
-
-// JWT body
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "WriteRequest",
-  "iss": "did:example:abc123",
-  ...
-}
-
-// JWT signature
-uQRqsaky-SeP3m9QPZmTGtRtMoKzyg6wwWF...
-          </pre>
-          <p>
-The JWT body is just the request whose format is outlined in
-<a href="#identity-hubs"></a>. The header values must be the following:
-          </p>
-
-          <table class="simple">
-            <tr>
-              <th>
-Header
-              </th>
-              <th>
-Description
-              </th>
-            </tr>
-            <tr>
-              <td>
-`alg`
-              </td>
-              <td>
-Standard JWT header. Indicates the algorithm used to sign the JWT.
-              </td>
-            </tr>
-            <tr>
-              <td>
-`kid`
-              </td>
-              <td>
-Standard JWT header. The value should take the form `{did}#{key-id}`. Another
-app can take this value, resolve the DID, and find the indicated public key that
-can be used for signature validation of the commit. Here we have used
-`did:example:abc123`, because the request is signed with the user's private key.
-              </td>
-            </tr>
-            <tr>
-              <td>
-`did-requester-nonce`
-              </td>
-              <td>
-A randomly generated string that must be cached on the client side. This string
-will be used to verify the response from the Hub in the sections below.
-              </td>
-            </tr>
-            <tr>
-              <td>
-`did-access-token`
-              </td>
-              <td>
-A token that should be cached on the client side and included in each request
-sent to the Hub. Since we do not have an access token yet, leave this property
-out on the initial request. Sections below explain how to get an access token.
-              </td>
-            </tr>
-          </table>
-          <p>
-This JWT must use the typical JWT compact serialization format.
-          </p>
-          <p>
-We can now use this JWT as the plaintext used to construct our JWE. The JWE must
-have the following format.
-          </p>
-
-          <pre class="example">
-// JWE protected header
-{
-  "alg": "RSA-OAEP-256",
-  "kid": "did:example:abc456#abc-123",
-  "enc": "A128GCM",
-}
-
-// JWE encrypted content encryption key
-OKOawDo13gRp2ojaHV7LFpZcgV7T6DVZKTyKOM...
-
-// JWE initialization vector
-48V1_ALb6US04U3b...
-
-// JWE plaintext (the JWT from above)
-eyJhbGciOiJSUzI1NiIsImtpZCI6InRlc3R...
-
-// JWE authentication tag
-XFBoMYUZodetZdv...
-          </pre>
-
-          <p>
-We strongly reccommend using a JWT library to produce the above JWE. Using a
-library, you should only need to provide the protected headers and the
-plaintext. The plaintext value should be the JWT constructed above. The header
-values are:
-          </p>
-
-          <table class="simple">
-            <tr>
-              <th>
-Header
-              </th>
-              <th>
-Description
-              </th>
-            </tr>
-            <tr>
-              <td>
-`alg`
-              </td>
-              <td>
-Standard JWT header. Indicates the algorithm used to encrypt the JWE content
-encryption key.
-              </td>
-            </tr>
-            <tr>
-              <td>
-`kid`
-              </td>
-              <td>
-Standard JWT header. The value should take the form `{did}#{key-id}`. Indicates
-the Hub's key that is used to encrypt the JWE content encryption key. Here we
-have used `did:example:abc456`, since that is the DID used by the Hub. The DID
-used here should match the `aud` value in the Hub `WriteRequest`.
-              </td>
-            </tr>
-            <tr>
-              <td>
-`enc`
-              </td>
-              <td>
-Standard JWT header. Indicates the algorithm used to encrypt the plaintext using
-the content encryption key to produce the ciphertext and authentication tag.
-              </td>
-            </tr>
-          </table>
-          <p>
-Finally, you have a signed and encrypted Hub request that can be transmitted to
-the user's Identity Hub for secure storage.
-          </p>
-        </section>
-        <section>
-          <h4>
-Caching the access token
-          </h4>
-          <p>
-To send a successful request to an Identity Hub, you need to include an access
-token in the `did-access-token` header of the JWE. The access token is a
-short-lived JWT that can be used across many Hub requests until it expires.
-          </p>
-          <p>
-On an initial request to an Identity Hub, you should exclude the
-`did-access-token` header. When a Hub request does not include this header, the
-Hub will reject the request. Instead, the Hub will return a JWE response (as
-described in the next section) whose payload is an access token. You should
-extract the access token from the response and cache it somewhere safe. The
-access token can be used for subsequent requests.
-          </p>
-          <p>
-Once you've cached the access token, include it in each request in the
-`did-access-token` JWE header as described above.
-          </p>
-          <p>
-Eventually, the access token will expire. Its expiry time can be found in the
-`exp` claim inside the access token. If you attempt to use an expired access
-token, the Identity Hub will return an error indicating a new access token is
-required. To get a new access token, send another hub request without the
-`did-access-token` header.
-          </p>
-        </section>
-        <section>
-          <h4>
-Receiving a hub response
-          </h4>
-          <p>
-When possible, a hub will respond with a JWE encrypted with the client's DID
-keys:
-          </p>
-          <pre class="example">
-eyJhbGciOiJSU0EtT0FFUCIsImVuYyI6IkEyNTZHQ00ifQ...
-          </pre>
-          <p>
-This JWE can be decrypted with the client's private key following the JWE
-standard to reproduce the response's plaintext.
-          </p>
-          <p>
-The contents of the JWE will either be a valid hub response or a new access
-token. A new access token will only be included if the `did-access-token` header
-was omitted in the request.
-          </p>
-        </section>
-      </section>
-      <section>
-        <h3>
-Authorization
-        </h3>
-        <p>
-Access control for data stored in Hubs is currently implemented via a bare bones
-permission layer. Access to data can be granted by a Hub owner, and can be
-restricted to certain types of data. More features to improve control over data
-access will be added in the future.
-        </p>
-        <p>
-The success of a decentralized identity platform is dependent upon the ability
-for users to share their data with other people, organizations, apps, and
-services in a way that respects and protects a user's privacy. In our
-decentralized platform, all user information & data resides in the user's
-identity Hub. This section outlines the current proposal for identity hub
-authorization.
-        </p>
-
-        <section>
-          <h4>
-Scope of the current design
-          </h4>
-          <p>
-This proposal is a first cut. The intention is to start extremely simple, and
-extend the model to include more richness over time. We choose to focus on two
-simple use cases, described below.
-          </p>
-
-          <section>
-            <h5>
-Use case 1: Registering for a website
-            </h5>
-
-            <blockquote>
-Alice has added some useful data about her wardrobe style to her Hub: her
-measurements from her tailor, and a list of her favorite clothing brands. When
-Alice goes to try out a new online clothing retailer, the retailer's website
-allows her to set up an account using her DID. After signing in her DID, the
-retailer's website is able to access Alice's style data. Alice does not have to
-re-enter her sizes in the site, and the site can give her recommended options
-based on her brand preferences.
-            </blockquote>
-
-            <figure>
-              <img src="diagrams/permissions-use-case-1.png" />
-              <figcaption>
-Permission request flow
-              </figcaption>
-            </figure>
-          </section>
-
-          <section>
-            <h5>
-Use case 2: Reviewing & managing access
-            </h5>
-            <blockquote>
-Alice learns that one of the websites she visited is making improper use of her
-personal data. She would like to immediately remove that website's access to her
-Hub.
-            </blockquote>
-
-            <figure>
-              <img src="diagrams/permissions-use-case-2.png" />
-              <figcaption>
-Permission denied flow
-              </figcaption>
-            </figure>
-          </section>
-
-          <section>
-            <h5>
-Out of scope
-            </h5>
-            <p>
-These use cases, and the current Hub authorization system are not sufficient to
-consider identity Hubs ready for real world usage. It leaves out several
-features that have been discussed as being necessary for a minimally viable
-authorization layer, including:
-            </p>
-            <p>
-<strong>Features that control <em>what</em> is being granted:</strong>
-            </p>
-            <ul>
-              <li>
-How to grant a permission to a specific object by ID, rather than all objects of
-a certain type.
-              </li>
-              <li>
-How to grant a permission to a property of some object type, rather than the
-entire object.
-              </li>
-              <li>
-How to grant permission to an object type and all of the children object types
-in its respective schema.
-              </li>
-              <li>
-How to filter a permission to only:
-                <ul>
-                  <li>
-objects created by a specific DID.
-                  </li>
-                  <li>
-objects created in a certain time period.
-                  </li>
-                  <li>
-objects larger than some byte size.
-                  </li>
-                </ul>
-              </li>
-              <li>
-How to grant a permission to a zero-knowledge proof of some object, rather than the entire object.
-              </li>
-              <li>
-How to grant permission to act as a delegate of a DID when interacting with other Hubs.
-              </li>
-            </ul>
-
-            <p>
-<strong>Features that control <em>who</em> is being granted access:</strong>
-            </p>
-            <ul>
-              <li>
-How to grant a permission to all DIDs, and therefore make some data public.
-              </li>
-              <li>
-How to create a permission that explicitly denies a DID access to an object.
-              </li>
-            </ul>
-
-            <p>
-<strong>Features that limit/expand <em>where or when</em> access is granted:</strong>
-            </p>
-            <ul>
-              <li>
-How to time-bound permissions, such that a permission expires automatically.
-              </li>
-              <li>
-How to grant permissions to an app on some devices, but not others.
-              </li>
-            </ul>
-
-            <p>
-<strong>Features that control <em>why</em> access is granted:</strong>
-            </p>
-            <ul>
-              <li>
-How an app can specify why permission is being requested.
-              </li>
-              <li>
-How a user can specify why permission is being denied.
-              </li>
-              <li>
-How relying parties and trust providers are reviewed for trustworthiness and integrity.
-              </li>
-            </ul>
-
-            <p>
-<strong>Features that are related to Hub authorization, but will be addressed at a later time:</strong>
-            </p>
-            <ul>
-              <li>
-How to request & send callbacks to notify apps of changes to data and
-permissions in a Hub.
-              </li>
-              <li>
-How to authorize the execution of services, or extensions, in a Hub.
-              </li>
-              <li>
-What format(s) the Hub uses for requests & responses.
-              </li>
-              <li>
-How to encrypt data in a Hub such that the Hub provider cannot access it.
-              </li>
-            </ul>
-
-            <p>
-Clearly, there is a large body of functionality that can be added to Hub
-authorization over time. This is why this initial document intentionally strives
-to be as simple as possible. We'll incorporate these things into Hub
-authorization over time as we receive feedback from early adopters of Identity
-Hubs.
-            </p>
-          </section>
-        </section>
-
-        <section>
-          <h4>
-Authorization Model
-          </h4>
-          <p>
-Access to data in Identity Hubs is controlled by a special object stored in Hubs
-called a `PermissionGrant`. The structure of a `PermissionGrant` is:
-          </p>
-
-          <pre class="example">
-{
-  "owner": "did:example:12345", // the identity owner (granters)'s DID
-  "grantee": "did:example:67890", // the grantee's DID
-  "context": "schemas.clothing.org", // the data schema context
-  "type": "measurements", // the data type
-  "allow": "-R--", // allows create, read, update, and delete
-  ... // additional richness & specificity can be added in the future
-}
-          </pre>
-
-          <section>
-            <h5>
-Granting permissions
-            </h5>
-            <p>
-When a hub owner grants a permission to another DID, they can do so by
-specifying the exact objects in the permission grant. When permissions span more
-than one data type, several PermissionGrant objects can be created. For each
-PermissionGrant, the following object should be written to the `Permissions`
-interface of the owner's Hub, typically via user agent:
-            </p>
-            <pre class="example">
-{
-  "@context": "schema.identity.foundation/Hub/",
-  "@type": "PermissionGrant",
-  "owner": "did:example:12345",
-  "grantee": "did:example:67890",
-  "context": "schemas.clothing.org",
-  "type": "measurements",
-  "allow": "-R--"
-}
-            </pre>
-            <p>
-Note that the Hub Permissions interface only supports the single PermissionGrant
-object type. The Hub should reject any requests to create objects of other types
-in the Permissions interface, barring future updates to the PermissionGrant
-model.
-            </p>
-            <p>
-The response format, and any error conditions, should be consistent with all
-other requests to Hubs. Upon creation of this permission grant object in a
-user's Hub, the permission will be propagated to all other Hub instances listed
-in the user's DID document via the Hub's standard sync & replication protocol.
-This will ensure that all Hub instances are up-to-date with all new permission
-grants in a timely manner.
-            </p>
-          </section>
-          <section>
-            <h5>
-Checking permissions
-            </h5>
-            <p>
-The following describes the logic implemented by the Hub's authorization layer
-when a request arrives.
-            </p>
-
-            <figure>
-              <img src="diagrams/permissions-verification.png"/>
-              <figcaption>
-              </figcaption>
-            </figure>
-
-            <ol>
-              <li>
-Receive incoming request from client
-              </li>
-              <li>
-Determine relevant schema, verb, and client from request
-              </li>
-              <li>
-Query for all PermissionGrants that whose object_type matches the schema, for
-the given client DID
-              </li>
-              <li>
-Check if any query results allow the verb in question
-              </li>
-              <li>
-Return success/failed authorization check
-              </li>
-            </ol>
-            <p>
-Note that PermissionGrants do not understand or evaluate the structure of a
-given schema. For instance, if a user grants access to all
-"https://schema.org/game" objects, they <strong>do not</strong> implicitly grant
-access to all "https://schema.org/videogame" objects (which is a child of game
-in schema.org's hierarchy).
-            </p>
-          </section>
-          <section>
-            <h5>
-Reviewing & managing permissions
-            </h5>
-
-            <p>
-`PermissionGrant` objects can be created, read, modified, and deleted just like
-any other object in a hub. To revoke access to data, the Hub owner needs to
-simply modify an existing `PermissionGrant` or delete it entirely. Instructions
-for reading and writing data in Identity Hubs is available in
-<a href="#api"></a>.
-            </p>
-          </section>
-          <section>
-            <h5>
-Requesting permissions
-            </h5>
-            <p>
-At this time, proposals for how to request access to data in an identity hub via
-a user agent are still being evaluated. In the future, we will update this
-document with details on how a client can request access from a user.
-            </p>
-          </section>
-        </section>
-
-      </section>
-      <section>
-        <h3>
-API
-        </h3>
-        <p>
-Because of the sensitive nature of the data being transmitted to Identity Hubs,
-the Identity Hub request and response API may look a bit different to developers
-who are used to a traditional REST service API. Most of the differences are
-based on the high level of security and privacy decentralized identity
-inherently demands.
-        </p>
-        <section>
-          <h4>
-Commits
-          </h4>
-          <p>
-All data in identity hubs is represented as a series of "commits". A commit is
-similar to a git commit; it represents a change to an object. To write data to
-an identity hub, you need to construct and send a new commit to the hub. To read
-data from an identity hub, you need to fetch all commits from the hub. An
-object's current value can be constructed by applying all its commits in order.
-          </p>
-          <p>
-The use of commits to represent data in identity hubs offers a few distinct
-advantages:
-          </p>
-          <ul>
-            <li>
-it facilitates the hub's replication protocol, enabling multiple hub instances
-to sync data.
-            </li>
-            <li>
-it creates an auditable history of changes to an object, especially when each
-commit is signed by a DID.
-            </li>
-            <li>
-it eases implementation for use cases that need offline data modification and
-require conflict resolution.
-            </li>
-          </ul>
-          <p>
-Each commit in a hub is a
-<a href="https://en.wikipedia.org/wiki/JSON_Web_Token">JWT</a> whose body
-contains the data to be written to the hub. Here's an example of a deserialized
-and decoded JWT:
-          </p>
-
-          <pre class="example">
-// JWT headers
-{
-  "alg": "RS256",
-  "kid": "did:foo:123abc#key-abc",
-  "interface": "Collections",
-  "context": "https://schema.org",
-  "type": "MusicPlaylist",
-  "operation": "create",
-  "committed_at": "2018-10-24T18:39:10.10:00Z",
-  "commit_strategy": "basic",
-  "sub": "did:bar:456def",
-
-// Example metadata about the object that is intended to be "public"
-  "meta": {
-    "tags": ["classic rock", "rock", "rock n roll"],
-    "cache-intent": "full"
-  }
-}
-
-// JWT body
-{
-  "@context": "http://schema.org/",
-  "@type": "MusicPlaylist",
-  "description": "The best rock of the 60s, 70s, and 80s",
-  "tracks": ["..."],
-}
-
-// JWT signature
-uQRqsaky-SeP3m9QPZmTGtRtMoKzyg6wwWF...
-          </pre>
-          <p>
-The commit is signed by the committer writing the data, in this case
-<code>did:foo:123abc</code>. To write the commit into a hub, the committer must
-send a Hub write request.
-          </p>
-        </section>
-        <section>
-          <h4>
-Write Request &amp; Response Format
-          </h4>
-          <p>
-Instead of a REST-based scheme where data like the username, object types, and
-query strings are present in the URL, Identity Hubs requests are self-contained
-message objects that encapsulate all they need to be shielded from observing
-entities during transport.
-          </p>
-          <p>
-Each Hub request is a JSON object which is then signed and encrypted as outlined
-in the authentication section. The outer envelope is signed with the key of the
-"iss" DID, and encrypted with the Hub's DID key(s).
-          </p>
-
-          <pre class="example">
-{
-  iss: 'did:foo:123abc',
-  sub: 'did:bar:456def',
-  aud: 'did:baz:789ghi',
-  "@context": "https://schema.identity.foundation/0.1",
-  '@type': 'WriteRequest',
-
-  // The commit in JSON Serialization Format
-  // See: https://tools.ietf.org/html/rfc7515#section-3.1
-  commit: {
-    protected: "ewogICJpbnRlcmZhY2...",
-
-// Optional metadata information not protected by the JWT signature
-header: {
-  "iss": "did:foo:123abc"
-},
-
-payload: "ewogICJAY29udGV4dCI6...",
-signature: "b7V2UpDPytr-kMnM_YjiQ3E0J2..."
-  }
-}
-          </pre>
-          <p>
-Each response is also a JSON object, signed and encrypted in the same way as the request. Its contents are:
-          </p>
-          <pre class="example">
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "WriteResponse",
-  "developer_message": "completely optional message from the hub",
-  "revisions": ["aHashOfTheCommitSubmitted"]
-}
-          </pre>
-        </section>
-        <section>
-          <h4>
-Object Read Request &amp; Response Format
-          </h4>
-          <p>
-Objects follow one logical object across multiple commits. Object reads do not
-contain the literal object data, only metadata associated. Objects may be
-queried for using the following request format:
-          </p>
-          <pre class="example">
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "ObjectQueryRequest",
-  "iss": "did:foo:123abc",
-  "sub": "did:bar:456def",
-  "aud": "did:baz:789ghi",
-  "query": {
-      "interface": "Collections",
-      "context": "http://schema.org",
-      "type": "MusicPlaylist",
-
-  // Optional object_id filters
-  "object_id": ["3a9de008f526d239..", "a8f3e7..."]
-  }
-}
-          </pre>
-          <p>
-The response to a query for objects returns a list of object IDs along with the
-object metadata. The format is:
-          </p>
-          <pre class="example">
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "ObjectQueryResponse",
-  "developer_message": "completely optional",
-  "objects": [
-    {
-      // object metadata
-      "interface": "Collections",
-      "context": "http://schema.org",
-      "type": "MusicPlaylist",
-      "id": "3a9de008f526d239...",
-      "created_by": "did:foo:123abc",
-      "created_at": "2018-10-24T18:39:10.10:00Z",
-      "sub": "did:foo:123abc",
-      "commit_strategy": "basic",
-      "meta": {
-        "tags": ["classic rock", "rock", "rock n roll"],
-        "cache-intent": "full"
-      }
-    },
-    // ...more objects
-  ]
-
-// potential pagination token
-  "skip_token": "ajfl43241nnn1p;u9390",
-}
-          </pre>
-        </section>
-        <section>
-          <h4>
-Commit Read Request &amp; Response Format
-          </h4>
-          <p>
-To get the actual data in an object, you must read the commits from the Identity
-Hub:
-          </p>
-          <pre class="example">
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "CommitQueryRequest",
-  "iss": "did:foo:123abc",
-  "sub": "did:bar:456def",
-  "aud": "did:baz:789ghi",
-  "query": {
-    "object_id": ["3a9de008f526d239..."],
-    "revision": ["abc", "def", ...]
-  },
-}
-          </pre>
-          <p>
-A response to a query for commits contains a list of commit JWTs:
-          </p>
-          <pre class="example">
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "CommitQueryResponse",
-  "developer_message": "completely optional",
-  "commits": [
-    {
-      protected: "ewogICJpbnRlcmZhY2UiO...",
-      header: {
-        "iss": "did:foo:123abc",
-        // Hubs may add additional information to the unprotected headers for convenience
-        "rev": "aHashOfTheCommit",
-      },
-      payload: "ewogICJAY29udGV4dCI6ICdo...",
-      signature: "b7V2UpDPytr-kMnM_YjiQ3E0J2..."
-    },
-    // ...
-  ],
-
-// potential pagination token
-  "skip_token": "ajfl43241nnn1p;u9390",
-}
-          </pre>
-        </section>
-
-        <section>
-          <h3>
-Paging
-          </h3>
-          <p>
-<code>skip_token</code> is an opaque token to be used for continuation of a
-request.
-          </p>
-          <p>
-They may be returned on responses with multiple results, and added to the
-initial request's <code>query</code> object:
-          </p>
-          <pre class="example">
-{
-  "iss": "did:foo:123abc",
-  "sub": "did:bar:456def",
-  "aud": "did:baz:789ghi",
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "ObjectQueryRequest",
-  "interface": "Collections",
-  "query": {
-    "context": "schema.org",
-    "type": "MusicPlaylist",
-    "skip_token": "ajfl43241nnn1p;u9390"
-  }
-}
-          </pre>
-        </section>
-      </section>
-      <section>
-        <h3>
-Interfaces
-        </h3>
-        <p>
-To facilitate common interactions and data storage, Hubs provide a set of standard interfaces that can be written to:
-        </p>
-        <ul>
-          <li>
-<code>Profile</code> ➜ The owning entity's primary descriptor object (schema
-agnostic)
-          </li>
-          <li>
-<code>Permissions</code> ➜ The access control JSON document
-          </li>
-          <li>
-<code>Actions</code> ➜ A known endpoint for the relay of actions to the identity
-owner
-          </li>
-          <li>
-<code>Stores</code> ➜ Scoped 1:1 storage space that is directly assigned to
-another, external DID
-          </li>
-          <li>
-<code>Collections</code> ➜ The owning entity's identity collections (access
-limited)
-          </li>
-          <li>
-<code>Services</code> ➜ any custom, service-based functionality the identity
-exposes
-          </li>
-        </ul></p>
-
-        <section>
-          <h4>
-Profile
-          </h4>
-          <p>
-Each Hub has a <code>profile</code> object that describes the owning entity. The
-profile object should use whatever schema and object that best represents the
-entity. To ge the profile for a DID, send an object query to the
-<code>Profile</code> interface:
-          </p>
-          <pre class="example">
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "ObjectQueryRequest",
-  "iss": "did:foo:123abc",
-  "sub": "did:bar:456def",
-  "aud": "did:baz:789ghi",
-  "query": {
-      "interface": "Profile",
-  }
-}
-          </pre>
-        </section>
-        <section>
-          <h4>
-Permissions
-          </h4>
-          <p>
-All access and manipulation of identity data is subject to the permissions
-established by the owning entity. See <a href="#authorization"></a> explainer
-for details.
-          </p>
-        </section>
-        <section>
-          <h4>
-Actions
-          </h4>
-          <p>
-The <code>Actions</code> interface is for sending a target identity semantically
-meaningful objects that convey an intent to the sender, which often involves the
-data payload of the object. The <code>Actions</code> interface is not
-constrained to simple human-centric communications. Rather, it is intended as a
-universal conduit through which identities can transact all manner of
-activities, exchanges, and notifications.
-          </p>
-          <p>
-The base data format for conveying an action shall be:
-<a href="http://schema.org/Action">http://schema.org/Action</a>
-          </p>
-          <p>
-Here is a list of examples to show the range of use-cases this interface is
-intended to support:
-          </p>
-          <ul>
-            <li>
-Human user contacts another with a textual message
-(<a href="http://schema.org/ReadAction">ReadAction</a>)
-            </li>
-            <li>
-Event app sends a request to RSVP for an event
-(<a href="http://schema.org/RsvpAction">RsvpAction</a>)
-            </li>
-            <li>
-Voting agency prompts a user to submit a vote
-(<a href="http://schema.org/VoteAction">VoteAction</a>)
-            </li>
-          </ul>
-          <pre class="example">
-{
-  "@context": "http://schema.org/",
-  "@type": "ReadAction",
-  "name": "Acme Bank - March 2018 Statement",
-  "description": "Your Acme Bank statement for account #1734765",
-  "object": PDF_SOURCE
-}
-          </pre>
-        </section>
-        <section>
-          <h4>
-Stores
-          </h4>
-          <p>
-The best way to describe Stores is as a 1:1 DID-scoped variant of the W3C DOM's
-origin-scoped <code>window.localStorage</code> API. The key difference being
-that this form of persistent, pairwise object storage transcends providers,
-platforms, and devices. For each storage relationship between the DID owner and
-external DIDs, the Hub shall create a key-value document-based storage area. The
-DID owner or external DID can store unstructured JSON data to the document, in
-relation to the keys they specify. The Hub implementer may choose to limit the
-available space of the storage document, with the option to expand the storage
-limit based on criteria the implementer defines.
-          </p>
-        </section>
-        <section>
-          <h4>
-Collections
-          </h4>
-          <p>
-Data discovery has been a problem since the inception of the Web. Most previous
-attempts to solve this begin with the premise that discovery is about individual
-entities providing a mapping of their own service-specific API and data schemas.
-While you can certainly create a common format for expressing different APIs and
-data schemas, you are left with the same basic issue: a sea of services that
-can't efficiently interoperate without specific review, effort, and integration.
-Hubs avoid this issue entirely by recognizing that the problem with <em>data
-discovery</em> is that it relies on <em>discovery</em>. Instead, Hubs assert the
-position that locating and retrieving data should be an <em>implicitly
-knowable</em> process.
-          </p>
-          <p>
-Collections provide an interface for accessing data objects across all Hubs,
-regardless of their implementation. This interface exerts almost no opinion on
-what data schemas entities use. To do this, the Hub Collection interface allows
-objects from any schema to be stored, indexed, and accessed in a unified manner.
-          </p>
-          <p>
-With Collections, you store, query, and retrieve data based on the very schema
-and type of data you seek. Here are a few example data objects from a variety of
-common schemas that entities may write and access via a user's Hub:
-          </p>
-          <p>
-<strong>Locate any offers a user might want to share with apps</strong> (http://schema.org/Offer)
-          </p>
-          <pre class="example">
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "ObjectQueryRequest",
-  "iss": "did:foo:123abc",
-  "sub": "did:bar:456def",
-  "aud": "did:baz:789ghi",
-  "query": {
-      "interface": "Collections",
-      "context": "http://schema.org",
-      "type": "Offer",
-  }
-}
-          </pre>
-        </section>
-        <section>
-          <h4>
- Services
-          </h4>
-          <p>
- Services offer a means to surface custom service calls an identity wishes to
- expose publicly or in an access-limited fashion. Services should not require
- the Hub host to directly execute code the service calls describe; service
- descriptions should link to a URI where execution takes place.
-          </p>
-          <p>
-Performing a <code>Request</code> request to the base <code>Services</code>
-interface will respond with an object that contains an entry for every service
-description the requesting entity is permitted to access.
-          </p>
-          <pre class="example">
-// request
-{
-  "iss": "did:foo:123abc",
-  "sub": "did:bar:456def",
-  "aud": "did:baz:789ghi",
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "ServicesRequest",
-}
-
-// response
-{
-  "@context": "https://schema.identity.foundation/0.1",
-  "@type": "ServicesResponse",
-  developer_message: "optional message",
-  services: [{
-    // Open API service descriptors
-  }]
-}
-          </pre>
-          <p>
-All definitions shall conform to the <a href="https://github.com/OAI/OpenAPI-Specification">Open API descriptor format</a>.
-          </p></p>
-      </section>
-    </section>
 
   </body>
 </html>
