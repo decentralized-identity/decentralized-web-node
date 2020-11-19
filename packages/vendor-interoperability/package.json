@@ -4,7 +4,7 @@
   "module": "dist/vendor-interoperability.esm.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/decentralized-identity/secure-data-store.git"
+    "url": "https://github.com/decentralized-identity/confidential-storage.git"
   },
   "version": "0.1.0",
   "license": "Apache-2.0",

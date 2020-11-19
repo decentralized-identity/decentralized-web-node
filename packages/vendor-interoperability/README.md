@@ -1,6 +1,6 @@
 # Vendor Interoperability Report
 
-![Vendor Interoperability](https://github.com/decentralized-identity/secure-data-store/workflows/Vendor%20Interoperability/badge.svg)
+![Vendor Interoperability](https://github.com/decentralized-identity/confidential-storage/workflows/Vendor%20Interoperability/badge.svg)
 
 ### Development
 
