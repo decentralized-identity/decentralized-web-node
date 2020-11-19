@@ -9,14 +9,14 @@ _For this call, you are encouraged to turn your video on. This is a good way to 
 _This document is live-edited DURING each call, and stable/authoritative copies live on our github repo under /agenda.md .
 Please note that we might not notice a pullrequest in time, but you are free to propose agenda items for future meetings via hackmd._
 
-<details>
-<summary> Topics for the future</summary>
+## Meeting - 19 Nov 2020 (1600 ET)
 
-- topic 1 (to be discussed on this date)
-- topic 2 (to be discussed on this date)
-- topic n. (tbd)
+### Agenda
 
-</details>
+1. IPR Reminder
+2. Introductions and Re-Introductions
+3. (Continued) Use Cases and Demos conversation
+4. Issue review
 
 ## Meeting - 15 Oct 2020 - (1600 ET) [recording]() | [transcript]()
 
