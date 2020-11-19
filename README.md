@@ -2,7 +2,7 @@
 
 ![Vendor Interoperability](https://github.com/decentralized-identity/confidential-storage/workflows/Vendor%20Interoperability/badge.svg)
 
-## [Latest Editors Draft](https://identity.foundation/secure-data-store/)
+## [Latest Editors Draft](https://identity.foundation/confidential-storage/)
 
 ### From the Working Group Charter:
 
