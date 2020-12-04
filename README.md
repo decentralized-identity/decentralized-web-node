@@ -18,3 +18,4 @@
 - [Working Group Wiki](https://dif.groups.io/g/sds-wg/wiki)
 - [Secure Data Storage Working Group Charter](https://drive.google.com/file/d/1vf2CsD9QZstzrd6CJ4WFVHw0WKwwNLHf/view)
 - [Mailing List](https://dif.groups.io/g/sds-wg/wiki/home)
+- [Meeting recordings](https://docs.google.com/spreadsheets/d/1wgccmMvIImx30qVE9GhRKWWv3vmL2ZyUauuKx3IfRmA/edit#gid=85275820)
