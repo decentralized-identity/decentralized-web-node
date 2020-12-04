@@ -2,7 +2,7 @@
 
 [![hackmd-github-sync-badge](https://hackmd.io/p8p3SZ90TUi1PHTxByxD2A/badge)](https://hackmd.io/p8p3SZ90TUi1PHTxByxD2A)
 
-[**Current Spec**](https://identity.foundation/confidential-storage/) | [**Issues**](https://github.com/decentralized-identity/confidential-storage/issues) | [ DIF page ](https://identity.foundation/working-groups/secure-data-storage.html) | [Mailing list and Wiki ](https://lists.identity.foundation/g/sds-wg/)
+[**Current Spec**](https://identity.foundation/confidential-storage/) | [**Issues**](https://github.com/decentralized-identity/confidential-storage/issues) | [ DIF page ](https://identity.foundation/working-groups/secure-data-storage.html) | [Mailing list and Wiki ](https://lists.identity.foundation/g/sds-wg/) | [Meeting recordings](https://docs.google.com/spreadsheets/d/1wgccmMvIImx30qVE9GhRKWWv3vmL2ZyUauuKx3IfRmA/edit#gid=85275820)
 
 _For this call, you are encouraged to turn your video on. This is a good way to build rapport given we are a large, disparate group experiencing a lot of churn._
 
