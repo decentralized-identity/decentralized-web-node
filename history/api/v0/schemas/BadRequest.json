@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "properties": {
+    "code": { "type": "integer", "format": "int32" },
+    "message": { "type": "string" }
+  },
+  "example": {
+    "code": 400,
+    "message": "Your request contained errors"
+  }
+}

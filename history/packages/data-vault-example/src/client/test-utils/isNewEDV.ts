@@ -1,0 +1,19 @@
+export function isNewEDV({ inserted, testId, hmac, sequence = 0 }: any) {
+  expect(inserted).toBeDefined();
+  expect(inserted).toBeInstanceOf(Object);
+  expect(inserted.id).toBe(testId);
+  expect(inserted.sequence).toBe(sequence);
+  expect(inserted.indexed).toBeInstanceOf(Array);
+  expect(inserted.indexed.length).toBe(1);
+  expect(inserted.indexed[0]).toBeInstanceOf(Object);
+  expect(inserted.indexed[0].sequence).toBe(1);
+  expect(inserted.indexed[0].hmac).toBeInstanceOf(Object);
+  expect(inserted.indexed[0].hmac).toEqual(hmac);
+  expect(inserted.indexed[0].attributes).toBeInstanceOf(Array);
+  expect(inserted.jwe).toBeInstanceOf(Object);
+  expect(inserted.jwe.protected).toBeDefined();
+  expect(inserted.jwe.recipients).toBeInstanceOf(Array);
+  expect(inserted.jwe.iv).toBeDefined();
+  expect(inserted.jwe.ciphertext).toBeDefined();
+  expect(inserted.jwe.tag).toBeDefined();
+}
