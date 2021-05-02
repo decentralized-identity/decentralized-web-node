@@ -1,0 +1,15 @@
+{
+  "name": "identity-hub",
+  "version": "0.0.1",
+  "description": "Decentralized public and encrypted storage and relay of personal and app data, messages, and ",
+  "keywords": [
+    "did",
+    "identity",
+    "decentralized",
+    "decentralized-identity"
+  ],
+  "license": "Apache-2.0",
+  "author": "Decentralized Identity Foundation",
+  "devDependencies": {},
+  "dependencies": {}
+}
