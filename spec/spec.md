@@ -360,8 +360,40 @@ under the `schema.org/Action` family of objects.
   "@context": "https://identity.foundation/schemas/hub",
   "@type": "ActionsDelete",
   "targets": [
-    "https://schema.org/LikeAction",
-    "https://schema.org/FollowAction",
+    "https://schema.org/ReadAction",
+    "https://schema.org/BefriendAction",
+    "Qmf9w548h8sc54p3584h6ow45aa56fvs5",
+    "Qm65765jrn7be64v5q35v6we675br68jr"
+  ]
+}
+```
+
+### Permissions
+
+The Permissions interface provides a mechanism for external entities to request access 
+to a Hub User's non-public data.
+
+#### Request
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "PermissionRequest",
+  "entries": [
+    {
+      "type": "https://schema.org/MusicPlaylist",
+      "tags": ["classic rock", "rock", "rock and roll"]
+    },
+    {
+      "id": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+    },
+    {
+      "type": "https://schema.org/Event",
+      "tags": ["concerts"]
+    },
+    {
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr",
+    }
   ]
 }
 ```
