@@ -170,10 +170,10 @@ as a single logical unit for users.</p>
 </tr>
 </tbody>
 </table>
-<div id="todo-439" class="notice todo"><a class="notice-link" href="#todo-439">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
+<div id="todo-451" class="notice todo"><a class="notice-link" href="#todo-451">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
 </div>
 <h2 id="file-structures"><a class="toc-anchor" href="#file-structures" >§</a> File Structures</h2>
-<div id="todo-440" class="notice todo"><a class="notice-link" href="#todo-440">TODO</a><p><strong>Needs Decision</strong></p>
+<div id="todo-452" class="notice todo"><a class="notice-link" href="#todo-452">TODO</a><p><strong>Needs Decision</strong></p>
 <p>Considerations:</p>
 <ul>
 <li>Files accessible to multiple external parties, in multiple overlapping combinations</li>
@@ -183,20 +183,20 @@ as a single logical unit for users.</p>
 </ul>
 </div>
 <h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
-<div id="todo-441" class="notice todo"><a class="notice-link" href="#todo-441">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
+<div id="todo-453" class="notice todo"><a class="notice-link" href="#todo-453">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
 </div>
 <h2 id="commit-strategies"><a class="toc-anchor" href="#commit-strategies" >§</a> Commit Strategies</h2>
 <h3 id="full-replace"><a class="toc-anchor" href="#full-replace" >§</a> Full Replace</h3>
-<div id="todo-442" class="notice todo"><a class="notice-link" href="#todo-442">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
+<div id="todo-454" class="notice todo"><a class="notice-link" href="#todo-454">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
 </div>
 <h3 id="delta-based-merge"><a class="toc-anchor" href="#delta-based-merge" >§</a> Delta-based Merge</h3>
-<div id="todo-443" class="notice todo"><a class="notice-link" href="#todo-443">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
+<div id="todo-455" class="notice todo"><a class="notice-link" href="#todo-455">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
 </div>
 <h2 id="general-object-format"><a class="toc-anchor" href="#general-object-format" >§</a> General Object Format</h2>
 <p>All objects within an Identity Hub Instance <strong><strong>MUST</strong></strong> be constructed using the same
 top-level format, as defined below:</p>
 <h3 id="secure-wrapper"><a class="toc-anchor" href="#secure-wrapper" >§</a> Secure Wrapper</h3>
-<div id="todo-444" class="notice todo"><a class="notice-link" href="#todo-444">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
+<div id="todo-456" class="notice todo"><a class="notice-link" href="#todo-456">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
 <ul>
 <li>Must account for our multi-recipient access requirements</li>
 <li>Try to minimize need for re-encryption when permissions change</li>
@@ -279,7 +279,7 @@ experience for users.</p>
   <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
   <span class="token property">"entries"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
+      <span class="token property">"create"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
       <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token comment">// A new entry of the https://schema.org/MusicPlaylist schema</span>
       <span class="token punctuation">}</span>
@@ -308,7 +308,7 @@ experience for users.</p>
 <h4 id="delete"><a class="toc-anchor" href="#delete" >§</a> Delete</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"CollectionsDelete"</span><span class="token punctuation">,</span>
   <span class="token property">"targets"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
     <span class="token string">"Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"</span><span class="token punctuation">,</span>

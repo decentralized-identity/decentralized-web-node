@@ -268,7 +268,7 @@ experience for users.
   "@type": "CollectionsWrite",
   "entries": [
     {
-      "type": "https://schema.org/MusicPlaylist",
+      "create": "https://schema.org/MusicPlaylist",
       "data": {
         // A new entry of the https://schema.org/MusicPlaylist schema
       }
@@ -300,7 +300,7 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsWrite",
+  "@type": "CollectionsDelete",
   "targets": [
     "https://schema.org/MusicPlaylist",
     "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
