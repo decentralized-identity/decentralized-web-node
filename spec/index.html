@@ -109,13 +109,13 @@ distributed ledger).</dd>
     text-shadow: 0 1px 2px rgb(255 255 255 / 75%);
   }
   #protocol-stack-styles ~ table tr:nth-child(1) {
-    background: hsl(198deg 100% 87%);
-  }
-  #protocol-stack-styles ~ table tr:nth-child(2) {
     background: hsl(0deg 100% 87%);
   }
-  #protocol-stack-styles ~ table tr:nth-child(3) {
+  #protocol-stack-styles ~ table tr:nth-child(2) {
     background: hsl(0deg 100% 82%);
+  }
+  #protocol-stack-styles ~ table tr:nth-child(3) {
+    background: hsl(198deg 100% 87%);
   }
   #protocol-stack-styles ~ table tr:nth-child(4) {
     background: hsl(198deg 100% 77%);
@@ -142,13 +142,13 @@ as a single logical unit for users.</p>
 <table>
 <tbody>
 <tr>
-<td style="text-align:center">Interface Definitions</td>
-</tr>
-<tr>
 <td style="text-align:center">DID Authentication</td>
 </tr>
 <tr>
 <td style="text-align:center">Access &amp; Authorization</td>
+</tr>
+<tr>
+<td style="text-align:center">Interface Definitions</td>
 </tr>
 <tr>
 <td style="text-align:center">Interface Processing</td>
@@ -170,10 +170,10 @@ as a single logical unit for users.</p>
 </tr>
 </tbody>
 </table>
-<div id="todo-451" class="notice todo"><a class="notice-link" href="#todo-451">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
+<div id="todo-61" class="notice todo"><a class="notice-link" href="#todo-61">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
 </div>
 <h2 id="file-structures"><a class="toc-anchor" href="#file-structures" >§</a> File Structures</h2>
-<div id="todo-452" class="notice todo"><a class="notice-link" href="#todo-452">TODO</a><p><strong>Needs Decision</strong></p>
+<div id="todo-62" class="notice todo"><a class="notice-link" href="#todo-62">TODO</a><p><strong>Needs Decision</strong></p>
 <p>Considerations:</p>
 <ul>
 <li>Files accessible to multiple external parties, in multiple overlapping combinations</li>
@@ -183,20 +183,20 @@ as a single logical unit for users.</p>
 </ul>
 </div>
 <h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
-<div id="todo-453" class="notice todo"><a class="notice-link" href="#todo-453">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
+<div id="todo-63" class="notice todo"><a class="notice-link" href="#todo-63">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
 </div>
 <h2 id="commit-strategies"><a class="toc-anchor" href="#commit-strategies" >§</a> Commit Strategies</h2>
 <h3 id="full-replace"><a class="toc-anchor" href="#full-replace" >§</a> Full Replace</h3>
-<div id="todo-454" class="notice todo"><a class="notice-link" href="#todo-454">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
+<div id="todo-64" class="notice todo"><a class="notice-link" href="#todo-64">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
 </div>
 <h3 id="delta-based-merge"><a class="toc-anchor" href="#delta-based-merge" >§</a> Delta-based Merge</h3>
-<div id="todo-455" class="notice todo"><a class="notice-link" href="#todo-455">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
+<div id="todo-65" class="notice todo"><a class="notice-link" href="#todo-65">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
 </div>
 <h2 id="general-object-format"><a class="toc-anchor" href="#general-object-format" >§</a> General Object Format</h2>
 <p>All objects within an Identity Hub Instance <strong><strong>MUST</strong></strong> be constructed using the same
 top-level format, as defined below:</p>
 <h3 id="secure-wrapper"><a class="toc-anchor" href="#secure-wrapper" >§</a> Secure Wrapper</h3>
-<div id="todo-456" class="notice todo"><a class="notice-link" href="#todo-456">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
+<div id="todo-66" class="notice todo"><a class="notice-link" href="#todo-66">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
 <ul>
 <li>Must account for our multi-recipient access requirements</li>
 <li>Try to minimize need for re-encryption when permissions change</li>
@@ -211,6 +211,87 @@ top-level format, as defined below:</p>
 </code></pre>
 <h2 id="access-permissions"><a class="toc-anchor" href="#access-permissions" >§</a> Access &amp; Permissions</h2>
 <h2 id="interfaces"><a class="toc-anchor" href="#interfaces" >§</a> Interfaces</h2>
+<h3 id="feature-detection"><a class="toc-anchor" href="#feature-detection" >§</a> Feature Detection</h3>
+<p>Identity Hub specification defines standard Hub configurations to maximize interoperability
+(see Hub Configurations), as well as the option for implementations to support a custom subset
+of the Interfaces and features defined in the specification. As such, is beneficial to provide
+an explicit means for detecting the Interfaces and features a given implementation supports.
+The Feature Detection interface is the means by which a Hub expresses support for the Interfaces
+and features it implements.</p>
+<h4 id="object-definition"><a class="toc-anchor" href="#object-definition" >§</a> Object Definition</h4>
+<p>A compliant Identity Hub Profile interface <strong><strong>MUST</strong></strong> produce a Feature Detection object
+defined as follows:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetection"</span><span class="token punctuation">,</span>
+  <span class="token property">"interfaces"</span><span class="token operator">:</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>All compliant Hubs <strong><strong>MUST</strong></strong> respond with a valid Feature Detection object when receiving
+the following request object:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetectionRead"</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h5 id="properties-values"><a class="toc-anchor" href="#properties-values" >§</a> Properties &amp; Values</h5>
+<p>The following properties and values are defined for the Feature Detection object:</p>
+<ul>
+<li>The value of the <code>interfaces</code> property <strong><strong>MUST</strong></strong> be an object, composed of the following
+optional properties:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>profile</code> property. If the property is not present,
+it indicates the Hub implementation does not support any aspects of the interface. If the
+property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
+following properties, wherein a boolean <code>true</code> value indicates support for the interface
+capability, while a boolean <code>false</code> value or omission of the property indicates the interface
+capability is not supported:
+<ul>
+<li><code>ProfileRead</code></li>
+<li><code>ProfileWrite</code></li>
+<li><code>ProfileDelete</code></li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>collections</code> property. If the property is not present,
+it indicates the Hub implementation does not support any aspects of the interface. If the
+property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
+following properties, wherein a boolean <code>true</code> value indicates support for the interface
+capability, while a boolean <code>false</code> value or omission of the property indicates the interface
+capability is not supported:
+<ul>
+<li><code>CollectionsQuery</code></li>
+<li><code>CollectionsWrite</code></li>
+<li><code>CollectionsDelete</code></li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>actions</code> property. If the property is not present,
+it indicates the Hub implementation does not support any aspects of the interface. If the
+property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
+following properties, wherein a boolean <code>true</code> value indicates support for the interface
+capability, while a boolean <code>false</code> value or omission of the property indicates the interface
+capability is not supported:
+<ul>
+<li><code>ActionsQuery</code></li>
+<li><code>ActionsWrite</code></li>
+<li><code>ActionsDelete</code></li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>permissions</code> property. If the property is not present,
+it indicates the Hub implementation does not support any aspects of the interface. If the
+property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
+following properties, wherein a boolean <code>true</code> value indicates support for the interface
+capability, while a boolean <code>false</code> value or omission of the property indicates the interface
+capability is not supported:
+<ul>
+<li><code>PermissionsRequest</code></li>
+<li><code>PermissionsQuery</code></li>
+<li><code>PermissionsWrite</code></li>
+<li><code>PermissionsDelete</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 <h3 id="profile"><a class="toc-anchor" href="#profile" >§</a> Profile</h3>
 <p>The Profile interface provides a simple mechanism for setting and retrieving a JSON object
 with basic profile information that describes the target DID entity.</p>
@@ -435,6 +516,11 @@ to a Hub User’s non-public data.</p>
 <li><a href="#access-permissions" >Access &amp; Permissions</a></li>
 <li><a href="#interfaces" >Interfaces</a>
 <ul>
+<li><a href="#feature-detection" >Feature Detection</a>
+<ul>
+<li><a href="#object-definition" >Object Definition</a></li>
+</ul>
+</li>
 <li><a href="#profile" >Profile</a>
 <ul>
 <li><a href="#object-format" >Object Format</a></li>

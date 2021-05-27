@@ -76,13 +76,13 @@ distributed ledger).
     text-shadow: 0 1px 2px rgb(255 255 255 / 75%);
   }
   #protocol-stack-styles ~ table tr:nth-child(1) {
-    background: hsl(198deg 100% 87%);
-  }
-  #protocol-stack-styles ~ table tr:nth-child(2) {
     background: hsl(0deg 100% 87%);
   }
-  #protocol-stack-styles ~ table tr:nth-child(3) {
+  #protocol-stack-styles ~ table tr:nth-child(2) {
     background: hsl(0deg 100% 82%);
+  }
+  #protocol-stack-styles ~ table tr:nth-child(3) {
+    background: hsl(198deg 100% 87%);
   }
   #protocol-stack-styles ~ table tr:nth-child(4) {
     background: hsl(198deg 100% 77%);
@@ -109,9 +109,9 @@ in this specification to ensure multiple Hub implementations can be used togethe
 as a single logical unit for users.
 
 :----: |
-Interface Definitions |
 DID Authentication |
 Access & Authorization |
+Interface Definitions |
 Interface Processing |
 Object Format |
 Object Encryption |
@@ -183,6 +183,81 @@ Objects need to use a standard means of encryption. Some considerations are:
 
 
 ## Interfaces
+
+### Feature Detection
+
+Identity Hub specification defines standard Hub configurations to maximize interoperability 
+(see Hub Configurations), as well as the option for implementations to support a custom subset 
+of the Interfaces and features defined in the specification. As such, is beneficial to provide 
+an explicit means for detecting the Interfaces and features a given implementation supports. 
+The Feature Detection interface is the means by which a Hub expresses support for the Interfaces 
+and features it implements.
+
+#### Object Definition
+
+A compliant Identity Hub Profile interface ****MUST**** produce a Feature Detection object 
+defined as follows:
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "FeatureDetection",
+  "interfaces": { ... }
+}
+```
+
+All compliant Hubs ****MUST**** respond with a valid Feature Detection object when receiving 
+the following request object:
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "FeatureDetectionRead"
+}
+```
+
+##### Properties & Values
+
+The following properties and values are defined for the Feature Detection object:
+- The value of the `interfaces` property ****MUST**** be an object, composed of the following 
+  optional properties: 
+    - The object ****MAY**** contain a `profile` property. If the property is not present, 
+    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    capability, while a boolean `false` value or omission of the property indicates the interface 
+    capability is not supported:
+      - `ProfileRead`
+      - `ProfileWrite`
+      - `ProfileDelete`
+    - The object ****MAY**** contain a `collections` property. If the property is not present, 
+    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    capability, while a boolean `false` value or omission of the property indicates the interface 
+    capability is not supported:
+      - `CollectionsQuery`
+      - `CollectionsWrite`
+      - `CollectionsDelete`
+    - The object ****MAY**** contain a `actions` property. If the property is not present, 
+    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    capability, while a boolean `false` value or omission of the property indicates the interface 
+    capability is not supported:
+      - `ActionsQuery`
+      - `ActionsWrite`
+      - `ActionsDelete`
+    - The object ****MAY**** contain a `permissions` property. If the property is not present, 
+    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    capability, while a boolean `false` value or omission of the property indicates the interface 
+    capability is not supported:
+      - `PermissionsRequest`
+      - `PermissionsQuery`
+      - `PermissionsWrite`
+      - `PermissionsDelete`
 
 ### Profile
 
