@@ -273,30 +273,32 @@ structure, if a Profile has been established by the controller of a DID:
 {
   "@context": "https://identity.foundation/schemas/hub",
   "@type": "Profile",
-  "primary_descriptor": {
-    "@context": "http://schema.org",
-    "@type": "Person",
-    "name": "Jeffrey Lebowski",
-    "givenName": "Jeffery",
-    "middleName": "The Big",
-    "familyName": "Lebowski",
-    "description": "That's just, like, your opinion, man.",
-    "website": "https://ilovebowling.com",
-    "email": "jeff@ilovebowling.com",
-    "image": IMG_URL,
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "5227 Santa Monica Boulevard",
-      "addressLocality": "Los Angeles",
-      "addressRegion": "CA"
-    }
-  },
-  "auxiliary_descriptors": [
+  "descriptors": [
+    {
+      "@context": "http://schema.org",
+      "@type": "Person",
+      "name": "Jeffrey Lebowski",
+      "givenName": "Jeffery",
+      "middleName": "The Big",
+      "familyName": "Lebowski",
+      "description": "That's just, like, your opinion, man.",
+      "website": "https://ilovebowling.com",
+      "email": "jeff@ilovebowling.com",
+      "image": IMG_URL,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "5227 Santa Monica Boulevard",
+        "addressLocality": "Los Angeles",
+        "addressRegion": "CA"
+      }
+    },
     {...},
     {...}
   ]
 }
 ```
+
+An object ****MUST**** have one or more descriptors. The first element of the descriptors array is primary, and ****SHOULD**** be used unless another schema in the array is explicitly required.
 
 #### Write
 
@@ -307,8 +309,7 @@ structure, if a Profile has been established by the controller of a DID:
   "data": {
     "@context": "https://identity.foundation/schemas/hub",
     "@type": "Profile",
-    "primary_descriptor": {...},
-    "auxiliary_descriptors": [...]
+    "descriptors": [...]
   }
 }
 ```
