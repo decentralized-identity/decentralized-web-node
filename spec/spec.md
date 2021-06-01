@@ -187,11 +187,9 @@ Objects need to use a standard means of encryption. Some considerations are:
 ### Feature Detection
 
 The Identity Hub specification defines well-recognized Hub configurations to maximize 
-interoperability (see Hub Configurations), but implementers may wish to support a custom subset 
-of the Interfaces and features. It is therefore beneficial to provide an explicit means by 
-which to detect the Interfaces and features supported by a given deployment. The Feature 
-Detection interface is the means by which a Hub expresses support for the Interfaces and 
-features it implements.
+interoperability (see Hub Configurations), but implementers may wish to support a custom 
+subset of the Interfaces and features. The Feature Detection interface is the means by 
+which a Hub expresses support for the Interfaces and features it implements.
 
 #### Object Definition
 
