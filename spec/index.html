@@ -170,10 +170,10 @@ as a single logical unit for users.</p>
 </tr>
 </tbody>
 </table>
-<div id="todo-61" class="notice todo"><a class="notice-link" href="#todo-61">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
+<div id="todo-109" class="notice todo"><a class="notice-link" href="#todo-109">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
 </div>
 <h2 id="file-structures"><a class="toc-anchor" href="#file-structures" >§</a> File Structures</h2>
-<div id="todo-62" class="notice todo"><a class="notice-link" href="#todo-62">TODO</a><p><strong>Needs Decision</strong></p>
+<div id="todo-110" class="notice todo"><a class="notice-link" href="#todo-110">TODO</a><p><strong>Needs Decision</strong></p>
 <p>Considerations:</p>
 <ul>
 <li>Files accessible to multiple external parties, in multiple overlapping combinations</li>
@@ -183,20 +183,20 @@ as a single logical unit for users.</p>
 </ul>
 </div>
 <h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
-<div id="todo-63" class="notice todo"><a class="notice-link" href="#todo-63">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
+<div id="todo-111" class="notice todo"><a class="notice-link" href="#todo-111">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
 </div>
 <h2 id="commit-strategies"><a class="toc-anchor" href="#commit-strategies" >§</a> Commit Strategies</h2>
 <h3 id="full-replace"><a class="toc-anchor" href="#full-replace" >§</a> Full Replace</h3>
-<div id="todo-64" class="notice todo"><a class="notice-link" href="#todo-64">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
+<div id="todo-112" class="notice todo"><a class="notice-link" href="#todo-112">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
 </div>
 <h3 id="delta-based-merge"><a class="toc-anchor" href="#delta-based-merge" >§</a> Delta-based Merge</h3>
-<div id="todo-65" class="notice todo"><a class="notice-link" href="#todo-65">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
+<div id="todo-113" class="notice todo"><a class="notice-link" href="#todo-113">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
 </div>
 <h2 id="general-object-format"><a class="toc-anchor" href="#general-object-format" >§</a> General Object Format</h2>
 <p>All objects within an Identity Hub Instance <strong><strong>MUST</strong></strong> be constructed using the same
 top-level format, as defined below:</p>
 <h3 id="secure-wrapper"><a class="toc-anchor" href="#secure-wrapper" >§</a> Secure Wrapper</h3>
-<div id="todo-66" class="notice todo"><a class="notice-link" href="#todo-66">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
+<div id="todo-114" class="notice todo"><a class="notice-link" href="#todo-114">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
 <ul>
 <li>Must account for our multi-recipient access requirements</li>
 <li>Try to minimize need for re-encryption when permissions change</li>
@@ -212,10 +212,10 @@ top-level format, as defined below:</p>
 <h2 id="access-permissions"><a class="toc-anchor" href="#access-permissions" >§</a> Access &amp; Permissions</h2>
 <h2 id="interfaces"><a class="toc-anchor" href="#interfaces" >§</a> Interfaces</h2>
 <h3 id="feature-detection"><a class="toc-anchor" href="#feature-detection" >§</a> Feature Detection</h3>
-<p>Identity Hub specification defines standard Hub configurations to maximize interoperability
-(see Hub Configurations), as well as the option for implementations to support a custom subset
-of the Interfaces and features defined in the specification. As such, is beneficial to provide
-an explicit means for detecting the Interfaces and features a given implementation supports.
+<p>The Identity Hub specification defines well-recognized Hub configurations to maximize interoperability
+(see Hub Configurations), but implementers may wish to support a custom subset
+of the Interfaces and features. It is therefore beneficial to provide
+an explicit means by which to detect the Interfaces and features supported by a given deployment.
 The Feature Detection interface is the means by which a Hub expresses support for the Interfaces
 and features it implements.</p>
 <h4 id="object-definition"><a class="toc-anchor" href="#object-definition" >§</a> Object Definition</h4>
@@ -470,6 +470,23 @@ to a Hub User’s non-public data.</p>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h2 id="hub-configurations"><a class="toc-anchor" href="#hub-configurations" >§</a> Hub Configurations</h2>
+<p>While it is strongly encouraged to implement the full set of Identity Hub features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Identity Hub feature sets that tend to serve different purposes.</p>
+<h3 id="open-data-publication"><a class="toc-anchor" href="#open-data-publication" >§</a> Open Data Publication</h3>
+<p>This Hub configuration is ideal for implementers who seek to expose intentionally public data via the Identity Hub semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetection"</span><span class="token punctuation">,</span>
+  <span class="token property">"interfaces"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"profile"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"ProfileRead"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"collections"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"CollectionsQuery"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 
                     </article>    
       
@@ -546,6 +563,11 @@ to a Hub User’s non-public data.</p>
 <li><a href="#request" >Request</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#hub-configurations" >Hub Configurations</a>
+<ul>
+<li><a href="#open-data-publication" >Open Data Publication</a></li>
 </ul>
 </li>
 </ul>

@@ -186,9 +186,9 @@ Objects need to use a standard means of encryption. Some considerations are:
 
 ### Feature Detection
 
-Identity Hub specification defines standard Hub configurations to maximize interoperability 
-(see Hub Configurations), as well as the option for implementations to support a custom subset 
-of the Interfaces and features defined in the specification. It is therefore beneficial to provide
+The Identity Hub specification defines well-recognized Hub configurations to maximize interoperability 
+(see Hub Configurations), but implementers may wish to support a custom subset 
+of the Interfaces and features. It is therefore beneficial to provide
 an explicit means by which to detect the Interfaces and features supported by a given deployment.
 The Feature Detection interface is the means by which a Hub expresses support for the Interfaces 
 and features it implements.
@@ -470,5 +470,28 @@ to a Hub User's non-public data.
       "id": "Qm65765jrn7be64v5q35v6we675br68jr",
     }
   ]
+}
+```
+
+## Hub Configurations
+
+While it is strongly encouraged to implement the full set of Identity Hub features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Identity Hub feature sets that tend to serve different purposes.
+
+### Open Data Publication
+
+This Hub configuration is ideal for implementers who seek to expose intentionally public data via the Identity Hub semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "FeatureDetection",
+  "interfaces": {
+    "profile": {
+      "ProfileRead": true
+    },
+    "collections": {
+      "CollectionsQuery": true
+    }
+  }
 }
 ```
