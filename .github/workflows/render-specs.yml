@@ -4,7 +4,7 @@ name: render-specs
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   build-and-deploy-spec:
