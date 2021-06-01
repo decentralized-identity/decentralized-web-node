@@ -170,10 +170,10 @@ as a single logical unit for users.</p>
 </tr>
 </tbody>
 </table>
-<div id="todo-61" class="notice todo"><a class="notice-link" href="#todo-61">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
+<div id="todo-7" class="notice todo"><a class="notice-link" href="#todo-7">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
 </div>
 <h2 id="file-structures"><a class="toc-anchor" href="#file-structures" >§</a> File Structures</h2>
-<div id="todo-62" class="notice todo"><a class="notice-link" href="#todo-62">TODO</a><p><strong>Needs Decision</strong></p>
+<div id="todo-8" class="notice todo"><a class="notice-link" href="#todo-8">TODO</a><p><strong>Needs Decision</strong></p>
 <p>Considerations:</p>
 <ul>
 <li>Files accessible to multiple external parties, in multiple overlapping combinations</li>
@@ -183,20 +183,20 @@ as a single logical unit for users.</p>
 </ul>
 </div>
 <h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
-<div id="todo-63" class="notice todo"><a class="notice-link" href="#todo-63">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
+<div id="todo-9" class="notice todo"><a class="notice-link" href="#todo-9">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
 </div>
 <h2 id="commit-strategies"><a class="toc-anchor" href="#commit-strategies" >§</a> Commit Strategies</h2>
 <h3 id="full-replace"><a class="toc-anchor" href="#full-replace" >§</a> Full Replace</h3>
-<div id="todo-64" class="notice todo"><a class="notice-link" href="#todo-64">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
+<div id="todo-10" class="notice todo"><a class="notice-link" href="#todo-10">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
 </div>
 <h3 id="delta-based-merge"><a class="toc-anchor" href="#delta-based-merge" >§</a> Delta-based Merge</h3>
-<div id="todo-65" class="notice todo"><a class="notice-link" href="#todo-65">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
+<div id="todo-11" class="notice todo"><a class="notice-link" href="#todo-11">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
 </div>
 <h2 id="general-object-format"><a class="toc-anchor" href="#general-object-format" >§</a> General Object Format</h2>
 <p>All objects within an Identity Hub Instance <strong><strong>MUST</strong></strong> be constructed using the same
 top-level format, as defined below:</p>
 <h3 id="secure-wrapper"><a class="toc-anchor" href="#secure-wrapper" >§</a> Secure Wrapper</h3>
-<div id="todo-66" class="notice todo"><a class="notice-link" href="#todo-66">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
+<div id="todo-12" class="notice todo"><a class="notice-link" href="#todo-12">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
 <ul>
 <li>Must account for our multi-recipient access requirements</li>
 <li>Try to minimize need for re-encryption when permissions change</li>
@@ -212,12 +212,10 @@ top-level format, as defined below:</p>
 <h2 id="access-permissions"><a class="toc-anchor" href="#access-permissions" >§</a> Access &amp; Permissions</h2>
 <h2 id="interfaces"><a class="toc-anchor" href="#interfaces" >§</a> Interfaces</h2>
 <h3 id="feature-detection"><a class="toc-anchor" href="#feature-detection" >§</a> Feature Detection</h3>
-<p>Identity Hub specification defines standard Hub configurations to maximize interoperability
-(see Hub Configurations), as well as the option for implementations to support a custom subset
-of the Interfaces and features defined in the specification. As such, is beneficial to provide
-an explicit means for detecting the Interfaces and features a given implementation supports.
-The Feature Detection interface is the means by which a Hub expresses support for the Interfaces
-and features it implements.</p>
+<p>The Identity Hub specification defines well-recognized Hub configurations to maximize
+interoperability (see Hub Configurations), but implementers may wish to support a custom
+subset of the Interfaces and features. The Feature Detection interface is the means by
+which a Hub expresses support for the Interfaces and features it implements.</p>
 <h4 id="object-definition"><a class="toc-anchor" href="#object-definition" >§</a> Object Definition</h4>
 <p>A compliant Identity Hub Profile interface <strong><strong>MUST</strong></strong> produce a Feature Detection object
 defined as follows:</p>
@@ -301,30 +299,31 @@ structure, if a Profile has been established by the controller of a DID:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
   <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"Profile"</span><span class="token punctuation">,</span>
-  <span class="token property">"primary_descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"http://schema.org"</span><span class="token punctuation">,</span>
-    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"Person"</span><span class="token punctuation">,</span>
-    <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Jeffrey Lebowski"</span><span class="token punctuation">,</span>
-    <span class="token property">"givenName"</span><span class="token operator">:</span> <span class="token string">"Jeffery"</span><span class="token punctuation">,</span>
-    <span class="token property">"middleName"</span><span class="token operator">:</span> <span class="token string">"The Big"</span><span class="token punctuation">,</span>
-    <span class="token property">"familyName"</span><span class="token operator">:</span> <span class="token string">"Lebowski"</span><span class="token punctuation">,</span>
-    <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"That's just, like, your opinion, man."</span><span class="token punctuation">,</span>
-    <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"https://ilovebowling.com"</span><span class="token punctuation">,</span>
-    <span class="token property">"email"</span><span class="token operator">:</span> <span class="token string">"jeff@ilovebowling.com"</span><span class="token punctuation">,</span>
-    <span class="token property">"image"</span><span class="token operator">:</span> IMG_URL<span class="token punctuation">,</span>
-    <span class="token property">"address"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"PostalAddress"</span><span class="token punctuation">,</span>
-      <span class="token property">"streetAddress"</span><span class="token operator">:</span> <span class="token string">"5227 Santa Monica Boulevard"</span><span class="token punctuation">,</span>
-      <span class="token property">"addressLocality"</span><span class="token operator">:</span> <span class="token string">"Los Angeles"</span><span class="token punctuation">,</span>
-      <span class="token property">"addressRegion"</span><span class="token operator">:</span> <span class="token string">"CA"</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token property">"auxiliary_descriptors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+  <span class="token property">"descriptors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"http://schema.org"</span><span class="token punctuation">,</span>
+      <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"Person"</span><span class="token punctuation">,</span>
+      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Jeffrey Lebowski"</span><span class="token punctuation">,</span>
+      <span class="token property">"givenName"</span><span class="token operator">:</span> <span class="token string">"Jeffery"</span><span class="token punctuation">,</span>
+      <span class="token property">"middleName"</span><span class="token operator">:</span> <span class="token string">"The Big"</span><span class="token punctuation">,</span>
+      <span class="token property">"familyName"</span><span class="token operator">:</span> <span class="token string">"Lebowski"</span><span class="token punctuation">,</span>
+      <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"That's just, like, your opinion, man."</span><span class="token punctuation">,</span>
+      <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"https://ilovebowling.com"</span><span class="token punctuation">,</span>
+      <span class="token property">"email"</span><span class="token operator">:</span> <span class="token string">"jeff@ilovebowling.com"</span><span class="token punctuation">,</span>
+      <span class="token property">"image"</span><span class="token operator">:</span> IMG_URL<span class="token punctuation">,</span>
+      <span class="token property">"address"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"PostalAddress"</span><span class="token punctuation">,</span>
+        <span class="token property">"streetAddress"</span><span class="token operator">:</span> <span class="token string">"5227 Santa Monica Boulevard"</span><span class="token punctuation">,</span>
+        <span class="token property">"addressLocality"</span><span class="token operator">:</span> <span class="token string">"Los Angeles"</span><span class="token punctuation">,</span>
+        <span class="token property">"addressRegion"</span><span class="token operator">:</span> <span class="token string">"CA"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<p>An object <strong><strong>MUST</strong></strong> have one or more descriptors. The first element of the descriptors array is primary, and <strong><strong>SHOULD</strong></strong> be used unless another schema in the array is explicitly required.</p>
 <h4 id="write"><a class="toc-anchor" href="#write" >§</a> Write</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
@@ -332,8 +331,7 @@ structure, if a Profile has been established by the controller of a DID:</p>
   <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
     <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"Profile"</span><span class="token punctuation">,</span>
-    <span class="token property">"primary_descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token property">"auxiliary_descriptors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>...<span class="token punctuation">]</span>
+    <span class="token property">"descriptors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>...<span class="token punctuation">]</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -470,6 +468,23 @@ to a Hub User’s non-public data.</p>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h2 id="hub-configurations"><a class="toc-anchor" href="#hub-configurations" >§</a> Hub Configurations</h2>
+<p>While it is strongly encouraged to implement the full set of Identity Hub features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Identity Hub feature sets that tend to serve different purposes.</p>
+<h3 id="open-data-publication"><a class="toc-anchor" href="#open-data-publication" >§</a> Open Data Publication</h3>
+<p>This Hub configuration is ideal for implementers who seek to expose intentionally public data via the Identity Hub semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
+  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetection"</span><span class="token punctuation">,</span>
+  <span class="token property">"interfaces"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"profile"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"ProfileRead"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"collections"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"CollectionsQuery"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
 
                     </article>    
       
@@ -546,6 +561,11 @@ to a Hub User’s non-public data.</p>
 <li><a href="#request" >Request</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#hub-configurations" >Hub Configurations</a>
+<ul>
+<li><a href="#open-data-publication" >Open Data Publication</a></li>
 </ul>
 </li>
 </ul>
