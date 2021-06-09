@@ -163,19 +163,28 @@ top-level format, as defined below:
 
 ### Secure Wrapper
 
-The identity hub data structure uses DagJOSE as the security wrapper for both signatures and encryption. JOSE is very flexible when it comes to the specific algorithm to use.
+The identity hub data structure uses DagJOSE as the security wrapper for both signatures and encryption. JOSE is very flexible when it comes to the specific algorithm to use. Furthermore it also supports multiple signatories and multiple recipients when dealing with signed and encrypted data respectively.
 
 #### Signature envelope
 Signed objects are encoded using DagJWS, which requires the payload to be encoded as a CID. The payload itself is stored separately using DagCBOR, or some other IPLD codec. The JWS protected header should include a `kid` property with the value being the DIDUrl of the key that signed the JWS.
 
 #### Encryption envelope
-Encrypted objects are encoded using DagJWE. In order to properly encrypt data with DagJWE the data needs to bw encoded as an *inline CID*.
+Encrypted objects are encoded using DagJWE. In order to properly encrypt data with DagJWE the data needs to bw encoded as an *inline CID* (see details below). JWEs can be used for both symmetric and asymmetric encryption, at the wrapper layer we don't make any prescriptions about this. JWEs can also use various different ciphers, we reccomend the use of `xchacha20poly1305` as it is one of the most performat ciphers and there are multiple implementations.
 
-::: todo
-Objects need to use a standard means of encryption. Some considerations are:
-- Must account for our multi-recipient access requirements
-- Try to minimize need for re-encryption when permissions change
-:::
+##### Encoding an *inline CID*
+In order to encode an object as an *inline CID* the following algorithm is used:
+
+1. Encode the object using some IPLD codec (e.g. DagCBOR)
+2. Encode the IPLD bytes from step 1 as an "identity multihash", which is constructued as:
+  - `<hash multicodec><size><bytes>` where,
+  - `hash multicodec` is `00` for "identity"
+  - `size` is the varint bytelength
+  - `bytes` is the bytes from step 1
+3. Create an *inline CID* using the codec, which is encoded as
+  - `<multibase prefix><multicodec cidv1><multicodec content type><multihash>` where,
+  - `multicodec content type` is the IPLD codec used (e.g. DagCBOR)
+  - `multihas` is the bytes from step 2
+
 
 ### Payload
 
