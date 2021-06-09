@@ -163,6 +163,14 @@ top-level format, as defined below:
 
 ### Secure Wrapper
 
+The identity hub data structure uses DagJOSE as the security wrapper for both signatures and encryption. JOSE is very flexible when it comes to the specific algorithm to use.
+
+#### Signature envelope
+Signed objects are encoded using DagJWS, which requires the payload to be encoded as a CID. The payload itself is stored separately using DagCBOR, or some other IPLD codec. The JWS protected header should include a `kid` property with the value being the DIDUrl of the key that signed the JWS.
+
+#### Encryption envelope
+Encrypted objects are encoded using DagJWE. In order to properly encrypt data with DagJWE the data needs to bw encoded as an *inline CID*.
+
 ::: todo
 Objects need to use a standard means of encryption. Some considerations are:
 - Must account for our multi-recipient access requirements
