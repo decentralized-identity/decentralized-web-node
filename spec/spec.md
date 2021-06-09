@@ -123,14 +123,14 @@ Database |
 Finalize the component stack list - are these correct? Are we missing any?
 :::
 
-## File Structures
+## Data Structures
 
 ::: todo
 **Needs Decision**
 
 Considerations:
-- Files accessible to multiple external parties, in multiple overlapping combinations
-- Should files be distributed across separate buckets, a shared tree, or something else?
+- Objects accessible to multiple external parties, in multiple overlapping combinations
+- Should objects be distributed across separate buckets, a shared tree, or something else?
 - What kind of pointers are required, if any?
 - Is tombstoning required?
 :::
