@@ -52,7 +52,7 @@ device or infrastructure of a Hub Operator.
 [[def:Decentralized Identifiers, Decentralized Identifier, DID]]
 ~ Unique ID URI string and PKI metadata document format for describing the
 cryptographic keys and other fundamental PKI values linked to a unique,
-user-controlled, self-sovereign identifier in a target system (i.e. blockchain,
+user-controlled, self-sovereign identifier in a target system (e.g., blockchain,
 distributed ledger).
 
 ## Topology
@@ -174,7 +174,7 @@ Encrypted objects are encoded using DagJWE. In order to properly encrypt data wi
 ##### Encoding an *inline CID*
 In order to encode an object as an *inline CID* the following algorithm is used:
 
-1. Encode the object using some IPLD codec (e.g. DagCBOR)
+1. Encode the object using some IPLD codec (e.g., DagCBOR)
 2. Encode the IPLD bytes from step 1 as an _"identity multihash"_, which is 
 constructed as `<hash multicodec><size><bytes>`, where —
    - `hash multicodec` is `00` for "identity"
