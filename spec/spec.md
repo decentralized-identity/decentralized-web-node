@@ -175,10 +175,10 @@ Encrypted objects are encoded using DagJWE. In order to properly encrypt data wi
 In order to encode an object as an *inline CID* the following algorithm is used:
 
 1. Encode the object using some IPLD codec (e.g., DagCBOR)
-2. Encode the IPLD bytes from step 1 as an _"identity multihash"_, which is 
-constructed as `<hash multicodec><size><bytes>`, where —
+2. Encode the IPLD bytes from Step 1 as an _"identity multihash"_, which is 
+constructed as `<hash multicodec><size><bytes>`, composed as follows:
    - `hash multicodec` is `00` for "identity"
-   - `size` is the varint bytelength
+   - `size` is the varint byte length
    - `bytes` is the bytes from step 1
 3. Create an *inline CID* using the codec, which is encoded as 
 `<multibase prefix><multicodec cidv1><multicodec content type><multihash>`, 
