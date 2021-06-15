@@ -253,8 +253,11 @@ The following properties and values are defined for the Feature Detection object
     capability, while a boolean `false` value or omission of the property indicates the interface 
     capability is not supported:
       - `CollectionsQuery`
-      - `CollectionsWrite`
+      - `CollectionsCreate`
+      - `CollectionsUpdate`
+      - `CollectionsReplace`
       - `CollectionsDelete`
+      - `CollectionsBatch`
     - The object ****MAY**** contain a `actions` property. If the property is not present, 
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -262,8 +265,10 @@ The following properties and values are defined for the Feature Detection object
     capability, while a boolean `false` value or omission of the property indicates the interface 
     capability is not supported:
       - `ActionsQuery`
-      - `ActionsWrite`
+      - `ActionsCreate`
+      - `ActionsUpdate`
       - `ActionsDelete`
+      - `ActionsBatch`
     - The object ****MAY**** contain a `permissions` property. If the property is not present, 
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -272,8 +277,10 @@ The following properties and values are defined for the Feature Detection object
     capability is not supported:
       - `PermissionsRequest`
       - `PermissionsQuery`
-      - `PermissionsWrite`
+      - `PermissionsCreate`
+      - `PermissionsUpdate`
       - `PermissionsDelete`
+      - `PermissionsBatch`
 
 ### Profile
 
@@ -316,6 +323,16 @@ structure, if a Profile has been established by the controller of a DID:
 
 An object ****MUST**** have one or more descriptors. The first element of the descriptors array is primary, and ****SHOULD**** be used unless another schema in the array is explicitly required.
 
+
+#### Read
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "ProfileRead"
+}
+```
+
 #### Write
 
 ```json
@@ -327,6 +344,16 @@ An object ****MUST**** have one or more descriptors. The first element of the de
     "@type": "Profile",
     "descriptors": [...]
   }
+}
+```
+
+#### Delete
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "ProfileDelete",
+  "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga"
 }
 ```
 
@@ -352,38 +379,36 @@ experience for users.
 }
 ```
 
-#### Write
+#### Create
 
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsWrite",
-  "entries": [
-    {
-      "create": "https://schema.org/MusicPlaylist",
-      "data": {
-        // A new entry of the https://schema.org/MusicPlaylist schema
-      }
-    },
-    {
-      "modify": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-      "data": {
-        // A delta-based modification targeting an existing object's top-level ID
-      }
-    },
-    {
-      "create": "https://schema.org/Event",
-      "data": {
-        // A new entry of the https://schema.org/Event schema
-      }
-    },
-    {
-      "replace": "Qm65765jrn7be64v5q35v6we675br68jr",
-      "data": {
-        // An entire replacement targeting an existing object's top-level ID
-      }
-    }
-  ]
+  "@type": "CollectionsCreate",
+  "schema": "https://schema.org/MusicPlaylist",
+  "data": { ... }
+}
+```
+
+#### Update
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "CollectionsUpdate",
+  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+  "data": { ... }
+}
+```
+
+#### Replace
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "CollectionsReplace",
+  "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
+  "data": { ... }
 }
 ```
 
@@ -393,11 +418,41 @@ experience for users.
 {
   "@context": "https://identity.foundation/schemas/hub",
   "@type": "CollectionsDelete",
-  "targets": [
-    "https://schema.org/MusicPlaylist",
-    "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-    "https://schema.org/Event",
-    "Qm65765jrn7be64v5q35v6we675br68jr"
+  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+}
+```
+
+#### Batch
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "CollectionsBatch",
+  "entries": [
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "CollectionsCreate",
+      "schema": "https://schema.org/Event",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "CollectionsUpdate",
+      "schema": "https://schema.org/MusicPlaylist",
+      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "CollectionsDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "CollectionsReplace",
+      "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
+      "data": { ... }
+    }
   ]
 }
 ```
@@ -422,26 +477,25 @@ under the `schema.org/Action` family of objects.
 }
 ```
 
-#### Write
+#### Create
 
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionsSend",
-  "entries": [
-    {
-      "type": "https://schema.org/LikeAction",
-      "data": {
-        // A new entry of the https://schema.org/LikeAction schema
-      }
-    },
-    {
-      "type": "https://schema.org/FollowAction",
-      "data": {
-        // A new entry of the https://schema.org/FollowAction schema
-      }
-    }
-  ]
+  "@type": "ActionCreate",
+  "schema": "https://schema.org/LikeAction",
+  "data": { ... }
+}
+```
+
+#### Update
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "ActionUpdate",
+  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+  "data": { ... }
 }
 ```
 
@@ -450,12 +504,35 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionsDelete",
-  "targets": [
-    "https://schema.org/ReadAction",
-    "https://schema.org/BefriendAction",
-    "Qmf9w548h8sc54p3584h6ow45aa56fvs5",
-    "Qm65765jrn7be64v5q35v6we675br68jr"
+  "@type": "CollectionsDelete",
+  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+}
+```
+
+#### Batch
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "ActionsBatch",
+  "entries": [
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "ActionCreate",
+      "schema": "https://schema.org/LikeAction",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "ActionUpdate",
+      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "CollectionsDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+    }
   ]
 }
 ```
@@ -471,20 +548,80 @@ to a Hub User's non-public data.
 {
   "@context": "https://identity.foundation/schemas/hub",
   "@type": "PermissionRequest",
+  "data": {
+    "schema": "https://schema.org/MusicPlaylist",
+    "tags": ["classic rock", "rock", "rock and roll"]
+  }
+}
+```
+
+#### Query
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "PermissionsQuery",
+  "statements": [
+    {
+      "type": "https://schema.org/LikeAction"
+    }
+  ]
+}
+```
+
+#### Create
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "PermissionCreate",
+  "data": { ... }
+}
+```
+
+#### Update
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "PermissionUpdate",
+  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+  "data": { ... }
+}
+```
+
+#### Delete
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "PermissionDelete",
+  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+}
+```
+
+#### Batch
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "@type": "PermissionBatch",
   "entries": [
     {
-      "type": "https://schema.org/MusicPlaylist",
-      "tags": ["classic rock", "rock", "rock and roll"]
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "PermissionCreate",
+      "data": { ... }
     },
     {
-      "id": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "PermissionUpdate",
+      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "data": { ... }
     },
     {
-      "type": "https://schema.org/Event",
-      "tags": ["concerts"]
-    },
-    {
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr",
+      "@context": "https://identity.foundation/schemas/hub",
+      "@type": "PermissionDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
     }
   ]
 }
