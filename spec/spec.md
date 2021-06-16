@@ -179,12 +179,15 @@ In order to encode an object as an *inline CID* the following algorithm is used:
 constructed as `<hash multicodec><size><bytes>`, composed as follows:
    - `hash multicodec` is `00` for "identity"
    - `size` is the varint byte length
-   - `bytes` is the bytes from step 1
-3. Create an *inline CID* using the codec, which is encoded as 
-`<multibase prefix><multicodec cidv1><multicodec content type><multihash>`, 
-where —
-  - `multicodec content type` is the IPLD codec used (e.g., `DagCBOR`)
-  - `multihash` is the bytes from step 2
+   - `bytes` is the bytes from Step 1
+3. Create an *inline CID* using the codec, which is encoded as:
+
+    ```html
+    <multibase prefix><multicodec cidv1><multicodec content type><multihash>
+    ```
+    Details of *inline CID* composition:
+    - `multicodec content type` is the IPLD codec used (e.g., `DagCBOR`)
+    - `multihash` is the bytes from Step 2
 
 
 ### Payload
