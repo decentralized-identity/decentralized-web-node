@@ -189,7 +189,6 @@ constructed as `<hash multicodec><size><bytes>`, composed as follows:
     - `multicodec content type` is the IPLD codec used (e.g., `DagCBOR`)
     - `multihash` is the bytes from Step 2
 
-
 ### Payload
 
 ```json
