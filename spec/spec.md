@@ -37,7 +37,7 @@ as the means by which to communicate feedback and contributions.
 ~ A decentralized personal and application data storage and message relay node, 
 as defined in the DIF Identity Hub specification.
 
-[[def:Hub Instance]]
+[[def:Hub Instance, Hub Instances]]
 ~ An instance of an Identity Hub running on a local device or at a remote location.
 
 [[def:Hub Operator]]
@@ -123,6 +123,55 @@ Database |
 Finalize the component stack list - are these correct? Are we missing any?
 :::
 
+## Addressing
+
+A user's logical Identity Hub (their collection of Hub Instances) can be addressed in many ways, 
+but the mechanisms below ****MUST**** be supported by a compliant Identity Hub implementation:
+
+### DID-Relative URLs
+
+The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated 
+with a given DID, as located via the DID resolution process.
+
+*DID-Relative URL addressing a single file:*
+
+```json
+did:example:123?service=IdentityHub&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
+```
+
+*DID-Relative URL addressing of a Collection of the same type:*
+
+```json
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist
+```
+
+*DID-Relative URL addressing multiple Collections of different types:*
+
+```json
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&collection=https://schema.org/Event
+```
+
+*DID-Relative URL addressing Collections and specific resources together:*
+
+```json
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
+```
+
+::: note
+For example purposes, the parameters above are not URL encoded, but should be when using Identity Hub URLs in practice.
+:::
+
+#### DID-Relative URL Resolution
+
+The following process defines how a DID-Relative URL addressing an Identity Hub is resolved:
+
+1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
+2. As indicated by the presence of the `service` parameter, locate the `IdentityHub` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
+3. Parse the `IdentityHub` Service Endpoint entry and compose a URL as follows:
+    1. Let the first located `IdentityHub` Service Endpoint URI be the base of the new URL. NOTE: there may be multiple Hub URIs within the `IdentityHub` Service Endpoint entry, and it is ****recommended**** that implementers address them in index order. 
+    2. Following standard URL formatting, append the Hub-specific URL parameters of the DID-Relative URL to the base of the URL
+    3. Ensure the output reflects the following: `https://<hub-uri>?<hub-url-parameters>`
+
 ## Data Structures
 
 ::: todo
@@ -194,7 +243,7 @@ constructed as `<hash multicodec><size><bytes>`, composed as follows:
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ProfileWrite", // CollectionsWrite, CollectionsQuery, ActionsWrite, etc.
+  "type": "ProfileWrite", // CollectionsWrite, CollectionsQuery, ActionsWrite, etc.
   "data": { ... }
 }
 ```
@@ -219,7 +268,7 @@ defined as follows:
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "FeatureDetection",
+  "type": "FeatureDetection",
   "interfaces": { ... }
 }
 ```
@@ -230,7 +279,7 @@ the following request object:
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "FeatureDetectionRead"
+  "type": "FeatureDetectionRead"
 }
 ```
 
@@ -297,7 +346,7 @@ structure, if a Profile has been established by the controller of a DID:
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "Profile",
+  "type": "Profile",
   "descriptors": [
     {
       "@context": "http://schema.org",
@@ -331,7 +380,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ProfileRead"
+  "type": "ProfileRead"
 }
 ```
 
@@ -340,10 +389,10 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ProfileWrite",
+  "type": "ProfileWrite",
   "data": {
     "@context": "https://identity.foundation/schemas/hub",
-    "@type": "Profile",
+    "type": "Profile",
     "descriptors": [...]
   }
 }
@@ -354,7 +403,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ProfileDelete",
+  "type": "ProfileDelete",
   "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga"
 }
 ```
@@ -372,7 +421,7 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsQuery",
+  "type": "CollectionsQuery",
   "statements": [
     {
       "uri": "https://schema.org/MusicPlaylist"
@@ -386,7 +435,7 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsCreate",
+  "type": "CollectionsCreate",
   "schema": "https://schema.org/MusicPlaylist",
   "data": { ... }
 }
@@ -397,7 +446,7 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsUpdate",
+  "type": "CollectionsUpdate",
   "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
   "data": { ... }
 }
@@ -408,7 +457,7 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsReplace",
+  "type": "CollectionsReplace",
   "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
   "data": { ... }
 }
@@ -419,7 +468,7 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsDelete",
+  "type": "CollectionsDelete",
   "id": "Qm65765jrn7be64v5q35v6we675br68jr"
 }
 ```
@@ -429,29 +478,29 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsBatch",
+  "type": "CollectionsBatch",
   "entries": [
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "CollectionsCreate",
+      "type": "CollectionsCreate",
       "schema": "https://schema.org/Event",
       "data": { ... }
     },
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "CollectionsUpdate",
+      "type": "CollectionsUpdate",
       "schema": "https://schema.org/MusicPlaylist",
       "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
       "data": { ... }
     },
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "CollectionsDelete",
+      "type": "CollectionsDelete",
       "id": "Qm65765jrn7be64v5q35v6we675br68jr"
     },
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "CollectionsReplace",
+      "type": "CollectionsReplace",
       "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
       "data": { ... }
     }
@@ -470,7 +519,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionsQuery",
+  "type": "ActionsQuery",
   "statements": [
     {
       "type": "https://schema.org/LikeAction"
@@ -484,7 +533,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionCreate",
+  "type": "ActionCreate",
   "schema": "https://schema.org/LikeAction",
   "data": { ... }
 }
@@ -495,7 +544,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionUpdate",
+  "type": "ActionUpdate",
   "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
   "data": { ... }
 }
@@ -506,7 +555,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsDelete",
+  "type": "CollectionsDelete",
   "id": "Qm65765jrn7be64v5q35v6we675br68jr"
 }
 ```
@@ -516,23 +565,23 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionsBatch",
+  "type": "ActionsBatch",
   "entries": [
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "ActionCreate",
+      "type": "ActionCreate",
       "schema": "https://schema.org/LikeAction",
       "data": { ... }
     },
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "ActionUpdate",
+      "type": "ActionUpdate",
       "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
       "data": { ... }
     },
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "CollectionsDelete",
+      "type": "CollectionsDelete",
       "id": "Qm65765jrn7be64v5q35v6we675br68jr"
     }
   ]
@@ -549,7 +598,7 @@ to a Hub User's non-public data.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "PermissionRequest",
+  "type": "PermissionRequest",
   "data": {
     "schema": "https://schema.org/MusicPlaylist",
     "tags": ["classic rock", "rock", "rock and roll"]
@@ -562,7 +611,7 @@ to a Hub User's non-public data.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "PermissionsQuery",
+  "type": "PermissionsQuery",
   "statements": [
     {
       "type": "https://schema.org/LikeAction"
@@ -576,7 +625,7 @@ to a Hub User's non-public data.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "PermissionCreate",
+  "type": "PermissionCreate",
   "data": { ... }
 }
 ```
@@ -586,7 +635,7 @@ to a Hub User's non-public data.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "PermissionUpdate",
+  "type": "PermissionUpdate",
   "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
   "data": { ... }
 }
@@ -597,7 +646,7 @@ to a Hub User's non-public data.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "PermissionDelete",
+  "type": "PermissionDelete",
   "id": "Qm65765jrn7be64v5q35v6we675br68jr"
 }
 ```
@@ -607,22 +656,22 @@ to a Hub User's non-public data.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "PermissionBatch",
+  "type": "PermissionBatch",
   "entries": [
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "PermissionCreate",
+      "type": "PermissionCreate",
       "data": { ... }
     },
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "PermissionUpdate",
+      "type": "PermissionUpdate",
       "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
       "data": { ... }
     },
     {
       "@context": "https://identity.foundation/schemas/hub",
-      "@type": "PermissionDelete",
+      "type": "PermissionDelete",
       "id": "Qm65765jrn7be64v5q35v6we675br68jr"
     }
   ]
@@ -640,7 +689,7 @@ This Hub configuration is ideal for implementers who seek to expose intentionall
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "FeatureDetection",
+  "type": "FeatureDetection",
   "interfaces": {
     "profile": {
       "ProfileRead": true
