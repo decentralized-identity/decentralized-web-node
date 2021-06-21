@@ -139,7 +139,7 @@ with a given DID, as located via the DID resolution process.
 did:example:123?service=IdentityHub&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
 ```
 
-*DID-Relative URL addressing of a Collection of the same type:*
+*DID-Relative URL addressing a Collection of one resource type:*
 
 ```json
 did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist
