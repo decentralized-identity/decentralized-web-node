@@ -145,7 +145,7 @@ did:example:123?service=IdentityHub&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
 did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist
 ```
 
-*DID-Relative URL addressing multiple Collections of different types:*
+*DID-Relative URL addressing multiple Collections of different resource types:*
 
 ```json
 did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&collection=https://schema.org/Event
