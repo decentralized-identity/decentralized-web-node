@@ -218,7 +218,7 @@ The identity hub data structure uses DagJOSE as the security wrapper for both si
 Signed objects are encoded using DagJWS, which requires the payload to be encoded as a CID. The payload itself is stored separately using DagCBOR, or some other IPLD codec. The JWS protected header should include a `kid` property with the value being the DIDUrl of the key that signed the JWS.
 
 #### Encryption envelope
-Encrypted objects are encoded using DagJWE. In order to properly encrypt data with DagJWE the data needs to be encoded as an *inline CID* (details below). JSON Web Encryption objects (JWEs) [[spec:rfc7516]] can be used for both symmetric and asymmetric encryption, at the wrapper layer this specification does not make any prescriptions about this. JWEs can also use various different ciphers, we recommend the use of `XChaCha20Poly1305`, as it is one of the most performant ciphers, of which there are multiple implementations.
+Encrypted objects are encoded using DagJWE. To properly encrypt data with DagJWE, the data first needs to be encoded as an *inline CID* (details below). JSON Web Encryption objects (JWEs) [[spec:rfc7516]] can be used for both symmetric and asymmetric encryption; at the wrapper layer, this specification does not make any prescriptions about this. JWEs can also use various different ciphers. We recommend the use of `XChaCha20Poly1305`, of which there are multiple implementations, as it is one of the most performant ciphers.
 
 ##### Encoding an *inline CID*
 In order to encode an object as an *inline CID* the following algorithm is used:
