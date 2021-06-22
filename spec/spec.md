@@ -133,6 +133,10 @@ but the mechanisms below ****MUST**** be supported by a compliant Identity Hub i
 The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated 
 with a given DID, as located via the DID resolution process.
 
+::: note
+For example purposes, the parameters above are not URL encoded, but should be when using Identity Hub URLs in practice.
+:::
+
 *DID-Relative URL addressing a single file:*
 
 ```json
@@ -156,10 +160,6 @@ did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&
 ```json
 did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
 ```
-
-::: note
-For example purposes, the parameters above are not URL encoded, but should be when using Identity Hub URLs in practice.
-:::
 
 #### DID-Relative URL Resolution
 
