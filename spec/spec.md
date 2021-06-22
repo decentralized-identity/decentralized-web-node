@@ -37,7 +37,7 @@ as the means by which to communicate feedback and contributions.
 ~ A decentralized personal and application data storage and message relay node, 
 as defined in the DIF Identity Hub specification.
 
-[[def:Hub Instance]]
+[[def:Hub Instance, Hub Instances]]
 ~ An instance of an Identity Hub running on a local device or at a remote location.
 
 [[def:Hub Operator]]
@@ -123,6 +123,55 @@ Database |
 Finalize the component stack list - are these correct? Are we missing any?
 :::
 
+## Addressing
+
+A user's logical Identity Hub (their collection of Hub Instances) can be addressed in many ways, 
+but the mechanisms below ****MUST**** be supported by a compliant Identity Hub implementation:
+
+### DID-Relative URLs
+
+The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated 
+with a given DID, as located via the DID resolution process.
+
+*DID-Relative URL addressing a single file:*
+
+```json
+did:example:123?service=IdentityHub&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
+```
+
+*DID-Relative URL addressing a Collection of one resource type:*
+
+```json
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist
+```
+
+*DID-Relative URL addressing multiple Collections of different resource types:*
+
+```json
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&collection=https://schema.org/Event
+```
+
+*DID-Relative URL addressing Collections and specific resources together:*
+
+```json
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
+```
+
+::: note
+For example purposes, the parameters above are not URL encoded, but should be when using Identity Hub URLs in practice.
+:::
+
+#### DID-Relative URL Resolution
+
+The following process defines how a DID-Relative URL addressing an Identity Hub is resolved:
+
+1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
+2. As indicated by the presence of the `service` parameter, locate the `IdentityHub` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
+3. Parse the `IdentityHub` Service Endpoint entry and compose a URL as follows:
+    1. Let the first located `IdentityHub` Service Endpoint URI be the base of the new URL. NOTE: there may be multiple Hub URIs within the `IdentityHub` Service Endpoint entry, and it is ****recommended**** that implementers address them in index order. 
+    2. Following standard URL formatting, append the Hub-specific URL parameters of the DID-Relative URL to the base of the URL
+    3. Ensure the output reflects the following: `https://<hub-uri>?<hub-url-parameters>`
+
 ## Data Structures
 
 ::: todo
@@ -169,30 +218,32 @@ The identity hub data structure uses DagJOSE as the security wrapper for both si
 Signed objects are encoded using DagJWS, which requires the payload to be encoded as a CID. The payload itself is stored separately using DagCBOR, or some other IPLD codec. The JWS protected header should include a `kid` property with the value being the DIDUrl of the key that signed the JWS.
 
 #### Encryption envelope
-Encrypted objects are encoded using DagJWE. In order to properly encrypt data with DagJWE the data needs to bw encoded as an *inline CID* (see details below). JWEs can be used for both symmetric and asymmetric encryption, at the wrapper layer we don't make any prescriptions about this. JWEs can also use various different ciphers, we recommend the use of `xchacha20poly1305`, as it is one of the most performant ciphers, and there are multiple implementations.
+Encrypted objects are encoded using DagJWE. To properly encrypt data with DagJWE, the data first needs to be encoded as an *inline CID* (details below). JSON Web Encryption objects (JWEs) [[spec:rfc7516]] can be used for both symmetric and asymmetric encryption; at the wrapper layer, this specification does not make any prescriptions about this. JWEs can also use various different ciphers. We recommend the use of `XChaCha20Poly1305`, of which there are multiple implementations, as it is one of the most performant ciphers.
 
 ##### Encoding an *inline CID*
 In order to encode an object as an *inline CID* the following algorithm is used:
 
 1. Encode the object using some IPLD codec (e.g., DagCBOR)
-2. Encode the IPLD bytes from step 1 as an _"identity multihash"_, which is 
-constructed as `<hash multicodec><size><bytes>`, where —
+2. Encode the IPLD bytes from Step 1 as an _"identity multihash"_, which is 
+constructed as `<hash multicodec><size><bytes>`, composed as follows:
    - `hash multicodec` is `00` for "identity"
-   - `size` is the varint bytelength
-   - `bytes` is the bytes from step 1
-3. Create an *inline CID* using the codec, which is encoded as 
-`<multibase prefix><multicodec cidv1><multicodec content type><multihash>`, 
-where —
-  - `multicodec content type` is the IPLD codec used (e.g., `DagCBOR`)
-  - `multihash` is the bytes from step 2
+   - `size` is the varint byte length
+   - `bytes` is the bytes from Step 1
+3. Create an *inline CID* using the codec, which is encoded as:
 
+    ```html
+    <multibase prefix><multicodec cidv1><multicodec content type><multihash>
+    ```
+    Details of *inline CID* composition:
+    - `multicodec content type` is the IPLD codec used (e.g., `DagCBOR`)
+    - `multihash` is the bytes from Step 2
 
 ### Payload
 
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ProfileWrite", // CollectionsWrite, CollectionsQuery, ActionsWrite, etc.
+  "type": "ProfileWrite", // CollectionsWrite, CollectionsQuery, ActionsWrite, etc.
   "data": { ... }
 }
 ```
@@ -217,7 +268,7 @@ defined as follows:
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "FeatureDetection",
+  "type": "FeatureDetection",
   "interfaces": { ... }
 }
 ```
@@ -228,7 +279,7 @@ the following request object:
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "FeatureDetectionRead"
+  "type": "FeatureDetectionRead"
 }
 ```
 
@@ -253,8 +304,11 @@ The following properties and values are defined for the Feature Detection object
     capability, while a boolean `false` value or omission of the property indicates the interface 
     capability is not supported:
       - `CollectionsQuery`
-      - `CollectionsWrite`
+      - `CollectionsCreate`
+      - `CollectionsUpdate`
+      - `CollectionsReplace`
       - `CollectionsDelete`
+      - `CollectionsBatch`
     - The object ****MAY**** contain a `actions` property. If the property is not present, 
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -262,8 +316,10 @@ The following properties and values are defined for the Feature Detection object
     capability, while a boolean `false` value or omission of the property indicates the interface 
     capability is not supported:
       - `ActionsQuery`
-      - `ActionsWrite`
+      - `ActionsCreate`
+      - `ActionsUpdate`
       - `ActionsDelete`
+      - `ActionsBatch`
     - The object ****MAY**** contain a `permissions` property. If the property is not present, 
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -272,8 +328,10 @@ The following properties and values are defined for the Feature Detection object
     capability is not supported:
       - `PermissionsRequest`
       - `PermissionsQuery`
-      - `PermissionsWrite`
+      - `PermissionsCreate`
+      - `PermissionsUpdate`
       - `PermissionsDelete`
+      - `PermissionsBatch`
 
 ### Profile
 
@@ -288,7 +346,7 @@ structure, if a Profile has been established by the controller of a DID:
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "Profile",
+  "type": "Profile",
   "descriptors": [
     {
       "@context": "http://schema.org",
@@ -316,17 +374,37 @@ structure, if a Profile has been established by the controller of a DID:
 
 An object ****MUST**** have one or more descriptors. The first element of the descriptors array is primary, and ****SHOULD**** be used unless another schema in the array is explicitly required.
 
+
+#### Read
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "ProfileRead"
+}
+```
+
 #### Write
 
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ProfileWrite",
+  "type": "ProfileWrite",
   "data": {
     "@context": "https://identity.foundation/schemas/hub",
-    "@type": "Profile",
+    "type": "Profile",
     "descriptors": [...]
   }
+}
+```
+
+#### Delete
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "ProfileDelete",
+  "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga"
 }
 ```
 
@@ -343,7 +421,7 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsQuery",
+  "type": "CollectionsQuery",
   "statements": [
     {
       "uri": "https://schema.org/MusicPlaylist"
@@ -352,38 +430,36 @@ experience for users.
 }
 ```
 
-#### Write
+#### Create
 
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsWrite",
-  "entries": [
-    {
-      "create": "https://schema.org/MusicPlaylist",
-      "data": {
-        // A new entry of the https://schema.org/MusicPlaylist schema
-      }
-    },
-    {
-      "modify": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-      "data": {
-        // A delta-based modification targeting an existing object's top-level ID
-      }
-    },
-    {
-      "create": "https://schema.org/Event",
-      "data": {
-        // A new entry of the https://schema.org/Event schema
-      }
-    },
-    {
-      "replace": "Qm65765jrn7be64v5q35v6we675br68jr",
-      "data": {
-        // An entire replacement targeting an existing object's top-level ID
-      }
-    }
-  ]
+  "type": "CollectionsCreate",
+  "schema": "https://schema.org/MusicPlaylist",
+  "data": { ... }
+}
+```
+
+#### Update
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "CollectionsUpdate",
+  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+  "data": { ... }
+}
+```
+
+#### Replace
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "CollectionsReplace",
+  "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
+  "data": { ... }
 }
 ```
 
@@ -392,12 +468,42 @@ experience for users.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "CollectionsDelete",
-  "targets": [
-    "https://schema.org/MusicPlaylist",
-    "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-    "https://schema.org/Event",
-    "Qm65765jrn7be64v5q35v6we675br68jr"
+  "type": "CollectionsDelete",
+  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+}
+```
+
+#### Batch
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "CollectionsBatch",
+  "entries": [
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "CollectionsCreate",
+      "schema": "https://schema.org/Event",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "CollectionsUpdate",
+      "schema": "https://schema.org/MusicPlaylist",
+      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "CollectionsDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "CollectionsReplace",
+      "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
+      "data": { ... }
+    }
   ]
 }
 ```
@@ -413,7 +519,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionsQuery",
+  "type": "ActionsQuery",
   "statements": [
     {
       "type": "https://schema.org/LikeAction"
@@ -422,26 +528,25 @@ under the `schema.org/Action` family of objects.
 }
 ```
 
-#### Write
+#### Create
 
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionsSend",
-  "entries": [
-    {
-      "type": "https://schema.org/LikeAction",
-      "data": {
-        // A new entry of the https://schema.org/LikeAction schema
-      }
-    },
-    {
-      "type": "https://schema.org/FollowAction",
-      "data": {
-        // A new entry of the https://schema.org/FollowAction schema
-      }
-    }
-  ]
+  "type": "ActionCreate",
+  "schema": "https://schema.org/LikeAction",
+  "data": { ... }
+}
+```
+
+#### Update
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "ActionUpdate",
+  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+  "data": { ... }
 }
 ```
 
@@ -450,12 +555,35 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "ActionsDelete",
-  "targets": [
-    "https://schema.org/ReadAction",
-    "https://schema.org/BefriendAction",
-    "Qmf9w548h8sc54p3584h6ow45aa56fvs5",
-    "Qm65765jrn7be64v5q35v6we675br68jr"
+  "type": "CollectionsDelete",
+  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+}
+```
+
+#### Batch
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "ActionsBatch",
+  "entries": [
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "ActionCreate",
+      "schema": "https://schema.org/LikeAction",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "ActionUpdate",
+      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "data": { ... }
+    },
+    {
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "CollectionsDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+    }
   ]
 }
 ```
@@ -470,21 +598,81 @@ to a Hub User's non-public data.
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "PermissionRequest",
+  "type": "PermissionRequest",
+  "data": {
+    "schema": "https://schema.org/MusicPlaylist",
+    "tags": ["classic rock", "rock", "rock and roll"]
+  }
+}
+```
+
+#### Query
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "PermissionsQuery",
+  "statements": [
+    {
+      "type": "https://schema.org/LikeAction"
+    }
+  ]
+}
+```
+
+#### Create
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "PermissionCreate",
+  "data": { ... }
+}
+```
+
+#### Update
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "PermissionUpdate",
+  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+  "data": { ... }
+}
+```
+
+#### Delete
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "PermissionDelete",
+  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+}
+```
+
+#### Batch
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "PermissionBatch",
   "entries": [
     {
-      "type": "https://schema.org/MusicPlaylist",
-      "tags": ["classic rock", "rock", "rock and roll"]
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "PermissionCreate",
+      "data": { ... }
     },
     {
-      "id": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "PermissionUpdate",
+      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "data": { ... }
     },
     {
-      "type": "https://schema.org/Event",
-      "tags": ["concerts"]
-    },
-    {
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr",
+      "@context": "https://identity.foundation/schemas/hub",
+      "type": "PermissionDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
     }
   ]
 }
@@ -501,7 +689,7 @@ This Hub configuration is ideal for implementers who seek to expose intentionall
 ```json
 {
   "@context": "https://identity.foundation/schemas/hub",
-  "@type": "FeatureDetection",
+  "type": "FeatureDetection",
   "interfaces": {
     "profile": {
       "ProfileRead": true
@@ -512,3 +700,8 @@ This Hub configuration is ideal for implementers who seek to expose intentionall
   }
 }
 ```
+
+
+## Normative References
+
+[[spec]]
