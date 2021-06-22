@@ -133,33 +133,33 @@ but the mechanisms below ****MUST**** be supported by a compliant Identity Hub i
 The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated 
 with a given DID, as located via the DID resolution process.
 
-*DID-Relative URL addressing a single file:*
-
-```json
-did:example:123?service=IdentityHub&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
-```
-
-*DID-Relative URL addressing a Collection of one resource type:*
-
-```json
-did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist
-```
-
-*DID-Relative URL addressing multiple Collections of different resource types:*
-
-```json
-did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&collection=https://schema.org/Event
-```
-
-*DID-Relative URL addressing Collections and specific resources together:*
-
-```json
-did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&resource=Qm3fw45v46w45vw54wgwv78jbdse4w
-```
-
 ::: note
-For example purposes, the parameters above are not URL encoded, but should be when using Identity Hub URLs in practice.
+For example purposes, the parameters in the URLs below are not URL encoded, but should be when using Identity Hub URLs in practice.
 :::
+ 
+*DID-Relative URL addressing a single file:* 
+ 
+```json 
+did:example:123?service=IdentityHub&resource=Qm3fw45v46w45vw54wgwv78jbdse4w 
+``` 
+ 
+*DID-Relative URL addressing a Collection of one resource type:* 
+ 
+```json 
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist 
+``` 
+ 
+*DID-Relative URL addressing multiple Collections of different resource types:* 
+ 
+```json 
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&collection=https://schema.org/Event 
+``` 
+ 
+*DID-Relative URL addressing Collections and specific resources together:* 
+ 
+```json 
+did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&resource=Qm3fw45v46w45vw54wgwv78jbdse4w 
+``` 
 
 #### DID-Relative URL Resolution
 
