@@ -166,13 +166,13 @@ did:example:123?service=IdentityHub&relativeRef=/CollectionsQuery?uri=https://sc
 
 #### Submit-type URLs
 
-*DID-Relative URL writing a single file:*
+*DID-Relative URL for submitting a single file:*
 
 ```json
 did:example:123?service=IdentityHub&relativeRef=/CollectionsCreate
 ```
 
-*Payload of write:*
+*Payload of submission:*
 
 ```json
 {
