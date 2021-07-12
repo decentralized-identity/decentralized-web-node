@@ -17,10 +17,10 @@ Identity Hub
 ## Abstract
 
 Most digital activities between people, organizations, devices, and other entities require 
-messaging and data exchanges. When entities exchange messages and data for credential, app, 
-or service flows, they need an interface over which to store, discovery, and fetch data related 
-to the entities they are interacting with. Identity Hubs are a data storage and message relay 
-mechanism which entities can use to locate public or permissioned private data in relation to 
+message and other data exchanges. When entities exchange messages and data for credential, app, 
+or service flows, they need an interface through which to store, discover, and fetch data related 
+to the entities with which they're interacting. Identity Hubs are a data storage and message relay 
+mechanism by which entities can locate public or permissioned private data related to 
 an entity's Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction 
 that allow an entity to operate multiple instances of compliant implementations that sync to the 
 same state across one another, enabling the owning entity to own, manage, and transact their data 
@@ -141,8 +141,16 @@ The following DID URL constructions are used to address [[ref: Hub Instances]] f
 with a given DID, as located via the DID resolution process.
 
 ::: note
-For example purposes, the parameters above are not URL encoded, but should be when using Identity Hub URLs in practice.
+For example purposes, the parameters in the URLs below are not URL encoded, 
+but should be when using Identity Hub URLs in practice.
 :::
+
+> ::: _**PLEASE** don't do this. The example URLs should be constructed and presented exactly as they would 
+> be in live deployment. If parameters are deemed too complex for humans to decode as they read (with 
+> which I concur), then they should be provided in unencoded form alongside the URL that contains their 
+> encoded form.  Examples in documentation should **never** be presented in a form which should never 
+> be seen in live deployment. -- @TallTed_
+> :::
 
 #### Fetch-type URLs
 
