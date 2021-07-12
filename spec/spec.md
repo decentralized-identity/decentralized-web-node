@@ -1,7 +1,7 @@
 Identity Hub
 ==================
 
-**Specification Status:** Strawman
+**Specification Status:** Draft
 
 **Latest Draft:**
   [identity.foundation/identity-hub](https://identity.foundation/identity-hub)
@@ -16,7 +16,15 @@ Identity Hub
 
 ## Abstract
 
-Most activities between people, organizations, devices, and other entities requires 
+Most digital activities between people, organizations, devices, and other entities require 
+messaging and data exchanges. When entities exchange messages and data for credential, app, 
+or service flows, they need an interface over which to store, discovery, and fetch data related 
+to the entities they are interacting with. Identity Hubs are a data storage and message relay 
+mechanism which entities can use to locate public or permissioned private data in relation to 
+an entity's Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction 
+that allow an entity to operate multiple instances of compliant implementations that sync to the 
+same state across one another, enabling the owning entity to own, manage, and transact their data 
+with others without reliance on location/provider-specific locations, APIs, or routing.
 
 ## Status of This Document
 
@@ -117,7 +125,6 @@ Object Format |
 Object Encryption |
 File Structure |
 IPFS |
-Database |
 
 ::: todo
 Finalize the component stack list - are these correct? Are we missing any?
@@ -137,29 +144,44 @@ with a given DID, as located via the DID resolution process.
 For example purposes, the parameters in the URLs below are not URL encoded, but should be when using Identity Hub URLs in practice.
 :::
  
+#### Fetch-type URLs
+
 *DID-Relative URL addressing a single file:* 
  
 ```json 
-did:example:123?service=IdentityHub&resource=Qm3fw45v46w45vw54wgwv78jbdse4w 
+did:example:123?service=IdentityHub&relativeRef=/Resources?id=Qm3fw45v46w45vw54wgwv78jbdse4w
 ``` 
  
 *DID-Relative URL addressing a Collection of one resource type:* 
  
 ```json 
-did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist 
+did:example:123?service=IdentityHub&relativeRef=/CollectionsQuery?uri=https://schema.org/MusicPlaylist
 ``` 
  
 *DID-Relative URL addressing multiple Collections of different resource types:* 
  
 ```json 
-did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&collection=https://schema.org/Event 
+did:example:123?service=IdentityHub&relativeRef=/CollectionsQuery?uri=https://schema.org/MusicPlaylist&uri=https://schema.org/Event
 ``` 
  
-*DID-Relative URL addressing Collections and specific resources together:* 
+#### Submit-type URLs
+
+*DID-Relative URL for submitting a single file:*
  
 ```json 
-did:example:123?service=IdentityHub&collection=https://schema.org/MusicPlaylist&resource=Qm3fw45v46w45vw54wgwv78jbdse4w 
+did:example:123?service=IdentityHub&relativeRef=/CollectionsCreate
 ``` 
+
+*Payload of submission:*
+
+```json
+{
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "CollectionsCreate",
+  "schema": "https://schema.org/MusicPlaylist",
+  "data": { ... }
+}
+```
 
 #### DID-Relative URL Resolution
 
@@ -193,16 +215,18 @@ IPFS can provide this to some extent, but do we need anything in addition to wha
 
 ## Commit Strategies
 
-### Full Replace
+### Last-Write Replace
 
-::: todo
-How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?
-:::
+The most basic Commit Strategy an Identity Hub implements should allow for the same traditional experience of posting an update to a file, wherein the new data replaces the old. The following defines how this Commit Strategy ****MUST**** be handled by compliant implementations:
+
+1. The writer of the file ****MUST**** include a `timestamp` field in the unencrypted header of the file's DAG-JOSE object, and its value ****MUST**** be a valid UNIX timestamp.
+2. The Hub Instance ****MUST**** evaluate whether the submission is valid, as determined via the permission and access evaluation rules defined in this specification.
+3. Upon submission, the Hub Instance ****MUST**** compare the current file metadata stored in relation to the object (if any exists) and retain whichever data contains the latest UNIX timestamp.
 
 ### Delta-based Merge
 
 ::: todo
-We need to pick a standard delta-based CRDT - which one?
+We need to pick a delta-based CRDT - which one?
 :::
 
 ## General Object Format
