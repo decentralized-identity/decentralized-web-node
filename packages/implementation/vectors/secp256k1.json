@@ -1,0 +1,15 @@
+{
+  "publicJwk": {
+      "kty": "EC",
+      "crv": "secp256k1",
+      "x": "P4JFnKwLV10fO7jvouNyFVBSaIV1ffb3cokQfqucc3Y",
+      "y": "P-iBAlR_u8dZ3UrhsiAzZkJxSpAFas7vYLQkePFGHnw"
+  },
+  "privateJwk": {
+      "kty": "EC",
+      "crv": "secp256k1",
+      "d": "LcVKbxiUHINB6Iaz6XU7oOUGXDllDo6qVtD_5UD4Zzg",
+      "x": "P4JFnKwLV10fO7jvouNyFVBSaIV1ffb3cokQfqucc3Y",
+      "y": "P-iBAlR_u8dZ3UrhsiAzZkJxSpAFas7vYLQkePFGHnw"
+  }
+}
