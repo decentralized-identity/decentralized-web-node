@@ -144,38 +144,52 @@ with a given DID, as located via the DID resolution process.
 For example purposes, the parameters above are not URL encoded, but should be when using Identity Hub URLs in practice.
 :::
 
+#### Composition
+
+*DID-relative URLs are composed of the following segments*
+
+`did:example:123` + `?service=IdentityHub` + `&relativeRef=/?message=` + `{ MESSAGE_BODY }`
+
+```json
+did:example:123?service=IdentityHub&relativeRef=/?message={ MESSAGE_BODY }
+```
+
 #### Fetch-type URLs
 
-*DID-Relative URL addressing a single file:*
+*DID-Relative URL for fetching objects from Collections:*
 
 ```json
-did:example:123?service=IdentityHub&relativeRef=/Resources?id=Qm3fw45v46w45vw54wgwv78jbdse4w
+did:example:123?service=IdentityHub&relativeRef=/?message={ type: "CollectionsQuery", statements: [{ "schema": "https://schema.org/SocialMediaPosting" }] }
 ```
 
-*DID-Relative URL addressing a Collection of one resource type:*
+*Resolve DID to Hub URL:*
 
-```json
-did:example:123?service=IdentityHub&relativeRef=/CollectionsQuery?uri=https://schema.org/MusicPlaylist
+`did:example:123` > resolve to Identity Hub endpoint(s) > `https://hub.example.com/`
+
+*Payload of fetch (e.g. HTTP POST Body):*
+
+```javascript
+POST https://hub.example.com/
+
+BODY {
+  "@context": "https://identity.foundation/schemas/hub",
+  "type": "CollectionsQuery",
+  "schema": "https://schema.org/SocialMediaPosting",
+  "data": { ... }
+}
 ```
+#### Submitting to a Hub
 
-*DID-Relative URL addressing multiple Collections of different resource types:*
+*Resolve DID to Hub URL:*
 
-```json
-did:example:123?service=IdentityHub&relativeRef=/CollectionsQuery?uri=https://schema.org/MusicPlaylist&uri=https://schema.org/Event
-```
+`did:example:123` > resolve to Identity Hub endpoint(s) > `https://hub.example.com/`
 
-#### Submit-type URLs
+*Payload of submission (e.g. HTTP POST Body):*
 
-*DID-Relative URL for submitting a single file:*
+```javascript
+POST https://hub.example.com/
 
-```json
-did:example:123?service=IdentityHub&relativeRef=/CollectionsCreate
-```
-
-*Payload of submission:*
-
-```json
-{
+BODY { // Wrap in authenticated/authorization structure
   "@context": "https://identity.foundation/schemas/hub",
   "type": "CollectionsCreate",
   "schema": "https://schema.org/MusicPlaylist",
