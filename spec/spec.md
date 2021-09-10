@@ -206,7 +206,6 @@ Considerations:
 - Is tombstoning required?
 :::
 
-
 ## Sync & Replication
 
 ::: todo
@@ -273,7 +272,6 @@ constructed as `<hash multicodec><size><bytes>`, composed as follows:
 ```
 
 ## Access & Permissions
-
 
 ## Interfaces
 
@@ -397,7 +395,6 @@ structure, if a Profile has been established by the controller of a DID:
 ```
 
 An object ****MUST**** have one or more descriptors. The first element of the descriptors array is primary, and ****SHOULD**** be used unless another schema in the array is explicitly required.
-
 
 #### Read
 

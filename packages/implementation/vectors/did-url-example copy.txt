@@ -1,0 +1,1 @@
+did:ion:123?service=IdentityHub&relativeRef=?{"type":"ProfileRead"}
