@@ -173,8 +173,8 @@ POST https://hub.example.com/
 
 BODY {
   "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsCreate",
-  "schema": "https://schema.org/MusicPlaylist",
+  "type": "CollectionsQuery",
+  "schema": "https://schema.org/SocialMediaPosting",
   "data": { ... }
 }
 ```
