@@ -273,7 +273,6 @@ constructed as `<hash multicodec><size><bytes>`, composed as follows:
 
 ## Access & Permissions
 
-
 ## Interfaces
 
 ### Feature Detection
