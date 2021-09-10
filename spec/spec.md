@@ -206,7 +206,6 @@ Considerations:
 - Is tombstoning required?
 :::
 
-
 ## Sync & Replication
 
 ::: todo
