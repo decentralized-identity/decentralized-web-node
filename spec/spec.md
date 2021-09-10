@@ -146,7 +146,7 @@ For example purposes, the parameters above are not URL encoded, but should be wh
 
 #### Composition
 
-DID-relative URLs are composed of the following segments
+*DID-relative URLs are composed of the following segments*
 
 `did:example:123` + `?service=IdentityHub` + `&relativeRef=/?message=` + `{ MESSAGE_BODY }`
 
