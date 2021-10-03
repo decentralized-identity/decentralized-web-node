@@ -4,9 +4,9 @@ function jsonSchemaValidation(){
 }
 
 const Validator = {
-  validate(message){
-    let schema = Validator.schemas[message.type];
-    if (schema && !jsonSchemaValidation(schema)) throw 'Malformed invocation objects';
+  validate(content){
+    let schema = Validator.schemas[content.type];
+    return schema && jsonSchemaValidation(schema);
   },
   schemas: {
     ProfileRead: true,

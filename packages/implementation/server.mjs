@@ -8,7 +8,7 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 import { IdentityHub } from './main.mjs';
-import Errors from './lib/errors.mjs';
+import Status from './lib/status.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const app = new Koa();
@@ -72,12 +72,12 @@ router.post('/:did/commit', async (ctx) => {
   let hub = await getHub(ctx.params.did);
 
   let entry = await hub.compose({
-    message: ctx.request.body,
+    content: ctx.request.body,
     sign: true
   });
 
   console.log(entry);
-  await hub.commit(entry.node, entry.id)
+  await hub.commit(entry)
   ctx.body = entry;
 });
 
@@ -87,11 +87,11 @@ router.post('/:did/ProfileWrite', async (ctx) => {
 
   let entry = await hub.compose({
     sign: true,
-    message: { // ctx.request.body,
-      "@context": "https://identity.foundation/schemas/hub",
+    content: { // ctx.request.body,
       "type": "ProfileWrite",
+      "schema": "https://identity.foundation/schemas/hub/profile",
       "data": {
-        "@context": "https://identity.foundation/schemas/hub",
+        "@context": "https://identity.foundation/schemas/hub/profile",
         "type": "Profile",
         "descriptors": [
           {
@@ -116,30 +116,21 @@ router.post('/:did/ProfileWrite', async (ctx) => {
     },
   });
   console.log(entry);
-  await hub.commit(entry.node, entry.id)
+  await hub.commit(entry)
   ctx.body = entry.node;
 });
 
-router.post('/:did', async (ctx) => {
-  console.log(ctx.params.did, ctx.request.body);
-  let hub = await getHub(ctx.params.did);
+router.post('/', async (ctx) => {
+  let request = ctx.request.body;
+  let hub = await getHub(request.target);
   try {
-    let result = await hub.process(ctx.request.body);
-    console.log(result);
-    ctx.body = result;
+    ctx.body = await hub.process(request.message || request.messages);
   }
   catch (e) {
-    let message = Errors.codes[e];
-    if (message) {
-      ctx.status = e;
-      ctx.body = {
-        message: message
-      };
-    }
-    else {
-      e.status = 500;
-      throw e;
-    }
+    ctx.status = 500;
+    ctx.body = {
+      status: Status.getStatus(500)
+    };
   }
 });
 

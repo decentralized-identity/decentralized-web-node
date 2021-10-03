@@ -4,13 +4,12 @@ import { IdentityHub } from '../main.mjs';
 
 async function resolveEntry(entry, file_id){
   let ipfs = await IdentityHub.ipfs;
-  let [ node, file ] = await Promise.all([
+  let [ item, file ] = await Promise.all([
     typeof entry === 'string' ? ipfs.dag.get(new CID(entry)).then(z => z.value) : entry,
-    ipfs.dag.get(new CID(file_id || entry.data.id)).then(z => z.value)
+    ipfs.dag.get(new CID(file_id || entry.message.content.data)).then(z => z.value)
   ]);
-  node.data.payload = file;
-  delete node.id;
-  return node;
+  item.message.content.data = file;
+  return item.message;
 }
 
 const Interfaces = {
@@ -22,7 +21,7 @@ const Interfaces = {
   },
   async FilesQuery(did, message){
     let DID = await IdentityHub.load(did);
-    let entry = await DID.storage.get('stack', message.id).catch(e => console.log(e));
+    let entry = await DID.storage.get('stack', message.content.id).catch(e => console.log(e));
     if (entry) return resolveEntry(entry.id, entry.file);
     else throw 404;
   },
@@ -42,27 +41,20 @@ const Interfaces = {
   },
   async CollectionsQuery(did, message){
     let DID = await IdentityHub.load(did);
-    return Promise.all(message.statements.reduce((queries, statement) => {
-      let query = Object.keys(statement).length;
-      if (!query) queries.push(null);
-      else {
-        query = [];
-        if (statement.id) {
-          query.push('AND', ['id', '=', statement.id.trim()]);
-        }
-        if (statement.schema) {
-          query.push('AND', ['schema', '=', statement.schema.trim()])
-        }
-        if (statement.tags) {
-          query.push('AND', ['tags', 'INCLUDES', statement.tags.map(tag => tag.trim())])
-        }
-        query.shift();
-        queries.push(DID.storage.find('collections', query).then(entries => {
-          return Promise.all(entries.map(entry => resolveEntry(entry)))
-        }));
-      }
-      return queries;
-    }, [])).catch(e => console.log(e));
+    let query = [];
+    if (message.id) {
+      query.push('AND', ['id', '=', message.id.trim()]);
+    }
+    if (message.schema) {
+      query.push('AND', ['message.content.schema', '=', message.schema.trim()])
+    }
+    if (message.tags) {
+      query.push('AND', ['message.content.tags', 'INCLUDES', message.tags.map(tag => tag.trim())])
+    }
+    query.shift();
+    return DID.storage.find('collections', query).then(entries => {
+      return Promise.all(entries.map(entry => resolveEntry(entry)))
+    });
   }
 }
 

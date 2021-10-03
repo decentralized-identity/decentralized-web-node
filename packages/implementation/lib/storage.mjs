@@ -10,6 +10,44 @@ function normalizeEntries(entries){
   });
 }
 
+const modelTemplate = {
+  model: {
+    "id:string": { pk: true, immutable: true },
+    "message:object": {
+      model: {
+        "header:object": { immutable: true },
+        "protected:string": { immutable: true },
+        "payload:string": { immutable: true },
+        "signature:string": { immutable: true },
+        "content:object": {
+          model: {
+            "type:string": { immutable: true, notNull: true },
+            "format:string": { immutable: true, notNull: true },
+            "nonce:string": { immutable: true },
+            "root:string": { immutable: true },
+            "parent:string": { immutable: true },
+            "schema:string": { immutable: true, notNull: true },
+            "tags:string[]": {},
+            "data:any": {},
+          }
+        }
+      }
+    }
+  },
+  // indexes: {
+  //   "message.content.schema:string": {},
+  //   "message.content.tags:string[]": {}
+  // }
+};
+
+const tables = [
+  'stack',
+  'profile',
+  'permissions',
+  'collections',
+  'actions'
+]
+
 export default class Storage {
 
   constructor(did, options = {}){
@@ -26,50 +64,23 @@ export default class Storage {
             "file:string": { immutable: true }
           }
         },
-        {
+        Object.assign({}, modelTemplate, {
           name: 'profile',
-          model: {
-            "id:string": { pk: true, immutable: true },
-            "data:object": {},
-            "signature:object": {}
-          }
-        },
-        {
+        }),
+        Object.assign({}, modelTemplate, {
           name: 'permissions',
-          model: {
-            "id:string": { pk: true, immutable: true },
-            "schema:string": { immutable: true, notNull: true },
-            "data:object": { immutable: true },
-            "signature:object": {}
-          }
-        },
-        {
+        }),
+        Object.assign({}, modelTemplate, {
           name: 'collections',
-          model: {
-            "id:string": { pk: true, immutable: true },
-            "type:string": { immutable: true },
-            "nonce:string": { immutable: true },
-            "schema:string": { immutable: true, notNull: true },
-            "root:string": { immutable: true },
-            "parent:string": { immutable: true },
-            "tags:array": {},
-            "data:object": { immutable: true },
-            "signature:object": {}
-          }
-        },
-        {
+        }),
+        Object.assign({}, modelTemplate, {
           name: 'actions',
-          model: {
-            "id:string": { pk: true, immutable: true },
-            "nonce:string": { immutable: true },
-            "schema:string": { immutable: true, notNull: true },
-            "root:string": { immutable: true },
-            "parent:string": { immutable: true },
-            "data:object": { immutable: true },
-            "signature:object": { immutable: true }
-          }
-        }
+        })
       ]
+    }).then(async z => {
+      // for (let table of tables) {
+      //   await nano().useDatabase(table).query('rebuild indexes');
+      // }
     })  
   }
 
@@ -104,7 +115,7 @@ export default class Storage {
 
   async getBySchema(table, schema){
     return this.txn(db => db(table).query('select').where([
-      'schema', '=', schema.trim()
+      'message.content.schema', '=', schema.trim()
     ]).exec()).catch(e => console.log(e))
   }
 

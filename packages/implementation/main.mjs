@@ -1,6 +1,7 @@
 
 import Natives from './lib/natives.mjs';
 import Storage from './lib/storage.mjs';
+import Status from './lib/status.mjs';
 import Interfaces from './lib/interfaces.mjs';
 import Validator from './lib/schema-validation.mjs';
 import DIDMethods from './did-methods/index.mjs';
@@ -8,12 +9,9 @@ import randomBytes from '@consento/sync-randombytes';
 import CID from 'cids';
 import { create as ipfsCreate } from 'ipfs-core';
 import { parseJwk } from 'jose/jwk/parse';
-import { CompactEncrypt } from 'jose/jwe/compact/encrypt';
-import { CompactSign } from 'jose/jws/compact/sign';
+import { FlattenedSign } from 'jose/jws/flattened/sign';
+import { FlattenedEncrypt  } from 'jose/jwe/flattened/encrypt';
 import { decodeProtectedHeader } from 'jose/util/decode_protected_header';
-// import { JWS, JWE } from '@transmute/jose-ld';
-// import { Secp256k1KeyPair } from '@transmute/secp256k1-key-pair';
-// import { X25519KeyPair } from '@transmute/x25519-key-pair';
 
 const IPFS = ipfsCreate();
 
@@ -98,9 +96,10 @@ class IdentityHubInstance {
       default:
         let privateJwk = options.privateJwk || this.signing.privateJwk;
         let alg = privateJwk.alg || algs[privateJwk.crv];
-        return new CompactSign(payload)
-                    .setProtectedHeader(Object.assign({}, options.header || {}, { alg: alg }))
+        return new FlattenedSign(toEncodedArray(payload))    
+                    .setProtectedHeader({ alg: alg })
                     .sign(await parseJwk(privateJwk, alg))
+                    
     }
   }
 
@@ -109,89 +108,112 @@ class IdentityHubInstance {
       default:
         let privateJwk = options.privateJwk || this.encryption.privateJwk;
         let alg = privateJwk.alg || algs[privateJwk.crv];
-        return new CompactEncrypt(toEncodedArray(payload))
-                    .setProtectedHeader(Object.assign({}, options.header || {}, { alg: alg }))
+        return new FlattenedEncrypt(toEncodedArray(payload))
+                    .setProtectedHeader({ alg: alg })
                     .encrypt(await parseJwk(privateJwk, alg));
     }
   }
 
   async compose(args){
-    let message = args.message;
 
-    if (!Validator.schemas[message.type]) throw `Unsupported Interface invocation`;
-    
+    if (!Validator.schemas[args.content.type]) throw `Unsupported Interface invocation`;
+
     let ipfs = await IdentityHub.ipfs;
-    let data = message.data;
-    let header = Natives.pick(message, ['type', 'schema', 'tags', 'root', 'parent']);
-    header.nonce = randomBytes(new Uint8Array(16)).join('');
+    let entry = {
+      message: {
+        content: args.content
+      }
+    };
 
-    if (args.encrypt) {
-      data = typeof args.sign === 'function' ?
-              await args.encrypt(data, { header }) :
-              await this.encrypt(data, { header, privateJwk: args.sign.privateJwk })
+    let content = entry.message.content;
+        content.format = 'json';
+        content.nonce = randomBytes(new Uint8Array(16)).join('');
+    
+    if (args.encrypt && content.data) {
+      content.format = 'jwe';
+      content.data = typeof args.encrypt === 'function' ?
+        await args.encrypt(content.data) :
+        await this.encrypt(content.data, { privateJwk: args.encrypt.privateJwk })
     }
 
-    let dataNode = await ipfs.dag.put(data);
-
-    let entry = Object.assign({}, header, {
-      data: {
-        format: args.encrypt ? 'jwe' : 'raw',
-        id: dataNode.toString()
-      }
-    });
-
+    let dataNode = await ipfs.dag.put(content.data);
+    content.data = dataNode.toString();
+    
     if (args.sign) {
-      let payload = toEncodedArray(JSON.stringify({
-        id: entry.data.id
-      }));
-      entry.signature = {
-        format: 'jws',
-        payload: typeof args.sign === 'function' ?
-                  await args.sign(payload, { header }) :
-                  await this.sign(payload, { header, privateJwk: args.sign.privateJwk })
-      }
+      let jws = typeof args.sign === 'function' ?
+        await args.sign(content) :
+        await this.sign(content, { privateJwk: args.sign.privateJwk });
+      Object.assign(entry.message, jws);
     }
 
-    let composedNode = await ipfs.dag.put(entry);
-    return {
-      id: composedNode.toString(),
-      node: (await ipfs.dag.get(composedNode)).value
-    }
+    let messageNode = await ipfs.dag.put(entry.message);
+    entry.id = messageNode.toString()
+    return entry;
   }
 
-  async commit(node, id){
+  async commit(entry){
     let ipfs = await IdentityHub.ipfs;
-    let entryCID = new CID(id);
-    node = node || (await ipfs.dag.get(entryCID)).value;
-    let type = node.type;
+    let type = entry.message.content.type;
     let match = type.match(storeRegexp);
     if (!match) throw 'Not a supported object type';
-    let dataCID = new CID(node.data.id);
+    let dataId = entry.message.content.data;
+    console.log(entry.message.content.data)
+    let messageCID = new CID(entry.id);
+    let dataCID = new CID(dataId);
     let Interface = IdentityHub.interfaces[type];
     return Promise.all([ // Could store these against stores located elsewhere
-      ipfs.pin.addAll([entryCID, dataCID]),
-      this.storage.set('stack', { id: id, file: node.data.id }),
+      ipfs.pin.addAll([messageCID, dataCID]),
+      this.storage.set('stack', { id: entry.id, file: dataId }),
       Interface ?
-        Interface(this.did, node, id) :
-        this.storage.set(match[0].toLowerCase(), Object.assign({}, node, { id: id }))
+        Interface(this.did, entry, entry.id) :
+        this.storage.set(match[0].toLowerCase(), Object.assign({}, entry))
     ]);
   }
 
-  async process (entry){
-    let Interface = IdentityHub.interfaces[entry.type];
-    if (!Interface) {
-      throw {
-        statusCode: 501,
-        message: `
-          The interface method invoked is not supported by this Identity Hub implementation. 
-          Invoke a FeatureDetectionRead to discover supported interfaces.
-        `
-      };
-    }
-    await Validator.validate(entry);
-    let allow = await this.authorize(entry).catch(e => false);
-    if (!allow) throw 'Payload contains unathorized invocations';
-    return Interface(this.did, entry);
+  async process (message){
+    console.log(message);
+    let multiple = Array.isArray(message);
+    let responses = await Promise.all((multiple ? message : [message]).map(async msg => {
+
+      let content = msg.content;
+      let Interface = IdentityHub.interfaces[content.type];
+
+      if (!Interface) {
+        return {
+          status: Status.getStatus(501)
+        };
+      }
+
+      let valid = await Validator.validate(content);
+      if (!valid) {
+        return {
+          status: Status.getStatus(400)
+        };
+      }
+
+      let allow = await this.authorize(content).catch(e => false);
+      if (!allow) {
+        return {
+          status: Status.getStatus(401)
+        };
+      }
+
+      try {
+        let response = await Interface(this.did, msg);
+        return {
+          status: Status.getStatus(200),
+          body: response
+        }
+      }
+      catch(e) {
+        return {
+          status: Status.getStatus(500)
+        };
+      }
+
+    }))
+
+    return multiple ? { responses } : responses[0];
   }
 
   async authorize (entry){ // Could go elsewhere to diagnose authz
