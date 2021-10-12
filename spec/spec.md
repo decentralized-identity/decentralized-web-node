@@ -183,12 +183,12 @@ The following process defines how a DID-Relative URL addressing an Identity Hub 
 
 *Single message*
 ```json
-did:example:123?service=IdentityHub&relativeRef=/?message={ "descriptor": { "type": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }}
+did:example:123?service=IdentityHub&relativeRef=/?message={ "descriptor": { "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }}
 ```
 
-*Batch of messages*
+*Multiple messages*
 ```json
-did:example:123?service=IdentityHub&relativeRef=/?message={ "descriptor": { "type": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }}&message={...}
+did:example:123?service=IdentityHub&relativeRef=/?message={...}&message={...}&message={...}
 ```
 
 **Resolve DID to Hub URL:**
@@ -204,27 +204,9 @@ did:example:123?service=IdentityHub&relativeRef=/?message={ "descriptor": { "typ
   2. Set the `content` property of the [Message Wrapper](#message-wrapper) object to the JSON representation of the `message` parameter.
   3. Augment the [Message Wrapper](#message-wrapper) object with any signing and authorization values required, as described in the [Message Wrapper](#message-wrapper) section.
   4. Retain the object for inclusion in the request body.
-4. If Step 3 yielded a single [Message Wrapper](#message-wrapper) object, create a `message` property in the request body object and set the single [Message Wrapper](#message-wrapper) object as the value. If Step 3 yielded multiple [Message Wrapper](#message-wrapper) objects, create a `messages` property in the request body object with an array as a value, and populate the array with the [Message Wrapper](#message-wrapper) objects. 
+4. Create a `messages` property in the request body object, and set its value as an array of the resulting [Message Wrapper](#message-wrapper) objects from Step 3.
 
-*Single message example:*
-
-```json5
-POST https://hub.example.com/
-
-BODY {
-  "target": "did:example:123",
-  "message": {
-    "content": {
-      "descriptor": {
-        "type": "CollectionsQuery",
-        "schema": "https://schema.org/SocialMediaPosting"
-      }
-    }
-  }
-}
-```
-
-*Multiple message example:*
+*Constructed HTTP POST example:*
 
 ```json5
 POST https://hub.example.com/
@@ -235,7 +217,7 @@ BODY {
     {
       "content": {
         "descriptor": {
-          "type": "CollectionsQuery",
+          "method": "CollectionsQuery",
           "schema": "https://schema.org/SocialMediaPosting"
         }
       }
@@ -251,24 +233,8 @@ All objects within an Identity Hub ****MUST**** be constructed and transacted be
 
 ### Message Wrapper
 
-**Single message:**
-```json
-{
-  "target": "did:example:123",
-  "message": {
-    "content": {...},
-    "protected": {
-      "alg": "...",
-      "kid": "...",
-      "authz": "...",
-    },
-    "payload": cid(content),
-    "signature": signature(protected + payload)
-  }
-}
-```
+Message Wrappers are JSON objects that are used to pass [Message Content](#message-content) via their `content` property, and can be augmented to include Flattened [[spec:rfc7515]] JSON Web Signature properties that may include permission evaluation material (e.g. capabilities).
 
-**Batch of messages:**
 ```json
 {
   "target": "did:example:123",
@@ -288,99 +254,129 @@ All objects within an Identity Hub ****MUST**** be constructed and transacted be
 }
 ```
 
-Message wrappers are JSON objects that ****MUST**** be composed as follows:
+Message Wrappers objects ****MUST**** be composed as follows:
 
-- The message wrapper object ****MUST**** contain a `target` property, and its value ****MUST**** be the Decentralized Identifier of the Hub being targeted by the message.
-- The message wrapper object ****MUST**** contain either a `message` property that ****MUST**** be an object (defined below), or a `messages` property that ****MUST**** be an array of objects composed as follows:
-  - Each message object ****MUST**** contain a `content` property, and its value ****MUST**** be an object, as defined by the [Message Contents](#message-contents) section below.
-  - If the message requires authorization, the rest of the object must be constructed as follows: 
-    1. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the `content` object, then add a `payload` property to the message object with the stringified representation of the generated CID as its value.
-    2. If the message requires signatory authorization, the message object ****MUST**** include a `protected` property with an object for a value that contains the correct `alg` and `kid` values for the algorithm and key to be used in generating the JSON Web Signature [[spec:rfc7515]].
-    3. If the message requires passage of permission material, ensure the message object ****MUST**** include a `protected` property with an object for a value that contains an `authz` property set to the requisite value.
+- The Message Wrapper object ****MUST**** contain a `target` property, and its value ****MUST**** be the Decentralized Identifier of the Hub being targeted by the message.
+- The Message Wrapper object ****MUST**** contain a `messages` property, and its value ****MUST**** be an array of one or more Message Wrapper objects, composed as follows:
+  - Each Message Wrapper object ****MUST**** contain a `content` property, and its value ****MUST**** be an object, as defined by the [Message Contents](#message-content) section of this specification.
+  - If the message requires signatory and/or permission-evaluated authorization, the rest of the object must be constructed as follows: 
+    1. Add a `payload` property to the Message Wrapper object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `content` object.
+    2. If the message requires signatory authorization, the Message Wrapper object ****MUST**** includes a `protected` property with an object for a value that contains the correct `alg` and `kid` values for the algorithm and key used to generate the required [[spec:rfc7515]] JSON Web Signature.
+    3. If the message requires passage of permission material, ensure the message object ****MUST**** includes a `protected` property with an object for a value that contains an `authz` property with the requisite permission material as its value.
 
-### Message Contents
+### Message Content
 
 The Identity Hub data structure that resides in the `content` property of the [Message Wrapper](#message-wrapper) is comprised of a common JSON structure that contains the following properties regardless of whether the message data is signed/encrypted:
 
 ```json
 {
   "target": "ion:did:123",
-  "message": {
-    "contents": {
-      "descriptor": {
-        "type": INTERFACE_TYPE_STRING,
-        "cid": DATA_CID_STRING,
-        "format": DATA_FORMAT_STRING,
-        "timestamp": RFC2822_TIMESTAMP_STRING
+  "messages": [
+    {
+      "content": {
+        "descriptor": {
+          "method": INTERFACE_METHOD_STRING,
+          "cid": DATA_CID_STRING,
+          "format": DATA_FORMAT_STRING,
+          "timestamp": RFC2822_TIMESTAMP_STRING
+        },
+        "data": OPTIONAL_JSON_OBJECT
       },
-      "data": OPTIONAL_JSON_OBJECT
+      ...
     },
-    ...
-  }
+    {...}
+  ]
 }
 ```
 
 A message is a JSON object that ****MUST**** be composed as follows:
 
-- The message object ****MAY**** contain a `data` property, and if present it ****MUST**** be a JSON value that includes data related to the message type being invoked.
+- The message object ****MAY**** contain a `data` property, and if present it ****MUST**** be a JSON value that includes data related to the Interface method being invoked.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The `descriptor` object ****MUST**** contain a `type` property, and its value ****MUST**** be a string that matches a Hub Interface type.
-  - If the message object has data associated with it, passed directly via the `data` property or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoding of the data associated with the message.
+  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Hub Interface.
+  - If the message object has data associated with it, passed directly via the `data` property or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
   - If the message object has data associated with it, passed directly via the `data` property or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** be a string that specifies the format of the data.
-  - The `descriptor` object ****MAY**** contain a `timestamp` property, and its value ****MUST**** be an [[rfc2822]] compliant timestamp that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or a designated party that permitted to do so.
+  - The `descriptor` object ****MAY**** contain a `timestamp` property, and its value ****MUST**** be an [[spec:rfc2822]] compliant timestamp that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or a designated party that permitted to do so.
 
-Individual interfaces may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
+Individual Interface methods may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
 
-#### Signed Contents
+#### Raw Content
+
+If there is no need or desire to sign or encrypt the content of a message (i.e. public repudiable data), the message `content` object need only include a `descriptor` object (with any method-specific properties required) and a `data` property (when desired or required to be present for a given method invocation).
+
+```json
+{ // Message Wrapper
+  ...
+  "content": {
+    "descriptor": {
+      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "cid": CID(data),
+      "clock": 0,
+      "method": "CollectionsWrite",
+      "schema": "https://schema.org/SocialMediaPosting",
+      "format": "JSON"
+    },
+    "data": {...}
+  }
+}
+```
+
+#### Signed Content
 
 If the object is to be attributed to a signer (e.g the Hub owner via signature with their DID key), the object ****MUST**** contain the following additional properties to produce a Flattened JSON Web Signature (JWS) [[spec:rfc7515]] object:
 
 ```json
-{
-  "descriptor": {
-    "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "cid": CID(data),
-    "clock": 0,
-    "type": "CollectionsWrite",
-    "schema": "https://schema.org/SocialMediaPosting",
-    "format": "JSON"
-  },
-  "data": {...},
-  "protected": {
-    "alg": "ES256K",
-    "kid": "did:example:123#key-1"
-  },
-  "payload": CID(descriptor),
-  "signature": Sign(protected + payload)
+{ // Message Wrapper
+  ...
+  "content": {
+    "descriptor": {
+      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "cid": CID(data),
+      "clock": 0,
+      "method": "CollectionsWrite",
+      "schema": "https://schema.org/SocialMediaPosting",
+      "format": "JSON"
+    },
+    "data": {...},
+    "protected": {
+      "alg": "ES256K",
+      "kid": "did:example:123#key-1"
+    },
+    "payload": CID(descriptor),
+    "signature": Sign(protected + payload)
+  }
 }
 ```
 
 The attributed signer ****MUST**** construct their signed message object as follows:
 
-1. If the message includes data related to the message type being invoked, generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the data that is to be represented in the message, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
-2. After the value of the `cid` property has been set to the CID of the data the message represents, generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the `descriptor` object, and set the `payload` property of the `descriptor` object as the stringified representation of the CID.
+1. If the message includes associated data, passed directly via the `data` property or through a channel external to the message object, add a `cid` property to the `descriptor` object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
+2. After the value of the `cid` property has been set to the CID of the data the message represents, add a `payload` property to the Message Content object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object.
 3. Use the resulting values to generate a JWS Flattened JSON representation in accordance with the process described in the JSON Web Signature [[spec:rfc7515]] specification.
 
-#### Encrypted Contents
+#### Encrypted Content
 
 If the object is to be encrypted (e.g the Hub owner encrypting their data to keep it private), the `descriptor` object ****MUST**** be constructed as follows:
 
 ```json
-{
-  "descriptor": {
-    "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "cid": CID(data),
-    "clock": 7,
-    "type": "CollectionsWrite",
-    "schema": "https://schema.org/SocialMediaPosting",
-    "format": "JWE"
-  },
-  "data": { 
-    "protected": ...,
-    "recipients": ...,
-    "ciphertext": ...,
-    "iv": ...,
-    "tag": ... 
+{ // Message Wrapper
+  ...
+  "content": {
+    "descriptor": {
+      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "cid": CID(data),
+      "clock": 7,
+      "method": "CollectionsWrite",
+      "schema": "https://schema.org/SocialMediaPosting",
+      "format": "JWE"
+    },
+    "data": { 
+      "protected": ...,
+      "recipients": ...,
+      "ciphertext": ...,
+      "iv": ...,
+      "tag": ... 
+    }
   }
 }
 ```
@@ -391,40 +387,45 @@ The attributed signer ****MUST**** construct their signed message object as foll
 2. Generate a JSON Web Encryption (JWEs) [[spec:rfc7516]] object for the data that is to be represented in the message.
 3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
 
-#### Signed & Encrypted Contents
+#### Signed & Encrypted Content
 
 If the object is to be both attributed to a signer and encrypted encrypted, it ****MUST**** be structured as follows:
 
 ```json
-{
-  "descriptor": {
-    "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "cid": CID(data),
-    "clock": 3,
-    "type": "CollectionsWrite",
-    "schema": "https://w3id.org/vc-status-list-2021/v1",
-    "format": "JWE"
-  },
-  "data": { 
-    "protected": ...,
-    "recipients": ...,
-    "ciphertext": ...,
-    "iv": ...,
-    "tag": ... 
-  },
-  "protected": {
-    "alg": "ES256K",
-    "kid": "did:example:123#key-1"
-  },
-  "payload": CID(descriptor),
-  "signature": Sign(protected + payload)
+{ // Message Wrapper
+  ...
+  "content": {
+    "descriptor": {
+      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "cid": CID(data),
+      "clock": 3,
+      "method": "CollectionsWrite",
+      "schema": "https://w3id.org/vc-status-list-2021/v1",
+      "format": "JWE"
+    },
+    "data": { 
+      "protected": ...,
+      "recipients": ...,
+      "ciphertext": ...,
+      "iv": ...,
+      "tag": ... 
+    },
+    "protected": {
+      "alg": "ES256K",
+      "kid": "did:example:123#key-1"
+    },
+    "payload": CID(descriptor),
+    "signature": Sign(protected + payload)
+  }
 }
 ```
 
 The attributed signer ****MUST**** construct their signed message object as follows:
 
-1. Generate a JSON Web Encryption (JWEs) [[spec:rfc7516]] object for the data that is to be represented in the message.
-2. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
+1. The `format` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
+2. Generate a JSON Web Encryption (JWEs) [[spec:rfc7516]] object for the data that is to be represented in the message.
+3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
+4. Follow the instructions described in the [Signed Content](#signed-content) subsection above to turn the content object into a Flattened [[spec:rfc7515]] JSON Web Signature object.
 
 ## Access & Permissions
 
@@ -438,10 +439,6 @@ IPFS can provide this to some extent, but do we need anything in addition to wha
 
 ### Feature Detection
 
-::: todo
-Add batching optionality flags
-:::
-
 The Identity Hub specification defines well-recognized Hub configurations to maximize 
 interoperability (see Hub Configurations), but implementers may wish to support a custom 
 subset of the Interfaces and features. The Feature Detection interface is the means by 
@@ -449,7 +446,7 @@ which a Hub expresses support for the Interfaces and features it implements.
 
 #### Data Model
 
-A compliant Identity Hub Profile interface ****MUST**** produce a Feature Detection object 
+A compliant Identity Hub ****MUST**** produce a Feature Detection object 
 defined as follows:
 
 ```json
@@ -462,14 +459,14 @@ defined as follows:
 ##### Properties & Values
 
 The following properties and values are defined for the Feature Detection object:
-- The value of the `interfaces` property ****MUST**** be an object, composed of the following 
-  optional properties: 
+
+- The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows: 
     - The object ****MAY**** contain a `profile` property. If the property is not present, 
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `ProfileRead`
       - `ProfileWrite`
       - `ProfileDelete`
@@ -477,8 +474,8 @@ The following properties and values are defined for the Feature Detection object
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `CollectionsQuery`
       - `CollectionsWrite`
       - `CollectionsCommit`
@@ -487,8 +484,8 @@ The following properties and values are defined for the Feature Detection object
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `ActionsQuery`
       - `ActionsCreate`
       - `ActionsUpdate`
@@ -497,12 +494,15 @@ The following properties and values are defined for the Feature Detection object
     it indicates the Hub implementation does not support any aspects of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `PermissionsRequest`
       - `PermissionsQuery`
       - `PermissionsGrant`
       - `PermissionsRevoke`
+- The object ****MAY**** contain a `messaging` property, and its value ****MAY**** be an object composed of the following:
+    - The object ****MAY**** contain a `batching` property, and if present its value ****MUST**** be a boolean indicating whether the Hub Instance handles multiple messages in a single request. The absence of this property ****shall**** indicate that the Hub Instance does support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they ****MUST**** include this property and explicitly set its value to `false`;
+  
 
 #### Read
 
@@ -512,7 +512,7 @@ the following request object:
 ```json
 {
   "descriptor": {
-    "type": "FeatureDetectionRead"
+    "interface": "FeatureDetectionRead"
   }
 }
 ```
@@ -524,7 +524,7 @@ with basic profile information that describes the target DID entity.
 
 #### Data Model
 
-A compliant Identity Hub Profile interface ****MUST**** produce an object of the following 
+A compliant Identity Hub that supports the Profile interface ****MUST**** produce an object of the following 
 structure, if a Profile has been established by the controller of a DID:
 
 ```json
@@ -562,7 +562,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 ```json
 {
   "descriptor": {
-    "type": "ProfileRead"
+    "method": "ProfileRead"
   }
 }
 ```
@@ -574,7 +574,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
   "descriptor": {
     "cid": CID(data),
     "clock": 4,
-    "type": "ProfileWrite",
+    "method": "ProfileWrite",
     "format": "json"
   },
   "data": {
@@ -589,7 +589,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 - The message object ****MAY**** contain a `data` property, or its data may be conveyed through an external channel, and the data ****MUST**** be a JSON object that conforms with the data model described in the [Profile Data Model](#data-model-1) section above.
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
   - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoding of the data associated with the message.
-  - The `descriptor` object ****MUST**** contain a `type` property, and its value ****MUST**** be the string `ProfileWrite`.
+  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
   - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
   - The `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** be the string `json`.
 
@@ -598,7 +598,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 ```json
 {
   "descriptor": {
-    "type": "ProfileDelete"
+    "method": "ProfileDelete"
   }
 }
 ```
@@ -616,7 +616,7 @@ experience for users.
 ```json
 {
   "descriptor": {
-    "type": "CollectionsQuery",
+    "method": "CollectionsQuery",
     "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "schema": "https://schema.org/MusicPlaylist"
   }
@@ -635,7 +635,7 @@ Add more detail to the other props that can be present in CollectionsQuery messa
     "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
     "clock": 0,
-    "type": "CollectionsWrite",
+    "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "format": DATA_FORMAT
   },
@@ -648,7 +648,7 @@ Add more detail to the other props that can be present in CollectionsQuery messa
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
   - The `descriptor` object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
-  - The `descriptor` object ****MUST**** contain a `type` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
   - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
   - The `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** reflect the format of the data associated with the message.
 
@@ -669,7 +669,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
     "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
     "clock": 0,
-    "type": "CollectionsWrite",
+    "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "strategy": "merge-patch",
     "format": DATA_FORMAT
@@ -683,7 +683,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
   - The `descriptor` object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[rfc4122]] UUID Version 4 string.
   - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
-  - The `descriptor` object ****MUST**** contain a `type` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
   - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
   - The `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** reflect the format of the data associated with the message.
 
@@ -692,7 +692,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 ```json
 {
   "descriptor": {
-    "type": "CollectionsDelete",
+    "method": "CollectionsDelete",
     "id": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
 }
@@ -709,7 +709,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "descriptor": {
-    "type": "ActionsQuery",
+    "method": "ActionsQuery",
     "schema": "https://schema.org/LikeAction"
   }
 }
@@ -720,7 +720,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "descriptor": {
-    "type": "ActionsCreate",
+    "method": "ActionsCreate",
     "schema": "https://schema.org/LikeAction",
     "data": { ... }
   }
@@ -732,7 +732,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "descriptor": {
-    "type": "ActionsUpdate",
+    "method": "ActionsUpdate",
     "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
     "data": { ... }
   }
@@ -744,7 +744,7 @@ under the `schema.org/Action` family of objects.
 ```json
 {
   "descriptor": {
-    "type": "ActionsDelete",
+    "method": "ActionsDelete",
     "id": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
 }
@@ -760,7 +760,7 @@ to a Hub User's non-public data.
 ```json
 {
   "descriptor": {
-    "type": "PermissionsRequest",
+    "method": "PermissionsRequest",
     "schema": "https://schema.org/MusicPlaylist",
     "tags": ["classic rock", "rock", "rock and roll"]
   }
@@ -772,7 +772,7 @@ to a Hub User's non-public data.
 ```json
 {
   "descriptor": {
-    "type": "PermissionsQuery",
+    "method": "PermissionsQuery",
     "schema": "https://schema.org/MusicPlaylist",
   }
 }
@@ -783,7 +783,7 @@ to a Hub User's non-public data.
 ```json
 {
   "descriptor": {
-    "type": "PermissionsGrant",
+    "method": "PermissionsGrant",
     "schema": "https://schema.org/MusicPlaylist",
     "tags": ["classic rock", "rock", "rock and roll"]
   }
@@ -795,7 +795,7 @@ to a Hub User's non-public data.
 ```json
 {
   "descriptor": {
-    "type": "PermissionsRevoke",
+    "method": "PermissionsRevoke",
     "id": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
 }
@@ -805,18 +805,7 @@ to a Hub User's non-public data.
 
 Responses from Interface invocations ****MUST**** be constructed as follows:
 
-### Single Message Response
-
-```json
-{
-  "response": {
-    "status": { "code": 200, "message": "..." },
-    "content": {...}
-  }
-}
-```
-
-### Multiple Message Response
+### Example response object
 
 ```json
 {
@@ -834,7 +823,7 @@ Responses from Interface invocations ****MUST**** be constructed as follows:
 
 ## Commit Strategies
 
-Some interfaces may be bound to, or allow for choice between, the data modification algorithms detailed below. Interfaces that are bound to one or more of these strategies will indicate it within their interface definitions under the [Interfaces](#interfaces) section.
+Some interface methods may be bound to, or allow for choice between, the data modification algorithms detailed below. Interfaces that are bound to one or more of these strategies will indicate it within their interface definitions under the [Interfaces](#interfaces) section.
 
 ### Last-Write Wins
 

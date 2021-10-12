@@ -46,7 +46,7 @@ const Interfaces = {
       return Promise.all(entries.map(entry => resolveEntry(entry)))
     });
   },
-  async CollectionsPut(hub, message){
+  async CollectionsWrite(hub, message){
     let promises = [];
     let descriptor = message.descriptor;
     let messageCID = await ipfs.dag.put(message);

@@ -22,7 +22,7 @@ const modelTemplate = {
         model: {
           "id:string": { immutable: true, notNull: true },
           "cid:string": { immutable: true },
-          "type:string": { immutable: true, notNull: true },
+          "method:string": { immutable: true, notNull: true },
           "schema:string": { immutable: true, notNull: true },
           "tags:string[]": {},
           "format:string": { immutable: true, notNull: true },
