@@ -213,7 +213,7 @@ did:example:123?service=IdentityHub&relativeRef=/?message={ "descriptor": { "typ
 
 *Single message example:*
 
-```javascript
+```json5
 POST https://hub.example.com/
 
 BODY {
@@ -231,7 +231,7 @@ BODY {
 
 *Multiple message example:*
 
-```javascript
+```json5
 POST https://hub.example.com/
 
 BODY {
@@ -696,8 +696,10 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 
 ```json
 {
-  "type": "CollectionsDelete",
-  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+  "descriptor": {
+    "type": "CollectionsDelete",
+    "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+  }
 }
 ```
 
@@ -711,8 +713,10 @@ under the `schema.org/Action` family of objects.
 
 ```json
 {
-  "type": "ActionsQuery",
-  "schema": "https://schema.org/LikeAction"
+  "descriptor": {
+    "type": "ActionsQuery",
+    "schema": "https://schema.org/LikeAction"
+  }
 }
 ```
 
@@ -720,9 +724,11 @@ under the `schema.org/Action` family of objects.
 
 ```json
 {
-  "type": "ActionsCreate",
-  "schema": "https://schema.org/LikeAction",
-  "data": { ... }
+  "descriptor": {
+    "type": "ActionsCreate",
+    "schema": "https://schema.org/LikeAction",
+    "data": { ... }
+  }
 }
 ```
 
@@ -730,9 +736,11 @@ under the `schema.org/Action` family of objects.
 
 ```json
 {
-  "type": "ActionsUpdate",
-  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-  "data": { ... }
+  "descriptor": {
+    "type": "ActionsUpdate",
+    "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+    "data": { ... }
+  }
 }
 ```
 
@@ -740,8 +748,10 @@ under the `schema.org/Action` family of objects.
 
 ```json
 {
-  "type": "ActionsDelete",
-  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+  "descriptor": {
+    "type": "ActionsDelete",
+    "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+  }
 }
 ```
 
@@ -754,8 +764,8 @@ to a Hub User's non-public data.
 
 ```json
 {
-  "type": "PermissionsRequest",
-  "data": {
+  "descriptor": {
+    "type": "PermissionsRequest",
     "schema": "https://schema.org/MusicPlaylist",
     "tags": ["classic rock", "rock", "rock and roll"]
   }
@@ -766,8 +776,10 @@ to a Hub User's non-public data.
 
 ```json
 {
-  "type": "PermissionsQuery",
-  "schema": "https://schema.org/LikeAction"
+  "descriptor": {
+    "type": "PermissionsQuery",
+    "schema": "https://schema.org/MusicPlaylist",
+  }
 }
 ```
 
@@ -775,8 +787,11 @@ to a Hub User's non-public data.
 
 ```json
 {
-  "type": "PermissionsGrant",
-  "data": { ... }
+  "descriptor": {
+    "type": "PermissionsGrant",
+    "schema": "https://schema.org/MusicPlaylist",
+    "tags": ["classic rock", "rock", "rock and roll"]
+  }
 }
 ```
 
@@ -784,8 +799,10 @@ to a Hub User's non-public data.
 
 ```json
 {
-  "type": "PermissionsRevoke",
-  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+  "descriptor": {
+    "type": "PermissionsRevoke",
+    "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+  }
 }
 ```
 
