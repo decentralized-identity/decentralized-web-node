@@ -7,6 +7,14 @@ Identity Hub
   [identity.foundation/identity-hub/spec](https://identity.foundation/identity-hub/spec)
 <!-- -->
 
+**Editors:**
+~ [Daniel Buchner](https://www.linkedin.com/in/dbuchner/) (Microsoft)
+~ [Tobias Looker](https://www.linkedin.com/in/tplooker) (Mattr)
+
+**Contributors:**
+~ [Henry Tsai](https://www.linkedin.com/in/henry-tsai-6b884014/) (Microsoft)
+~ [XinAn Xu](https://www.linkedin.com/in/xinan-xu-b868a326/) (Microsoft)
+
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/identity-hub)
 ~ [File a bug](https://github.com/decentralized-identity/identity-hub/issues)
@@ -462,7 +470,7 @@ The following properties and values are defined for the Feature Detection object
 
 - The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows: 
     - The object ****MAY**** contain a `profile` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
@@ -471,7 +479,7 @@ The following properties and values are defined for the Feature Detection object
       - `ProfileWrite`
       - `ProfileDelete`
     - The object ****MAY**** contain a `collections` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
@@ -481,7 +489,7 @@ The following properties and values are defined for the Feature Detection object
       - `CollectionsCommit`
       - `CollectionsDelete`
     - The object ****MAY**** contain a `actions` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
@@ -491,7 +499,7 @@ The following properties and values are defined for the Feature Detection object
       - `ActionsUpdate`
       - `ActionsDelete`
     - The object ****MAY**** contain a `permissions` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
@@ -669,7 +677,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
     "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
     "clock": 0,
-    "method": "CollectionsWrite",
+    "method": "CollectionsCommit",
     "schema": "https://schema.org/SocialMediaPosting",
     "strategy": "merge-patch",
     "format": DATA_FORMAT
