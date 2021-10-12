@@ -348,7 +348,7 @@ If the object is to be attributed to a signer (e.g the Hub owner via signature w
 }
 ```
 
-The attributed signer ****MUST**** construct their signed message object as follows:
+The message generating party ****MUST**** construct the signed content object as follows:
 
 1. If the message includes associated data, passed directly via the `data` property or through a channel external to the message object, add a `cid` property to the `descriptor` object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
 2. After the value of the `cid` property has been set to the CID of the data the message represents, add a `payload` property to the Message Content object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object.
@@ -381,7 +381,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
 }
 ```
 
-The attributed signer ****MUST**** construct their signed message object as follows:
+The message generating party ****MUST**** construct the encrypted content object as follows:
 
 1. The `format` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
 2. Generate a JSON Web Encryption (JWEs) [[spec:rfc7516]] object for the data that is to be represented in the message.
@@ -420,7 +420,7 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
 }
 ```
 
-The attributed signer ****MUST**** construct their signed message object as follows:
+The message generating party ****MUST**** construct the signed and encrypted content object as follows:
 
 1. The `format` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
 2. Generate a JSON Web Encryption (JWEs) [[spec:rfc7516]] object for the data that is to be represented in the message.
