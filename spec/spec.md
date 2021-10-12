@@ -28,7 +28,7 @@ with others without reliance on location/provider-specific locations, APIs, or r
 
 ## Status of This Document
 
-Identity Hub is a _STRAWMAN_ specification under development within
+Identity Hub is a _DRAFT_ specification under development within
 the Decentralized Identity Foundation (DIF). It incorporates requirements and
 learnings from related work of many active industry players into a shared
 specification that meets the collective needs of the community.
