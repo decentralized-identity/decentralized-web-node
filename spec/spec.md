@@ -4,7 +4,7 @@ Identity Hub
 **Specification Status:** Draft
 
 **Latest Draft:**
-  [identity.foundation/identity-hub](https://identity.foundation/identity-hub)
+  [identity.foundation/identity-hub/spec](https://identity.foundation/identity-hub/spec)
 <!-- -->
 
 **Participate:**
