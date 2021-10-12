@@ -11,33 +11,26 @@ function normalizeEntries(entries){
 }
 
 const modelTemplate = {
-  model: {
-    "id:string": { pk: true, immutable: true },
-    "message:object": {
-      model: {
-        "header:object": { immutable: true },
-        "protected:string": { immutable: true },
-        "payload:string": { immutable: true },
-        "signature:string": { immutable: true },
-        "content:object": {
-          model: {
-            "type:string": { immutable: true, notNull: true },
-            "format:string": { immutable: true, notNull: true },
-            "nonce:string": { immutable: true },
-            "root:string": { immutable: true },
-            "parent:string": { immutable: true },
-            "schema:string": { immutable: true, notNull: true },
-            "tags:string[]": {},
-            "data:any": {},
-          }
+  "id:string": { pk: true, immutable: true },
+  "messages:object[]": {
+    model: {
+      "header:object": { immutable: true },
+      "protected:string": { immutable: true },
+      "payload:string": { immutable: true },
+      "signature:string": { immutable: true },
+      "descriptor:object": {
+        model: {
+          "id:string": { immutable: true, notNull: true },
+          "cid:string": { immutable: true },
+          "type:string": { immutable: true, notNull: true },
+          "schema:string": { immutable: true, notNull: true },
+          "tags:string[]": {},
+          "format:string": { immutable: true, notNull: true },
+          "parent:string": { immutable: true }
         }
       }
     }
-  },
-  // indexes: {
-  //   "message.content.schema:string": {},
-  //   "message.content.tags:string[]": {}
-  // }
+  }
 };
 
 const tables = [
@@ -60,22 +53,38 @@ export default class Storage {
         {
           name: 'stack',
           model: {
-            "id:string": { pk: true, immutable: true },
-            "file:string": { immutable: true }
+            "message_id:string": { pk: true, immutable: true },
+            "descriptor_id:string": { immutable: true },
+            "data_id:string": { immutable: true }
           }
         },
-        Object.assign({}, modelTemplate, {
+        {
           name: 'profile',
-        }),
-        Object.assign({}, modelTemplate, {
-          name: 'permissions',
-        }),
-        Object.assign({}, modelTemplate, {
+          model: Object.assign({}, {
+            "tip:string": { notNull: true },
+            "vector:int": { notNull: true },
+          }, modelTemplate)
+        },
+        {
           name: 'collections',
-        }),
-        Object.assign({}, modelTemplate, {
+          model: Object.assign({}, {
+            "tip:string": { notNull: true },
+            "vector:int": { notNull: true },
+            "schema:string": { notNull: true },
+            "tags:string[]": {}
+          }, modelTemplate)
+        },
+        {
           name: 'actions',
-        })
+          model: Object.assign({}, {
+            "schema:string": { notNull: true },
+            "tags:string[]": {}
+          }, modelTemplate)
+        },
+        {
+          name: 'permissions',
+          model: modelTemplate
+        }
       ]
     }).then(async z => {
       // for (let table of tables) {
@@ -115,11 +124,11 @@ export default class Storage {
 
   async getBySchema(table, schema){
     return this.txn(db => db(table).query('select').where([
-      'message.content.schema', '=', schema.trim()
+      'message.descriptor.schema', '=', schema.trim()
     ]).exec()).catch(e => console.log(e))
   }
 
-  async remove (table, id){
+  async delete (table, id){
     return this.txn(db => db(table).query('delete').where([
       'id', '=', id
     ]).exec()).catch(e => console.log(e));
@@ -133,13 +142,13 @@ export default class Storage {
     });
   }
 
-  // async modify (store, id, fn){
-  //   return this.get(store, id).then(async entry => {
-  //     let obj = entry || {};
-  //     let result = await fn(obj, !!entry) || obj;
-  //     return this.set(store, result);
-  //   })
-  // }
+  async modify (table, id, fn){
+    return this.txn(db => db(table).query('select').where([
+      'id', '=', id
+    ]).exec())
+    .then(async rows => this.set(table, await fn(rows[0])))
+    .catch(e => console.log(e));
+  }
 
   // async merge (store, id, changes){
   //   return this.get(store, id).then((entry = {}) => {

@@ -17,6 +17,7 @@
     "@nano-sql/core": "2.3.7",
     "ipfs-core": "0.8.0",
     "cids": "1.1.7",
+    "uuid": "8.3.2",
     "multiformats": "9.4.3",
     "jose": "3.14.3",
     "koa": "2.13.1",

@@ -72,7 +72,7 @@ router.post('/:did/commit', async (ctx) => {
   let hub = await getHub(ctx.params.did);
 
   let entry = await hub.compose({
-    content: ctx.request.body,
+    descriptor: ctx.request.body,
     sign: true
   });
 
@@ -87,7 +87,7 @@ router.post('/:did/ProfileWrite', async (ctx) => {
 
   let entry = await hub.compose({
     sign: true,
-    content: { // ctx.request.body,
+    descriptor: { // ctx.request.body,
       "type": "ProfileWrite",
       "schema": "https://identity.foundation/schemas/hub/profile",
       "data": {

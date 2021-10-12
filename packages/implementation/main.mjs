@@ -5,8 +5,8 @@ import Status from './lib/status.mjs';
 import Interfaces from './lib/interfaces.mjs';
 import Validator from './lib/schema-validation.mjs';
 import DIDMethods from './did-methods/index.mjs';
-import randomBytes from '@consento/sync-randombytes';
 import CID from 'cids';
+import { v4 as uuidv4 } from 'uuid';
 import { create as ipfsCreate } from 'ipfs-core';
 import { parseJwk } from 'jose/jwk/parse';
 import { FlattenedSign } from 'jose/jws/flattened/sign';
@@ -29,7 +29,12 @@ const algs = {
   'secp256k1': 'ES256K'
 }
 
-const storeRegexp = /^(Profile|Collections|Actions|Permissions)/;
+const commitStrategies = {
+  replace: 0,
+  delta: 1
+}
+
+const tableRegexp = /^(Profile|Collections|Actions|Permissions)/;
 
 class IdentityHub {
   static ipfs = IPFS;
@@ -116,67 +121,66 @@ class IdentityHubInstance {
 
   async compose(args){
 
-    if (!Validator.schemas[args.content.type]) throw `Unsupported Interface invocation`;
+    if (!(await Validator.validate(args.descriptor))) throw `Unsupported Interface invocation`;
 
     let ipfs = await IdentityHub.ipfs;
-    let entry = {
-      message: {
-        content: args.content
-      }
+    let message =  {
+      descriptor: args.descriptor
     };
 
-    let content = entry.message.content;
-        content.format = 'json';
-        content.nonce = randomBytes(new Uint8Array(16)).join('');
+    let descriptor = message.descriptor;
+        descriptor.id = args.id || uuidv4();
+        descriptor.format = 'json';
     
-    if (args.encrypt && content.data) {
-      content.format = 'jwe';
-      content.data = typeof args.encrypt === 'function' ?
-        await args.encrypt(content.data) :
-        await this.encrypt(content.data, { privateJwk: args.encrypt.privateJwk })
+    if (args.encrypt && descriptor.data) {
+      descriptor.format = 'jwe';
+      descriptor.data = typeof args.encrypt === 'function' ?
+        await args.encrypt(descriptor.data) :
+        await this.encrypt(descriptor.data, { privateJwk: args.encrypt.privateJwk })
     }
 
-    let dataNode = await ipfs.dag.put(content.data);
-    content.data = dataNode.toString();
+    let dataNode = await ipfs.dag.put(descriptor.data);
+    descriptor.data = dataNode.toString();
     
     if (args.sign) {
       let jws = typeof args.sign === 'function' ?
-        await args.sign(content) :
-        await this.sign(content, { privateJwk: args.sign.privateJwk });
-      Object.assign(entry.message, jws);
+        await args.sign(descriptor) :
+        await this.sign(descriptor, { privateJwk: args.sign.privateJwk });
+      Object.assign(message, jws);
     }
 
-    let messageNode = await ipfs.dag.put(entry.message);
-    entry.id = messageNode.toString()
-    return entry;
+    return message;
   }
 
-  async commit(entry){
+  async commit(message){
+    let descriptor = message.descriptor;
+
+    if (!(await Validator.validate(descriptor))) throw `Unsupported Interface type`;
+    if (!descriptor.id) throw 'Message does not have an ID';
+
     let ipfs = await IdentityHub.ipfs;
-    let type = entry.message.content.type;
-    let match = type.match(storeRegexp);
-    if (!match) throw 'Not a supported object type';
-    let dataId = entry.message.content.data;
-    console.log(entry.message.content.data)
-    let messageCID = new CID(entry.id);
+    let messageCID = await ipfs.dag.put(message);
+    let messageID = messageCID.toString();
+    if (await this.storage.get('stack', messageID)) return;
+
+    let type = descriptor.type;
+    let dataId = descriptor.data;
     let dataCID = new CID(dataId);
-    let Interface = IdentityHub.interfaces[type];
+
     return Promise.all([ // Could store these against stores located elsewhere
-      ipfs.pin.addAll([messageCID, dataCID]),
-      this.storage.set('stack', { id: entry.id, file: dataId }),
-      Interface ?
-        Interface(this.did, entry, entry.id) :
-        this.storage.set(match[0].toLowerCase(), Object.assign({}, entry))
+      ipfs.pin.addAll([messageCID, dataCID]), // Probably need to remove this and make it interface specific
+      this.storage.set('stack', { message_id: messageID, descriptor_id: descriptor.id, data_id: dataId }),
+      IdentityHub.interfaces?.[type](this, message)
     ]);
   }
 
   async process (message){
-    console.log(message);
+    
     let multiple = Array.isArray(message);
-    let responses = await Promise.all((multiple ? message : [message]).map(async msg => {
+    let responses = await Promise.all((multiple ? message : [message]).map(async message => {
 
-      let content = msg.content;
-      let Interface = IdentityHub.interfaces[content.type];
+      let descriptor = message.descriptor;
+      let Interface = IdentityHub.interfaces[descriptor.type];
 
       if (!Interface) {
         return {
@@ -184,14 +188,14 @@ class IdentityHubInstance {
         };
       }
 
-      let valid = await Validator.validate(content);
+      let valid = await Validator.validate(descriptor);
       if (!valid) {
         return {
           status: Status.getStatus(400)
         };
       }
 
-      let allow = await this.authorize(content).catch(e => false);
+      let allow = await this.authorize(message).catch(e => false);
       if (!allow) {
         return {
           status: Status.getStatus(401)
@@ -199,7 +203,7 @@ class IdentityHubInstance {
       }
 
       try {
-        let response = await Interface(this.did, msg);
+        let response = await Interface(this, message);
         return {
           status: Status.getStatus(200),
           body: response

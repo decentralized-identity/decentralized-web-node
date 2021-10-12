@@ -2,13 +2,13 @@
 import CID from 'cids';
 import { IdentityHub } from '../main.mjs';
 
-async function resolveEntry(entry, file_id){
+async function resolveEntry(entry, data_id){
   let ipfs = await IdentityHub.ipfs;
-  let [ item, file ] = await Promise.all([
+  let [ item, data ] = await Promise.all([
     typeof entry === 'string' ? ipfs.dag.get(new CID(entry)).then(z => z.value) : entry,
-    ipfs.dag.get(new CID(file_id || entry.message.content.data)).then(z => z.value)
+    ipfs.dag.get(new CID(data_id || entry.message.descriptor.data)).then(z => z.value)
   ]);
-  item.message.content.data = file;
+  item.message.descriptor.data = data;
   return item.message;
 }
 
@@ -19,42 +19,65 @@ const Interfaces = {
       "type": "FeatureDetection",
     }, FeatureDetection);
   },
-  async FilesQuery(did, message){
-    let DID = await IdentityHub.load(did);
-    let entry = await DID.storage.get('stack', message.content.id).catch(e => console.log(e));
-    if (entry) return resolveEntry(entry.id, entry.file);
-    else throw 404;
-  },
-  async ProfileRead(did){
-    let DID = await IdentityHub.load(did);
-    let entry = await DID.storage.get('profile', 'profile').catch(e => console.log(e));
+  async ProfileRead(hub){
+    let entry = await hub.storage.get('profile', 'profile').catch(e => console.log(e));
     if (entry) return resolveEntry(entry);
     else throw 204;
   },
-  async ProfileWrite(did, message){
-    let DID = await IdentityHub.load(did);
-    return DID.storage.set('profile', Object.assign({}, message, { id: 'profile' })).catch(e => console.log(e));
+  async ProfileWrite(hub, message){
+    return hub.storage.set('profile', Object.assign({}, message, { id: 'default' })).catch(e => console.log(e));
   },
-  async ProfileDelete(did){
-    let DID = await IdentityHub.load(did);
-    return DID.storage.remove('profile', 'profile').catch(e => console.log(e));
+  async ProfileDelete(hub){
+    return hub.storage.remove('profile', 'default').catch(e => console.log(e));
   },
-  async CollectionsQuery(did, message){
-    let DID = await IdentityHub.load(did);
+  async CollectionsQuery(hub, message){
     let query = [];
-    if (message.id) {
-      query.push('AND', ['id', '=', message.id.trim()]);
+    if (message.descriptor.id) {
+      query.push('AND', ['message.descriptor.id', '=', message.descriptor.id.trim()]);
     }
-    if (message.schema) {
-      query.push('AND', ['message.content.schema', '=', message.schema.trim()])
+    if (message.descriptor.schema) {
+      query.push('AND', ['message.descriptor.schema', '=', message.descriptor.schema.trim()])
     }
-    if (message.tags) {
-      query.push('AND', ['message.content.tags', 'INCLUDES', message.tags.map(tag => tag.trim())])
+    if (message.descriptor.tags) {
+      query.push('AND', ['message.descriptor.tags', 'INCLUDES', message.descriptor.tags.map(tag => tag.trim())])
     }
     query.shift();
-    return DID.storage.find('collections', query).then(entries => {
+    return hub.storage.find('collections', query).then(entries => {
       return Promise.all(entries.map(entry => resolveEntry(entry)))
     });
+  },
+  async CollectionsPut(hub, message){
+    let promises = [];
+    let descriptor = message.descriptor;
+    let messageCID = await ipfs.dag.put(message);
+    let messageID = messageCID.toString();
+    let entry = await hub.storage.get('collections', descriptor.id);
+    if (entry) {
+      if (vector > entry.vector || (vector === entry.vector && entry.tip.localCompare(messageID) < 0)) {
+        entry.vector = vector;
+        entry.tip = messageID;
+        if (descriptor.schema) entry.schema = descriptor.schema;
+        if (descriptor.tags) entry.tags = descriptor.tags;
+        entry.messages.forEach(msg => {
+          promises.push(
+            ipfs.pin.rmAll([(await ipfs.dag.put(msg).toString()), new CID(msg.descriptor.data)]),
+            hub.storage.delete('collections', msg.descriptor.id)
+          )
+        })
+        entry.messages = [message];
+      }
+    }
+    else {
+      entry = {
+        id: descriptor.id,
+        tip: messageID,
+        vector: 0,
+        schema: descriptor.schema,
+        tags: descriptor.tags,
+        messages: [message]
+      }
+    }
+    return Promise.all(promises);
   }
 }
 
@@ -72,11 +95,8 @@ for (let z in Interfaces) {
     // 'ProfileWrite',
     // 'ProfileDelete',
     // 'CollectionsQuery',
-    // 'CollectionsCreate',
-    // 'CollectionsUpdate',
-    // 'CollectionsReplace',
+    // 'CollectionsWrite',
     // 'CollectionsDelete',
-    // 'CollectionsBatch',
     // 'ActionsQuery',
     // 'ActionsCreate',
     // 'ActionsUpdate',

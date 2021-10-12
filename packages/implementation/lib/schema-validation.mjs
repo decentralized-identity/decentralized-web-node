@@ -4,31 +4,30 @@ function jsonSchemaValidation(){
 }
 
 const Validator = {
-  validate(content){
-    let schema = Validator.schemas[content.type];
-    return schema && jsonSchemaValidation(schema);
+  async validate(descriptor){
+    let validator = Validator.interfaces[descriptor.type];
+    return validator instanceof Function ? !!validator(descriptor) : !!validator;
   },
-  schemas: {
+  interfaces: {
     ProfileRead: true,
     ProfileWrite: true,
     ProfileDelete: true,
     CollectionsQuery: true,
-    CollectionsCreate: true,
-    CollectionsUpdate: true,
-    CollectionsReplace: true,
+    CollectionsWrite: descriptor => {
+      return true;
+    },
+    CollectionsCommit: descriptor => {
+      return true;
+    },
     CollectionsDelete: true,
-    CollectionsBatch: true,
     ActionsQuery: true,
     ActionsCreate: true,
     ActionsUpdate: true,
     ActionsDelete: true,
-    ActionsBatch: true,
     PermissionsRequest: true,
     PermissionsQuery: true,
-    PermissionsCreate: true,
-    PermissionsUpdate: true,
-    PermissionsDelete: true,
-    PermissionsBatch: true,
+    PermissionsGrant: true,
+    PermissionsRevoke: true,
   }
 };
 
