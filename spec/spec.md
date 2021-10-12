@@ -145,11 +145,6 @@ The following DID Document Service Endpoint entries ****MUST**** be present in t
 }
 ```
 
-::: todo
-Which instance should be used for a DID-relative URL when resolving and invoking a call?
-:::
-
-
 ## Addressing
 
 A user's logical Identity Hub (their collection of Hub Instances) can be addressed in many ways, 
