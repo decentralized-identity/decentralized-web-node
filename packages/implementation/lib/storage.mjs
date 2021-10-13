@@ -25,6 +25,7 @@ const modelTemplate = {
           "method:string": { immutable: true, notNull: true },
           "schema:string": { immutable: true, notNull: true },
           "tags:string[]": {},
+          "datePublished:date": { immutable: true },
           "format:string": { immutable: true, notNull: true },
           "parent:string": { immutable: true }
         }
@@ -62,23 +63,25 @@ export default class Storage {
           name: 'profile',
           model: Object.assign({}, {
             "tip:string": { notNull: true },
-            "vector:int": { notNull: true },
+            "clock:int": { notNull: true },
           }, modelTemplate)
         },
         {
           name: 'collections',
           model: Object.assign({}, {
             "tip:string": { notNull: true },
-            "vector:int": { notNull: true },
+            "clock:int": { notNull: true },
             "schema:string": { notNull: true },
-            "tags:string[]": {}
+            "tags:string[]": {},
+            "datePublished:date": {},
           }, modelTemplate)
         },
         {
           name: 'actions',
           model: Object.assign({}, {
             "schema:string": { notNull: true },
-            "tags:string[]": {}
+            "tags:string[]": {},
+            "datePublished:date": {},
           }, modelTemplate)
         },
         {
@@ -124,7 +127,7 @@ export default class Storage {
 
   async getBySchema(table, schema){
     return this.txn(db => db(table).query('select').where([
-      'message.descriptor.schema', '=', schema.trim()
+      'schema', '=', schema.trim()
     ]).exec()).catch(e => console.log(e))
   }
 

@@ -33,13 +33,13 @@ const Interfaces = {
   async CollectionsQuery(hub, message){
     let query = [];
     if (message.descriptor.id) {
-      query.push('AND', ['message.descriptor.id', '=', message.descriptor.id.trim()]);
+      query.push('AND', ['id', '=', message.descriptor.id.trim()]);
     }
     if (message.descriptor.schema) {
-      query.push('AND', ['message.descriptor.schema', '=', message.descriptor.schema.trim()])
+      query.push('AND', ['schema', '=', message.descriptor.schema.trim()])
     }
     if (message.descriptor.tags) {
-      query.push('AND', ['message.descriptor.tags', 'INCLUDES', message.descriptor.tags.map(tag => tag.trim())])
+      query.push('AND', ['tags', 'INCLUDES', message.descriptor.tags.map(tag => tag.trim())])
     }
     query.shift();
     return hub.storage.find('collections', query).then(entries => {
@@ -53,11 +53,12 @@ const Interfaces = {
     let messageID = messageCID.toString();
     let entry = await hub.storage.get('collections', descriptor.id);
     if (entry) {
-      if (vector > entry.vector || (vector === entry.vector && entry.tip.localCompare(messageID) < 0)) {
-        entry.vector = vector;
+      if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(messageID) < 0)) {
+        entry.clock = clock;
         entry.tip = messageID;
         if (descriptor.schema) entry.schema = descriptor.schema;
         if (descriptor.tags) entry.tags = descriptor.tags;
+        if (descriptor.datePublished) entry.datePublished = descriptor.datePublished;
         entry.messages.forEach(msg => {
           promises.push(
             ipfs.pin.rmAll([(await ipfs.dag.put(msg).toString()), new CID(msg.descriptor.data)]),
@@ -71,9 +72,10 @@ const Interfaces = {
       entry = {
         id: descriptor.id,
         tip: messageID,
-        vector: 0,
+        clock: 0,
         schema: descriptor.schema,
         tags: descriptor.tags,
+        datePublished: descriptor.datePublished,
         messages: [message]
       }
     }
