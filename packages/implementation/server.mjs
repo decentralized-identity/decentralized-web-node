@@ -124,7 +124,7 @@ router.post('/', async (ctx) => {
   let request = ctx.request.body;
   let hub = await getHub(request.target);
   try {
-    ctx.body = await hub.process(request.message || request.messages);
+    ctx.body = await hub.process(request);
   }
   catch (e) {
     ctx.status = 500;

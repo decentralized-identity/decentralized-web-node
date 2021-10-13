@@ -174,10 +174,9 @@ class IdentityHubInstance {
     ]);
   }
 
-  async process (message){
+  async process (request){
     
-    let multiple = Array.isArray(message);
-    let responses = await Promise.all((multiple ? message : [message]).map(async message => {
+    let responses = await Promise.all(request.messages.map(async message => {
 
       let descriptor = message.descriptor;
       let Interface = IdentityHub.interfaces[descriptor.type];
