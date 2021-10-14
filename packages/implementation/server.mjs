@@ -39,35 +39,6 @@ router.post('/:did/all/:table', async (ctx) => {
   ctx.body = result;
 });
 
-router.post('/:did/ipfs', async (ctx) => {
-  try {
-    let first = {
-      y: {
-        one: [1]
-      },
-      z: 2
-    }
-
-    let second = {
-      z: 2,
-      y: {
-        one: [1]
-      }
-    }
-
-    console.log(first, second);
-
-    let ipfs = await IdentityHub.ipfs;
-    let firstNode = await ipfs.dag.put(first);
-    let secondNode = await ipfs.dag.put(second);
-
-    console.log(firstNode.toString() === secondNode.toString());
-
-    ctx.body = entry;
-  }
-  catch(e){ ctx.body = e }
-});
-
 router.post('/upload', async (ctx) => {
   let body = ctx.request.body;
   let hub = await getHub(body.target);
@@ -81,45 +52,6 @@ router.post('/upload', async (ctx) => {
   
   let response = await hub.process(request);
   ctx.body = response;
-});
-
-router.post('/:did/ProfileWrite', async (ctx) => {
-
-  let hub = await getHub(ctx.params.did);
-
-  let entry = await hub.compose({
-    sign: true,
-    descriptor: { // ctx.request.body,
-      "type": "ProfileWrite",
-      "schema": "https://identity.foundation/schemas/hub/profile",
-      "data": {
-        "@context": "https://identity.foundation/schemas/hub/profile",
-        "type": "Profile",
-        "descriptors": [
-          {
-            "@context": "http://schema.org",
-            "@type": "Person",
-            "name": "Jeffrey Lebowski",
-            "givenName": "Jeffery",
-            "middleName": "The Big",
-            "familyName": "Lebowski",
-            "description": "That's just, like, your opinion, man.",
-            "website": "https://ilovebowling.com",
-            "email": "jeff@ilovebowling.com",
-            "address": {
-              "@type": "PostalAddress",
-              "streetAddress": "5227 Santa Monica Boulevard",
-              "addressLocality": "Los Angeles",
-              "addressRegion": "CA"
-            }
-          }
-        ]
-      }
-    },
-  });
-  console.log(entry);
-  await hub.commit(entry)
-  ctx.body = entry.node;
 });
 
 router.post('/', async (ctx) => {

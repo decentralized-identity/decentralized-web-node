@@ -10,7 +10,10 @@
   ],
   "license": "Apache-2.0",
   "author": "Decentralized Identity Foundation",
-  "devDependencies": {},
+  "devDependencies": {
+    "browserify": "17.0.0",
+    "esmify": "2.1.1"
+  },
   "dependencies": {
     "@consento/sync-randombytes": "1.0.5",
     "@decentralized-identity/ion-tools": "0.1.0",
@@ -25,5 +28,8 @@
     "koa-body": "^4.2.0",
     "koa-router": "9.4.0",
     "koa-static": "^5.0.0"
+  },
+  "scripts": {
+    "compile": "browserify -p esmify ./main.mjs -o ./dist/identity-hub.mjs"
   }
 }
