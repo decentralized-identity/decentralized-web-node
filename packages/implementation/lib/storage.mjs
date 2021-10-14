@@ -1,33 +1,40 @@
 
-import Natives from './natives.mjs';
+import Utils from './utils.mjs';
 import Normalize from './normalize.mjs';
 import { nSQL as nano } from "@nano-sql/core";
 
-function normalizeEntries(entries){
-  return (Array.isArray(entries) ? entries : [entries]).map(entry => {
-    if (entry.schema) entry.schema = entry.schema.trim();
-    return entry;
-  });
-}
+// function normalizeEntries(entries){
+//   return (Array.isArray(entries) ? entries : [entries]).map(entry => {
+//     if (entry.schema) entry.schema = entry.schema.trim();
+//     return entry;
+//   });
+// }
 
 const modelTemplate = {
   "id:string": { pk: true, immutable: true },
   "messages:object[]": {
     model: {
-      "header:object": { immutable: true },
       "protected:string": { immutable: true },
       "payload:string": { immutable: true },
       "signature:string": { immutable: true },
-      "descriptor:object": {
+      "content:object": {
         model: {
-          "id:string": { immutable: true, notNull: true },
-          "cid:string": { immutable: true },
-          "method:string": { immutable: true, notNull: true },
-          "schema:string": { immutable: true, notNull: true },
-          "tags:string[]": {},
-          "datePublished:date": { immutable: true },
-          "format:string": { immutable: true, notNull: true },
-          "parent:string": { immutable: true }
+          "header:object": { immutable: true },
+          "protected:string": { immutable: true },
+          "payload:string": { immutable: true },
+          "signature:string": { immutable: true },
+          "descriptor:object": {
+            model: {
+              "id:string": { immutable: true, notNull: true },
+              "cid:string": { immutable: true },
+              "method:string": { immutable: true, notNull: true },
+              "schema:string": { immutable: true, notNull: true },
+              "tags:string[]": {},
+              "datePublished:date": { immutable: true },
+              "format:string": { immutable: true, notNull: true },
+              "parent:string": { immutable: true }
+            }
+          }
         }
       }
     }
@@ -55,7 +62,7 @@ export default class Storage {
           name: 'stack',
           model: {
             "message_id:string": { pk: true, immutable: true },
-            "descriptor_id:string": { immutable: true },
+            "descriptor_id:string": { immutable: true, notNull: true },
             "data_id:string": { immutable: true }
           }
         },
@@ -104,7 +111,7 @@ export default class Storage {
   }
 
   async set (table, entries){
-    return this.txn(db => db(table).query('upsert', normalizeEntries(entries)).exec()).catch(e => console.log(e));
+    return this.txn(db => db(table).query('upsert', entries).exec()).catch(e => console.log(e));
   }
 
   async get (table, id){

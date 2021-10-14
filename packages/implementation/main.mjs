@@ -1,12 +1,14 @@
 
-import Natives from './lib/natives.mjs';
+import Utils from './lib/utils.mjs';
 import Storage from './lib/storage.mjs';
 import Status from './lib/status.mjs';
 import Interfaces from './lib/interfaces.mjs';
 import Validator from './lib/schema-validation.mjs';
 import DIDMethods from './did-methods/index.mjs';
 import CID from 'cids';
+
 import { v4 as uuidv4 } from 'uuid';
+import base64url from "base64url";
 import { create as ipfsCreate } from 'ipfs-core';
 import { parseJwk } from 'jose/jwk/parse';
 import { FlattenedSign } from 'jose/jws/flattened/sign';
@@ -125,62 +127,55 @@ class IdentityHubInstance {
 
     let ipfs = await IdentityHub.ipfs;
     let message =  {
-      descriptor: args.descriptor
+      content: {
+        descriptor: args.descriptor
+      }
     };
 
-    let descriptor = message.descriptor;
+    let content = message.content;
+    let descriptor = content.descriptor;
         descriptor.id = args.id || uuidv4();
+        descriptor.clock = descriptor.clock || 0;
         descriptor.format = 'json';
+        descriptor.datePublished = typeof args.publish === 'string' ? args.publish : new Date().toISOString();
     
-    if (args.encrypt && descriptor.data) {
-      descriptor.format = 'jwe';
-      descriptor.data = typeof args.encrypt === 'function' ?
-        await args.encrypt(descriptor.data) :
-        await this.encrypt(descriptor.data, { privateJwk: args.encrypt.privateJwk })
+    if (args.data) { 
+      if (args.encrypt) {
+        descriptor.format = 'jwe';
+        content.data = typeof args.encrypt === 'function' ?
+          await args.encrypt(args.data) :
+          await this.encrypt(args.data, { privateJwk: args.encrypt.privateJwk })
+      }
+      else content.data = args.data;
+      let dataNode = await ipfs.dag.put(content.data);
+      descriptor.cid = dataNode.toString();
     }
-
-    let dataNode = await ipfs.dag.put(descriptor.data);
-    descriptor.data = dataNode.toString();
     
     if (args.sign) {
       let jws = typeof args.sign === 'function' ?
         await args.sign(descriptor) :
         await this.sign(descriptor, { privateJwk: args.sign.privateJwk });
-      Object.assign(message, jws);
+      Object.assign(content, jws);
     }
 
     return message;
   }
 
-  async commit(message){
-    let descriptor = message.descriptor;
-
-    if (!(await Validator.validate(descriptor))) throw `Unsupported Interface type`;
-    if (!descriptor.id) throw 'Message does not have an ID';
-
-    let ipfs = await IdentityHub.ipfs;
-    let messageCID = await ipfs.dag.put(message);
-    let messageID = messageCID.toString();
-    if (await this.storage.get('stack', messageID)) return;
-
-    let type = descriptor.type;
-    let dataId = descriptor.data;
-    let dataCID = new CID(dataId);
-
-    return Promise.all([ // Could store these against stores located elsewhere
-      ipfs.pin.addAll([messageCID, dataCID]), // Probably need to remove this and make it interface specific
-      this.storage.set('stack', { message_id: messageID, descriptor_id: descriptor.id, data_id: dataId }),
-      IdentityHub.interfaces?.[type](this, message)
-    ]);
+  async generateRequest(args){
+    return {
+      id: uuidv4(),
+      target: args.did || this.did,
+      messages: args.messages
+    }
   }
 
   async process (request){
     
     let responses = await Promise.all(request.messages.map(async message => {
 
-      let descriptor = message.descriptor;
-      let Interface = IdentityHub.interfaces[descriptor.type];
-
+      let descriptor = message.content.descriptor;
+      let Interface = IdentityHub.interfaces[descriptor.method];
+      
       if (!Interface) {
         return {
           status: Status.getStatus(501)
@@ -205,10 +200,11 @@ class IdentityHubInstance {
         let response = await Interface(this, message);
         return {
           status: Status.getStatus(200),
-          body: response
+          content: response
         }
       }
       catch(e) {
+        console.log(e);
         return {
           status: Status.getStatus(500)
         };
@@ -216,7 +212,30 @@ class IdentityHubInstance {
 
     }))
 
-    return multiple ? { responses } : responses[0];
+    return { id: request.id, responses };
+  }
+
+  async commit(message){
+    let content = message.content;
+    let descriptor = content.descriptor;
+
+    if (!(await Validator.validate(descriptor))) throw `Unsupported Interface type`;
+    if (!descriptor.id) throw 'Message does not have an ID';
+
+    let messageCID = await Utils.putMessage(message);
+    let messageID = messageCID.toString();
+    if (await this.storage.get('stack', messageID)) return;
+
+    let ipfs = await IdentityHub.ipfs;
+    let pins = [messageCID];
+    if (descriptor.cid) {
+      pins.push(new CID(descriptor.cid));
+    }
+    
+    return Promise.all([ // Could store these against stores located elsewhere
+      ipfs.pin.addAll(pins), // Probably need to remove this and make it interface specific
+      this.storage.set('stack', { message_id: messageID, descriptor_id: descriptor.id, data_id: descriptor.cid })
+    ]);
   }
 
   async authorize (entry){ // Could go elsewhere to diagnose authz

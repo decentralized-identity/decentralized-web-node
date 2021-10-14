@@ -1,5 +1,4 @@
 
-
 import ION from '@decentralized-identity/ion-tools';
 
 export default {

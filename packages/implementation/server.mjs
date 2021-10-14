@@ -68,17 +68,19 @@ router.post('/:did/ipfs', async (ctx) => {
   catch(e){ ctx.body = e }
 });
 
-router.post('/:did/commit', async (ctx) => {
-  let hub = await getHub(ctx.params.did);
-
-  let entry = await hub.compose({
-    descriptor: ctx.request.body,
-    sign: true
-  });
-
-  console.log(entry);
-  await hub.commit(entry)
-  ctx.body = entry;
+router.post('/upload', async (ctx) => {
+  let body = ctx.request.body;
+  let hub = await getHub(body.target);
+  let request = await hub.generateRequest({
+    messages: [await hub.compose({
+      descriptor: body.descriptor,
+      data: body.data,
+      sign: true
+    })]
+  })
+  
+  let response = await hub.process(request);
+  ctx.body = response;
 });
 
 router.post('/:did/ProfileWrite', async (ctx) => {

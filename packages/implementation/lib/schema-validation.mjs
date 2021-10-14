@@ -5,7 +5,7 @@ function jsonSchemaValidation(){
 
 const Validator = {
   async validate(descriptor){
-    let validator = Validator.interfaces[descriptor.type];
+    let validator = Validator.interfaces[descriptor.method];
     return validator instanceof Function ? !!validator(descriptor) : !!validator;
   },
   interfaces: {

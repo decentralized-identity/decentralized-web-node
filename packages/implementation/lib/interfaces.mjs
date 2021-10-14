@@ -1,15 +1,17 @@
 
 import CID from 'cids';
+import Utils from './utils.mjs';
 import { IdentityHub } from '../main.mjs';
 
-async function resolveEntry(entry, data_id){
+async function resolveEntry(entry){
   let ipfs = await IdentityHub.ipfs;
-  let [ item, data ] = await Promise.all([
-    typeof entry === 'string' ? ipfs.dag.get(new CID(entry)).then(z => z.value) : entry,
-    ipfs.dag.get(new CID(data_id || entry.message.descriptor.data)).then(z => z.value)
-  ]);
-  item.message.descriptor.data = data;
-  return item.message;
+  return await Promise.all(entry.messages.map(async message => {
+    let content = message.content;
+    if (content.descriptor.cid) {
+      content.data = await ipfs.dag.get(new CID(content.descriptor.cid)).then(z => z.value);
+    }
+    return content;
+  }));
 }
 
 const Interfaces = {
@@ -31,15 +33,16 @@ const Interfaces = {
     return hub.storage.remove('profile', 'default').catch(e => console.log(e));
   },
   async CollectionsQuery(hub, message){
+    let descriptor = message.content.descriptor;
     let query = [];
-    if (message.descriptor.id) {
-      query.push('AND', ['id', '=', message.descriptor.id.trim()]);
+    if (descriptor.id) {
+      query.push('AND', ['id', '=', descriptor.id.trim()]);
     }
-    if (message.descriptor.schema) {
-      query.push('AND', ['schema', '=', message.descriptor.schema.trim()])
+    if (descriptor.schema) {
+      query.push('AND', ['schema', '=', descriptor.schema.trim()])
     }
-    if (message.descriptor.tags) {
-      query.push('AND', ['tags', 'INCLUDES', message.descriptor.tags.map(tag => tag.trim())])
+    if (descriptor.tags) {
+      query.push('AND', ['tags', 'INCLUDES', descriptor.tags.map(tag => tag.trim())])
     }
     query.shift();
     return hub.storage.find('collections', query).then(entries => {
@@ -48,9 +51,10 @@ const Interfaces = {
   },
   async CollectionsWrite(hub, message){
     let promises = [];
-    let descriptor = message.descriptor;
-    let messageCID = await ipfs.dag.put(message);
+    let descriptor = message.content.descriptor;
+    let messageCID = await Utils.putMessage(message);
     let messageID = messageCID.toString();
+    await hub.commit(message);
     let entry = await hub.storage.get('collections', descriptor.id);
     if (entry) {
       if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(messageID) < 0)) {
@@ -61,7 +65,7 @@ const Interfaces = {
         if (descriptor.datePublished) entry.datePublished = descriptor.datePublished;
         entry.messages.forEach(msg => {
           promises.push(
-            ipfs.pin.rmAll([(await ipfs.dag.put(msg).toString()), new CID(msg.descriptor.data)]),
+            ipfs.pin.rmAll([messageCID, new CID(msg.descriptor.cid)]),
             hub.storage.delete('collections', msg.descriptor.id)
           )
         })
@@ -72,13 +76,16 @@ const Interfaces = {
       entry = {
         id: descriptor.id,
         tip: messageID,
-        clock: 0,
+        clock: descriptor.clock,
         schema: descriptor.schema,
         tags: descriptor.tags,
-        datePublished: descriptor.datePublished,
         messages: [message]
       }
+      if (descriptor.datePublished) {
+        entry.datePublished = descriptor.datePublished;
+      }
     }
+    promises.push(hub.storage.set('collections', entry));
     return Promise.all(promises);
   }
 }
