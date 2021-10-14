@@ -76,19 +76,3 @@ app.use(router.allowedMethods());
 app.listen(PORT, () => {
   console.log('Server running on port ' + PORT);
 });
-
-/* Example of a tweet
-
-{
-  type: 'CollectionsCreate',
-  schema: 'https://schema.org/Event',
-  data: {
-    "@context":"https://schema.org",
-    "@type":"SocialMediaPosting",
-    "datePublished":"2021-08-17",
-    "headline":"Leaked new BMW 2 series (m235i)",
-    "articleBody": "My first decentralized tweet"
-  }
-}
-
-*/
