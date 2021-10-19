@@ -1,21 +1,26 @@
 
 import Utils from './lib/utils.mjs';
+import { DID } from './lib/did.mjs';
 import Storage from './lib/storage.mjs';
 import Status from './lib/status.mjs';
 import Interfaces from './lib/interfaces.mjs';
 import Validator from './lib/schema-validation.mjs';
-import DIDMethods from './did-methods/index.mjs';
 import CID from 'cids';
 
 import { v4 as uuidv4 } from 'uuid';
-import base64url from "base64url";
+import base64url from 'base64url';
+import fetch from 'cross-fetch';
 import { create as ipfsCreate } from 'ipfs-core';
 import { parseJwk } from 'jose/jwk/parse';
 import { FlattenedSign } from 'jose/jws/flattened/sign';
 import { FlattenedEncrypt  } from 'jose/jwe/flattened/encrypt';
-import { decodeProtectedHeader } from 'jose/util/decode_protected_header';
 
 const IPFS = ipfsCreate();
+
+const algs = {
+  'Ed25519': 'EdDSA',
+  'secp256k1': 'ES256K'
+}
 
 const Features = Interfaces.FeatureDetectionRead();
   delete Features['@context'];
@@ -26,27 +31,121 @@ function toEncodedArray(data){
   return data instanceof Uint8Array ? data : textEncoder.encode(data)
 }
 
-const algs = {
-  'Ed25519': 'EdDSA',
-  'secp256k1': 'ES256K'
+async function sign (payload, options = {}){
+  switch (options.format) {
+    default:
+      let privateJwk = options.privateJwk;
+      let alg = privateJwk.alg || algs[privateJwk.crv];
+      return new FlattenedSign(toEncodedArray(payload))    
+                  .setProtectedHeader({ alg: alg })
+                  .sign(await parseJwk(privateJwk, alg))           
+  }
 }
 
-const commitStrategies = {
-  replace: 0,
-  delta: 1
+async function encrypt (payload, options = {}){
+  switch (options.format) {
+    default:
+      let privateJwk = options.privateJwk;
+      let alg = privateJwk.alg || algs[privateJwk.crv];
+      return new FlattenedEncrypt(toEncodedArray(payload))
+                  .setProtectedHeader({ alg: alg })
+                  .encrypt(await parseJwk(privateJwk, alg));
+  }
 }
 
-const tableRegexp = /^(Profile|Collections|Actions|Permissions)/;
+const autoIdMethods = /(Write|Create)$/i;
 
-class IdentityHub {
-  static ipfs = IPFS;
-  static instances = {};
-  static interfaces = Interfaces;
-  static methods = DIDMethods;
-  static features = Features;
-  static async load (did, options = {}) {
-    let method = IdentityHub.methods[did.split(':')[1]];
-    if (!method) throw 'Unsupported DID Method';
+const Messages = {
+
+  async compose(args){
+    if (!(await Validator.validate(args.descriptor))) throw `Unsupported Interface invocation`;
+
+    let ipfs = await IdentityHub.ipfs;
+    let message =  {
+      content: {
+        descriptor: args.descriptor
+      }
+    };
+
+    let content = message.content;
+    let descriptor = content.descriptor;
+        if (descriptor.method.match(autoIdMethods)) {
+          descriptor.id = descriptor.id || uuidv4();
+        }
+        if (descriptor.cid || content.data) {
+          descriptor.clock = descriptor.clock || 0;
+          descriptor.format = descriptor.format || 'json'; 
+        }
+        if (args.publish) {
+          descriptor.datePublished = typeof args.publish === 'string' ? args.publish : Date.now();
+        }
+    
+    if (args.data) {
+      if (args.encrypt) {
+        descriptor.encryption = 'jwe';
+        content.data = typeof args.encrypt === 'function' ?
+          await args.encrypt(args.data) :
+          await encrypt(args.data, { privateJwk: args.encrypt.privateJwk })
+      }
+      else content.data = args.data;
+      let dataNode = await ipfs.dag.put(content.data);
+      descriptor.cid = dataNode.toString();
+    }
+
+    if (args.sign) {
+      let jws = typeof args.sign === 'function' ?
+        await args.sign(descriptor) :
+        await sign(descriptor, { privateJwk: args.sign.privateJwk });
+      Object.assign(content, jws);
+    }
+    return message;
+  },
+
+  async send(did, messages, options = {}){
+    
+    let endpoints = options.endpoints;
+    if (!endpoints) {
+      let service = await DID.getService(did);
+      if (service && service.serviceEndpoint) {
+        endpoints = Array.isArray(service.serviceEndpoint) ? service.serviceEndpoint : [service.serviceEndpoint];
+      }
+    }
+
+    if (!endpoints) throw 'DID has no Identity Hub endpoints';
+    else if (options.skipEndpoints) {
+      endpoints = endpoints.filter(url => !options.skipEndpoints.includes(url));
+    }
+
+    for (let url of endpoints) {
+      try {
+        let response = (await fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id: uuidv4(),
+            target: did,
+            messages: messages
+          })
+        })).json();
+        return response;
+      }
+      catch(e){
+        console.log(e);
+      }
+    }
+    throw 'Identity Hub message attempts failed';
+  }
+}
+
+const IdentityHub = {
+  instances: {},
+  ipfs: IPFS,
+  features: Features,
+  interfaces: Interfaces,
+  async load (did, options = {}) {
+    let method = DID.getMethod(did);
     let baseId = await method.getBaseId(did);
     let instance = IdentityHub.instances[baseId];
     if (!instance) {
@@ -64,158 +163,26 @@ class IdentityHubInstance {
   constructor(did, options = {}){
     this.did = did;
     this.baseId = options.baseId || did;
+    this.endpoint = options.endpoint;
     this.keyId = options.keyId;
     this.signing = options.signing || {};
     this.encryption = options.encryption || {};
-    this.ddo = null;
-    this.cacheTime = 0;
-    this.cacheDuration = options.cacheDuration || 3600;
     this.sync = {};
     this.method = options.method; 
     this.storage = new Storage(this.baseId);
   }
-  
-  async resolve(){
-    if (!this.ddo || new Date().getTime() - this.cacheTime > this.cacheDuration) {
-      this.ddo = await this.method.resolve(did);
-      this.cacheTime = new Date().getTime();
-    }
-    return this.ddo;
-  }
 
-  async getKey(id){
-    id += id[0] === '#' ? '' : '#';
-    let ddo = await this.resolve();
-    let doc = ddo.didDocument;
-    for (let prop of ['verificationMethods', 'authentication', 'keyAgreement']) {
-      for (let key of doc[prop]) {
-        if (key.id === id && key.publicKeyJwk) return key;
-      }
-    };
-  }
-
-  async getEndpoints(){
-
-  }
-
-  async sign (payload, options = {}){
-    switch (options.format) {
-      default:
-        let privateJwk = options.privateJwk || this.signing.privateJwk;
-        let alg = privateJwk.alg || algs[privateJwk.crv];
-        return new FlattenedSign(toEncodedArray(payload))    
-                    .setProtectedHeader({ alg: alg })
-                    .sign(await parseJwk(privateJwk, alg))
-                    
-    }
-  }
-
-  async encrypt (payload, options = {}){
-    switch (options.format) {
-      default:
-        let privateJwk = options.privateJwk || this.encryption.privateJwk;
-        let alg = privateJwk.alg || algs[privateJwk.crv];
-        return new FlattenedEncrypt(toEncodedArray(payload))
-                    .setProtectedHeader({ alg: alg })
-                    .encrypt(await parseJwk(privateJwk, alg));
-    }
-  }
-
-  async compose(args){
-
-    if (!(await Validator.validate(args.descriptor))) throw `Unsupported Interface invocation`;
-
-    let ipfs = await IdentityHub.ipfs;
-    let message =  {
-      content: {
-        descriptor: args.descriptor
-      }
-    };
-
-    let content = message.content;
-    let descriptor = content.descriptor;
-        descriptor.id = args.id || uuidv4();
-        descriptor.clock = descriptor.clock || 0;
-        descriptor.format = 'json';
-        descriptor.datePublished = typeof args.publish === 'string' ? args.publish : new Date().toISOString();
-    
-    if (args.data) { 
-      if (args.encrypt) {
-        descriptor.format = 'jwe';
-        content.data = typeof args.encrypt === 'function' ?
-          await args.encrypt(args.data) :
-          await this.encrypt(args.data, { privateJwk: args.encrypt.privateJwk })
-      }
-      else content.data = args.data;
-      let dataNode = await ipfs.dag.put(content.data);
-      descriptor.cid = dataNode.toString();
-    }
-    
+  async composeMessage(args){
     if (args.sign) {
-      let jws = typeof args.sign === 'function' ?
-        await args.sign(descriptor) :
-        await this.sign(descriptor, { privateJwk: args.sign.privateJwk });
-      Object.assign(content, jws);
+      args.sign = typeof args.sign === 'function' ? args.sign : this.signing
     }
-
-    return message;
-  }
-
-  async generateRequest(args){
-    return {
-      id: uuidv4(),
-      target: args.did || this.did,
-      messages: args.messages
+    if (args.encrypt) {
+      args.encrypt = typeof args.encrypt === 'function' ? args.encrypt : this.encryption
     }
+    return Messages.compose(args);
   }
 
-  async process (request){
-    
-    let responses = await Promise.all(request.messages.map(async message => {
-
-      let descriptor = message.content.descriptor;
-      let Interface = IdentityHub.interfaces[descriptor.method];
-      
-      if (!Interface) {
-        return {
-          status: Status.getStatus(501)
-        };
-      }
-
-      let valid = await Validator.validate(descriptor);
-      if (!valid) {
-        return {
-          status: Status.getStatus(400)
-        };
-      }
-
-      let allow = await this.authorize(message).catch(e => false);
-      if (!allow) {
-        return {
-          status: Status.getStatus(401)
-        };
-      }
-
-      try {
-        let response = await Interface(this, message);
-        return {
-          status: Status.getStatus(200),
-          content: response
-        }
-      }
-      catch(e) {
-        console.log(e);
-        return {
-          status: Status.getStatus(500)
-        };
-      }
-
-    }))
-
-    return { id: request.id, responses };
-  }
-
-  async commit(message){
+  async commitMessage(message){
     let content = message.content;
     let descriptor = content.descriptor;
 
@@ -238,6 +205,59 @@ class IdentityHubInstance {
     ]);
   }
 
+  async generateRequest(messages){
+    return Messages.send(this.did, messages, {
+      skipEndpoints: [this.endpoint]
+    })
+  }
+
+  async handleRequest(request){
+    let responses = await Promise.all(request.messages.map(async message => {
+      return this.processMessage(message)
+    }));
+    return { id: request.id, responses };
+  }
+
+  async processMessage (message){  
+    let descriptor = message.content.descriptor;
+    let Interface = IdentityHub.interfaces[descriptor.method];
+    
+    if (!Interface) {
+      return {
+        status: Status.getStatus(501)
+      };
+    }
+
+    let valid = await Validator.validate(descriptor);
+    if (!valid) {
+      return {
+        status: Status.getStatus(400)
+      };
+    }
+
+    let allow = await this.authorize(message).catch(e => false);
+    if (!allow) {
+      return {
+        status: Status.getStatus(401)
+      };
+    }
+
+    try {
+      let result = await Interface(this, message);
+      let response = {
+        status: Status.getStatus(200)
+      };
+      if (result) response.content = result;
+      return response;
+    }
+    catch(e) {
+      console.log(e);
+      return {
+        status: Status.getStatus(500)
+      };
+    }
+  }
+
   async authorize (entry){ // Could go elsewhere to diagnose authz
     // let header = decodeProtectedHeader(token);
     // let url = new URL(header.didKeyUrl);
@@ -249,9 +269,7 @@ class IdentityHubInstance {
     // }
     return true;
   }
+
 }
 
-export {
-  IdentityHub,
-  IdentityHubInstance
-};
+export { IdentityHub, DID, Messages };

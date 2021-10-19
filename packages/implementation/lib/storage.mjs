@@ -12,26 +12,27 @@ import { nSQL as nano } from "@nano-sql/core";
 
 const modelTemplate = {
   "id:string": { pk: true, immutable: true },
-  "messages:object[]": {
+  "messages:obj[]": {
     model: {
       "protected:string": { immutable: true },
       "payload:string": { immutable: true },
       "signature:string": { immutable: true },
-      "content:object": {
+      "content:obj": {
         model: {
-          "header:object": { immutable: true },
+          "header:obj": { immutable: true },
           "protected:string": { immutable: true },
           "payload:string": { immutable: true },
           "signature:string": { immutable: true },
-          "descriptor:object": {
+          "descriptor:obj": {
             model: {
               "id:string": { immutable: true, notNull: true },
               "cid:string": { immutable: true },
               "method:string": { immutable: true, notNull: true },
               "schema:string": { immutable: true, notNull: true },
               "tags:string[]": {},
-              "datePublished:date": { immutable: true },
+              "datePublished:int": { immutable: true },
               "format:string": { immutable: true, notNull: true },
+              "encryption:string": { immutable: true },
               "parent:string": { immutable: true }
             }
           }
@@ -77,10 +78,10 @@ export default class Storage {
           name: 'collections',
           model: Object.assign({}, {
             "tip:string": { notNull: true },
-            "clock:int": { notNull: true },
+            "clock:int": {},
             "schema:string": { notNull: true },
             "tags:string[]": {},
-            "datePublished:date": {},
+            "datePublished:int": {},
           }, modelTemplate)
         },
         {
@@ -88,7 +89,7 @@ export default class Storage {
           model: Object.assign({}, {
             "schema:string": { notNull: true },
             "tags:string[]": {},
-            "datePublished:date": {},
+            "datePublished:int": {},
           }, modelTemplate)
         },
         {

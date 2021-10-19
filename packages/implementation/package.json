@@ -10,26 +10,33 @@
   ],
   "license": "Apache-2.0",
   "author": "Decentralized Identity Foundation",
+  "main": "main.mjs",
   "devDependencies": {
-    "browserify": "17.0.0",
-    "esmify": "2.1.1"
+    "acorn": "^8.5.0",
+    "buffer": "^6.0.3",
+    "crypto-browserify": "^3.12.0",
+    "process": "^0.11.10",
+    "stream-browserify": "^3.0.0",
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0"
   },
   "dependencies": {
-    "@consento/sync-randombytes": "1.0.5",
     "@decentralized-identity/ion-tools": "0.1.0",
     "@nano-sql/core": "2.3.7",
-    "ipfs-core": "0.8.0",
-    "cids": "1.1.7",
-    "uuid": "8.3.2",
     "base64url": "3.0.1",
-    "multiformats": "9.4.3",
+    "browserify-shim": "^3.8.14",
+    "cids": "1.1.7",
+    "cross-fetch": "3.1.4",
+    "ipfs-core": "0.8.0",
     "jose": "3.14.3",
     "koa": "2.13.1",
     "koa-body": "^4.2.0",
     "koa-router": "9.4.0",
-    "koa-static": "^5.0.0"
+    "koa-static": "^5.0.0",
+    "multiformats": "9.4.3",
+    "uuid": "8.3.2"
   },
   "scripts": {
-    "compile": "browserify -p esmify ./main.mjs -o ./dist/identity-hub.mjs"
+    "compile": "npx webpack build --config ./webpack.config.js"
   }
 }

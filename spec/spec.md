@@ -291,7 +291,7 @@ The Identity Hub data structure that resides in the `content` property of the [M
           "method": INTERFACE_METHOD_STRING,
           "cid": DATA_CID_STRING,
           "format": DATA_FORMAT_STRING,
-          "datePublished": ISO8601_TIMESTAMP_STRING
+          "datePublished": EPOCH_TIMESTAMP_STRING
         },
         "data": OPTIONAL_JSON_OBJECT
       },
@@ -308,8 +308,8 @@ A message is a JSON object that ****MUST**** be composed as follows:
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Hub Interface method.
   - If the message object has data associated with it, passed directly via the `data` property or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
-  - If the message object has data associated with it, passed directly via the `data` property or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** be a string that specifies the format of the data.
-  - The `descriptor` object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [ISO 8601](https://www.iso.org/iso-8601-date-and-time-format.html) compliant timestamp that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
+  - If the message object has data associated with it, passed directly via the `data` property or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `format` property to `json`.
+  - The `descriptor` object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
 Individual Interface methods may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
 
@@ -381,7 +381,8 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
       "clock": 7,
       "method": "CollectionsWrite",
       "schema": "https://schema.org/SocialMediaPosting",
-      "format": "JWE"
+      "format": "json",
+      "encryption": "jwe"
     },
     "data": { 
       "protected": ...,
@@ -396,7 +397,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
 
 The message generating party ****MUST**** construct the encrypted content object as follows:
 
-1. The `format` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
+1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
 2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
 3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
 
@@ -414,7 +415,8 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
       "clock": 3,
       "method": "CollectionsWrite",
       "schema": "https://w3id.org/vc-status-list-2021/v1",
-      "format": "JWE"
+      "format": "json",
+      "encryption": "jwe"
     },
     "data": { 
       "protected": ...,
@@ -435,7 +437,7 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
 
 The message generating party ****MUST**** construct the signed and encrypted content object as follows:
 
-1. The `format` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
+1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
 2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
 3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
 4. Follow the instructions described in the [Signed Content](#signed-content) subsection above to turn the content object into an [[spec:rfc7515]] Flattened JSON Web Signature object.
@@ -639,6 +641,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
   - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
   - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
   - The `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** be the string `json`.
+  - The `descriptor` object ****MAY**** contain an `encryption` property, and its value ****MUST**** be a string indicating what encryption scheme is being used. Currently the only supported scheme is [[spec:rfc7516]] JSON Web Encryption (JWE), and when a message's data is encrypted the `encryption` property MUST be set to the string `jwe`.
 
 #### Delete
 
@@ -697,7 +700,7 @@ Add more detail to the other props that can be present in CollectionsQuery messa
   - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
   - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
   - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** reflect the format of the data associated with the message.
+  - The `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `format` property to `json`.
 
 ##### Processing Instructions
 
@@ -732,7 +735,6 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
   - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
   - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
   - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The `descriptor` object ****MUST**** contain a `format` property, and its value ****MUST**** reflect the format of the data associated with the message.
 
 #### Delete
 

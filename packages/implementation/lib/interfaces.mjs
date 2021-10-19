@@ -14,6 +14,17 @@ async function resolveEntry(entry){
   }));
 }
 
+async function deleteCollectionMessages(hub, entry, deleteEntry){
+  let ipfs = await IdentityHub.ipfs;
+  // console.log(2, typeof entry.messages, JSON.stringify(entry.messages, null, 2));
+  let promises = entry.messages.map(async msg => ipfs.pin.rmAll([
+    await Utils.putMessage(msg),
+    new CID(msg.content.descriptor.cid)
+  ]))
+  if (deleteEntry) promises.push(hub.storage.delete('collections', entry.id))
+  return Promise.all(promises);
+}
+
 const Interfaces = {
   async FeatureDetectionRead(){
     return Object.assign({
@@ -27,10 +38,10 @@ const Interfaces = {
     else throw 204;
   },
   async ProfileWrite(hub, message){
-    return hub.storage.set('profile', Object.assign({}, message, { id: 'default' })).catch(e => console.log(e));
+    await hub.storage.set('profile', Object.assign({}, message, { id: 'default' })).catch(e => console.log(e));
   },
   async ProfileDelete(hub){
-    return hub.storage.remove('profile', 'default').catch(e => console.log(e));
+    await hub.storage.remove('profile', 'default').catch(e => console.log(e));
   },
   async CollectionsQuery(hub, message){
     let descriptor = message.content.descriptor;
@@ -54,8 +65,9 @@ const Interfaces = {
     let descriptor = message.content.descriptor;
     let messageCID = await Utils.putMessage(message);
     let messageID = messageCID.toString();
-    await hub.commit(message);
+    await hub.commitMessage(message);
     let entry = await hub.storage.get('collections', descriptor.id);
+    console.log(entry);
     if (entry) {
       if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(messageID) < 0)) {
         entry.clock = clock;
@@ -63,12 +75,7 @@ const Interfaces = {
         if (descriptor.schema) entry.schema = descriptor.schema;
         if (descriptor.tags) entry.tags = descriptor.tags;
         if (descriptor.datePublished) entry.datePublished = descriptor.datePublished;
-        entry.messages.forEach(msg => {
-          promises.push(
-            ipfs.pin.rmAll([messageCID, new CID(msg.descriptor.cid)]),
-            hub.storage.delete('collections', msg.descriptor.id)
-          )
-        })
+        promises.push(deleteCollectionMessages(hub, entry));
         entry.messages = [message];
       }
     }
@@ -85,8 +92,15 @@ const Interfaces = {
         entry.datePublished = descriptor.datePublished;
       }
     }
+    console.log(entry);
     promises.push(hub.storage.set('collections', entry));
-    return Promise.all(promises);
+    await Promise.all(promises);
+  },
+  async CollectionsDelete(hub, message){
+    let descriptor = message.content.descriptor;
+    let entry = await hub.storage.get('collections', descriptor.id);
+    console.log(1, entry);
+    if (entry) await deleteCollectionMessages(hub, entry, true);
   }
 }
 

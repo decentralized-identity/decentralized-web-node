@@ -32,9 +32,16 @@ async function getHub(did){
   }); 
 }
 
-router.post('/:did/all/:table', async (ctx) => {
+router.post('/:did/table/:table', async (ctx) => {
   let hub = await getHub(ctx.params.did);
   let result = await hub.storage.txn(db => db(ctx.params.table).query('select').exec()).catch(e => console.log(e));
+  console.log(123, result);
+  ctx.body = result;
+});
+
+router.post('/:did/id/:id', async (ctx) => {
+  let hub = await getHub(ctx.params.did);
+  let result =  await hub.storage.get('collections', ctx.params.id)
   console.log(123, result);
   ctx.body = result;
 });
@@ -43,14 +50,14 @@ router.post('/upload', async (ctx) => {
   let body = ctx.request.body;
   let hub = await getHub(body.target);
   let request = await hub.generateRequest({
-    messages: [await hub.compose({
+    messages: [await hub.composeMessage({
       descriptor: body.descriptor,
       data: body.data,
       sign: true
     })]
   })
   
-  let response = await hub.process(request);
+  let response = await hub.handleRequest(request);
   ctx.body = response;
 });
 
@@ -58,7 +65,7 @@ router.post('/', async (ctx) => {
   let request = ctx.request.body;
   let hub = await getHub(request.target);
   try {
-    ctx.body = await hub.process(request);
+    ctx.body = await hub.handleRequest(request);
   }
   catch (e) {
     ctx.status = 500;

@@ -1,13 +1,13 @@
 {
   "publicJwk": {
-      "crv": "Ed25519",
-      "x": "OYyl9V0uYeWDMM11_OhmKr5swgmj9DC4uzGBNUjU5QM",
-      "kty": "OKP"
-  },
+    "crv": "Ed25519",
+    "x": "OYyl9V0uYeWDMM11_OhmKr5swgmj9DC4uzGBNUjU5QM",
+    "kty": "OKP"
+},
   "privateJwk": {
-      "crv": "Ed25519",
-      "d": "tKf6bIP1ZncLL9dnAVKrHl1tr1zYQC7a3NBvrQh7Z3g",
-      "x": "OYyl9V0uYeWDMM11_OhmKr5swgmj9DC4uzGBNUjU5QM",
-      "kty": "OKP"
+    "crv": "Ed25519",
+    "d": "tKf6bIP1ZncLL9dnAVKrHl1tr1zYQC7a3NBvrQh7Z3g",
+    "x": "OYyl9V0uYeWDMM11_OhmKr5swgmj9DC4uzGBNUjU5QM",
+    "kty": "OKP"
   }
 }
