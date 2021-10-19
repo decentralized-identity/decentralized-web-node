@@ -67,7 +67,6 @@ const Interfaces = {
     let messageID = messageCID.toString();
     await hub.commitMessage(message);
     let entry = await hub.storage.get('collections', descriptor.id);
-    console.log(entry);
     if (entry) {
       if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(messageID) < 0)) {
         entry.clock = clock;
@@ -99,7 +98,6 @@ const Interfaces = {
   async CollectionsDelete(hub, message){
     let descriptor = message.content.descriptor;
     let entry = await hub.storage.get('collections', descriptor.id);
-    console.log(1, entry);
     if (entry) await deleteCollectionMessages(hub, entry, true);
   }
 }
