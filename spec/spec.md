@@ -351,7 +351,7 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
       "clock": 0,
       "method": "CollectionsWrite",
       "schema": "https://schema.org/SocialMediaPosting",
-      "format": "JSON"
+      "dataFormat": "JSON"
     }
   }
 }
@@ -371,7 +371,7 @@ If the object is to be attributed to a signer (e.g the Hub owner via signature w
       "clock": 0,
       "method": "CollectionsWrite",
       "schema": "https://schema.org/SocialMediaPosting",
-      "format": "JSON"
+      "dataFormat": "JSON"
     },
     "protected": {
       "alg": "ES256K",
@@ -386,8 +386,8 @@ If the object is to be attributed to a signer (e.g the Hub owner via signature w
 
 The message generating party ****MUST**** construct the signed message object as follows:
 
-1. If the [Message](#messages) includes associated data, passed directly via the `data` property or through a channel external to the [Message](#messages) object, add a `cid` property to the `descriptor` object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
-2. After the value of the `cid` property has been set to the CID of the data the [Message](#messages) represents, add a `payload` property to the [Message Descriptors](#message-descriptors) object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `parameters` object.
+1. If the [Message](#messages) includes associated data, passed directly via the [Message](#messages) object's `data` property or through a channel external to the [Message](#messages), add a `cid` property to the `descriptor` object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
+2. After the value of the `cid` property has been set to the CID of the data the [Message](#messages) represents, add a `payload` property to the [Message Descriptor](#message-descriptors) object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `parameters` object.
 3. Use the resulting values to generate a JWS Flattened JSON representation in accordance with the process described in the [[spec:rfc7515]] JSON Web Signature specification.
 
 #### Encrypted Data
@@ -410,7 +410,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
       "clock": 7,
       "method": "CollectionsWrite",
       "schema": "https://schema.org/SocialMediaPosting",
-      "format": "json",
+      "dataFormat": "json",
       "encryption": "jwe"
     }
   },
@@ -420,7 +420,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
 
 The message generating party ****MUST**** construct an encrypted message as follows:
 
-1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
+1. The `encryption` property of the `parameters` object ****MUST**** be set to the string value `JWE`.
 2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
 3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `parameters` object as the stringified representation of the CID.
 
@@ -430,7 +430,13 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
 
 ```json
 { // Message
-  ...
+  "data": { 
+    "protected": ...,
+    "recipients": ...,
+    "ciphertext": ...,
+    "iv": ...,
+    "tag": ... 
+  },
   "descriptor": {
     "parameters": {
       "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
@@ -438,15 +444,8 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
       "clock": 3,
       "method": "CollectionsWrite",
       "schema": "https://w3id.org/vc-status-list-2021/v1",
-      "format": "json",
+      "dataFormat": "json",
       "encryption": "jwe"
-    },
-    "data": { 
-      "protected": ...,
-      "recipients": ...,
-      "ciphertext": ...,
-      "iv": ...,
-      "tag": ... 
     },
     "protected": {
       "alg": "ES256K",
@@ -460,9 +459,9 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
 
 The message generating party ****MUST**** construct the signed and encrypted message as follows:
 
-1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
+1. The `encryption` property of the `parameters` object ****MUST**** be set to the string value `JWE`.
 2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
-3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
+3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `parameters` object as the stringified representation of the CID.
 4. Follow the instructions described in the [Signed Content](#signed-content) subsection above to turn the descriptor object into an [[spec:rfc7515]] Flattened JSON Web Signature object.
 
 ### Response Objects
@@ -642,16 +641,18 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 #### Write
 
 ```json
-{
-  "parameters": {
-    "cid": CID(data),
-    "clock": 4,
-    "method": "ProfileWrite",
-    "format": "json"
-  },
+{ // Message
   "data": {
     "type": "Profile",
     "descriptors": [...]
+  },
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "cid": CID(data),
+      "clock": 4,
+      "method": "ProfileWrite",
+      "dataFormat": "json"
+    }
   }
 }
 ```
@@ -659,19 +660,21 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 `ProfileWrite` messages are JSON objects that ****must**** be composed as follows:
 
 - The message object ****MAY**** contain a `data` property, or its data may be conveyed through an external channel, and the data ****MUST**** be a JSON object that conforms with the data model described in the [Profile Data Model](#data-model-1) section above.
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
-  - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoding of the data associated with the message.
-  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
-  - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `json`.
-  - The `descriptor` object ****MAY**** contain an `encryption` property, and its value ****MUST**** be a string indicating what encryption scheme is being used. Currently the only supported scheme is [[spec:rfc7516]] JSON Web Encryption (JWE), and when a message's data is encrypted the `encryption` property MUST be set to the string `jwe`.
+- The message object ****MUST**** `parameters` property ****MUST**** be a JSON object composed as follows:
+  - The `parameters` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoding of the data associated with the message.
+  - The `parameters` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
+  - The `parameters` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+  - The `parameters` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `json`.
+  - The `parameters` object ****MAY**** contain an `encryption` property, and its value ****MUST**** be a string indicating what encryption scheme is being used. Currently the only supported scheme is [[spec:rfc7516]] JSON Web Encryption (JWE), and when a message's data is encrypted the `encryption` property MUST be set to the string `jwe`.
 
 #### Delete
 
 ```json
-{
-  "parameters": {
-    "method": "ProfileDelete"
+{ // Message
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "ProfileDelete"
+    }
   }
 }
 ```
@@ -687,11 +690,13 @@ experience for users.
 #### Query
 
 ```json
-{
-  "parameters": {
-    "method": "CollectionsQuery",
-    "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "schema": "https://schema.org/MusicPlaylist"
+{ // Message
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "CollectionsQuery",
+      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "schema": "https://schema.org/MusicPlaylist"
+    }
   }
 }
 ```
@@ -703,27 +708,29 @@ Add more detail to the other props that can be present in CollectionsQuery messa
 #### Write
 
 ```json
-{
-  "parameters": {
-    "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "cid": CID(data),
-    "clock": 0,
-    "method": "CollectionsWrite",
-    "schema": "https://schema.org/SocialMediaPosting",
-    "format": DATA_FORMAT
-  },
-  "data": {...}
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "cid": CID(data),
+      "clock": 0,
+      "method": "CollectionsWrite",
+      "schema": "https://schema.org/SocialMediaPosting",
+      "dataFormat": DATA_FORMAT
+    }
+  }
 }
 ```
 
 `CollectionsWrite` messages are JSON objects that ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
-  - The `descriptor` object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
-  - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
-  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
-  - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `json`.
+- The message object ****MUST**** `parameters` property ****MUST**** be a JSON object composed as follows:
+  - The `parameters` object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The `parameters` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
+  - The `parameters` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The `parameters` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+  - The `parameters` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `json`.
 
 ##### Processing Instructions
 
@@ -737,35 +744,40 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 #### Commit
 
 ```json
-{
-  "parameters": {
-    "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "cid": CID(data),
-    "clock": 0,
-    "method": "CollectionsCommit",
-    "schema": "https://schema.org/SocialMediaPosting",
-    "strategy": "merge-patch",
-    "format": DATA_FORMAT
-  },
-  "data": {...}
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "cid": CID(data),
+      "clock": 0,
+      "method": "CollectionsCommit",
+      "schema": "https://schema.org/SocialMediaPosting",
+      "strategy": "merge-patch",
+      "dataFormat": DATA_FORMAT
+    }
+  }
 }
 ```
 
 `CollectionsCommit` messages are JSON objects that ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
-  - The `descriptor` object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
-  - The `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
-  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
-  - The `descriptor` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+- The message object ****MUST**** `parameters` property ****MUST**** be a JSON object composed as follows:
+  - The `parameters` object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The `parameters` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
+  - The `parameters` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The `parameters` object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
 
 #### Delete
 
 ```json
-{
-  "parameters": {
-    "method": "CollectionsDelete",
-    "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "CollectionsDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+    }
   }
 }
 ```
@@ -779,10 +791,13 @@ under the `schema.org/Action` family of objects.
 #### Query
 
 ```json
-{
-  "parameters": {
-    "method": "ActionsQuery",
-    "schema": "https://schema.org/LikeAction"
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "ActionsQuery",
+      "schema": "https://schema.org/LikeAction"
+    }
   }
 }
 ```
@@ -790,11 +805,14 @@ under the `schema.org/Action` family of objects.
 #### Create
 
 ```json
-{
-  "parameters": {
-    "method": "ActionsCreate",
-    "schema": "https://schema.org/LikeAction",
-    "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "ActionsCreate",
+      "schema": "https://schema.org/LikeAction",
+      "data": { ... }
+    }
   }
 }
 ```
@@ -802,11 +820,14 @@ under the `schema.org/Action` family of objects.
 #### Update
 
 ```json
-{
-  "parameters": {
-    "method": "ActionsUpdate",
-    "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-    "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "ActionsUpdate",
+      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
+      "data": { ... }
+    }
   }
 }
 ```
@@ -814,10 +835,13 @@ under the `schema.org/Action` family of objects.
 #### Delete
 
 ```json
-{
-  "parameters": {
-    "method": "ActionsDelete",
-    "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "ActionsDelete",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+    }
   }
 }
 ```
@@ -830,11 +854,14 @@ to a Hub User's non-public data.
 #### Request
 
 ```json
-{
-  "parameters": {
-    "method": "PermissionsRequest",
-    "schema": "https://schema.org/MusicPlaylist",
-    "tags": ["classic rock", "rock", "rock and roll"]
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "PermissionsRequest",
+      "schema": "https://schema.org/MusicPlaylist",
+      "tags": ["classic rock", "rock", "rock and roll"]
+    }
   }
 }
 ```
@@ -842,10 +869,13 @@ to a Hub User's non-public data.
 #### Query
 
 ```json
-{
-  "parameters": {
-    "method": "PermissionsQuery",
-    "schema": "https://schema.org/MusicPlaylist",
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "PermissionsQuery",
+      "schema": "https://schema.org/MusicPlaylist",
+    }
   }
 }
 ```
@@ -853,11 +883,14 @@ to a Hub User's non-public data.
 #### Grant
 
 ```json
-{
-  "parameters": {
-    "method": "PermissionsGrant",
-    "schema": "https://schema.org/MusicPlaylist",
-    "tags": ["classic rock", "rock", "rock and roll"]
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "PermissionsGrant",
+      "schema": "https://schema.org/MusicPlaylist",
+      "tags": ["classic rock", "rock", "rock and roll"]
+    }
   }
 }
 ```
@@ -865,10 +898,13 @@ to a Hub User's non-public data.
 #### Revoke
 
 ```json
-{
-  "parameters": {
-    "method": "PermissionsRevoke",
-    "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "parameters": {
+      "method": "PermissionsRevoke",
+      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+    }
   }
 }
 ```
