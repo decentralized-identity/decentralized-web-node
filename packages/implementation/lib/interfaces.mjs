@@ -14,14 +14,14 @@ async function resolveEntry(entry){
   }));
 }
 
-async function deleteCollectionMessages(hub, entry, deleteEntry){
+async function deleteMessages(hub, table, entry, deleteEntry){
   let ipfs = await IdentityHub.ipfs;
   // console.log(2, typeof entry.messages, JSON.stringify(entry.messages, null, 2));
   let promises = entry.messages.map(async msg => ipfs.pin.rmAll([
     await Utils.putMessage(msg),
     new CID(msg.content.descriptor.cid)
   ]))
-  if (deleteEntry) promises.push(hub.storage.delete('collections', entry.id))
+  if (deleteEntry) promises.push(hub.storage.delete(table, entry.id))
   return Promise.all(promises);
 }
 
@@ -74,7 +74,7 @@ const Interfaces = {
         if (descriptor.schema) entry.schema = descriptor.schema;
         if (descriptor.tags) entry.tags = descriptor.tags;
         if (descriptor.datePublished) entry.datePublished = descriptor.datePublished;
-        promises.push(deleteCollectionMessages(hub, entry));
+        promises.push(deleteMessages(hub, 'collections', entry));
         entry.messages = [message];
       }
     }
@@ -91,14 +91,13 @@ const Interfaces = {
         entry.datePublished = descriptor.datePublished;
       }
     }
-    console.log(entry);
     promises.push(hub.storage.set('collections', entry));
     await Promise.all(promises);
   },
   async CollectionsDelete(hub, message){
     let descriptor = message.content.descriptor;
     let entry = await hub.storage.get('collections', descriptor.id);
-    if (entry) await deleteCollectionMessages(hub, entry, true);
+    if (entry) await deleteMessages(hub, 'collections', entry, true);
   }
 }
 

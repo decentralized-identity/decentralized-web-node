@@ -253,7 +253,7 @@ class IdentityHubInstance {
     catch(e) {
       console.log(e);
       return {
-        status: Status.getStatus(500)
+        status: Status.getStatus(typeof e === 'number' ? e : 500)
       };
     }
   }
