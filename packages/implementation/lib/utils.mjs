@@ -18,10 +18,10 @@ export default {
   },
   async putMessage(message){
     let ipfs = await IdentityHub.ipfs;
-    let data = message.content.data;
-    delete message.content.data;
+    let data = message.data;
+    delete message.data;
     let cid = await ipfs.dag.put(message);
-    message.content.data = data;
+    message.data = data;
     return cid;
   }
 }

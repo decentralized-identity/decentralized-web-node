@@ -32,7 +32,7 @@ function toEncodedArray(data){
 }
 
 async function sign (payload, options = {}){
-  switch (options.format) {
+  switch (options.encryption) {
     default:
       let privateJwk = options.privateJwk;
       let alg = privateJwk.alg || algs[privateJwk.crv];
@@ -43,7 +43,7 @@ async function sign (payload, options = {}){
 }
 
 async function encrypt (payload, options = {}){
-  switch (options.format) {
+  switch (options.encryption) {
     default:
       let privateJwk = options.privateJwk;
       let alg = privateJwk.alg || algs[privateJwk.crv];
@@ -74,7 +74,7 @@ const Messages = {
         }
         if (descriptor.cid || content.data) {
           descriptor.clock = descriptor.clock || 0;
-          descriptor.format = descriptor.format || 'json'; 
+          descriptor.dataFormat = descriptor.dataFormat || 'json'; 
         }
         if (args.publish) {
           descriptor.datePublished = typeof args.publish === 'string' ? args.publish : Date.now();

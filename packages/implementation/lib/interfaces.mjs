@@ -6,11 +6,12 @@ import { IdentityHub } from '../main.mjs';
 async function resolveEntry(entry){
   let ipfs = await IdentityHub.ipfs;
   return await Promise.all(entry.messages.map(async message => {
-    let content = message.content;
-    if (content.descriptor.cid) {
-      content.data = await ipfs.dag.get(new CID(content.descriptor.cid)).then(z => z.value);
+    let result = { descriptor: message.descriptor };
+    let cid = message.descriptor.parameters.cid;
+    if (cid) {
+      result.data = await ipfs.dag.get(new CID(cid)).then(z => z.value);
     }
-    return content;
+    return result;
   }));
 }
 

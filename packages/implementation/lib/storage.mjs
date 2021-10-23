@@ -31,7 +31,7 @@ const modelTemplate = {
               "schema:string": { immutable: true, notNull: true },
               "tags:string[]": {},
               "datePublished:int": { immutable: true },
-              "format:string": { immutable: true, notNull: true },
+              "dataFormat:string": { immutable: true, notNull: true },
               "encryption:string": { immutable: true },
               "parent:string": { immutable: true }
             }
