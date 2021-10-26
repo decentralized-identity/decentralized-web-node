@@ -194,7 +194,7 @@ The following process defines how a DID-Relative URL addressing an Identity Hub 
 **DID-Relative URL example for passing multiple messages:**
 
 ```json
-did:example:123?service=IdentityHub&queries=[{ "method": "ProfileRead" }, { "method": "CollectionsQuery", "schema": https://schema.org/SocialMediaPosting }]
+did:example:123?service=IdentityHub&queries=[{ "method": "ProfileRead" }, { "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
 ```
 
 ```json
@@ -339,7 +339,6 @@ Message Descriptors are JSON objects that contains the parameters, signatory pro
     - `string` - the data is utf8 text string.
     - `json` - the data is a standard JSON object.
     - `jwt_vc` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
-      [Linked Data Cryptographic Suite Registry](https://w3c-ccg.github.io/ld-cryptosuite-registry/).
     - `ldp_vc` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
   - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
