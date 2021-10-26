@@ -9,7 +9,13 @@
     2. Set the `descriptor` property of the [Message Envelope](#message-envelope) object to the object entry, ensuring it is a valid [Message Descriptor](#message-descriptors) object.
     3. Augment the [Message Envelope](#message-envelope) object with any signing and authorization values required, as described in the [Message Envelope](#message-envelope) section.
     4. include the object in the *Request Object*'s `message` array.
+    (?:=|,)((?<!\\)\()?([\w+-_]+):(.+?(?=,\(?\w+:|(\))|$))
 
+    (?:=|,|(\())([\w+-_]+):(.+?(?=,\(?\w+:|(\))|$))
+
+    ?messages=method:'CollectionsQuery',id:'34f4...',tags:'foo','bar',schema:http://schema.org/MusicPlaylist
+
+    (?:=|,)(?:\s+)?'?([\w+-_]+)'?:(?:\s+)?(.+?(?=,\w+:|$))
 
 
 let Messages = (await import('../dist/identity-hub.js')).Messages;
