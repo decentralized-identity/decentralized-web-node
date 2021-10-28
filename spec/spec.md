@@ -308,7 +308,7 @@ The Identity Hub data structure that resides in the `descriptor` property of the
 
 ```json
 {  // Request Object
-  "id": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "target": "did:example:123",
   "messages": [  // Message Objects
     {
@@ -729,7 +729,7 @@ experience for users.
   "descriptor": { // Message Descriptor
     "parameters": {
       "method": "CollectionsQuery",
-      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
       "schema": "https://schema.org/MusicPlaylist"
     }
   }
@@ -747,7 +747,7 @@ Add more detail to the other props that can be present in CollectionsQuery messa
   "data": {...},
   "descriptor": { // Message Descriptor
     "parameters": {
-      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
       "cid": CID(data),
       "clock": 0,
       "method": "CollectionsWrite",
@@ -783,7 +783,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
   "data": {...},
   "descriptor": { // Message Descriptor
     "parameters": {
-      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
       "cid": CID(data),
       "clock": 0,
       "method": "CollectionsCommit",
@@ -811,7 +811,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
   "descriptor": { // Message Descriptor
     "parameters": {
       "method": "CollectionsDelete",
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+      "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
     }
   }
 }
@@ -875,7 +875,7 @@ under the `schema.org/Action` family of objects.
   "descriptor": { // Message Descriptor
     "parameters": {
       "method": "ActionsDelete",
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+      "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
     }
   }
 }
@@ -938,7 +938,7 @@ to a Hub User's non-public data.
   "descriptor": { // Message Descriptor
     "parameters": {
       "method": "PermissionsRevoke",
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
+      "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
     }
   }
 }
