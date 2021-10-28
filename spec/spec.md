@@ -226,7 +226,7 @@ For example purposes, the `queries` parameter value above is not URL encoded, bu
 POST https://hub.example.com/
 
 BODY {
-  "id": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "target": "did:example:123",
   "messages": [
     {
@@ -248,7 +248,7 @@ Request Objects are JSON object envelopes used to pass messages to Identity Hub 
 
 ```json
 {  // Request Object
-  "id": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "target": "did:example:123",
   "messages": [  // Message Objects
     {...},
@@ -260,7 +260,7 @@ Request Objects are JSON object envelopes used to pass messages to Identity Hub 
 
 Request Objects are composed as follows:
 
-1. The *Request Object* ****MUST**** include a `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
+1. The *Request Object* ****MUST**** include a `requestId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
 2. The *Request Object* ****MUST**** include a `target` property, and its value ****MUST**** be the Decentralized Identifier base URI of the DID-relative URL.
 3. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects.
 
@@ -270,7 +270,7 @@ All Identity Hub messaging is transacted via Messages objects. These objects con
 
 ```json
 {  // Request Object
-  "id": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "target": "did:example:123",
   "messages": [  // Message Objects
     {
@@ -353,7 +353,7 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
   ...
   "descriptor": {
     "parameters": {
-      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
       "cid": CID(data),
       "clock": 0,
       "method": "CollectionsWrite",
@@ -373,7 +373,7 @@ If the object is to be attributed to a signer (e.g the Hub owner via signature w
   "data": {...},
   "descriptor": {
     "parameters": {
-      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
       "cid": CID(data),
       "clock": 0,
       "method": "CollectionsWrite",
@@ -412,7 +412,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
   },
   "descriptor": {
     "parameters": {
-      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
       "cid": CID(data),
       "clock": 7,
       "method": "CollectionsWrite",
@@ -446,7 +446,7 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
   },
   "descriptor": {
     "parameters": {
-      "id": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
       "cid": CID(data),
       "clock": 3,
       "method": "CollectionsWrite",
@@ -475,10 +475,11 @@ The message generating party ****MUST**** construct the signed and encrypted mes
 
 Responses from Interface method invocations are JSON objects that ****MUST**** be constructed as follows:
 
-1. The object ****MUST**** include an `id` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string from the `id` property of the [*Request Object*](#request-object) it is in response to.
-2. The object MUST have a `results` property, and its value ****MUST**** be an object.
-3. Each entry in the `results` object ****MUST**** be a *Message Result Object*, keyed with its index value in the `messages` array of the corresponding [*Request Object*](#request-object) from which it was received, and are constructed as follows:
-    1. The object ****MUST**** have a `status` property, and its value ****MUST**** be an object composed of the following properties:
+1. The object ****MUST**** include an `requestId` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string from the `requestId` property of the [*Request Object*](#request-object) it is in response to.
+2. The object MUST have a `replies` property, and its value ****MUST**** be an object.
+3. Each entry in the `replies` array ****MUST**** be a *Message Result Object*, which are constructed as follows:
+    1. The object ****MUST**** have a `messageId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the associated message in the [*Request Object*](#request-object) from which it was received.
+    2. The object ****MUST**** have a `status` property, and its value ****MUST**** be an object composed of the following properties:
         - The status object ****MUST**** have a `code` property, and its value ****MUST**** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
         - The status object ****MAY**** have a `message` property, and if present its value ****MUST**** be a string that describes a terse summary of the status. It is ****recommended**** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
     2. The object ****MAY**** have a `entries` property if the message request was successful. If present, its value ****MUST**** be the resulting message entries returned from the invocation of the corresponding message.
@@ -486,12 +487,14 @@ Responses from Interface method invocations are JSON objects that ****MUST**** b
 ::: example Example response object
 ```json
 {
-  "id": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
-  "results": {
-    "bm2343w4vw45...": {
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "replies": [
+    {
+      "messageId": "bm2343w4vw45gh...",
       "status": { "code": 404, "text": "Not Found" }
     },
-    "bmw46brf6ntb...": {
+    {
+      "messageId": "bm4vvfvsdfovsj...",
       "status": { "code": 200, "text": "OK" },
       "entries": [
         {
@@ -515,7 +518,7 @@ Responses from Interface method invocations are JSON objects that ****MUST**** b
         ...
       ]
     }
-  }
+  ]
 }
 ```
 :::
