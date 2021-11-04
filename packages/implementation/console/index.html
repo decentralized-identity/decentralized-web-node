@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <title>Identity Hub - Console</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <meta property="og:title" content="">
+  <meta property="og:type" content="">
+  <meta property="og:url" content="">
+  <meta property="og:image" content="">
+
+  <link rel="stylesheet" href="css/normalize.css"> 
+  <link rel="stylesheet" href="css/bulma.css">
+  <link rel="stylesheet" href="css/global.css">
+
+  <meta name="theme-color" content="#fafafa">
+</head>
+
+<body>
+
+  <section id="query_panel">
+
+    <label>
+      <span>Interface: </span>
+      <select>
+        <option value="FeatureDetectionRead">FeatureDetectionRead</option>
+      </select>
+    </label>
+
+    <div class="field has-addons is-align-items-center">
+      <div class="select">
+        <select name="limit-disclosure">
+          <option value="id" selected="selected">id</option>
+          <option value="statements">statements</option>
+        </select>
+      </div>
+      <label class="control label m-0 mr-4">
+        <input type="text" class="input" />
+      </label>
+    </div>
+
+    <button id="send_request" class="button is-primary is-fullwidth">Send Request</button>
+
+  </section>
+
+  <section id="response">
+    <pre id="response_code" class="language-json"></pre>
+  </section>
+  
+
+  <template id="parameter_template">
+
+    <div class="field has-addons is-align-items-center">
+      <div class="select">
+        <select name="limit-disclosure">
+          <option value="preferred" selected="selected">Preferred</option>
+          <option value="required">Required</option>
+        </select>
+      </div>
+      <label class="control label is-checkbox m-0 mr-4">
+        <input name="limit-disclosure-checkbox" type="checkbox" />
+        <span>Limit Disclosure</span>
+      </label>
+    </div>
+
+  </template>
+
+  <script src="../dist/identity-hub.js" type="module"></script>
+
+  <script src="js/global.js"></script>
+
+</body>
+
+</html>

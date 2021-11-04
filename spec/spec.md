@@ -4,8 +4,16 @@ Identity Hub
 **Specification Status:** Draft
 
 **Latest Draft:**
-  [identity.foundation/identity-hub](https://identity.foundation/identity-hub)
+  [identity.foundation/identity-hub/spec](https://identity.foundation/identity-hub/spec)
 <!-- -->
+
+**Editors:**
+~ [Daniel Buchner](https://www.linkedin.com/in/dbuchner/) (Microsoft)
+~ [Tobias Looker](https://www.linkedin.com/in/tplooker) (Mattr)
+
+**Contributors:**
+~ [Henry Tsai](https://www.linkedin.com/in/henry-tsai-6b884014/) (Microsoft)
+~ [XinAn Xu](https://www.linkedin.com/in/xinan-xu-b868a326/) (Microsoft)
 
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/identity-hub)
@@ -28,7 +36,7 @@ with others without reliance on location/provider-specific locations, APIs, or r
 
 ## Status of This Document
 
-Identity Hub is a _STRAWMAN_ specification under development within
+Identity Hub is a _DRAFT_ specification under development within
 the Decentralized Identity Foundation (DIF). It incorporates requirements and
 learnings from related work of many active industry players into a shared
 specification that meets the collective needs of the community.
@@ -122,13 +130,30 @@ Access & Authorization |
 Interface Definitions |
 Interface Processing |
 Object Format |
-Object Encryption |
+Object Signing / Encryption |
 File Structure |
 IPFS |
 
 ::: todo
 Finalize the component stack list - are these correct? Are we missing any?
 :::
+
+## Service Endpoints
+
+The following DID Document Service Endpoint entries ****MUST**** be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner's Hub instances:
+
+```json
+{
+  "id": "did:example:123",
+  "service": [{
+    "id":"#hub",
+    "type": "IdentityHub",
+    "serviceEndpoint": {
+      "instances": ["https://hub.example.com", "https://example.org/hub"]
+    }
+  }]
+}
+```
 
 ## Addressing
 
@@ -140,78 +165,543 @@ but the mechanisms below ****MUST**** be supported by a compliant Identity Hub i
 The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated 
 with a given DID, as located via the DID resolution process.
 
-::: note
-For example purposes, the parameters in the URLs below are not URL encoded, 
-but should be when using Identity Hub URLs in practice.
-:::
+#### Composition
 
-> ::: _**PLEASE** don't do this. The example URLs should be constructed and presented exactly as they would 
-> be in live deployment. If parameters are deemed too complex for humans to decode as they read (with 
-> which I concur), then they should be provided in unencoded form alongside the URL that contains their 
-> encoded form.  Examples in documentation should **never** be presented in a form which should never 
-> be seen in live deployment. -- @TallTed_
-> :::
+The following process defines how a Identity Hub DID-Relative URL is composed:
 
-#### Fetch-type URLs
+1. Let the base URI authority portion of the DID URL string be the target DID being addressed.
+2. Append a `service` parameter to the DID URL string with the value `Identity Hub`.
+3. Assemble an array of the [Message Descriptor](#message-descriptors) objects are desired for encoding in the DID-relative URL
+4. JSON stringify the array of [Message Descriptor](#message-descriptors) objects from Step 3, then Base64Url encode the stringified output.
+5. Append a `queries` parameter to the DID URL string with the value set to the JSON stringified, Base64Url encoded output of Step 4.
 
-*DID-Relative URL addressing a single file:*
+**DID-relative URLs are composed of the following segments**
+
+`did:example:123` + `?service=IdentityHub` + `&queries=` + `toBase64Url( JSON.stringify( [{ DESCRIPTOR_1 }, { DESCRIPTOR_N }] ) )`
 
 ```json
-did:example:123?service=IdentityHub&relativeRef=/Resources?id=Qm3fw45v46w45vw54wgwv78jbdse4w
+did:example:123?service=IdentityHub&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
 ```
 
-*DID-Relative URL addressing a Collection of one resource type:*
-
-```json
-did:example:123?service=IdentityHub&relativeRef=/CollectionsQuery?uri=https://schema.org/MusicPlaylist
-```
-
-*DID-Relative URL addressing multiple Collections of different resource types:*
-
-```json
-did:example:123?service=IdentityHub&relativeRef=/CollectionsQuery?uri=https://schema.org/MusicPlaylist&uri=https://schema.org/Event
-```
-
-#### Submit-type URLs
-
-*DID-Relative URL for submitting a single file:*
-
-```json
-did:example:123?service=IdentityHub&relativeRef=/CollectionsCreate
-```
-
-*Payload of submission:*
-
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsCreate",
-  "schema": "https://schema.org/MusicPlaylist",
-  "data": { ... }
-}
-```
-
-#### DID-Relative URL Resolution
+#### Resolution
 
 The following process defines how a DID-Relative URL addressing an Identity Hub is resolved:
 
 1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
 2. As indicated by the presence of the `service` parameter, locate the `IdentityHub` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
-3. Parse the `IdentityHub` Service Endpoint entry and compose a URL as follows:
-    1. Let the first located `IdentityHub` Service Endpoint URI be the base of the new URL. NOTE: there may be multiple Hub URIs within the `IdentityHub` Service Endpoint entry, and it is ****recommended**** that implementers address them in index order. 
-    2. Following standard URL formatting, append the Hub-specific URL parameters of the DID-Relative URL to the base of the URL
-    3. Ensure the output reflects the following: `https://<hub-uri>?<hub-url-parameters>`
+3. Parse the `IdentityHub` Service Endpoint and let the first located `IdentityHub` Service Endpoint URI be the base URI of the Hub request being constructed. NOTE: there may be multiple Hub URIs within the `IdentityHub` Service Endpoint entry, and it is ****recommended**** that implementers address them in index order.
 
-## Data Structures
+#### Request Construction
+
+**DID-Relative URL example for passing multiple messages:**
+
+::: note
+For example purposes, the `queries` parameter value below is not URL encoded, but should be when using Identity Hub URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).
+:::
+
+```json
+did:example:123?service=IdentityHub&queries=[{ "method": "ProfileRead" }, { "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
+```
+
+```json
+did:example:123?service=IdentityHub&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
+```
+
+**Resolve DID to locate the Identity Hub URIs:**
+
+`did:example:123` -->  resolve to Identity Hub endpoint(s)  -->  `https://hub.example.com/`
+
+**Construct the *Request Object*{id=request-object}:**
+
+1. Create a JSON object for the request.
+2. The *Request Object* ****MUST**** include a `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
+3. The *Request Object* ****MUST**** include a `target` property, and its value ****MUST**** be the Decentralized Identifier base URI of the DID-relative URL.
+4. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects that are generated by parsing the DID-relative URL's `queries` parameter value as a JSON array and performing the following steps for each entry:
+    1. Construct a [Message](#messages) object.
+    2. Set the `descriptor` property of the [Message](#messages) object to the entry, ensuring it is a valid [Message Descriptor](#message-descriptors) object.
+    3. Augment the [Message](#messages) object with any signing and authorization values required, as described in the [Messages](#messages) section.
+    4. Append the object to the [Request Object](#request-objects)'s `messages` array.
+
+*HTTP POST example:*
+
+```json5
+POST https://hub.example.com/
+
+BODY {
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [
+    {
+      "descriptor": {
+        "method": "CollectionsQuery",
+        "schema": "https://schema.org/SocialMediaPosting"
+      }
+    },
+    {...}
+  ]
+}
+```
+
+## Request Objects
+
+Request Objects are JSON object envelopes used to pass messages to Identity Hub instances.
+
+```json
+{  // Request Object
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [  // Message Objects
+    {...},
+    {...},
+    {...}
+  ]
+}
+```
+
+Request Objects are composed as follows:
+
+1. The *Request Object* ****MUST**** include a `requestId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
+2. The *Request Object* ****MUST**** include a `target` property, and its value ****MUST**** be the Decentralized Identifier base URI of the DID-relative URL.
+3. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects.
+
+## Messages
+
+All Identity Hub messaging is transacted via Messages objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information.
+
+```json
+{  // Request Object
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [  // Message Objects
+    {
+      "descriptor": {...},
+      "data": OPTIONAL_JSON_VALUE,
+      "attestation": {
+        "protected": {
+          "alg": "ES265K",
+          "kid": "did:example:123#key-1"
+        },
+        "payload": CID(descriptor),
+        "signature": Sign(protected + payload)
+      },
+      "authorization": {
+        "protected": {
+          "alg": "ES265K",
+          "kid": "did:example:456#key-2",
+          "capabilities": "...",
+        },
+        "payload": CID(descriptor),
+        "signature": Sign(protected + payload)
+      }
+    },
+    {...}
+  ]
+}
+```
+
+Messages objects ****MUST**** be composed as follows:
+
+- Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object, as defined by the [Message Descriptors](#message-descriptors) section of this specification.
+- Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a JSON value of the Message's data.
+- Message objects ****MAY**** contain an `attestation` property, and if present its value ****MUST**** be an object, as defined by the [Signed Data](#signed-data) section of this specification.
+- If a Message object requires signatory and/or permission-evaluated authorization, it ****must**** include an `authorization` property, and its value ****MUST**** be a [[spec:rfc7515]] JSON Web Signature composed as follows: 
+  1. The Message object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
+  2. The Message object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
+      - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
+      - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
+      - If the message requires authorization to execute, the Message object ****MUST**** include a `capabilities` property with the required authorization material as its value.
+  3. The Message object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `payload` value in Step 1, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+
+
+### Message Descriptors
+
+The Identity Hub data structure that resides in the `descriptor` property of the [Message](#messages) is comprised of a common JSON structure that contains the following properties regardless of whether the message data is signed/encrypted:
+
+```json
+{  // Request Object
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [  // Message Objects
+    {
+      "data": ...,
+      "descriptor": {  // Message Descriptor
+        "method": INTERFACE_METHOD_STRING,
+        "cid": DATA_CID_STRING,
+        "dataFormat": DATA_FORMAT_STRING,
+        "datePublished": EPOCH_TIMESTAMP_STRING
+      },
+      "attestation": {...},
+      "authorization": {...}
+    },
+    {...}
+  ]
+}
+```
+
+Message Descriptors are JSON objects that contains the parameters, signatory proof, and other details about the message and any data associated with it. Message Descriptor objects ****MUST**** be composed as follows:
+
+- The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Hub Interface method.
+- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
+- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
+  - `application/vc+jwt` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
+  - `application/vc+ldp` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
+- The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
+
+Individual Interface methods may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
+
+#### Raw Data
+
+If there is no need or desire to sign or encrypt the content of a message (i.e. public repudiable data), the message `descriptor` object is the only property required in a [Message](#messages) (with any method-specific properties required). An optional `data` property may be passed at the [Message](#messages) level that contains the data associated with the message (when data is desired or required to be present for a given method invocation).
+
+```json
+{ // Message
+  ...
+  "descriptor": {
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "cid": CID(data),
+    "clock": 0,
+    "method": "CollectionsWrite",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "dataFormat": "application/json"
+  }
+}
+```
+
+#### Signed Data
+
+If the object is to be attested by a signer (e.g the Hub owner via signature with their DID key), the object ****MUST**** contain the following additional properties to produce a [[spec:rfc7515]] Flattened JSON Web Signature (JWS) object:
+
+```json
+{ // Message
+  "data": {...},
+  "descriptor": {
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "cid": CID(data),
+    "clock": 0,
+    "method": "CollectionsWrite",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "dataFormat": "application/json"
+  },
+  "attestation": {
+    "protected": {
+      "alg": "ES256K",
+      "kid": "did:example:123#key-1"
+    },
+    "payload": CID(descriptor),
+    "signature": Sign(protected + payload)
+  },
+  ...
+}
+```
+
+The message generating party ****MUST**** construct the signed message object as follows:
+
+1. If the [Message](#messages) includes associated data, passed directly via the [Message](#messages) object's `data` property or through a channel external to the [Message](#messages), add a `cid` property to the `descriptor` object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
+2. The [Message](#messages) object ****MUST**** contain an `attestation` property, and its value ****MUST**** be a Flattened object representation of a [[spec:rfc7515]] JSON Web Signature composed as follows: 
+  1. The Message object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
+  2. The Message object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
+      - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
+      - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
+  3. The Message object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+
+#### Encrypted Data
+
+If the object is to be encrypted (e.g the Hub owner encrypting their data to keep it private), the `descriptor` object ****MUST**** be constructed as follows:
+
+```json
+{ // Message
+  "data": { 
+    "protected": ...,
+    "recipients": ...,
+    "ciphertext": ...,
+    "iv": ...,
+    "tag": ... 
+  },
+  "descriptor": {
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "cid": CID(data),
+    "clock": 7,
+    "method": "CollectionsWrite",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "dataFormat": "application/json",
+    "encryption": "jwe"
+  },
+  ...
+}
+```
+
+The message generating party ****MUST**** construct an encrypted message as follows:
+
+1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
+2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
+3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
+
+#### Signed & Encrypted Data
+
+If the object is to be both attributed to a signer and encrypted encrypted, it ****MUST**** be structured as follows:
+
+```json
+{ // Message
+  "data": { 
+    "protected": ...,
+    "recipients": ...,
+    "ciphertext": ...,
+    "iv": ...,
+    "tag": ... 
+  },
+  "descriptor": {
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "cid": CID(data),
+    "clock": 3,
+    "method": "CollectionsWrite",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "dataFormat": "application/json",
+    "encryption": "jwe"
+  },
+  "attestation": {
+    "protected": {
+      "alg": "ES256K",
+      "kid": "did:example:123#key-1"
+    },
+    "payload": CID(descriptor),
+    "signature": Sign(protected + payload)
+  }
+}
+```
+
+The message generating party ****MUST**** construct the signed and encrypted message as follows:
+
+1. Follow the instructions described in the [Encrypted Data](#encrypted-data) section to add the required properties to the `descriptor` and produce a [[spec:rfc7516]] JSON Web Encryption (JWE) object from the associated data.
+2. Follow the instructions described in the [Signed Data](#signed-data) section to add an `attestation` property with a Flattened object representation of a [[spec:rfc7515]] JSON Web Signature as its value.
+
+### Response Objects
+
+Responses from Interface method invocations are JSON objects that ****MUST**** be constructed as follows:
+
+1. The object ****MUST**** include an `requestId` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string from the `requestId` property of the [*Request Object*](#request-object) it is in response to.
+2. The object ****MAY**** have a `status` property if an error is produced from a general request-related issue, and if present its value ****MUST**** be an object composed of the following properties:
+    - The status object ****MUST**** have a `code` property, and its value ****MUST**** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
+    - The status object ****MAY**** have a `message` property, and if present its value ****MUST**** be a string that describes a terse summary of the status. It is ****recommended**** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
+2. The object ****MAY**** have a `replies` property, and if present its value ****MUST**** be an array of *Message Result Objects*{#message-results-objects}, which are constructed as follows:
+    1. The object ****MUST**** have a `messageId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the associated message in the [*Request Object*](#request-object) from which it was received.
+    2. The object ****MUST**** have a `status` property, and its value ****MUST**** be an object composed of the following properties:
+        - The status object ****MUST**** have a `code` property, and its value ****MUST**** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
+        - The status object ****MAY**** have a `message` property, and if present its value ****MUST**** be a string that describes a terse summary of the status. It is ****recommended**** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
+    2. The object ****MAY**** have a `entries` property if the message request was successful. If present, its value ****MUST**** be the resulting message entries returned from the invocation of the corresponding message.
+
+#### Request-Level Status Coding
+
+If any of the scenarios described in this section are encountered during general message processing, the implementation ****must**** include a request-level `status` property, and its value must be an object as defined below.
+
+**Target DID not found**
+
+If the DID targeted by a request object is not found within the Hub instance, the implementation ****MUST**** produce a request-level `status` with the code `404`, and ****SHOULD**** use `Target DID not found within the Identity Hub instance` as the status `text`.
+
+*Response Example:*
+
+::: example Target DID is not found
+```json
+{
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "status": {
+    "code": 404,
+    "text": "Target DID not found within the Identity Hub instance"
+  }
+}
+```
+:::
+
+**General request-level processing errors**
+
+If a general request-level error in processing occurs that is not covered by one of the specific status cases above and prevent the implementation from correctly evaluating the request, the implementation ****MUST**** produce a request-level `status` with the code `500`, and ****SHOULD**** use `The request cannot not be processed` as the status `text`.
+
+*Response Example:*
+
+::: example General request processing error
+```json
+{
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "status": {
+    "code": 500,
+    "text": "The request could not be processed correctly"
+  }
+}
+```
+:::
+
+#### Message-Level Status Coding
+
+If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation ****must**** include a message-level `status` property, and its value must be an object as defined below.
+
+**Message succeeded for query/read-type interface that expects results**
+
+If a message is processed correctly and a set of result `entries` is expected, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `200`, and ****SHOULD**** use `The message was successfully processed` as the status `text`.
+
+::: note
+If no results are found, the `status` remains `200`, and the implementation ****MUST**** return an empty `entries` array.
+:::
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [  // Message Objects
+    {
+      "descriptor": {
+        "method": "CollectionsQuery",
+        "schema": "https://schema.org/SocialMediaPosting"
+      }
+    },
+    ...
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "replies": [
+    {
+      "messageId": "bm4vvfvsdfovsj...",
+      "status": { "code": 200, "text": "OK" },
+      "entries": [...]
+    }
+  ]
+}
+```
+:::
+
+**Improperly constructed message**
+
+If a message is malformed or constructed with invalid properties/values, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `400`, and ****SHOULD**** use `The message was malformed or improperly constructed` as the status `text`.
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [  // Message Objects
+    {
+      "descriptorization": {
+        "methodical": "CollectionsQuery",
+        "schemata": "https://schema.org/SocialMediaPosting"
+      }
+    }
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "replies": [
+    {
+      "messageId": "bm4vvfvsdfovsj...",
+      "status": { "code": 400, "text": "The message was malformed or improperly constructed" }
+    }
+  ]
+}
+```
+:::
+
+**Message failed authorization requirements**
+
+If a message fails to meet authorization requirements during processing, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `401`, and ****SHOULD**** use `The message failed authorization requirements` as the status `text`.
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [  // Message Objects
+    { // Message
+      "data": {...},
+      "descriptor": {
+        "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+        "cid": CID(data),
+        "clock": 0,
+        "method": "CollectionsWrite",
+        "schema": "https://schema.org/SocialMediaPosting",
+        "dataFormat": "application/json"
+      }
+
+      ^  `authorization` PROPERTY MISSING
+    }
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "replies": [
+    {
+      "messageId": "bm2343w4vw45gh...",
+      "status": { "code": 401, "text": "OK" }
+    }
+  ]
+}
+```
+:::
+
+**Interface is not implemented**
+
+If a message attempts to invoke an interface `method` that is not the implementation does not support, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `501`, and ****SHOULD**** use `The interface method is not implemented` as the status `text`.
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "target": "did:example:123",
+  "messages": [  // Message Objects
+    { // Message
+      "data": {...},
+      "descriptor": {
+        "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+        "cid": CID(data),
+        "method": "ActionsCreate",
+        "schema": "https://schema.org/LikeAction",
+        "dataFormat": "application/json"
+      }
+    }
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
+  "replies": [
+    {
+      "messageId": "bm2343w4vw45gh...",
+      "status": { "code": 501, "text": "The interface method is not implemented" }
+    }
+  ]
+}
+```
+:::
+
+## Access & Permissions
 
 ::: todo
-**Needs Decision**
-
-Considerations:
-- Objects accessible to multiple external parties, in multiple overlapping combinations
-- Should objects be distributed across separate buckets, a shared tree, or something else?
-- What kind of pointers are required, if any?
-- Is tombstoning required?
+Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.
 :::
 
 
@@ -220,68 +710,6 @@ Considerations:
 ::: todo
 IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?
 :::
-
-## Commit Strategies
-
-### Last-Write Replace
-
-The most basic Commit Strategy an Identity Hub implements should allow for the same traditional experience of posting an update to a file, wherein the new data replaces the old. The following defines how this Commit Strategy ****MUST**** be handled by compliant implementations:
-
-1. The writer of the file ****MUST**** include a `timestamp` field in the unencrypted header of the file's DAG-JOSE object, and its value ****MUST**** be a valid UNIX timestamp.
-2. The Hub Instance ****MUST**** evaluate whether the submission is valid, as determined via the permission and access evaluation rules defined in this specification.
-3. Upon submission, the Hub Instance ****MUST**** compare the current file metadata stored in relation to the object (if any exists) and retain whichever data contains the latest UNIX timestamp.
-
-### Delta-based Merge
-
-::: todo
-We need to pick a delta-based CRDT - which one?
-:::
-
-## General Object Format
-
-All objects within an Identity Hub Instance ****MUST**** be constructed using the same 
-top-level format, as defined below:
-
-### Secure Wrapper
-
-The identity hub data structure uses DagJOSE as the security wrapper for both signatures and encryption. JOSE is very flexible when it comes to the specific algorithm to use. Furthermore it also supports multiple signatories and multiple recipients when dealing with signed and encrypted data respectively.
-
-#### Signature envelope
-Signed objects are encoded using DagJWS, which requires the payload to be encoded as a CID. The payload itself is stored separately using DagCBOR, or some other IPLD codec. The JWS protected header should include a `kid` property with the value being the DIDUrl of the key that signed the JWS.
-
-#### Encryption envelope
-Encrypted objects are encoded using DagJWE. To properly encrypt data with DagJWE, the data first needs to be encoded as an *inline CID* (details below). JSON Web Encryption objects (JWEs) [[spec:rfc7516]] can be used for both symmetric and asymmetric encryption; at the wrapper layer, this specification does not make any prescriptions about this. JWEs can also use various different ciphers. We recommend the use of `XChaCha20Poly1305`, of which there are multiple implementations, as it is one of the most performant ciphers.
-
-##### Encoding an *inline CID*
-In order to encode an object as an *inline CID* the following algorithm is used:
-
-1. Encode the object using some IPLD codec (e.g., DagCBOR)
-2. Encode the IPLD bytes from Step 1 as an _"identity multihash"_, which is 
-constructed as `<hash multicodec><size><bytes>`, composed as follows:
-   - `hash multicodec` is `00` for "identity"
-   - `size` is the varint byte length
-   - `bytes` is the bytes from Step 1
-3. Create an *inline CID* using the codec, which is encoded as:
-
-    ```html
-    <multibase prefix><multicodec cidv1><multicodec content type><multihash>
-    ```
-    Details of *inline CID* composition:
-    - `multicodec content type` is the IPLD codec used (e.g., `DagCBOR`)
-    - `multihash` is the bytes from Step 2
-
-### Payload
-
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ProfileWrite", // CollectionsWrite, CollectionsQuery, ActionsWrite, etc.
-  "data": { ... }
-}
-```
-
-## Access & Permissions
-
 
 ## Interfaces
 
@@ -292,92 +720,92 @@ interoperability (see Hub Configurations), but implementers may wish to support 
 subset of the Interfaces and features. The Feature Detection interface is the means by 
 which a Hub expresses support for the Interfaces and features it implements.
 
-#### Object Definition
+#### Data Model
 
-A compliant Identity Hub Profile interface ****MUST**** produce a Feature Detection object 
+A compliant Identity Hub ****MUST**** produce a Feature Detection object 
 defined as follows:
 
 ```json
 {
-  "@context": "https://identity.foundation/schemas/hub",
   "type": "FeatureDetection",
   "interfaces": { ... }
-}
-```
-
-All compliant Hubs ****MUST**** respond with a valid Feature Detection object when receiving 
-the following request object:
-
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "FeatureDetectionRead"
 }
 ```
 
 ##### Properties & Values
 
 The following properties and values are defined for the Feature Detection object:
-- The value of the `interfaces` property ****MUST**** be an object, composed of the following 
-  optional properties: 
+
+- The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows: 
     - The object ****MAY**** contain a `profile` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `ProfileRead`
       - `ProfileWrite`
       - `ProfileDelete`
     - The object ****MAY**** contain a `collections` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `CollectionsQuery`
-      - `CollectionsCreate`
-      - `CollectionsUpdate`
-      - `CollectionsReplace`
+      - `CollectionsWrite`
+      - `CollectionsCommit`
       - `CollectionsDelete`
-      - `CollectionsBatch`
     - The object ****MAY**** contain a `actions` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `ActionsQuery`
       - `ActionsCreate`
       - `ActionsUpdate`
+      - `ActionsClose`
       - `ActionsDelete`
-      - `ActionsBatch`
     - The object ****MAY**** contain a `permissions` property. If the property is not present, 
-    it indicates the Hub implementation does not support any aspects of the interface. If the 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
-    capability, while a boolean `false` value or omission of the property indicates the interface 
-    capability is not supported:
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
       - `PermissionsRequest`
       - `PermissionsQuery`
-      - `PermissionsCreate`
-      - `PermissionsUpdate`
-      - `PermissionsDelete`
-      - `PermissionsBatch`
+      - `PermissionsGrant`
+      - `PermissionsRevoke`
+- The object ****MAY**** contain a `messaging` property, and its value ****MAY**** be an object composed of the following:
+    - The object ****MAY**** contain a `batching` property, and if present its value ****MUST**** be a boolean indicating whether the Hub Instance handles multiple messages in a single request. The absence of this property ****shall**** indicate that the Hub Instance ****does**** support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they ****MUST**** include this property and explicitly set its value to `false`.
+  
+
+#### Read
+
+All compliant Hubs ****MUST**** respond with a valid Feature Detection object when receiving 
+the following request object:
+
+```json
+{ // Message
+  "descriptor": { // Message Descriptor
+    "method": "FeatureDetectionRead"
+  }
+}
+```
 
 ### Profile
 
 The Profile interface provides a simple mechanism for setting and retrieving a JSON object 
 with basic profile information that describes the target DID entity.
 
-#### Object Format
+#### Data Model
 
-A compliant Identity Hub Profile interface ****MUST**** produce an object of the following 
+A compliant Identity Hub that supports the Profile interface ****MUST**** produce an object of the following 
 structure, if a Profile has been established by the controller of a DID:
 
 ```json
 {
-  "@context": "https://identity.foundation/schemas/hub",
   "type": "Profile",
   "descriptors": [
     {
@@ -406,37 +834,50 @@ structure, if a Profile has been established by the controller of a DID:
 
 An object ****MUST**** have one or more descriptors. The first element of the descriptors array is primary, and ****SHOULD**** be used unless another schema in the array is explicitly required.
 
-
 #### Read
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ProfileRead"
+{ // Message
+  "descriptor": { // Message Descriptor
+    "method": "ProfileRead"
+  }
 }
 ```
 
 #### Write
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ProfileWrite",
+{ // Message
   "data": {
-    "@context": "https://identity.foundation/schemas/hub",
     "type": "Profile",
     "descriptors": [...]
+  },
+  "descriptor": { // Message Descriptor
+    "cid": CID(data),
+    "clock": 4,
+    "method": "ProfileWrite",
+    "dataFormat": "application/json"
   }
 }
 ```
 
+`ProfileWrite` messages are JSON objects that ****must**** be composed as follows:
+
+- The message object ****MAY**** contain a `data` property, or its data may be conveyed through an external channel, and the data ****MUST**** be a JSON object that conforms with the data model described in the [Profile Data Model](#data-model-1) section above.
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoding of the data associated with the message.
+  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
+  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `json`.
+  - The object ****MAY**** contain an `encryption` property, and its value ****MUST**** be a string indicating what encryption scheme is being used. Currently the only supported scheme is [[spec:rfc7516]] JSON Web Encryption (JWE), and when a message's data is encrypted the `encryption` property MUST be set to the string `jwe`.
+
 #### Delete
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ProfileDelete",
-  "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga"
+{ // Message
+  "descriptor": { // Message Descriptor
+    "method": "ProfileDelete"
+  }
 }
 ```
 
@@ -451,92 +892,88 @@ experience for users.
 #### Query
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsQuery",
-  "statements": [
-    {
-      "uri": "https://schema.org/MusicPlaylist"
-    }
-  ]
+{ // Message
+  "descriptor": { // Message Descriptor
+    "method": "CollectionsQuery",
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "schema": "https://schema.org/MusicPlaylist",
+    "dataFormat": "application/json"
+  }
 }
 ```
 
-#### Create
+::: todo
+Add more detail to the other props that can be present in CollectionsQuery messages.
+:::
+
+#### Write
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsCreate",
-  "schema": "https://schema.org/MusicPlaylist",
-  "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "cid": CID(data),
+    "clock": 0,
+    "method": "CollectionsWrite",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "dataFormat": DATA_FORMAT
+  }
 }
 ```
 
-#### Update
+`CollectionsWrite` messages are JSON objects that ****must**** be composed as follows:
+
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `json`.
+
+##### Processing Instructions
+
+When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform the following additional steps:
+1. If the incoming message has a higher `clock` value than all of the other messages for the logical entry known to the Hub Instance, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
+2. If the incoming message has a lower `clock` value than the message that represents the current state of the logical entry, the message ****MUST NOT**** be applied to the logical entry and its data ****MAY**** be discarded.
+3. If the incoming message has a `clock` value equal to the message that represents the current state of the logical entry, the incoming message's IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
+    - If the incoming message has a higher lexicographic value than the message that represents the current state, perform the actions described in Step 1 of this instruction set.
+    - If the incoming message has a lower lexicographic value than the message that represents the current state, perform the actions described in Step 2 of this instruction set.
+
+#### Commit
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsUpdate",
-  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-  "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "cid": CID(data),
+    "clock": 0,
+    "method": "CollectionsCommit",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "strategy": "merge-patch",
+    "dataFormat": DATA_FORMAT
+  }
 }
 ```
 
-#### Replace
+`CollectionsCommit` messages are JSON objects that ****must**** be composed as follows:
 
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsReplace",
-  "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
-  "data": { ... }
-}
-```
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
 
 #### Delete
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsDelete",
-  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
-}
-```
-
-#### Batch
-
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsBatch",
-  "entries": [
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "CollectionsCreate",
-      "schema": "https://schema.org/Event",
-      "data": { ... }
-    },
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "CollectionsUpdate",
-      "schema": "https://schema.org/MusicPlaylist",
-      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-      "data": { ... }
-    },
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "CollectionsDelete",
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
-    },
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "CollectionsReplace",
-      "id": "Qmsd78fagsf7vah87rgvaoh98sdhca97sdga",
-      "data": { ... }
-    }
-  ]
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "CollectionsDelete",
+    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
+  }
 }
 ```
 
@@ -549,74 +986,48 @@ under the `schema.org/Action` family of objects.
 #### Query
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ActionsQuery",
-  "statements": [
-    {
-      "type": "https://schema.org/LikeAction"
-    }
-  ]
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "ActionsQuery",
+    "schema": "https://schema.org/LikeAction"
+  }
 }
 ```
 
 #### Create
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ActionCreate",
-  "schema": "https://schema.org/LikeAction",
-  "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "ActionsCreate",
+    "schema": "https://schema.org/LikeAction"
+  }
 }
 ```
 
 #### Update
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ActionUpdate",
-  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-  "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "ActionsUpdate",
+    "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"
+  }
 }
 ```
 
 #### Delete
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "CollectionsDelete",
-  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
-}
-```
-
-#### Batch
-
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "ActionsBatch",
-  "entries": [
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "ActionCreate",
-      "schema": "https://schema.org/LikeAction",
-      "data": { ... }
-    },
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "ActionUpdate",
-      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-      "data": { ... }
-    },
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "CollectionsDelete",
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
-    }
-  ]
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "ActionsDelete",
+    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
+  }
 }
 ```
 
@@ -628,10 +1039,10 @@ to a Hub User's non-public data.
 #### Request
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "PermissionRequest",
-  "data": {
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "PermissionsRequest",
     "schema": "https://schema.org/MusicPlaylist",
     "tags": ["classic rock", "rock", "rock and roll"]
   }
@@ -641,74 +1052,53 @@ to a Hub User's non-public data.
 #### Query
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "PermissionsQuery",
-  "statements": [
-    {
-      "type": "https://schema.org/LikeAction"
-    }
-  ]
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "PermissionsQuery",
+    "schema": "https://schema.org/MusicPlaylist",
+  }
 }
 ```
 
-#### Create
+#### Grant
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "PermissionCreate",
-  "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "PermissionsGrant",
+    "schema": "https://schema.org/MusicPlaylist",
+    "tags": ["classic rock", "rock", "rock and roll"]
+  }
 }
 ```
 
-#### Update
+#### Revoke
 
 ```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "PermissionUpdate",
-  "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-  "data": { ... }
+{ // Message
+  "data": {...},
+  "descriptor": { // Message Descriptor
+    "method": "PermissionsRevoke",
+    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
+  }
 }
 ```
 
-#### Delete
+## Commit Strategies
 
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "PermissionDelete",
-  "id": "Qm65765jrn7be64v5q35v6we675br68jr"
-}
-```
+Some interface methods may be bound to, or allow for choice between, the data modification algorithms detailed below. Interfaces methods that are bound to one or more of these strategies will indicate it within their interface definitions under the [Interfaces](#interfaces) section.
 
-#### Batch
+### Last-Write Wins
 
-```json
-{
-  "@context": "https://identity.foundation/schemas/hub",
-  "type": "PermissionBatch",
-  "entries": [
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "PermissionCreate",
-      "data": { ... }
-    },
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "PermissionUpdate",
-      "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e",
-      "data": { ... }
-    },
-    {
-      "@context": "https://identity.foundation/schemas/hub",
-      "type": "PermissionDelete",
-      "id": "Qm65765jrn7be64v5q35v6we675br68jr"
-    }
-  ]
-}
-```
+Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.
+
+### JSON Merge Patch
+
+::: todo
+Detail JSON Merge Patch as a commit strategy option.
+:::
 
 ## Hub Configurations
 
@@ -720,7 +1110,6 @@ This Hub configuration is ideal for implementers who seek to expose intentionall
 
 ```json
 {
-  "@context": "https://identity.foundation/schemas/hub",
   "type": "FeatureDetection",
   "interfaces": {
     "profile": {
