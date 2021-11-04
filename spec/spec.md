@@ -275,7 +275,7 @@ All Identity Hub messaging is transacted via Messages objects. These objects con
   "messages": [  // Message Objects
     {
       "descriptor": {...},
-      "data": OPTIONAL_JSON_OBJECT,
+      "data": OPTIONAL_JSON_VALUE,
       "attestation": {
         "protected": {
           "alg": "ES265K",
@@ -342,11 +342,9 @@ Message Descriptors are JSON objects that contains the parameters, signatory pro
 
 - The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Hub Interface method.
 - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded data.
-- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `json`. The following are format identification strings codified by this specification:
-  - `string` - the data is utf8 text string.
-  - `json` - the data is a standard JSON object.
-  - `jwt_vc` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
-  - `ldp_vc` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
+- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
+  - `application/vc+jwt` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
+  - `application/vc+ldp` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
 - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
 Individual Interface methods may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
@@ -364,7 +362,7 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
     "clock": 0,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
-    "dataFormat": "JSON"
+    "dataFormat": "application/json"
   }
 }
 ```
@@ -382,7 +380,7 @@ If the object is to be attested by a signer (e.g the Hub owner via signature wit
     "clock": 0,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
-    "dataFormat": "JSON"
+    "dataFormat": "application/json"
   },
   "attestation": {
     "protected": {
@@ -425,7 +423,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
     "clock": 7,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
-    "dataFormat": "json",
+    "dataFormat": "application/json",
     "encryption": "jwe"
   },
   ...
@@ -456,8 +454,8 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
     "cid": CID(data),
     "clock": 3,
     "method": "CollectionsWrite",
-    "schema": "https://w3id.org/vc-status-list-2021/v1",
-    "dataFormat": "json",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "dataFormat": "application/json",
     "encryption": "jwe"
   },
   "attestation": {
@@ -634,7 +632,7 @@ If a message fails to meet authorization requirements during processing, the imp
         "clock": 0,
         "method": "CollectionsWrite",
         "schema": "https://schema.org/SocialMediaPosting",
-        "dataFormat": "JSON"
+        "dataFormat": "application/json"
       }
 
       ^  `authorization` PROPERTY MISSING
@@ -677,7 +675,7 @@ If a message attempts to invoke an interface `method` that is not the implementa
         "cid": CID(data),
         "method": "ActionsCreate",
         "schema": "https://schema.org/LikeAction",
-        "dataFormat": "JSON"
+        "dataFormat": "application/json"
       }
     }
   ]
@@ -858,7 +856,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
     "cid": CID(data),
     "clock": 4,
     "method": "ProfileWrite",
-    "dataFormat": "json"
+    "dataFormat": "application/json"
   }
 }
 ```
@@ -898,7 +896,8 @@ experience for users.
   "descriptor": { // Message Descriptor
     "method": "CollectionsQuery",
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "schema": "https://schema.org/MusicPlaylist"
+    "schema": "https://schema.org/MusicPlaylist",
+    "dataFormat": "application/json"
   }
 }
 ```
