@@ -25,10 +25,10 @@ Identity Hub
 ## Abstract
 
 Most digital activities between people, organizations, devices, and other entities require 
-messaging and data exchanges. When entities exchange messages and data for credential, app, 
-or service flows, they need an interface over which to store, discovery, and fetch data related 
-to the entities they are interacting with. Identity Hubs are a data storage and message relay 
-mechanism which entities can use to locate public or permissioned private data in relation to 
+message and other data exchanges. When entities exchange messages and data for credential, app, 
+or service flows, they need an interface through which to store, discover, and fetch data related 
+to the entities with which they're interacting. Identity Hubs are a data storage and message relay 
+mechanism by which entities can locate public or permissioned private data related to 
 an entity's Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction 
 that allow an entity to operate multiple instances of compliant implementations that sync to the 
 same state across one another, enabling the owning entity to own, manage, and transact their data 
@@ -195,6 +195,10 @@ The following process defines how a DID-Relative URL addressing an Identity Hub 
 
 **DID-Relative URL example for passing multiple messages:**
 
+::: note
+For example purposes, the `queries` parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Identity Hub URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).
+:::
+
 ```json
 did:example:123?service=IdentityHub&queries=[{ "method": "ProfileRead" }, { "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
 ```
@@ -202,10 +206,6 @@ did:example:123?service=IdentityHub&queries=[{ "method": "ProfileRead" }, { "met
 ```json
 did:example:123?service=IdentityHub&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
 ```
-
-::: note
-For example purposes, the `queries` parameter value above is not URL encoded, but should be when using Identity Hub URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).
-:::
 
 **Resolve DID to locate the Identity Hub URIs:**
 
