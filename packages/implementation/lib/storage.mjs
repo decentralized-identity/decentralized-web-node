@@ -12,33 +12,24 @@ import { nSQL as nano } from "@nano-sql/core";
 
 const modelTemplate = {
   "id:string": { pk: true, immutable: true },
-  "messages:obj[]": {
-    model: {
-      "protected:string": { immutable: true },
-      "payload:string": { immutable: true },
-      "signature:string": { immutable: true },
-      "content:obj": {
-        model: {
-          "header:obj": { immutable: true },
-          "protected:string": { immutable: true },
-          "payload:string": { immutable: true },
-          "signature:string": { immutable: true },
-          "descriptor:obj": {
-            model: {
-              "id:string": { immutable: true, notNull: true },
-              "cid:string": { immutable: true },
-              "method:string": { immutable: true, notNull: true },
-              "schema:string": { immutable: true, notNull: true },
-              "tags:string[]": {},
-              "datePublished:int": { immutable: true },
-              "dataFormat:string": { immutable: true, notNull: true },
-              "encryption:string": { immutable: true },
-              "parent:string": { immutable: true }
-            }
-          }
-        }
-      }
-    }
+  "messages:string[]": {
+    // model: {
+    //   "attestation:obj": { immutable: true },
+    //   "authorization:obj": { immutable: true },
+    //   "descriptor:obj": {
+    //     model: {
+    //       "objectId:string": { immutable: true, notNull: true },
+    //       "cid:string": { immutable: true, notNull: true },
+    //       "method:string": { immutable: true, notNull: true },
+    //       "schema:string": { immutable: true },
+    //       "tags:string[]": {},
+    //       "datePublished:int": { immutable: true },
+    //       "dataFormat:string": { immutable: true, notNull: true },
+    //       "encryption:string": { immutable: true },
+    //       "parent:string": { immutable: true }
+    //     }
+    //   }
+    // }
   }
 };
 
@@ -62,9 +53,10 @@ export default class Storage {
         {
           name: 'stack',
           model: {
-            "message_id:string": { pk: true, immutable: true },
-            "descriptor_id:string": { immutable: true, notNull: true },
-            "data_id:string": { immutable: true }
+            "descriptor:string": { pk: true, immutable: true },
+            "data:string": { immutable: true },
+            "attestation:string": { immutable: true },
+            "authorization:string": { immutable: true }
           }
         },
         {
@@ -79,7 +71,8 @@ export default class Storage {
           model: Object.assign({}, {
             "tip:string": { notNull: true },
             "clock:int": {},
-            "schema:string": { notNull: true },
+            "schema:string": {},
+            "dataFormat:string": { notNull: true },
             "tags:string[]": {},
             "datePublished:int": {},
           }, modelTemplate)

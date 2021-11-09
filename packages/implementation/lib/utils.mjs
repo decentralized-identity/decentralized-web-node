@@ -1,6 +1,13 @@
 
 import { IdentityHub } from '../main.mjs';
 
+const cidProps = [
+  'data',
+  'descriptor',
+  'attestation',
+  'authorization'
+]
+
 export default {
   merge: function merge(target, source) {
     Object.entries(source).forEach(([key, value]) => {
@@ -16,12 +23,17 @@ export default {
       return obj;
     }, {})
   },
-  async putMessage(message){
+  async getMessageCIDs(message){
     let ipfs = await IdentityHub.ipfs;
-    let data = message.data;
-    delete message.data;
-    let cid = await ipfs.dag.put(message);
-    message.data = data;
-    return cid;
+    let cids = {};
+    await Promise.all(cidProps.reduce((promises, prop) => {
+      if (message[prop]) {
+        promises.push(ipfs.dag.put(message[prop]).then(cid => cids[prop] = cid))
+      }
+    }, []));
+    let dataCID = message.descriptor.cid;
+    if (dataCID) cids.data = new CID(dataCID);
+    else delete cids.data;
+    return cids;
   }
 }

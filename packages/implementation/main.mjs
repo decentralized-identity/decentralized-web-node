@@ -62,33 +62,30 @@ const Messages = {
 
     let ipfs = await IdentityHub.ipfs;
     let message =  {
-      content: {
-        descriptor: args.descriptor
-      }
+      descriptor: args.descriptor
     };
 
-    let content = message.content;
-    let descriptor = content.descriptor;
-        if (descriptor.method.match(autoIdMethods)) {
-          descriptor.id = descriptor.id || uuidv4();
-        }
-        if (descriptor.cid || content.data) {
-          descriptor.clock = descriptor.clock || 0;
-          descriptor.dataFormat = descriptor.dataFormat || 'json'; 
-        }
-        if (args.publish) {
-          descriptor.datePublished = typeof args.publish === 'string' ? args.publish : Date.now();
-        }
+    let descriptor = args.descriptor;
+    if (descriptor.method.match(autoIdMethods)) {
+      descriptor.objectId = descriptor.objectId || uuidv4();
+    }
+    if (descriptor.cid || message.data) {
+      descriptor.clock = descriptor.clock || 0;
+      descriptor.dataFormat = descriptor.dataFormat || 'application/json'; 
+    }
+    if (args.publish) {
+      descriptor.datePublished = typeof args.publish === 'string' ? args.publish : Date.now();
+    }
     
     if (args.data) {
       if (args.encrypt) {
         descriptor.encryption = 'jwe';
-        content.data = typeof args.encrypt === 'function' ?
+        message.data = typeof args.encrypt === 'function' ?
           await args.encrypt(args.data) :
           await encrypt(args.data, { privateJwk: args.encrypt.privateJwk })
       }
-      else content.data = args.data;
-      let dataNode = await ipfs.dag.put(content.data);
+      else message.data = args.data;
+      let dataNode = await ipfs.dag.put(message.data);
       descriptor.cid = dataNode.toString();
     }
 
@@ -96,7 +93,7 @@ const Messages = {
       let jws = typeof args.sign === 'function' ?
         await args.sign(descriptor) :
         await sign(descriptor, { privateJwk: args.sign.privateJwk });
-      Object.assign(content, jws);
+      Object.assign(message, { attestation: jws });
     }
     return message;
   },
@@ -124,7 +121,7 @@ const Messages = {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            id: uuidv4(),
+            requestId: uuidv4(),
             target: did,
             messages: messages
           })
@@ -183,25 +180,24 @@ class IdentityHubInstance {
   }
 
   async commitMessage(message){
-    let content = message.content;
-    let descriptor = content.descriptor;
+    let descriptor = message.descriptor;
 
     if (!(await Validator.validate(descriptor))) throw `Unsupported Interface type`;
-    if (!descriptor.id) throw 'Message does not have an ID';
+    if (!descriptor.objectId) throw 'Message does not have an ID';
 
-    let messageCID = await Utils.putMessage(message);
-    let messageID = messageCID.toString();
-    if (await this.storage.get('stack', messageID)) return;
+    let messageCIDs = await Utils.getMessageCIDs(message);
+    let descriptorId = messageCIDs.descriptor.toString();
+    if (await this.storage.get('stack', descriptorId)) return;
 
     let ipfs = await IdentityHub.ipfs;
-    let pins = [messageCID];
-    if (descriptor.cid) {
-      pins.push(new CID(descriptor.cid));
-    }
-    
     return Promise.all([ // Could store these against stores located elsewhere
-      ipfs.pin.addAll(pins), // Probably need to remove this and make it interface specific
-      this.storage.set('stack', { message_id: messageID, descriptor_id: descriptor.id, data_id: descriptor.cid })
+      ipfs.pin.addAll(Object.values(messageCIDs)), // Probably need to remove this and make it interface specific
+      this.storage.set('stack', {
+        descriptor: descriptorId,
+        data: descriptor.cid,
+        attestation: messageCIDs.attestation.toString(),
+        authorization: messageCIDs.authorization.toString()
+      })
     ]);
   }
 
@@ -215,11 +211,11 @@ class IdentityHubInstance {
     let responses = await Promise.all(request.messages.map(async message => {
       return this.processMessage(message)
     }));
-    return { id: request.id, responses };
+    return { requestId: request.requestId, responses };
   }
 
   async processMessage (message){  
-    let descriptor = message.content.descriptor;
+    let descriptor = message.descriptor;
     let Interface = IdentityHub.interfaces[descriptor.method];
     
     if (!Interface) {
@@ -247,7 +243,7 @@ class IdentityHubInstance {
       let response = {
         status: Status.getStatus(200)
       };
-      if (result) response.content = result;
+      if (result) response.entries = result;
       return response;
     }
     catch(e) {

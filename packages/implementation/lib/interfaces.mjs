@@ -5,12 +5,16 @@ import { IdentityHub } from '../main.mjs';
 
 async function resolveEntry(entry){
   let ipfs = await IdentityHub.ipfs;
-  return await Promise.all(entry.messages.map(async message => {
-    let result = { descriptor: message.descriptor };
-    let cid = message.descriptor.parameters.cid;
-    if (cid) {
-      result.data = await ipfs.dag.get(new CID(cid)).then(z => z.value);
+  return await Promise.all(entry.messages.map(async descriptorId => {
+    let result = {};
+    let promises = [];
+    let cids = await this.storage.get('stack', descriptorId);
+    for (let prop in cids) {
+      promises.push(
+        ipfs.dag.get(new CID(cids[prop])).then(z => result[prop] = z)
+      )
     }
+    await Promise.all(promises);
     return result;
   }));
 }
@@ -18,10 +22,9 @@ async function resolveEntry(entry){
 async function deleteMessages(hub, table, entry, deleteEntry){
   let ipfs = await IdentityHub.ipfs;
   // console.log(2, typeof entry.messages, JSON.stringify(entry.messages, null, 2));
-  let promises = entry.messages.map(async msg => ipfs.pin.rmAll([
-    await Utils.putMessage(msg),
-    new CID(msg.content.descriptor.cid)
-  ]))
+  let promises = entry.messages.map(async msg => ipfs.pin.rmAll(
+    Object.values(await Utils.getMessageCIDs(msg))
+  ))
   if (deleteEntry) promises.push(hub.storage.delete(table, entry.id))
   return Promise.all(promises);
 }
@@ -45,10 +48,10 @@ const Interfaces = {
     await hub.storage.remove('profile', 'default').catch(e => console.log(e));
   },
   async CollectionsQuery(hub, message){
-    let descriptor = message.content.descriptor;
+    let descriptor = message.descriptor;
     let query = [];
-    if (descriptor.id) {
-      query.push('AND', ['id', '=', descriptor.id.trim()]);
+    if (descriptor.objectId) {
+      query.push('AND', ['id', '=', descriptor.objectId.trim()]);
     }
     if (descriptor.schema) {
       query.push('AND', ['schema', '=', descriptor.schema.trim()])
@@ -63,30 +66,30 @@ const Interfaces = {
   },
   async CollectionsWrite(hub, message){
     let promises = [];
-    let descriptor = message.content.descriptor;
-    let messageCID = await Utils.putMessage(message);
-    let messageID = messageCID.toString();
+    let descriptor = message.descriptor;
+    let messageCIDs = await Utils.getMessageCIDs(message);
+    let descriptorID = messageCIDs.descriptor.toString();
     await hub.commitMessage(message);
-    let entry = await hub.storage.get('collections', descriptor.id);
+    let entry = await hub.storage.get('collections', descriptor.objectId);
     if (entry) {
-      if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(messageID) < 0)) {
+      if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(descriptorID) < 0)) {
         entry.clock = clock;
-        entry.tip = messageID;
+        entry.tip = descriptorID;
         if (descriptor.schema) entry.schema = descriptor.schema;
         if (descriptor.tags) entry.tags = descriptor.tags;
         if (descriptor.datePublished) entry.datePublished = descriptor.datePublished;
         promises.push(deleteMessages(hub, 'collections', entry));
-        entry.messages = [message];
+        entry.messages = [descriptorID];
       }
     }
     else {
       entry = {
-        id: descriptor.id,
-        tip: messageID,
+        id: descriptor.objectId,
+        tip: descriptorID,
         clock: descriptor.clock,
         schema: descriptor.schema,
         tags: descriptor.tags,
-        messages: [message]
+        messages: [descriptorID]
       }
       if (descriptor.datePublished) {
         entry.datePublished = descriptor.datePublished;
@@ -96,8 +99,8 @@ const Interfaces = {
     await Promise.all(promises);
   },
   async CollectionsDelete(hub, message){
-    let descriptor = message.content.descriptor;
-    let entry = await hub.storage.get('collections', descriptor.id);
+    let descriptor = message.descriptor;
+    let entry = await hub.storage.get('collections', descriptor.objectId);
     if (entry) await deleteMessages(hub, 'collections', entry, true);
   }
 }
