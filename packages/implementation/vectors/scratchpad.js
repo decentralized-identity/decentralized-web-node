@@ -25,7 +25,8 @@ let message = await Messages.compose({
     schema: 'https://schema.org/SocialMediaPosting' 
   }
 });
-let response = await Messages.send('did:ion:123', [message], {
+let response = await Messages.send('did:ion:123', {
+  messages: [message],
   endpoints: ['/']
 })
 
@@ -34,8 +35,8 @@ let Messages = (await import('../dist/identity-hub.js')).Messages;
 let message = await Messages.compose({
   descriptor: {
     method: 'CollectionsWrite',
-    schema: 'https://schema.org/SocialMediaPosting' ,
-    format: 'json'
+    schema: 'https://schema.org/SocialMediaPosting',
+    dataFormat: 'application/json'
   },
   data: {
     "@context":"https://schema.org",
@@ -44,7 +45,8 @@ let message = await Messages.compose({
     "articleBody": "It worked!"
   }
 });
-let response = await Messages.send('did:ion:123', [message], {
+let response = await Messages.send('did:ion:123', {
+  messages: [message],
   endpoints: ['/']
 })
 

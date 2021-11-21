@@ -25,15 +25,18 @@
     "@nano-sql/core": "2.3.7",
     "base64url": "3.0.1",
     "browserify-shim": "^3.8.14",
+    "canonicalize": "1.0.5",
     "cids": "1.1.7",
     "cross-fetch": "3.1.4",
     "ipfs-core": "0.8.0",
+    "it-all": "1.0.6",
     "jose": "3.14.3",
     "koa": "2.13.1",
     "koa-body": "^4.2.0",
     "koa-router": "9.4.0",
     "koa-static": "^5.0.0",
     "multiformats": "9.4.3",
+    "uint8arrays": "3.0.0",
     "uuid": "8.3.2"
   },
   "scripts": {

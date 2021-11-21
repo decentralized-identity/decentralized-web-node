@@ -26,17 +26,12 @@ const Features = Interfaces.FeatureDetectionRead();
   delete Features['@context'];
   delete Features['type'];
 
-const textEncoder = new TextEncoder();
-function toEncodedArray(data){
-  return data instanceof Uint8Array ? data : textEncoder.encode(data)
-}
-
 async function sign (payload, options = {}){
   switch (options.encryption) {
     default:
       let privateJwk = options.privateJwk;
       let alg = privateJwk.alg || algs[privateJwk.crv];
-      return new FlattenedSign(toEncodedArray(payload))    
+      return new FlattenedSign(Utils.toEncodedArray(payload))    
                   .setProtectedHeader({ alg: alg })
                   .sign(await parseJwk(privateJwk, alg))           
   }
@@ -47,7 +42,7 @@ async function encrypt (payload, options = {}){
     default:
       let privateJwk = options.privateJwk;
       let alg = privateJwk.alg || algs[privateJwk.crv];
-      return new FlattenedEncrypt(toEncodedArray(payload))
+      return new FlattenedEncrypt(Utils.toEncodedArray(payload))
                   .setProtectedHeader({ alg: alg })
                   .encrypt(await parseJwk(privateJwk, alg));
   }
@@ -69,7 +64,7 @@ const Messages = {
     if (descriptor.method.match(autoIdMethods)) {
       descriptor.objectId = descriptor.objectId || uuidv4();
     }
-    if (descriptor.cid || message.data) {
+    if (descriptor.cid || args.data) {
       descriptor.clock = descriptor.clock || 0;
       descriptor.dataFormat = descriptor.dataFormat || 'application/json'; 
     }
@@ -78,15 +73,16 @@ const Messages = {
     }
     
     if (args.data) {
+      let data = args.data;
       if (args.encrypt) {
         descriptor.encryption = 'jwe';
         message.data = typeof args.encrypt === 'function' ?
-          await args.encrypt(args.data) :
-          await encrypt(args.data, { privateJwk: args.encrypt.privateJwk })
+          await args.encrypt(data) :
+          await encrypt(data, { privateJwk: args.encrypt.privateJwk })
       }
-      else message.data = args.data;
-      let dataNode = await ipfs.dag.put(message.data);
-      descriptor.cid = dataNode.toString();
+      else message.data = data;
+      let dataNode = await ipfs.add(Utils.toEncodedArray(data));
+      descriptor.cid = dataNode.path;
     }
 
     if (args.sign) {
@@ -98,9 +94,9 @@ const Messages = {
     return message;
   },
 
-  async send(did, messages, options = {}){
+  async send(did, params = {}){
     
-    let endpoints = options.endpoints;
+    let endpoints = params.endpoints;
     if (!endpoints) {
       let service = await DID.getService(did);
       if (service && service.serviceEndpoint) {
@@ -109,8 +105,8 @@ const Messages = {
     }
 
     if (!endpoints) throw 'DID has no Identity Hub endpoints';
-    else if (options.skipEndpoints) {
-      endpoints = endpoints.filter(url => !options.skipEndpoints.includes(url));
+    else if (params.skipEndpoints) {
+      endpoints = endpoints.filter(url => !params.skipEndpoints.includes(url));
     }
 
     for (let url of endpoints) {
@@ -123,7 +119,7 @@ const Messages = {
           body: JSON.stringify({
             requestId: uuidv4(),
             target: did,
-            messages: messages
+            messages: params.messages
           })
         })).json();
         return response;
@@ -186,18 +182,19 @@ class IdentityHubInstance {
     if (!descriptor.objectId) throw 'Message does not have an ID';
 
     let messageCIDs = await Utils.getMessageCIDs(message);
-    let descriptorId = messageCIDs.descriptor.toString();
-    if (await this.storage.get('stack', descriptorId)) return;
+    if (await this.storage.get('stack', messageCIDs.descriptor, 'descriptor')) return;
+
+    let stackEntry = {
+      descriptor: messageCIDs.descriptor
+    };
+    if (descriptor.cid) stackEntry.data = descriptor.cid;
+    if (messageCIDs.attestation) stackEntry.attestation = messageCIDs.attestation;
+    if (messageCIDs.authorization) stackEntry.authorization = messageCIDs.authorization;
 
     let ipfs = await IdentityHub.ipfs;
     return Promise.all([ // Could store these against stores located elsewhere
-      ipfs.pin.addAll(Object.values(messageCIDs)), // Probably need to remove this and make it interface specific
-      this.storage.set('stack', {
-        descriptor: descriptorId,
-        data: descriptor.cid,
-        attestation: messageCIDs.attestation.toString(),
-        authorization: messageCIDs.authorization.toString()
-      })
+      ipfs.pin.addAll(Object.values(messageCIDs).map(cid => new CID(cid))), // Probably need to remove this and make it interface specific
+      this.storage.set('stack', stackEntry)
     ]);
   }
 
@@ -208,18 +205,20 @@ class IdentityHubInstance {
   }
 
   async handleRequest(request){
-    let responses = await Promise.all(request.messages.map(async message => {
+    let replies = await Promise.all(request.messages.map(async message => {
       return this.processMessage(message)
     }));
-    return { requestId: request.requestId, responses };
+    return { requestId: request.requestId, replies };
   }
 
-  async processMessage (message){  
+  async processMessage (message){
+    let ipfs = await IdentityHub.ipfs;
+    let messageId = (await ipfs.dag.put(message)).toString();
     let descriptor = message.descriptor;
     let Interface = IdentityHub.interfaces[descriptor.method];
-    
     if (!Interface) {
       return {
+        messageId,
         status: Status.getStatus(501)
       };
     }
@@ -227,6 +226,7 @@ class IdentityHubInstance {
     let valid = await Validator.validate(descriptor);
     if (!valid) {
       return {
+        messageId,
         status: Status.getStatus(400)
       };
     }
@@ -234,6 +234,7 @@ class IdentityHubInstance {
     let allow = await this.authorize(message).catch(e => false);
     if (!allow) {
       return {
+        messageId,
         status: Status.getStatus(401)
       };
     }
@@ -241,6 +242,7 @@ class IdentityHubInstance {
     try {
       let result = await Interface(this, message);
       let response = {
+        messageId,
         status: Status.getStatus(200)
       };
       if (result) response.entries = result;
@@ -249,6 +251,7 @@ class IdentityHubInstance {
     catch(e) {
       console.log(e);
       return {
+        messageId,
         status: Status.getStatus(typeof e === 'number' ? e : 500)
       };
     }

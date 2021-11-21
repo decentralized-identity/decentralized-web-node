@@ -53,7 +53,7 @@ export default class Storage {
         {
           name: 'stack',
           model: {
-            "descriptor:string": { pk: true, immutable: true },
+            "descriptor:string": { pk: true, immutable: true }, // This is the descriptor's CID
             "data:string": { immutable: true },
             "attestation:string": { immutable: true },
             "authorization:string": { immutable: true }
@@ -72,8 +72,8 @@ export default class Storage {
             "tip:string": { notNull: true },
             "clock:int": {},
             "schema:string": {},
-            "dataFormat:string": { notNull: true },
             "tags:string[]": {},
+            "dataFormat:string": { notNull: true },
             "datePublished:int": {},
           }, modelTemplate)
         },
@@ -108,9 +108,9 @@ export default class Storage {
     return this.txn(db => db(table).query('upsert', entries).exec()).catch(e => console.log(e));
   }
 
-  async get (table, id){
+  async get (table, id, field){
     return this.txn(db => db(table).query('select').where([
-      'id', '=', id
+      field || 'id', '=', id
     ]).exec())
     .then(rows => rows[0])
     .catch(e => console.log(e));

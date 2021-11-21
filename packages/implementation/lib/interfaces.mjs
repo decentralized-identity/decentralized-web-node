@@ -1,29 +1,34 @@
 
 import CID from 'cids';
+import { concat as uint8ArrayConcat } from 'uint8arrays/concat';
+import all from 'it-all';
 import Utils from './utils.mjs';
 import { IdentityHub } from '../main.mjs';
 
-async function resolveEntry(entry){
+async function resolveEntry(hub, entry){
   let ipfs = await IdentityHub.ipfs;
   return await Promise.all(entry.messages.map(async descriptorId => {
     let result = {};
     let promises = [];
-    let cids = await this.storage.get('stack', descriptorId);
+    let cids = await hub.storage.get('stack', descriptorId, 'descriptor');
     for (let prop in cids) {
       promises.push(
-        ipfs.dag.get(new CID(cids[prop])).then(z => result[prop] = z)
+        all(ipfs.cat(cids[prop])).then(array => result[prop] = uint8ArrayConcat(array))
       )
     }
     await Promise.all(promises);
+    result.descriptor = Utils.fromEncodedArray(result.descriptor, true);
+    if (result.attestation) result.attestation = Utils.fromEncodedArray(result.attestation, true);
+    if (result.authorization) result.authorization = Utils.fromEncodedArray(result.authorization, true);
+    if (result.data) result.data = Buffer.from(result.data).toString('base64');
     return result;
   }));
 }
 
 async function deleteMessages(hub, table, entry, deleteEntry){
   let ipfs = await IdentityHub.ipfs;
-  // console.log(2, typeof entry.messages, JSON.stringify(entry.messages, null, 2));
   let promises = entry.messages.map(async msg => ipfs.pin.rmAll(
-    Object.values(await Utils.getMessageCIDs(msg))
+    Object.values(await Utils.getMessageCIDs(msg)).map(cid => new CID(cid))
   ))
   if (deleteEntry) promises.push(hub.storage.delete(table, entry.id))
   return Promise.all(promises);
@@ -38,7 +43,7 @@ const Interfaces = {
   },
   async ProfileRead(hub){
     let entry = await hub.storage.get('profile', 'profile').catch(e => console.log(e));
-    if (entry) return resolveEntry(entry);
+    if (entry) return resolveEntry(hub, entry);
     else throw 204;
   },
   async ProfileWrite(hub, message){
@@ -56,28 +61,31 @@ const Interfaces = {
     if (descriptor.schema) {
       query.push('AND', ['schema', '=', descriptor.schema.trim()])
     }
+    if (descriptor.dataFormat) {
+      query.push('AND', ['dataFormat', '=', descriptor.dataFormat.trim()])
+    }
     if (descriptor.tags) {
       query.push('AND', ['tags', 'INCLUDES', descriptor.tags.map(tag => tag.trim())])
     }
     query.shift();
     return hub.storage.find('collections', query).then(entries => {
-      return Promise.all(entries.map(entry => resolveEntry(entry)))
+      return Promise.all(entries.map(entry => resolveEntry(hub, entry)))
     });
   },
   async CollectionsWrite(hub, message){
     let promises = [];
     let descriptor = message.descriptor;
     let messageCIDs = await Utils.getMessageCIDs(message);
-    let descriptorID = messageCIDs.descriptor.toString();
+    let descriptorID = messageCIDs.descriptor;
     await hub.commitMessage(message);
     let entry = await hub.storage.get('collections', descriptor.objectId);
     if (entry) {
       if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(descriptorID) < 0)) {
         entry.clock = clock;
         entry.tip = descriptorID;
-        if (descriptor.schema) entry.schema = descriptor.schema;
-        if (descriptor.tags) entry.tags = descriptor.tags;
-        if (descriptor.datePublished) entry.datePublished = descriptor.datePublished;
+        ['schema', 'tags', 'datePublished', 'dataFormat'].forEach(prop => {
+          if (prop in descriptor) entry[prop] = descriptor[prop]
+        })
         promises.push(deleteMessages(hub, 'collections', entry));
         entry.messages = [descriptorID];
       }
@@ -89,6 +97,7 @@ const Interfaces = {
         clock: descriptor.clock,
         schema: descriptor.schema,
         tags: descriptor.tags,
+        dataFormat: descriptor.dataFormat,
         messages: [descriptorID]
       }
       if (descriptor.datePublished) {

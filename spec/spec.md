@@ -24,15 +24,17 @@ Identity Hub
 
 ## Abstract
 
-Most digital activities between people, organizations, devices, and other entities require 
-message and other data exchanges. When entities exchange messages and data for credential, app, 
-or service flows, they need an interface through which to store, discover, and fetch data related 
-to the entities with which they're interacting. Identity Hubs are a data storage and message relay 
-mechanism by which entities can locate public or permissioned private data related to 
-an entity's Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction 
-that allow an entity to operate multiple instances of compliant implementations that sync to the 
-same state across one another, enabling the owning entity to own, manage, and transact their data 
-with others without reliance on location/provider-specific locations, APIs, or routing.
+Most digital activities between people, organizations, devices, and other entities 
+require the exchange of messages and data. For entities to exchange messages and 
+data for credential, app, or service flows, they need an interface through which 
+to store, discover, and fetch data related to the flows and experiences they are 
+participating in. Identity Hubs are a data storage and message relay mechanism 
+entities can use to locate public or private permissioned data related to a given 
+Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction 
+that enable an entity to operate multiple instances that sync to the same state across 
+one another, enabling the owning entity to secure, manage, and transact their data 
+with others without reliance on location or provider-specific infrastructure, 
+interfaces, or routing mechanisms.
 
 ## Status of This Document
 
