@@ -17,10 +17,10 @@ async function resolveEntry(hub, entry){
       )
     }
     await Promise.all(promises);
-    result.descriptor = Utils.fromEncodedArray(result.descriptor, true);
-    if (result.attestation) result.attestation = Utils.fromEncodedArray(result.attestation, true);
-    if (result.authorization) result.authorization = Utils.fromEncodedArray(result.authorization, true);
-    if (result.data) result.data = Buffer.from(result.data).toString('base64');
+    result.descriptor = Utils.fromEncodedArray(result.descriptor, 'json');
+    if (result.attestation) result.attestation = Utils.fromEncodedArray(result.attestation, 'json');
+    if (result.authorization) result.authorization = Utils.fromEncodedArray(result.authorization, 'json');
+    if (result.data) result.data = Utils.fromEncodedArray(result.data, 'base64');
     return result;
   }));
 }

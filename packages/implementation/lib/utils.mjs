@@ -45,13 +45,13 @@ export default {
   toEncodedArray(data){
     return data instanceof Uint8Array ? data : encoder.encode(typeof data === 'object' ? canonicalize(data) : data);
   },
-  fromEncodedArray(data, parse){ 
+  fromEncodedArray(data, format){ 
     let result;
     if (data instanceof Uint8Array) {
       result = decoder.decode(data);
-      if (parse === true) result = JSON.parse(result.toString());
+      if (format === 'json') result = JSON.parse(result.toString());
+      if (format === 'base64') result = Buffer.from(result).toString('base64');
     }
-    console.log(data instanceof Uint8Array, parse, typeof result, result);
     return result;
   }
 }
