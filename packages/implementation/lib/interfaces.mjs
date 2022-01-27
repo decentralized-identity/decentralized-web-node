@@ -7,30 +7,23 @@ import { IdentityHub } from '../main.mjs';
 
 async function resolveEntry(hub, entry){
   let ipfs = await IdentityHub.ipfs;
-  return await Promise.all(entry.messages.map(async descriptorId => {
-    let result = {};
+  return await Promise.all(entry.messages.map(async messageCid => {
+    let result = {}
+    let message = await ipfs.dag.get(new CID(messageCid)).then(obj => obj.value);
+    let descriptor = await ipfs.dag.get(new CID(message.descriptor)).then(obj => obj.value);
+    result.descriptor = descriptor;
     let promises = [];
-    let cids = await hub.storage.get('stack', descriptorId, 'descriptor');
-    for (let prop in cids) {
-      promises.push(
-        all(ipfs.cat(cids[prop])).then(array => result[prop] = uint8ArrayConcat(array))
-      )
-    }
+    if (descriptor.cid) promises.push(ipfs.dag.get(new CID(descriptor.cid)).then(obj => result.data = obj.value));
+    if (message.attestation) promises.push(ipfs.dag.get(new CID(message.attestation)).then(obj => result.attestation = obj.value));
     await Promise.all(promises);
-    result.descriptor = Utils.fromEncodedArray(result.descriptor, 'json');
-    if (result.attestation) result.attestation = Utils.fromEncodedArray(result.attestation, 'json');
-    if (result.authorization) result.authorization = Utils.fromEncodedArray(result.authorization, 'json');
-    if (result.data) result.data = Utils.fromEncodedArray(result.data, 'base64');
     return result;
   }));
 }
 
 async function deleteMessages(hub, table, entry, deleteEntry){
   let ipfs = await IdentityHub.ipfs;
-  let promises = entry.messages.map(async msg => ipfs.pin.rmAll(
-    Object.values(await Utils.getMessageCIDs(msg)).map(cid => new CID(cid))
-  ))
-  if (deleteEntry) promises.push(hub.storage.delete(table, entry.id))
+  let promises = deleteEntry ? [hub.storage.delete(table, entry.id)] : [];
+      promises.push(ipfs.pin.rmAll(entry.messages));
   return Promise.all(promises);
 }
 
@@ -75,9 +68,9 @@ const Interfaces = {
   async CollectionsWrite(hub, message){
     let promises = [];
     let descriptor = message.descriptor;
-    let messageCIDs = await Utils.getMessageCIDs(message);
-    let descriptorID = messageCIDs.descriptor;
-    await hub.commitMessage(message);
+    let dagMessage = await Utils.dagifyMessage(message, { hub: hub });
+    let descriptorID = dagMessage.descriptor;
+    let commit = await hub.commitMessage(message);
     let entry = await hub.storage.get('collections', descriptor.objectId);
     if (entry) {
       if (descriptor.clock > entry.clock || (descriptor.clock === entry.clock && entry.tip.localCompare(descriptorID) < 0)) {
@@ -98,7 +91,7 @@ const Interfaces = {
         schema: descriptor.schema,
         tags: descriptor.tags,
         dataFormat: descriptor.dataFormat,
-        messages: [descriptorID]
+        messages: [commit.cid]
       }
       if (descriptor.datePublished) {
         entry.datePublished = descriptor.datePublished;

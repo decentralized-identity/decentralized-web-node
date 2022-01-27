@@ -68,6 +68,7 @@ router.post('/', async (ctx) => {
     ctx.body = await hub.handleRequest(request);
   }
   catch (e) {
+    console.log(e);
     ctx.status = 500;
     ctx.body = {
       status: Status.getStatus(500)

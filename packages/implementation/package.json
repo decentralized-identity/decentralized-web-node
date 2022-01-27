@@ -1,7 +1,7 @@
 {
   "name": "identity-hub",
   "version": "0.0.1",
-  "description": "Decentralized public and encrypted storage and relay of personal and app data, messages, and ",
+  "description": "Decentralized public and encrypted storage and relay of personal and app data, messages, and files.",
   "keywords": [
     "did",
     "identity",

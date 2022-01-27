@@ -48,6 +48,10 @@ async function encrypt (payload, options = {}){
   }
 }
 
+function countToTen(){
+
+}
+
 const autoIdMethods = /(Write|Create)$/i;
 
 const Messages = {
@@ -55,7 +59,7 @@ const Messages = {
   async compose(args){
     if (!(await Validator.validate(args.descriptor))) throw `Unsupported Interface invocation`;
 
-    let ipfs = await IdentityHub.ipfs;
+    let ipfs = await IPFS;
     let message =  {
       descriptor: args.descriptor
     };
@@ -81,14 +85,15 @@ const Messages = {
           await encrypt(data, { privateJwk: args.encrypt.privateJwk })
       }
       else message.data = data;
-      let dataNode = await ipfs.add(Utils.toEncodedArray(data));
+      let dataNode = await ipfs.add(Utils.toEncodedArray(message.data), { onlyHash: true });
       descriptor.cid = dataNode.path;
     }
 
     if (args.sign) {
+      let descriptorCid = await ipfs.dag.put(Utils.toEncodedArray(message.data), { onlyHash: true })
       let jws = typeof args.sign === 'function' ?
-        await args.sign(descriptor) :
-        await sign(descriptor, { privateJwk: args.sign.privateJwk });
+        await args.sign(descriptorCid) :
+        await sign(descriptorCid, { privateJwk: args.sign.privateJwk });
       Object.assign(message, { attestation: jws });
     }
     return message;
@@ -163,6 +168,10 @@ class IdentityHubInstance {
     this.sync = {};
     this.method = options.method; 
     this.storage = new Storage(this.baseId);
+    this.ipfs = ipfsCreate({
+      repo: this.storage.dbName
+    })
+    console.log(this);
   }
 
   async composeMessage(args){
@@ -176,26 +185,24 @@ class IdentityHubInstance {
   }
 
   async commitMessage(message){
+    let ipfs = await this.ipfs;
     let descriptor = message.descriptor;
 
     if (!(await Validator.validate(descriptor))) throw `Unsupported Interface type`;
     if (!descriptor.objectId) throw 'Message does not have an ID';
 
-    let messageCIDs = await Utils.getMessageCIDs(message);
-    if (await this.storage.get('stack', messageCIDs.descriptor, 'descriptor')) return;
-
-    let stackEntry = {
-      descriptor: messageCIDs.descriptor
+    let dagMessage = await Utils.dagifyMessage(message, { hub: this });
+    let messageCid = await ipfs.dag.put(dagMessage, { pin: true });
+    
+    return {
+      cid: messageCid,
+      message: dagMessage
     };
-    if (descriptor.cid) stackEntry.data = descriptor.cid;
-    if (messageCIDs.attestation) stackEntry.attestation = messageCIDs.attestation;
-    if (messageCIDs.authorization) stackEntry.authorization = messageCIDs.authorization;
 
-    let ipfs = await IdentityHub.ipfs;
-    return Promise.all([ // Could store these against stores located elsewhere
-      ipfs.pin.addAll(Object.values(messageCIDs).map(cid => new CID(cid))), // Probably need to remove this and make it interface specific
-      this.storage.set('stack', stackEntry)
-    ]);
+    // return Promise.all([ // Could store these against stores located elsewhere
+    //   ipfs.pin.add(Object.values(messageCIDs).map(cid => new CID(cid))), // Probably need to remove this and make it interface specific
+    //   this.storage.set('stack', stackEntry)
+    // ]);
   }
 
   async generateRequest(messages){
@@ -212,7 +219,7 @@ class IdentityHubInstance {
   }
 
   async processMessage (message){
-    let ipfs = await IdentityHub.ipfs;
+    let ipfs = await this.ipfs;
     let messageId = (await ipfs.dag.put(message)).toString();
     let descriptor = message.descriptor;
     let Interface = IdentityHub.interfaces[descriptor.method];

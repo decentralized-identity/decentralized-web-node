@@ -3,12 +3,11 @@ import { IdentityHub } from '../main.mjs';
 import canonicalize from 'canonicalize';
 import CID from 'cids';
 
-const cidProps = [
-  'data',
-  'descriptor',
-  'attestation',
-  'authorization'
-]
+const cidProps = {
+  'descriptor': 'json',
+  'attestation': 'json',
+  'authorization': 'json'
+}
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -28,19 +27,24 @@ export default {
       return obj;
     }, {})
   },
-  async getMessageCIDs(message){
-    let ipfs = await IdentityHub.ipfs;
-    let cids = {}
-    await Promise.all(cidProps.reduce((promises, prop) => {
-      if (message[prop]) {
-        promises.push(ipfs.add(this.toEncodedArray(message[prop])).then(cid => cids[prop] = cid.path));
+  async dagifyMessage(message, options = {}){
+    let ipfs = await (options?.hub?.ipfs || IdentityHub.ipfs);
+    let dagified = {};
+    let promises = [];
+    if ('data' in message) {
+      if (!message.descriptor.cid) {
+        message.descriptor.cid = await ipfs.add(this.toEncodedArray(message.data)).then(obj => obj.cid);
+        dagified.descriptor = message.descriptor;
       }
-      return promises;
-    }, []));
-    let dataCID = message.descriptor.cid; 
-    if (dataCID) cids.data = dataCID;
-    else delete cids.data;
-    return cids;
+    }
+    for (let prop in message) {
+      if (cidProps[prop]) {
+        promises.push(ipfs.dag.put(message[prop]).then(cid => dagified[prop] = cid));
+      }
+      else if (prop !== 'data') dagified[prop] = message[prop];
+    }
+    await Promise.all(promises);
+    return dagified;
   },
   toEncodedArray(data){
     return data instanceof Uint8Array ? data : encoder.encode(typeof data === 'object' ? canonicalize(data) : data);
