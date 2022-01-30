@@ -966,7 +966,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
   - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
 
 #### Delete
