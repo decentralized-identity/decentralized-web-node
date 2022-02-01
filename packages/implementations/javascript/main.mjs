@@ -168,9 +168,7 @@ class IdentityHubInstance {
     this.sync = {};
     this.method = options.method; 
     this.storage = new Storage(this.baseId);
-    this.ipfs = ipfsCreate({
-      repo: this.storage.dbName
-    })
+    this.ipfs = IPFS;
     console.log(this);
   }
 
