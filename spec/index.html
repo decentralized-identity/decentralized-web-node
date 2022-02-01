@@ -183,7 +183,7 @@ as a single logical unit for users.</p>
 </tr>
 </tbody>
 </table>
-<div id="todo-36" class="notice todo"><a class="notice-link" href="#todo-36">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
+<div id="todo-1" class="notice todo"><a class="notice-link" href="#todo-1">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
 </div>
 <h2 id="service-endpoints"><a class="toc-anchor" href="#service-endpoints" >§</a> Service Endpoints</h2>
 <p>The following DID Document Service Endpoint entries <strong><strong>MUST</strong></strong> be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner’s Hub instances:</p>
@@ -226,7 +226,7 @@ with a given DID, as located via the DID resolution process.</p>
 </ol>
 <h4 id="request-construction"><a class="toc-anchor" href="#request-construction" >§</a> Request Construction</h4>
 <p><strong>DID-Relative URL example for passing multiple messages:</strong></p>
-<div id="note-15" class="notice note"><a class="notice-link" href="#note-15">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Identity Hub URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
+<div id="note-1" class="notice note"><a class="notice-link" href="#note-1">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Identity Hub URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
 </div>
 <pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=IdentityHub&amp;queries=<span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ProfileRead"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span> <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
 </code></pre>
@@ -284,7 +284,7 @@ BODY <span class="token punctuation">{</span>
 <li>The <em>Request Object</em> <strong><strong>MUST</strong></strong> include a <code>messages</code> property, and its value <strong><strong>MUST</strong></strong> be an array composed of <a href="#messages" >Message</a> objects.</li>
 </ol>
 <h2 id="messages"><a class="toc-anchor" href="#messages" >§</a> Messages</h2>
-<p>All Identity Hub messaging is transacted via Messages objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information.</p>
+<p>All Identity Hub messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPFS CIDs and DAG APIs.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
   <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
   <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
@@ -294,7 +294,7 @@ BODY <span class="token punctuation">{</span>
       <span class="token property">"data"</span><span class="token operator">:</span> OPTIONAL_JSON_VALUE<span class="token punctuation">,</span>
       <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-          <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES265K"</span><span class="token punctuation">,</span>
+          <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES256K"</span><span class="token punctuation">,</span>
           <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"did:example:123#key-1"</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
         <span class="token property">"payload"</span><span class="token operator">:</span> CID(descriptor)<span class="token punctuation">,</span>
@@ -302,7 +302,7 @@ BODY <span class="token punctuation">{</span>
       <span class="token punctuation">}</span><span class="token punctuation">,</span>
       <span class="token property">"authorization"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-          <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES265K"</span><span class="token punctuation">,</span>
+          <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES256K"</span><span class="token punctuation">,</span>
           <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"did:example:456#key-2"</span><span class="token punctuation">,</span>
           <span class="token property">"capabilities"</span><span class="token operator">:</span> <span class="token string">"..."</span><span class="token punctuation">,</span>
         <span class="token punctuation">}</span><span class="token punctuation">,</span>
@@ -315,6 +315,7 @@ BODY <span class="token punctuation">{</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <p>Messages objects <strong><strong>MUST</strong></strong> be composed as follows:</p>
+<p>In order to enable data replication features for a <a class="term-reference" href="#term:hub-instance">Hub Instance</a>, all Messages MUST be committed to an IPFS DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded object.</p>
 <ul>
 <li>Message objects <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be an object, as defined by the <a href="#message-descriptors" >Message Descriptors</a> section of this specification.</li>
 <li>Message objects <strong><strong>MAY</strong></strong> contain a <code>data</code> property, and if present its value <strong><strong>MUST</strong></strong> be a JSON value of the Message’s data.</li>
@@ -357,7 +358,7 @@ BODY <span class="token punctuation">{</span>
 <p>Message Descriptors are JSON objects that contains the parameters, signatory proof, and other details about the message and any data associated with it. Message Descriptor objects <strong><strong>MUST</strong></strong> be composed as follows:</p>
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be a string that matches a Hub Interface method.</li>
-<li>If the <a href="#messages" >Message</a> has data associated with it, passed directly via the <code>data</code> property of the <a href="#messages" >Message</a> object or through a channel external to the message object, the <code>descriptor</code> object <strong><strong>MUST</strong></strong> contain a <code>cid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded data.</li>
+<li>If the <a href="#messages" >Message</a> has data associated with it, passed directly via the <code>data</code> property of the <a href="#messages" >Message</a> object or through a channel external to the message object, the <code>descriptor</code> object <strong><strong>MUST</strong></strong> contain a <code>cid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-pb.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md" >DAG PB</a> encoded data.</li>
 <li>If the <a href="#messages" >Message</a> has data associated with it, passed directly via the <code>data</code> property of the <a href="#messages" >Message</a> object or through a channel external to the message object, the <code>descriptor</code> object <strong><strong>MUST</strong></strong> contain a <code>dataFormat</code> property, and its value <strong><strong>MUST</strong></strong> be a string that corresponds with a registered <a path-0="www.iana.org"path-1="assignments"path-2="media-types"path-3="media-types.xhtml"href="https://www.iana.org/assignments/media-types/media-types.xhtml" >IANA Media Type</a> data format (the most common being plain JSON, which is indicated by setting the value of the <code>dataFormat</code> property to <code>application/json</code>), or one of the following format strings pending registration:
 <ul>
 <li><code>application/vc+jwt</code> - the data is a JSON Web Token (JWT) [<a class="spec-reference" href="#ref:RFC7519">RFC7519</a>] formatted variant of a <a path-0="www.w3.org"path-1="TR"path-2="vc-data-model"path-3="#json-web-token"href="https://www.w3.org/TR/vc-data-model/#json-web-token" >W3C Verifiable Credential</a>.</li>
@@ -406,7 +407,7 @@ BODY <span class="token punctuation">{</span>
 </code></pre>
 <p>The message generating party <strong><strong>MUST</strong></strong> construct the signed message object as follows:</p>
 <ol>
-<li>If the <a href="#messages" >Message</a> includes associated data, passed directly via the <a href="#messages" >Message</a> object’s <code>data</code> property or through a channel external to the <a href="#messages" >Message</a>, add a <code>cid</code> property to the <code>descriptor</code> object and set its value as the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded data.</li>
+<li>If the <a href="#messages" >Message</a> includes associated data, passed directly via the <a href="#messages" >Message</a> object’s <code>data</code> property or through a channel external to the <a href="#messages" >Message</a>, add a <code>cid</code> property to the <code>descriptor</code> object and set its value as the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-pb.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md" >DAG PB</a> encoded data.</li>
 <li>The <a href="#messages" >Message</a> object <strong><strong>MUST</strong></strong> contain an <code>attestation</code> property, and its value <strong><strong>MUST</strong></strong> be a Flattened object representation of a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature composed as follows:</li>
 <li>The Message object <strong><strong>must</strong></strong> include a <code>payload</code> property, and its value <strong><strong>must</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>descriptor</code> object, whose composition is defined in the <a href="#message-descriptors" >Message Descriptor</a> section of this specification.</li>
 <li>The Message object <strong><strong>MUST</strong></strong> include a <code>protected</code> property, and its value <strong><strong>must</strong></strong> be an object composed of the following values:
@@ -532,7 +533,7 @@ BODY <span class="token punctuation">{</span>
 <p>If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation <strong><strong>must</strong></strong> include a message-level <code>status</code> property, and its value must be an object as defined below.</p>
 <p><strong>Message succeeded for query/read-type interface that expects results</strong></p>
 <p>If a message is processed correctly and a set of result <code>entries</code> is expected, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>200</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message was successfully processed</code> as the status <code>text</code>.</p>
-<div id="note-16" class="notice note"><a class="notice-link" href="#note-16">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
+<div id="note-2" class="notice note"><a class="notice-link" href="#note-2">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
 </div>
 <p><em>Request Example:</em></p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
@@ -658,10 +659,10 @@ BODY <span class="token punctuation">{</span>
 </code></pre>
 </div>
 <h2 id="access-permissions"><a class="toc-anchor" href="#access-permissions" >§</a> Access &amp; Permissions</h2>
-<div id="todo-37" class="notice todo"><a class="notice-link" href="#todo-37">TODO</a><p>Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.</p>
+<div id="todo-2" class="notice todo"><a class="notice-link" href="#todo-2">TODO</a><p>Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.</p>
 </div>
 <h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
-<div id="todo-38" class="notice todo"><a class="notice-link" href="#todo-38">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
+<div id="todo-3" class="notice todo"><a class="notice-link" href="#todo-3">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
 </div>
 <h2 id="interfaces"><a class="toc-anchor" href="#interfaces" >§</a> Interfaces</h2>
 <h3 id="feature-detection"><a class="toc-anchor" href="#feature-detection" >§</a> Feature Detection</h3>
@@ -810,7 +811,7 @@ structure, if a Profile has been established by the controller of a DID:</p>
 <li>The message object <strong><strong>MAY</strong></strong> contain a <code>data</code> property, or its data may be conveyed through an external channel, and the data <strong><strong>MUST</strong></strong> be a JSON object that conforms with the data model described in the <a href="#data-model-1" >Profile Data Model</a> section above.</li>
 <li>The message object <strong><strong>MUST</strong></strong> <code>descriptor</code> property <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
 <ul>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>cid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoding of the data associated with the message.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>cid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-pb.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md" >DAG PB</a> encoding of the data associated with the message.</li>
 <li>The <code>descriptor</code> object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ProfileWrite</code>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>clock</code> property, and its value <strong><strong>MUST</strong></strong> be an integer representing an incrementing logical counter.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>dataFormat</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>json</code>.</li>
@@ -841,7 +842,7 @@ experience for users.</p>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<div id="todo-39" class="notice todo"><a class="notice-link" href="#todo-39">TODO</a><p>Add more detail to the other props that can be present in CollectionsQuery messages.</p>
+<div id="todo-4" class="notice todo"><a class="notice-link" href="#todo-4">TODO</a><p>Add more detail to the other props that can be present in CollectionsQuery messages.</p>
 </div>
 <h4 id="write-2"><a class="toc-anchor" href="#write-2" >§</a> Write</h4>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
@@ -900,7 +901,7 @@ experience for users.</p>
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain an <code>id</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>cid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the data associated with the message.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsWrite</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsCommit</code>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>clock</code> property, and its value <strong><strong>MUST</strong></strong> be an integer representing an incrementing logical counter.</li>
 </ul>
 </li>
@@ -1000,7 +1001,7 @@ to a Hub User’s non-public data.</p>
 <h3 id="last-write-wins"><a class="toc-anchor" href="#last-write-wins" >§</a> Last-Write Wins</h3>
 <p>Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.</p>
 <h3 id="json-merge-patch"><a class="toc-anchor" href="#json-merge-patch" >§</a> JSON Merge Patch</h3>
-<div id="todo-40" class="notice todo"><a class="notice-link" href="#todo-40">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
+<div id="todo-5" class="notice todo"><a class="notice-link" href="#todo-5">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
 </div>
 <h2 id="hub-configurations"><a class="toc-anchor" href="#hub-configurations" >§</a> Hub Configurations</h2>
 <p>While it is strongly encouraged to implement the full set of Identity Hub features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Identity Hub feature sets that tend to serve different purposes.</p>
