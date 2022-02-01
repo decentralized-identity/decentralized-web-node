@@ -48,10 +48,6 @@ async function encrypt (payload, options = {}){
   }
 }
 
-function countToTen(){
-
-}
-
 const autoIdMethods = /(Write|Create)$/i;
 
 const Messages = {
