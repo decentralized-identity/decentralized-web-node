@@ -280,7 +280,7 @@ All Identity Hub messaging is transacted via Messages JSON objects. These object
       "data": OPTIONAL_JSON_VALUE,
       "attestation": {
         "protected": {
-          "alg": "ES265K",
+          "alg": "ES256K",
           "kid": "did:example:123#key-1"
         },
         "payload": CID(descriptor),
@@ -288,7 +288,7 @@ All Identity Hub messaging is transacted via Messages JSON objects. These object
       },
       "authorization": {
         "protected": {
-          "alg": "ES265K",
+          "alg": "ES256K",
           "kid": "did:example:456#key-2",
           "capabilities": "...",
         },
