@@ -872,7 +872,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
   - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoding of the data associated with the message.
   - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
   - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `json`.
+  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `application/json`.
   - The object ****MAY**** contain an `encryption` property, and its value ****MUST**** be a string indicating what encryption scheme is being used. Currently the only supported scheme is [[spec:rfc7516]] JSON Web Encryption (JWE), and when a message's data is encrypted the `encryption` property MUST be set to the string `jwe`.
 
 #### Delete
@@ -906,9 +906,13 @@ experience for users.
 }
 ```
 
-::: todo
-Add more detail to the other props that can be present in CollectionsQuery messages.
-:::
+`CollectionsQuery` messages are JSON objects that ****must**** be composed as follows:
+
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsQuery`.
+  - The object ****MAY**** contain an `objectId` property, and if present its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string intended to identify a logical object the [[ref: Hub Instance]] contains.
+  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
 
 #### Write
 
@@ -929,11 +933,12 @@ Add more detail to the other props that can be present in CollectionsQuery messa
 `CollectionsWrite` messages are JSON objects that ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `json`.
+  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
 
 ##### Processing Instructions
 
@@ -964,7 +969,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 `CollectionsCommit` messages are JSON objects that ****must**** be composed as follows:
 
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain an `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
   - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
@@ -1047,8 +1052,7 @@ to a Hub User's non-public data.
   "data": {...},
   "descriptor": { // Message Descriptor
     "method": "PermissionsRequest",
-    "schema": "https://schema.org/MusicPlaylist",
-    "tags": ["classic rock", "rock", "rock and roll"]
+    "schema": "https://schema.org/MusicPlaylist"
   }
 }
 ```
@@ -1072,8 +1076,7 @@ to a Hub User's non-public data.
   "data": {...},
   "descriptor": { // Message Descriptor
     "method": "PermissionsGrant",
-    "schema": "https://schema.org/MusicPlaylist",
-    "tags": ["classic rock", "rock", "rock and roll"]
+    "schema": "https://schema.org/MusicPlaylist"
   }
 }
 ```
