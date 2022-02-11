@@ -677,7 +677,7 @@ If a message attempts to invoke an interface `method` that is not the implementa
       "descriptor": {
         "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
         "cid": CID(data),
-        "method": "ActionsCreate",
+        "method": "ThreadsCreate",
         "schema": "https://schema.org/LikeAction",
         "dataFormat": "application/json"
       }
@@ -766,11 +766,11 @@ The following properties and values are defined for the Feature Detection object
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
     method is not supported:
-      - `ActionsQuery`
-      - `ActionsCreate`
-      - `ActionsUpdate`
-      - `ActionsClose`
-      - `ActionsDelete`
+      - `ThreadsQuery`
+      - `ThreadsCreate`
+      - `ThreadsReply`
+      - `ThreadsClose`
+      - `ThreadsDelete`
     - The object ****MAY**** contain a `permissions` property. If the property is not present, 
     it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -895,17 +895,6 @@ experience for users.
 
 #### Query
 
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "method": "CollectionsQuery",
-    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "schema": "https://schema.org/MusicPlaylist",
-    "dataFormat": "application/json"
-  }
-}
-```
-
 `CollectionsQuery` messages are JSON objects that ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
@@ -914,7 +903,49 @@ experience for users.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
 
+
+Get a single object by its ID reference:
+
+```json
+{ // Message
+  "descriptor": {
+    "method": "CollectionsQuery",
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+  }
+}
+```
+
+Get a objects of a given schema type:
+```json
+{ // Message
+  "descriptor": {
+    "method": "CollectionsQuery",
+    "schema": "https://schema.org/MusicPlaylist"
+  }
+}
+```
+
+Get all objects of a given schema type:
+```json
+{ // Message
+  "descriptor": {
+    "method": "CollectionsQuery",
+    "dataFormat": "image/gif"
+  }
+}
+```
+
 #### Write
+
+`CollectionsWrite` messages are JSON objects that ****must**** be composed as follows:
+
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
 
 ```json
 { // Message
@@ -929,16 +960,6 @@ experience for users.
   }
 }
 ```
-
-`CollectionsWrite` messages are JSON objects that ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
-  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
-  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
-  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
 
 ##### Processing Instructions
 
@@ -986,19 +1007,17 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 }
 ```
 
-### Actions
+### Threads
 
-Actions are notifications that are based on some form of directed action the Sender 
-wants to convey to the [[ref:Hub User]]. All Actions ****MUST**** be of a type defined 
-under the `schema.org/Action` family of objects.
+Threads are a linked series of topically associated messages that are intended to result 
+in activities performed by entities participating in the message thread.
 
 #### Query
 
 ```json
 { // Message
-  "data": {...},
   "descriptor": { // Message Descriptor
-    "method": "ActionsQuery",
+    "method": "ThreadsQuery",
     "schema": "https://schema.org/LikeAction"
   }
 }
@@ -1010,20 +1029,31 @@ under the `schema.org/Action` family of objects.
 { // Message
   "data": {...},
   "descriptor": { // Message Descriptor
-    "method": "ActionsCreate",
+    "method": "ThreadsCreate",
     "schema": "https://schema.org/LikeAction"
   }
 }
 ```
 
-#### Update
+#### Reply
 
 ```json
 { // Message
   "data": {...},
   "descriptor": { // Message Descriptor
-    "method": "ActionsUpdate",
+    "method": "ThreadsReply",
     "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"
+  }
+}
+```
+
+#### Close
+
+```json
+{ // Message
+  "descriptor": { // Message Descriptor
+    "method": "ThreadsClose",
+    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
 }
 ```
@@ -1032,9 +1062,8 @@ under the `schema.org/Action` family of objects.
 
 ```json
 { // Message
-  "data": {...},
   "descriptor": { // Message Descriptor
-    "method": "ActionsDelete",
+    "method": "ThreadsDelete",
     "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
 }
