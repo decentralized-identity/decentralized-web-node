@@ -276,8 +276,12 @@ All Identity Hub messaging is transacted via Messages JSON objects. These object
   "target": "did:example:123",
   "messages": [  // Message Objects
     {
-      "descriptor": {...},
-      "data": OPTIONAL_JSON_VALUE,
+      "data": BASE64_STRING,
+      "descriptor": {
+        "method": INTERFACE_METHOD_STRING,
+        "cid": DATA_CID_STRING,
+        "dataFormat": DATA_FORMAT_STRING,
+      },
       "attestation": {
         "protected": {
           "alg": "ES256K",
@@ -327,12 +331,11 @@ The Identity Hub data structure that resides in the `descriptor` property of the
   "target": "did:example:123",
   "messages": [  // Message Objects
     {
-      "data": ...,
+      "data": BASE64_STRING,
       "descriptor": {  // Message Descriptor
         "method": INTERFACE_METHOD_STRING,
         "cid": DATA_CID_STRING,
         "dataFormat": DATA_FORMAT_STRING,
-        "datePublished": EPOCH_TIMESTAMP_STRING
       },
       "attestation": {...},
       "authorization": {...}
@@ -342,14 +345,13 @@ The Identity Hub data structure that resides in the `descriptor` property of the
 }
 ```
 
-Message Descriptors are JSON objects that contains the parameters, signatory proof, and other details about the message and any data associated with it. Message Descriptor objects ****MUST**** be composed as follows:
+Message Descriptors are JSON objects that contains the parameters, signatory proof, and other details about the message and any data associated with it. All Message Descriptor objects share the following property options:
 
 - The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Hub Interface method.
 - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
 - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
   - `application/vc+jwt` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
   - `application/vc+ldp` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
-- The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
 Individual Interface methods may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
 
@@ -359,11 +361,11 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
 
 ```json
 { // Message
-  ...
+  "data": BASE64_STRING,
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "clock": 0,
+    "dateCreated": "123456789",
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json"
@@ -381,7 +383,7 @@ If the object is to be attested by a signer (e.g the Hub owner via signature wit
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "clock": 0,
+    "dateCreated": "123456789",
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json"
@@ -424,7 +426,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "clock": 7,
+    "dateCreated": "123456789",
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json",
@@ -456,7 +458,7 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "clock": 3,
+    "dateCreated": "123456789",
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json",
@@ -633,7 +635,7 @@ If a message fails to meet authorization requirements during processing, the imp
       "descriptor": {
         "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
         "cid": CID(data),
-        "clock": 0,
+        "dateCreated": "123456789",
         "method": "CollectionsWrite",
         "schema": "https://schema.org/SocialMediaPosting",
         "dataFormat": "application/json"
@@ -858,7 +860,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
   },
   "descriptor": { // Message Descriptor
     "cid": CID(data),
-    "clock": 4,
+    "dateCreated": "123456789",
     "method": "ProfileWrite",
     "dataFormat": "application/json"
   }
@@ -867,11 +869,10 @@ An object ****MUST**** have one or more descriptors. The first element of the de
 
 `ProfileWrite` messages are JSON objects that ****must**** be composed as follows:
 
-- The message object ****MAY**** contain a `data` property, or its data may be conveyed through an external channel, and the data ****MUST**** be a JSON object that conforms with the data model described in the [Profile Data Model](#data-model-1) section above.
+- The message object ****MAY**** contain a `data` property, or its data may be conveyed through an external channel, and the data ****MUST**** be a base64 encoded JSON object that conforms with the data model described in the [Profile Data Model](#data-model-1) section above.
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoding of the data associated with the message.
   - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
-  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
   - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `application/json`.
   - The object ****MAY**** contain an `encryption` property, and its value ****MUST**** be a string indicating what encryption scheme is being used. Currently the only supported scheme is [[spec:rfc7516]] JSON Web Encryption (JWE), and when a message's data is encrypted the `encryption` property MUST be set to the string `jwe`.
 
@@ -895,7 +896,7 @@ experience for users.
 
 #### Query
 
-`CollectionsQuery` messages are JSON objects that ****must**** be composed as follows:
+`CollectionsQuery` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsQuery`.
@@ -937,15 +938,20 @@ Get all objects of a given schema type:
 
 #### Write
 
-`CollectionsWrite` messages are JSON objects that ****must**** be composed as follows:
+`CollectionsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
-  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
-  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
-  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
+  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
+
+::: todo
+Flesh out the attachment prop/model
+
+Example: "The object ****MAY**** contain an `attachedTo` property, and if present its value ****Must**** be a string value that is a reference to an `objectId` of another object in the Hub the entry is attached to. If this property is not present, the object ****MUST**** contain a `schema` property, as defined below."
+:::
 
 ```json
 { // Message
@@ -953,7 +959,7 @@ Get all objects of a given schema type:
   "descriptor": { // Message Descriptor
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "clock": 0,
+    "dateCreated": "123456789",
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": DATA_FORMAT
@@ -964,9 +970,9 @@ Get all objects of a given schema type:
 ##### Processing Instructions
 
 When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform the following additional steps:
-1. If the incoming message has a higher `clock` value than all of the other messages for the logical entry known to the Hub Instance, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
-2. If the incoming message has a lower `clock` value than the message that represents the current state of the logical entry, the message ****MUST NOT**** be applied to the logical entry and its data ****MAY**** be discarded.
-3. If the incoming message has a `clock` value equal to the message that represents the current state of the logical entry, the incoming message's IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
+1. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical entry known to the Hub Instance, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
+2. If the incoming message has a lower `dateCreated` value than the message that represents the current state of the logical entry, the message ****MUST NOT**** be applied to the logical entry and its data ****MAY**** be discarded.
+3. If the incoming message has a `dateCreated` value equal to the message that represents the current state of the logical entry, the incoming message's IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
     - If the incoming message has a higher lexicographic value than the message that represents the current state, perform the actions described in Step 1 of this instruction set.
     - If the incoming message has a lower lexicographic value than the message that represents the current state, perform the actions described in Step 2 of this instruction set.
 
@@ -978,7 +984,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
   "descriptor": { // Message Descriptor
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "clock": 0,
+    "dateCreated": "123456789",
     "method": "CollectionsCommit",
     "schema": "https://schema.org/SocialMediaPosting",
     "strategy": "merge-patch",
@@ -987,13 +993,14 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 }
 ```
 
-`CollectionsCommit` messages are JSON objects that ****must**** be composed as follows:
+`CollectionsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
-  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the data associated with the message.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
-  - The object ****MUST**** contain a `clock` property, and its value ****MUST**** be an integer representing an incrementing logical counter.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
 #### Delete
 
@@ -1029,11 +1036,19 @@ in activities performed by entities participating in the message thread.
 { // Message
   "data": {...},
   "descriptor": { // Message Descriptor
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "method": "ThreadsCreate",
     "schema": "https://schema.org/LikeAction"
   }
 }
 ```
+
+`ThreadsCreate` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsCreate`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
 
 #### Reply
 
@@ -1042,10 +1057,20 @@ in activities performed by entities participating in the message thread.
   "data": {...},
   "descriptor": { // Message Descriptor
     "method": "ThreadsReply",
+    "schema": "https://fintech.org/BidAcceptance",
+    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"
   }
 }
 ```
+
+`ThreadsReply` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsReply`.
+  - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
+  - The object ****MUST**** contain a `parent` property, and its value ****Must**** be a string reference to the CID of the parent object in the Thread it is in response to.
 
 #### Close
 
@@ -1053,7 +1078,7 @@ in activities performed by entities participating in the message thread.
 { // Message
   "descriptor": { // Message Descriptor
     "method": "ThreadsClose",
-    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
+    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
   }
 }
 ```
@@ -1064,7 +1089,7 @@ in activities performed by entities participating in the message thread.
 { // Message
   "descriptor": { // Message Descriptor
     "method": "ThreadsDelete",
-    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
+    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
   }
 }
 ```
@@ -1114,7 +1139,6 @@ to a Hub User's non-public data.
 
 ```json
 { // Message
-  "data": {...},
   "descriptor": { // Message Descriptor
     "method": "PermissionsRevoke",
     "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
