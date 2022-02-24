@@ -743,15 +743,6 @@ defined as follows:
 The following properties and values are defined for the Feature Detection object:
 
 - The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows: 
-    - The object ****MAY**** contain a `profile` property. If the property is not present, 
-    it indicates the Hub implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `ProfileRead`
-      - `ProfileWrite`
-      - `ProfileDelete`
     - The object ****MAY**** contain a `collections` property. If the property is not present, 
     it indicates the Hub implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -800,92 +791,6 @@ the following request object:
 }
 ```
 
-### Profile
-
-The Profile interface provides a simple mechanism for setting and retrieving a JSON object 
-with basic profile information that describes the target DID entity.
-
-#### Data Model
-
-A compliant Identity Hub that supports the Profile interface ****MUST**** produce an object of the following 
-structure, if a Profile has been established by the controller of a DID:
-
-```json
-{
-  "type": "Profile",
-  "descriptors": [
-    {
-      "@context": "http://schema.org",
-      "@type": "Person",
-      "name": "Jeffrey Lebowski",
-      "givenName": "Jeffery",
-      "middleName": "The Big",
-      "familyName": "Lebowski",
-      "description": "That's just, like, your opinion, man.",
-      "website": "https://ilovebowling.com",
-      "email": "jeff@ilovebowling.com",
-      "image": IMG_URL,
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "5227 Santa Monica Boulevard",
-        "addressLocality": "Los Angeles",
-        "addressRegion": "CA"
-      }
-    },
-    {...},
-    {...}
-  ]
-}
-```
-
-An object ****MUST**** have one or more descriptors. The first element of the descriptors array is primary, and ****SHOULD**** be used unless another schema in the array is explicitly required.
-
-#### Read
-
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "method": "ProfileRead"
-  }
-}
-```
-
-#### Write
-
-```json
-{ // Message
-  "data": {
-    "type": "Profile",
-    "descriptors": [...]
-  },
-  "descriptor": { // Message Descriptor
-    "cid": CID(data),
-    "dateCreated": 123456789,
-    "method": "ProfileWrite",
-    "dataFormat": "application/json"
-  }
-}
-```
-
-`ProfileWrite` messages are JSON objects that ****must**** be composed as follows:
-
-- The message object ****MAY**** contain a `data` property, or its data may be conveyed through an external channel, and the data ****MUST**** be a base64 encoded JSON object that conforms with the data model described in the [Profile Data Model](#data-model-1) section above.
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
-  - The `descriptor` object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProfileWrite`.
-  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
-  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `application/json`.
-  - The object ****MAY**** contain an `encryption` property, and its value ****MUST**** be a string indicating what encryption scheme is being used. Currently the only supported scheme is [[spec:rfc7516]] JSON Web Encryption (JWE), and when a message's data is encrypted the `encryption` property MUST be set to the string `jwe`.
-
-#### Delete
-
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "method": "ProfileDelete"
-  }
-}
-```
-
 ### Collections
 
 To maximize decentralized app and service interoperability, the Collections interface of Identity Hubs 
@@ -903,6 +808,11 @@ experience for users.
   - The object ****MAY**** contain an `objectId` property, and if present its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string intended to identify a logical object the [[ref: Hub Instance]] contains.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
+  - The object ****MAY**** contain one of the following sorting properties based on the `dateSort` fields in objects:
+      - `createdAscending`: 
+      - `createdDescending`: 
+      - `publishedAscending`: 
+      - `publishedDescending`: 
 
 
 Get a single object by its ID reference:
