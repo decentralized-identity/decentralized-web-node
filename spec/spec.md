@@ -202,7 +202,7 @@ For example purposes, the `queries` parameter value below is neither JSON string
 :::
 
 ```json
-did:example:123?service=IdentityHub&queries=[{ "method": "ProfileRead" }, { "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
+did:example:123?service=IdentityHub&queries=[{ "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
 ```
 
 ```json
@@ -1095,9 +1095,6 @@ This Hub configuration is ideal for implementers who seek to expose intentionall
 {
   "type": "FeatureDetection",
   "interfaces": {
-    "profile": {
-      "ProfileRead": true
-    },
     "collections": {
       "CollectionsQuery": true
     }
