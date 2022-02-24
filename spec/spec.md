@@ -365,7 +365,7 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "dateCreated": "123456789",
+    "dateCreated": 123456789,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json"
@@ -383,7 +383,7 @@ If the object is to be attested by a signer (e.g the Hub owner via signature wit
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "dateCreated": "123456789",
+    "dateCreated": 123456789,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json"
@@ -426,7 +426,7 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "dateCreated": "123456789",
+    "dateCreated": 123456789,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json",
@@ -458,7 +458,7 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "dateCreated": "123456789",
+    "dateCreated": 123456789,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": "application/json",
@@ -635,7 +635,7 @@ If a message fails to meet authorization requirements during processing, the imp
       "descriptor": {
         "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
         "cid": CID(data),
-        "dateCreated": "123456789",
+        "dateCreated": 123456789,
         "method": "CollectionsWrite",
         "schema": "https://schema.org/SocialMediaPosting",
         "dataFormat": "application/json"
@@ -860,7 +860,7 @@ An object ****MUST**** have one or more descriptors. The first element of the de
   },
   "descriptor": { // Message Descriptor
     "cid": CID(data),
-    "dateCreated": "123456789",
+    "dateCreated": 123456789,
     "method": "ProfileWrite",
     "dataFormat": "application/json"
   }
@@ -947,19 +947,13 @@ Get all objects of a given schema type:
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
-::: todo
-Flesh out the attachment prop/model
-
-Example: "The object ****MAY**** contain an `attachedTo` property, and if present its value ****Must**** be a string value that is a reference to an `objectId` of another object in the Hub the entry is attached to. If this property is not present, the object ****MUST**** contain a `schema` property, as defined below."
-:::
-
 ```json
 { // Message
   "data": {...},
   "descriptor": { // Message Descriptor
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "dateCreated": "123456789",
+    "dateCreated": 123456789,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": DATA_FORMAT
@@ -970,6 +964,7 @@ Example: "The object ****MAY**** contain an `attachedTo` property, and if presen
 ##### Processing Instructions
 
 When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform the following additional steps:
+
 1. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical entry known to the Hub Instance, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
 2. If the incoming message has a lower `dateCreated` value than the message that represents the current state of the logical entry, the message ****MUST NOT**** be applied to the logical entry and its data ****MAY**** be discarded.
 3. If the incoming message has a `dateCreated` value equal to the message that represents the current state of the logical entry, the incoming message's IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
@@ -984,7 +979,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
   "descriptor": { // Message Descriptor
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "cid": CID(data),
-    "dateCreated": "123456789",
+    "dateCreated": 123456789,
     "method": "CollectionsCommit",
     "schema": "https://schema.org/SocialMediaPosting",
     "strategy": "merge-patch",
@@ -1006,13 +1001,18 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 
 ```json
 { // Message
-  "data": {...},
   "descriptor": { // Message Descriptor
     "method": "CollectionsDelete",
     "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
 }
 ```
+
+`CollectionsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsDelete`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the object to be deleted.
 
 ### Threads
 
@@ -1047,7 +1047,7 @@ in activities performed by entities participating in the message thread.
 
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsCreate`.
-  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string for the Thread being created.
   - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
 
 #### Reply
@@ -1058,8 +1058,8 @@ in activities performed by entities participating in the message thread.
   "descriptor": { // Message Descriptor
     "method": "ThreadsReply",
     "schema": "https://fintech.org/BidAcceptance",
-    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "parent": "Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"
+    "root": "b6464162-84af-7gab-aff5-j8f8438dfc1e",
+    "parent": "r7874162-84af-4aab-aff5-f1f8438dfc1e"
   }
 }
 ```
@@ -1068,9 +1068,10 @@ in activities performed by entities participating in the message thread.
 
 - The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsReply`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
   - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
-  - The object ****MUST**** contain a `parent` property, and its value ****Must**** be a string reference to the CID of the parent object in the Thread it is in response to.
+  - The object ****MUST**** contain a `parent` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the message in the Thread being replied to.
 
 #### Close
 
@@ -1083,6 +1084,12 @@ in activities performed by entities participating in the message thread.
 }
 ```
 
+`ThreadsClose` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsClose`.
+  - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
+
 #### Delete
 
 ```json
@@ -1093,6 +1100,12 @@ in activities performed by entities participating in the message thread.
   }
 }
 ```
+
+`ThreadsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsDelete`.
+  - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
 
 ### Permissions
 
