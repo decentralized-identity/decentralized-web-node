@@ -808,12 +808,11 @@ experience for users.
   - The object ****MAY**** contain an `objectId` property, and if present its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string intended to identify a logical object the [[ref: Hub Instance]] contains.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
-  - The object ****MAY**** contain one of the following sorting properties based on the `dateSort` fields in objects:
-      - `createdAscending`: 
-      - `createdDescending`: 
-      - `publishedAscending`: 
-      - `publishedDescending`: 
-
+  - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
+      - `createdAscending`: return results in order from the earliest `dateCreated` value to the latest.
+      - `createdDescending`: return results in order from the latest `dateCreated` value to the earliest.
+      - `publishedAscending`: return results in order from the earliest `datePublished` value to the latest.
+      - `publishedDescending`: return results in order from the latest `datePublished` value to the earliest.
 
 Get a single object by its ID reference:
 
