@@ -27,7 +27,7 @@ const Features = Interfaces.FeatureDetectionRead();
   delete Features['type'];
 
 async function sign (payload, options = {}){
-  switch (options.encryption) {
+  switch (options.signing) {
     default:
       let privateJwk = options.privateJwk;
       let alg = privateJwk.alg || algs[privateJwk.crv];

@@ -965,6 +965,7 @@ in activities performed by entities participating in the message thread.
 { // Message
   "data": {...},
   "descriptor": { // Message Descriptor
+    "objectId": "65efm7eg-84af-4aab-aff5-f1f8438dfc1e",
     "method": "ThreadsReply",
     "schema": "https://fintech.org/BidAcceptance",
     "root": "b6464162-84af-7gab-aff5-j8f8438dfc1e",
