@@ -1,10 +1,10 @@
-# Identity Hub
+Identity Hub
+==================
 
 **Specification Status:** Draft
 
 **Latest Draft:**
-[identity.foundation/identity-hub/spec](https://identity.foundation/identity-hub/spec)
-
+  [identity.foundation/identity-hub/spec](https://identity.foundation/identity-hub/spec)
 <!-- -->
 
 **Editors:**
@@ -20,20 +20,20 @@
 ~ [File a bug](https://github.com/decentralized-identity/identity-hub/issues)
 ~ [Commit history](https://github.com/decentralized-identity/identity-hub/commits/master)
 
----
+------------------------------------
 
 ## Abstract
 
-Most digital activities between people, organizations, devices, and other entities
-require the exchange of messages and data. For entities to exchange messages and
-data for credential, app, or service flows, they need an interface through which
-to store, discover, and fetch data related to the flows and experiences they are
-participating in. Identity Hubs are a data storage and message relay mechanism
-entities can use to locate public or private permissioned data related to a given
-Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction
-that enable an entity to operate multiple instances that sync to the same state across
-one another, enabling the owning entity to secure, manage, and transact their data
-with others without reliance on location or provider-specific infrastructure,
+Most digital activities between people, organizations, devices, and other entities 
+require the exchange of messages and data. For entities to exchange messages and 
+data for credential, app, or service flows, they need an interface through which 
+to store, discover, and fetch data related to the flows and experiences they are 
+participating in. Identity Hubs are a data storage and message relay mechanism 
+entities can use to locate public or private permissioned data related to a given 
+Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction 
+that enable an entity to operate multiple instances that sync to the same state across 
+one another, enabling the owning entity to secure, manage, and transact their data 
+with others without reliance on location or provider-specific infrastructure, 
 interfaces, or routing mechanisms.
 
 ## Status of This Document
@@ -43,28 +43,28 @@ the Decentralized Identity Foundation (DIF). It incorporates requirements and
 learnings from related work of many active industry players into a shared
 specification that meets the collective needs of the community.
 
-The specification will be updated to incorporate feedback, from DIF members and
-the wider community, with a reference implementation being developed within DIF
-that exercises the features and requirements defined here. We encourage reviewers
-to submit [GitHub Issues](https://github.com/decentralized-identity/identity-hub/issues)
+The specification will be updated to incorporate feedback, from DIF members and 
+the wider community, with a reference implementation being developed within DIF 
+that exercises the features and requirements defined here. We encourage reviewers 
+to submit [GitHub Issues](https://github.com/decentralized-identity/identity-hub/issues) 
 as the means by which to communicate feedback and contributions.
 
 ## Terminology
 
 [[def:Identity Hub]]
-~ A decentralized personal and application data storage and message relay node,
+~ A decentralized personal and application data storage and message relay node, 
 as defined in the DIF Identity Hub specification.
 
 [[def:Hub Instance, Hub Instances]]
 ~ An instance of an Identity Hub running on a local device or at a remote location.
 
 [[def:Hub Operator]]
-~ Any entity, including individuals, who runs an Hub Instance on a device or
+~ Any entity, including individuals, who runs an Hub Instance on a device or 
 infrastructure they control.
 
 [[def:Hub User]]
-~ An entity that stores DID-associated data and transmits messages via a given
-Hub Instance, which may be running on a device in their possession, or on the
+~ An entity that stores DID-associated data and transmits messages via a given 
+Hub Instance, which may be running on a device in their possession, or on the 
 device or infrastructure of a Hub Operator.
 
 [[def:Decentralized Identifiers, Decentralized Identifier, DID]]
@@ -122,8 +122,8 @@ distributed ledger).
   }
 </style>
 
-Identity Hubs are comprised of the following component layers, each of which is defined
-in this specification to ensure multiple Hub implementations can be used together and operate
+Identity Hubs are comprised of the following component layers, each of which is defined 
+in this specification to ensure multiple Hub implementations can be used together and operate 
 as a single logical unit for users.
 
 :----: |
@@ -142,31 +142,29 @@ Finalize the component stack list - are these correct? Are we missing any?
 
 ## Service Endpoints
 
-The following DID Document Service Endpoint entries \***\*MUST\*\*** be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner's Hub instances:
+The following DID Document Service Endpoint entries ****MUST**** be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner's Hub instances:
 
 ```json
 {
   "id": "did:example:123",
-  "service": [
-    {
-      "id": "#hub",
-      "type": "IdentityHub",
-      "serviceEndpoint": {
-        "instances": ["https://hub.example.com", "https://example.org/hub"]
-      }
+  "service": [{
+    "id":"#hub",
+    "type": "IdentityHub",
+    "serviceEndpoint": {
+      "instances": ["https://hub.example.com", "https://example.org/hub"]
     }
-  ]
+  }]
 }
 ```
 
 ## Addressing
 
-A user's logical Identity Hub (their collection of Hub Instances) can be addressed in many ways,
-but the mechanisms below \***\*MUST\*\*** be supported by a compliant Identity Hub implementation:
+A user's logical Identity Hub (their collection of Hub Instances) can be addressed in many ways, 
+but the mechanisms below ****MUST**** be supported by a compliant Identity Hub implementation:
 
 ### DID-Relative URLs
 
-The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated
+The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated 
 with a given DID, as located via the DID resolution process.
 
 #### Composition
@@ -193,7 +191,7 @@ The following process defines how a DID-Relative URL addressing an Identity Hub 
 
 1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
 2. As indicated by the presence of the `service` parameter, locate the `IdentityHub` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
-3. Parse the `IdentityHub` Service Endpoint and let the first located `IdentityHub` Service Endpoint URI be the base URI of the Hub request being constructed. NOTE: there may be multiple Hub URIs within the `IdentityHub` Service Endpoint entry, and it is \***\*recommended\*\*** that implementers address them in index order.
+3. Parse the `IdentityHub` Service Endpoint and let the first located `IdentityHub` Service Endpoint URI be the base URI of the Hub request being constructed. NOTE: there may be multiple Hub URIs within the `IdentityHub` Service Endpoint entry, and it is ****recommended**** that implementers address them in index order.
 
 #### Request Construction
 
@@ -213,20 +211,20 @@ did:example:123?service=IdentityHub&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9O
 
 **Resolve DID to locate the Identity Hub URIs:**
 
-`did:example:123` --> resolve to Identity Hub endpoint(s) --> `https://hub.example.com/`
+`did:example:123` -->  resolve to Identity Hub endpoint(s)  -->  `https://hub.example.com/`
 
-**Construct the _Request Object_{id=request-object}:**
+**Construct the *Request Object*{id=request-object}:**
 
 1. Create a JSON object for the request.
-2. The _Request Object_ \***\*MUST\*\*** include a `id` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
-3. The _Request Object_ \***\*MUST\*\*** include a `target` property, and its value \***\*MUST\*\*** be the Decentralized Identifier base URI of the DID-relative URL.
-4. The _Request Object_ \***\*MUST\*\*** include a `messages` property, and its value \***\*MUST\*\*** be an array composed of [Message](#messages) objects that are generated by parsing the DID-relative URL's `queries` parameter value as a JSON array and performing the following steps for each entry:
-   1. Construct a [Message](#messages) object.
-   2. Set the `descriptor` property of the [Message](#messages) object to the entry, ensuring it is a valid [Message Descriptor](#message-descriptors) object.
-   3. Augment the [Message](#messages) object with any signing and authorization values required, as described in the [Messages](#messages) section.
-   4. Append the object to the [Request Object](#request-objects)'s `messages` array.
+2. The *Request Object* ****MUST**** include a `id` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
+3. The *Request Object* ****MUST**** include a `target` property, and its value ****MUST**** be the Decentralized Identifier base URI of the DID-relative URL.
+4. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects that are generated by parsing the DID-relative URL's `queries` parameter value as a JSON array and performing the following steps for each entry:
+    1. Construct a [Message](#messages) object.
+    2. Set the `descriptor` property of the [Message](#messages) object to the entry, ensuring it is a valid [Message Descriptor](#message-descriptors) object.
+    3. Augment the [Message](#messages) object with any signing and authorization values required, as described in the [Messages](#messages) section.
+    4. Append the object to the [Request Object](#request-objects)'s `messages` array.
 
-_HTTP POST example:_
+*HTTP POST example:*
 
 ```json5
 POST https://hub.example.com/
@@ -264,9 +262,9 @@ Request Objects are JSON object envelopes used to pass messages to Identity Hub 
 
 Request Objects are composed as follows:
 
-1. The _Request Object_ \***\*MUST\*\*** include a `requestId` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
-2. The _Request Object_ \***\*MUST\*\*** include a `target` property, and its value \***\*MUST\*\*** be the Decentralized Identifier base URI of the DID-relative URL.
-3. The _Request Object_ \***\*MUST\*\*** include a `messages` property, and its value \***\*MUST\*\*** be an array composed of [Message](#messages) objects.
+1. The *Request Object* ****MUST**** include a `requestId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string to identify the request.
+2. The *Request Object* ****MUST**** include a `target` property, and its value ****MUST**** be the Decentralized Identifier base URI of the DID-relative URL.
+3. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects.
 
 ## Messages
 
@@ -307,20 +305,21 @@ All Identity Hub messaging is transacted via Messages JSON objects. These object
 }
 ```
 
-Messages objects \***\*MUST\*\*** be composed as follows:
+Messages objects ****MUST**** be composed as follows:
 
 In order to enable data replication features for a [[ref: Hub Instance]], all Messages MUST be committed to an IPFS DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object.
 
-- Message objects \***\*MUST\*\*** contain a `descriptor` property, and its value \***\*MUST\*\*** be an object, as defined by the [Message Descriptors](#message-descriptors) section of this specification.
-- Message objects \***\*MAY\*\*** contain a `data` property, and if present its value \***\*MUST\*\*** be a JSON value of the Message's data.
-- Message objects \***\*MAY\*\*** contain an `attestation` property, and if present its value \***\*MUST\*\*** be an object, as defined by the [Signed Data](#signed-data) section of this specification.
-- If a Message object requires signatory and/or permission-evaluated authorization, it \***\*must\*\*** include an `authorization` property, and its value \***\*MUST\*\*** be a [[spec:rfc7515]] JSON Web Signature composed as follows:
-  1. The Message object \***\*must\*\*** include a `payload` property, and its value \***\*must\*\*** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
-  2. The Message object \***\*MUST\*\*** include a `protected` property, and its value \***\*must\*\*** be an object composed of the following values:
-     - The object \***\*MUST\*\*** include an `alg` property, and its value \***\*MUST\*\*** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
-     - The object \***\*MUST\*\*** include a `kid` property, and its value \***\*MUST\*\*** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
-     - If the message requires authorization to execute, the Message object \***\*MUST\*\*** include a `capabilities` property with the required authorization material as its value.
-  3. The Message object \***\*MUST\*\*** include a `signature` property, and its value \***\*must\*\*** be a signature string produced by signing the `payload` value in Step 1, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+- Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object, as defined by the [Message Descriptors](#message-descriptors) section of this specification.
+- Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a JSON value of the Message's data.
+- Message objects ****MAY**** contain an `attestation` property, and if present its value ****MUST**** be an object, as defined by the [Signed Data](#signed-data) section of this specification.
+- If a Message object requires signatory and/or permission-evaluated authorization, it ****must**** include an `authorization` property, and its value ****MUST**** be a [[spec:rfc7515]] JSON Web Signature composed as follows: 
+  1. The Message object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
+  2. The Message object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
+      - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
+      - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
+      - If the message requires authorization to execute, the Message object ****MUST**** include a `capabilities` property with the required authorization material as its value.
+  3. The Message object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `payload` value in Step 1, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+
 
 ### Message Descriptors
 
@@ -348,13 +347,13 @@ The Identity Hub data structure that resides in the `descriptor` property of the
 
 Message Descriptors are JSON objects that contains the parameters, signatory proof, and other details about the message and any data associated with it. All Message Descriptor objects share the following property options:
 
-- The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be a string that matches a Hub Interface method.
-- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object \***\*MUST\*\*** contain a `cid` property, and its value \***\*MUST\*\*** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
-- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object \***\*MUST\*\*** contain a `dataFormat` property, and its value \***\*MUST\*\*** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
+- The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Hub Interface method.
+- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
+- If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
   - `application/vc+jwt` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
   - `application/vc+ldp` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
 
-Individual Interface methods may describe additional properties that the `descriptor` object \***\*MUST\*\*** or \***\*MAY\*\*** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
+Individual Interface methods may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
 
 #### Raw Data
 
@@ -376,7 +375,7 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
 
 #### Signed Data
 
-If the object is to be attested by a signer (e.g the Hub owner via signature with their DID key), the object \***\*MUST\*\*** contain the following additional properties to produce a [[spec:rfc7515]] Flattened JSON Web Signature (JWS) object:
+If the object is to be attested by a signer (e.g the Hub owner via signature with their DID key), the object ****MUST**** contain the following additional properties to produce a [[spec:rfc7515]] Flattened JSON Web Signature (JWS) object:
 
 ```json
 { // Message
@@ -401,28 +400,28 @@ If the object is to be attested by a signer (e.g the Hub owner via signature wit
 }
 ```
 
-The message generating party \***\*MUST\*\*** construct the signed message object as follows:
+The message generating party ****MUST**** construct the signed message object as follows:
 
 1. If the [Message](#messages) includes associated data, passed directly via the [Message](#messages) object's `data` property or through a channel external to the [Message](#messages), add a `cid` property to the `descriptor` object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
-2. The [Message](#messages) object \***\*MUST\*\*** contain an `attestation` property, and its value \***\*MUST\*\*** be a Flattened object representation of a [[spec:rfc7515]] JSON Web Signature composed as follows:
-3. The Message object \***\*must\*\*** include a `payload` property, and its value \***\*must\*\*** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
-4. The Message object \***\*MUST\*\*** include a `protected` property, and its value \***\*must\*\*** be an object composed of the following values:
-   - The object \***\*MUST\*\*** include an `alg` property, and its value \***\*MUST\*\*** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
-   - The object \***\*MUST\*\*** include a `kid` property, and its value \***\*MUST\*\*** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
-5. The Message object \***\*MUST\*\*** include a `signature` property, and its value \***\*must\*\*** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+2. The [Message](#messages) object ****MUST**** contain an `attestation` property, and its value ****MUST**** be a Flattened object representation of a [[spec:rfc7515]] JSON Web Signature composed as follows: 
+  1. The Message object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
+  2. The Message object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
+      - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
+      - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
+  3. The Message object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
 
 #### Encrypted Data
 
-If the object is to be encrypted (e.g the Hub owner encrypting their data to keep it private), the `descriptor` object \***\*MUST\*\*** be constructed as follows:
+If the object is to be encrypted (e.g the Hub owner encrypting their data to keep it private), the `descriptor` object ****MUST**** be constructed as follows:
 
 ```json
 { // Message
-  "data": {
+  "data": { 
     "protected": ...,
     "recipients": ...,
     "ciphertext": ...,
     "iv": ...,
-    "tag": ...
+    "tag": ... 
   },
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
@@ -437,24 +436,24 @@ If the object is to be encrypted (e.g the Hub owner encrypting their data to kee
 }
 ```
 
-The message generating party \***\*MUST\*\*** construct an encrypted message as follows:
+The message generating party ****MUST**** construct an encrypted message as follows:
 
-1. The `encryption` property of the `descriptor` object \***\*MUST\*\*** be set to the string value `JWE`.
+1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
 2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
 3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
 
 #### Signed & Encrypted Data
 
-If the object is to be both attributed to a signer and encrypted encrypted, it \***\*MUST\*\*** be structured as follows:
+If the object is to be both attributed to a signer and encrypted encrypted, it ****MUST**** be structured as follows:
 
 ```json
 { // Message
-  "data": {
+  "data": { 
     "protected": ...,
     "recipients": ...,
     "ciphertext": ...,
     "iv": ...,
-    "tag": ...
+    "tag": ... 
   },
   "descriptor": {
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
@@ -476,38 +475,37 @@ If the object is to be both attributed to a signer and encrypted encrypted, it \
 }
 ```
 
-The message generating party \***\*MUST\*\*** construct the signed and encrypted message as follows:
+The message generating party ****MUST**** construct the signed and encrypted message as follows:
 
 1. Follow the instructions described in the [Encrypted Data](#encrypted-data) section to add the required properties to the `descriptor` and produce a [[spec:rfc7516]] JSON Web Encryption (JWE) object from the associated data.
 2. Follow the instructions described in the [Signed Data](#signed-data) section to add an `attestation` property with a Flattened object representation of a [[spec:rfc7515]] JSON Web Signature as its value.
 
 ### Response Objects
 
-Responses from Interface method invocations are JSON objects that \***\*MUST\*\*** be constructed as follows:
+Responses from Interface method invocations are JSON objects that ****MUST**** be constructed as follows:
 
-1. The object \***\*MUST\*\*** include an `requestId` property, and its value \***\*MUST\*\*** be the [[spec:rfc4122]] UUID Version 4 string from the `requestId` property of the [_Request Object_](#request-object) it is in response to.
-2. The object \***\*MAY\*\*** have a `status` property if an error is produced from a general request-related issue, and if present its value \***\*MUST\*\*** be an object composed of the following properties:
-   - The status object \***\*MUST\*\*** have a `code` property, and its value \***\*MUST\*\*** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
-   - The status object \***\*MAY\*\*** have a `message` property, and if present its value \***\*MUST\*\*** be a string that describes a terse summary of the status. It is \***\*recommended\*\*** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
-3. The object \***\*MAY\*\*** have a `replies` property, and if present its value \***\*MUST\*\*** be an array of _Message Result Objects_{#message-results-objects}, which are constructed as follows:
-   1. The object \***\*MUST\*\*** have a `messageId` property, and its value \***\*MUST\*\*** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the associated message in the [_Request Object_](#request-object) from which it was received.
-   2. The object \***\*MUST\*\*** have a `status` property, and its value \***\*MUST\*\*** be an object composed of the following properties:
-      - The status object \***\*MUST\*\*** have a `code` property, and its value \***\*MUST\*\*** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
-      - The status object \***\*MAY\*\*** have a `message` property, and if present its value \***\*MUST\*\*** be a string that describes a terse summary of the status. It is \***\*recommended\*\*** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
-   3. The object \***\*MAY\*\*** have a `entries` property if the message request was successful. If present, its value \***\*MUST\*\*** be the resulting message entries returned from the invocation of the corresponding message.
+1. The object ****MUST**** include an `requestId` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string from the `requestId` property of the [*Request Object*](#request-object) it is in response to.
+2. The object ****MAY**** have a `status` property if an error is produced from a general request-related issue, and if present its value ****MUST**** be an object composed of the following properties:
+    - The status object ****MUST**** have a `code` property, and its value ****MUST**** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
+    - The status object ****MAY**** have a `message` property, and if present its value ****MUST**** be a string that describes a terse summary of the status. It is ****recommended**** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
+2. The object ****MAY**** have a `replies` property, and if present its value ****MUST**** be an array of *Message Result Objects*{#message-results-objects}, which are constructed as follows:
+    1. The object ****MUST**** have a `messageId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the associated message in the [*Request Object*](#request-object) from which it was received.
+    2. The object ****MUST**** have a `status` property, and its value ****MUST**** be an object composed of the following properties:
+        - The status object ****MUST**** have a `code` property, and its value ****MUST**** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
+        - The status object ****MAY**** have a `message` property, and if present its value ****MUST**** be a string that describes a terse summary of the status. It is ****recommended**** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
+    2. The object ****MAY**** have a `entries` property if the message request was successful. If present, its value ****MUST**** be the resulting message entries returned from the invocation of the corresponding message.
 
 #### Request-Level Status Coding
 
-If any of the scenarios described in this section are encountered during general message processing, the implementation \***\*must\*\*** include a request-level `status` property, and its value must be an object as defined below.
+If any of the scenarios described in this section are encountered during general message processing, the implementation ****must**** include a request-level `status` property, and its value must be an object as defined below.
 
 **Target DID not found**
 
-If the DID targeted by a request object is not found within the Hub instance, the implementation \***\*MUST\*\*** produce a request-level `status` with the code `404`, and \***\*SHOULD\*\*** use `Target DID not found within the Identity Hub instance` as the status `text`.
+If the DID targeted by a request object is not found within the Hub instance, the implementation ****MUST**** produce a request-level `status` with the code `404`, and ****SHOULD**** use `Target DID not found within the Identity Hub instance` as the status `text`.
 
-_Response Example:_
+*Response Example:*
 
 ::: example Target DID is not found
-
 ```json
 {
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
@@ -517,17 +515,15 @@ _Response Example:_
   }
 }
 ```
-
 :::
 
 **General request-level processing errors**
 
-If a general request-level error in processing occurs that is not covered by one of the specific status cases above and prevent the implementation from correctly evaluating the request, the implementation \***\*MUST\*\*** produce a request-level `status` with the code `500`, and \***\*SHOULD\*\*** use `The request cannot not be processed` as the status `text`.
+If a general request-level error in processing occurs that is not covered by one of the specific status cases above and prevent the implementation from correctly evaluating the request, the implementation ****MUST**** produce a request-level `status` with the code `500`, and ****SHOULD**** use `The request cannot not be processed` as the status `text`.
 
-_Response Example:_
+*Response Example:*
 
 ::: example General request processing error
-
 ```json
 {
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
@@ -537,22 +533,21 @@ _Response Example:_
   }
 }
 ```
-
 :::
 
 #### Message-Level Status Coding
 
-If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation \***\*must\*\*** include a message-level `status` property, and its value must be an object as defined below.
+If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation ****must**** include a message-level `status` property, and its value must be an object as defined below.
 
 **Message succeeded for query/read-type interface that expects results**
 
-If a message is processed correctly and a set of result `entries` is expected, the implementation \***\*MUST\*\*** include a message-level `status` object with its `code` property set to `200`, and \***\*SHOULD\*\*** use `The message was successfully processed` as the status `text`.
+If a message is processed correctly and a set of result `entries` is expected, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `200`, and ****SHOULD**** use `The message was successfully processed` as the status `text`.
 
 ::: note
-If no results are found, the `status` remains `200`, and the implementation \***\*MUST\*\*** return an empty `entries` array.
+If no results are found, the `status` remains `200`, and the implementation ****MUST**** return an empty `entries` array.
 :::
 
-_Request Example:_
+*Request Example:*
 
 ```json
 {  // Request Object
@@ -570,10 +565,9 @@ _Request Example:_
 }
 ```
 
-_Response Example:_
+*Response Example:*
 
 ::: example Example response object
-
 ```json
 {
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
@@ -586,22 +580,19 @@ _Response Example:_
   ]
 }
 ```
-
 :::
 
 **Improperly constructed message**
 
-If a message is malformed or constructed with invalid properties/values, the implementation \***\*MUST\*\*** include a message-level `status` object with its `code` property set to `400`, and \***\*SHOULD\*\*** use `The message was malformed or improperly constructed` as the status `text`.
+If a message is malformed or constructed with invalid properties/values, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `400`, and ****SHOULD**** use `The message was malformed or improperly constructed` as the status `text`.
 
-_Request Example:_
+*Request Example:*
 
 ```json
-{
-  // Request Object
+{  // Request Object
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "target": "did:example:123",
-  "messages": [
-    // Message Objects
+  "messages": [  // Message Objects
     {
       "descriptorization": {
         "methodical": "CollectionsQuery",
@@ -612,32 +603,27 @@ _Request Example:_
 }
 ```
 
-_Response Example:_
+*Response Example:*
 
 ::: example Example response object
-
 ```json
 {
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "replies": [
     {
       "messageId": "bm4vvfvsdfovsj...",
-      "status": {
-        "code": 400,
-        "text": "The message was malformed or improperly constructed"
-      }
+      "status": { "code": 400, "text": "The message was malformed or improperly constructed" }
     }
   ]
 }
 ```
-
 :::
 
 **Message failed authorization requirements**
 
-If a message fails to meet authorization requirements during processing, the implementation \***\*MUST\*\*** include a message-level `status` object with its `code` property set to `401`, and \***\*SHOULD\*\*** use `The message failed authorization requirements` as the status `text`.
+If a message fails to meet authorization requirements during processing, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `401`, and ****SHOULD**** use `The message failed authorization requirements` as the status `text`.
 
-_Request Example:_
+*Request Example:*
 
 ```json
 {  // Request Object
@@ -661,10 +647,9 @@ _Request Example:_
 }
 ```
 
-_Response Example:_
+*Response Example:*
 
 ::: example Example response object
-
 ```json
 {
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
@@ -676,14 +661,13 @@ _Response Example:_
   ]
 }
 ```
-
 :::
 
 **Interface is not implemented**
 
-If a message attempts to invoke an interface `method` that is not the implementation does not support, the implementation \***\*MUST\*\*** include a message-level `status` object with its `code` property set to `501`, and \***\*SHOULD\*\*** use `The interface method is not implemented` as the status `text`.
+If a message attempts to invoke an interface `method` that is not the implementation does not support, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `501`, and ****SHOULD**** use `The interface method is not implemented` as the status `text`.
 
-_Request Example:_
+*Request Example:*
 
 ```json
 {  // Request Object
@@ -704,25 +688,20 @@ _Request Example:_
 }
 ```
 
-_Response Example:_
+*Response Example:*
 
 ::: example Example response object
-
 ```json
 {
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "replies": [
     {
       "messageId": "bm2343w4vw45gh...",
-      "status": {
-        "code": 501,
-        "text": "The interface method is not implemented"
-      }
+      "status": { "code": 501, "text": "The interface method is not implemented" }
     }
   ]
 }
 ```
-
 :::
 
 ## Access & Permissions
@@ -730,6 +709,7 @@ _Response Example:_
 ::: todo
 Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.
 :::
+
 
 ## Sync & Replication
 
@@ -741,14 +721,14 @@ IPFS can provide this to some extent, but do we need anything in addition to wha
 
 ### Feature Detection
 
-The Identity Hub specification defines well-recognized Hub configurations to maximize
-interoperability (see Hub Configurations), but implementers may wish to support a custom
-subset of the Interfaces and features. The Feature Detection interface is the means by
+The Identity Hub specification defines well-recognized Hub configurations to maximize 
+interoperability (see Hub Configurations), but implementers may wish to support a custom 
+subset of the Interfaces and features. The Feature Detection interface is the means by 
 which a Hub expresses support for the Interfaces and features it implements.
 
 #### Data Model
 
-A compliant Identity Hub \***\*MUST\*\*** produce a Feature Detection object
+A compliant Identity Hub ****MUST**** produce a Feature Detection object 
 defined as follows:
 
 ```json
@@ -762,51 +742,50 @@ defined as follows:
 
 The following properties and values are defined for the Feature Detection object:
 
-- The object \***\*MUST\*\*** include an `interfaces` property, and its value \***\*MUST\*\*** be an object composed as follows:
-  - The object \***\*MAY\*\*** contain a `collections` property. If the property is not present,
-    it indicates the Hub implementation does not support any methods of the interface. If the
-    property is present, its value \***\*MUST\*\*** be an object that \***\*MAY\*\*** include any of the
-    following properties, wherein a boolean `true` value indicates support for the interface
-    method, while a boolean `false` value or omission of the property indicates the interface
+- The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows: 
+    - The object ****MAY**** contain a `collections` property. If the property is not present, 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    method, while a boolean `false` value or omission of the property indicates the interface 
     method is not supported:
-    - `CollectionsQuery`
-    - `CollectionsWrite`
-    - `CollectionsCommit`
-    - `CollectionsDelete`
-  - The object \***\*MAY\*\*** contain a `actions` property. If the property is not present,
-    it indicates the Hub implementation does not support any methods of the interface. If the
-    property is present, its value \***\*MUST\*\*** be an object that \***\*MAY\*\*** include any of the
-    following properties, wherein a boolean `true` value indicates support for the interface
-    method, while a boolean `false` value or omission of the property indicates the interface
+      - `CollectionsQuery`
+      - `CollectionsWrite`
+      - `CollectionsCommit`
+      - `CollectionsDelete`
+    - The object ****MAY**** contain a `actions` property. If the property is not present, 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    method, while a boolean `false` value or omission of the property indicates the interface 
     method is not supported:
-    - `ThreadsQuery`
-    - `ThreadsCreate`
-    - `ThreadsReply`
-    - `ThreadsClose`
-    - `ThreadsDelete`
-  - The object \***\*MAY\*\*** contain a `permissions` property. If the property is not present,
-    it indicates the Hub implementation does not support any methods of the interface. If the
-    property is present, its value \***\*MUST\*\*** be an object that \***\*MAY\*\*** include any of the
-    following properties, wherein a boolean `true` value indicates support for the interface
-    method, while a boolean `false` value or omission of the property indicates the interface
+      - `ThreadsQuery`
+      - `ThreadsCreate`
+      - `ThreadsReply`
+      - `ThreadsClose`
+      - `ThreadsDelete`
+    - The object ****MAY**** contain a `permissions` property. If the property is not present, 
+    it indicates the Hub implementation does not support any methods of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    method, while a boolean `false` value or omission of the property indicates the interface 
     method is not supported:
-    - `PermissionsRequest`
-    - `PermissionsQuery`
-    - `PermissionsGrant`
-    - `PermissionsRevoke`
-- The object \***\*MAY\*\*** contain a `messaging` property, and its value \***\*MAY\*\*** be an object composed of the following:
-  - The object \***\*MAY\*\*** contain a `batching` property, and if present its value \***\*MUST\*\*** be a boolean indicating whether the Hub Instance handles multiple messages in a single request. The absence of this property \***\*shall\*\*** indicate that the Hub Instance \***\*does\*\*** support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they \***\*MUST\*\*** include this property and explicitly set its value to `false`.
+      - `PermissionsRequest`
+      - `PermissionsQuery`
+      - `PermissionsGrant`
+      - `PermissionsRevoke`
+- The object ****MAY**** contain a `messaging` property, and its value ****MAY**** be an object composed of the following:
+    - The object ****MAY**** contain a `batching` property, and if present its value ****MUST**** be a boolean indicating whether the Hub Instance handles multiple messages in a single request. The absence of this property ****shall**** indicate that the Hub Instance ****does**** support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they ****MUST**** include this property and explicitly set its value to `false`.
+  
 
 #### Read
 
-All compliant Hubs \***\*MUST\*\*** respond with a valid Feature Detection object when receiving
+All compliant Hubs ****MUST**** respond with a valid Feature Detection object when receiving 
 the following request object:
 
 ```json
-{
-  // Message
-  "descriptor": {
-    // Message Descriptor
+{ // Message
+  "descriptor": { // Message Descriptor
     "method": "FeatureDetectionRead"
   }
 }
@@ -814,32 +793,31 @@ the following request object:
 
 ### Collections
 
-To maximize decentralized app and service interoperability, the Collections interface of Identity Hubs
-provides a mechanism to store data relative to shared schemas. By storing data in accordance with a
-given schema, which may be well-known in a given vertical or industry, apps and services can leverage
-the same datasets across one another, enabling a cohesive, cross-platform, cross-device, cross-app
+To maximize decentralized app and service interoperability, the Collections interface of Identity Hubs 
+provides a mechanism to store data relative to shared schemas. By storing data in accordance with a 
+given schema, which may be well-known in a given vertical or industry, apps and services can leverage 
+the same datasets across one another, enabling a cohesive, cross-platform, cross-device, cross-app 
 experience for users.
 
 #### Query
 
-`CollectionsQuery` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`CollectionsQuery` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** contain a `descriptor` property, and its value \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `CollectionsQuery`.
-  - The object \***\*MAY\*\*** contain an `objectId` property, and if present its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string intended to identify a logical object the [[ref: Hub Instance]] contains.
-  - The object \***\*MAY\*\*** contain a `schema` property, and if present its value \***\*Must\*\*** be a URI string that indicates the schema of the associated data.
-  - The object \***\*MAY\*\*** contain a `dataFormat` property, and its value \***\*MUST\*\*** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
-  - The object \***\*MAY\*\*** contain a `dateSort` field, and if present its value \***\*MUST\*\*** be one of the following strings:
-    - `createdAscending`: return results in order from the earliest `dateCreated` value to the latest.
-    - `createdDescending`: return results in order from the latest `dateCreated` value to the earliest.
-    - `publishedAscending`: return results in order from the earliest `datePublished` value to the latest.
-    - `publishedDescending`: return results in order from the latest `datePublished` value to the earliest.
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsQuery`.
+  - The object ****MAY**** contain an `objectId` property, and if present its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string intended to identify a logical object the [[ref: Hub Instance]] contains.
+  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
+  - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
+      - `createdAscending`: return results in order from the earliest `dateCreated` value to the latest.
+      - `createdDescending`: return results in order from the latest `dateCreated` value to the earliest.
+      - `publishedAscending`: return results in order from the earliest `datePublished` value to the latest.
+      - `publishedDescending`: return results in order from the latest `datePublished` value to the earliest.
 
 Get a single object by its ID reference:
 
 ```json
-{
-  // Message
+{ // Message
   "descriptor": {
     "method": "CollectionsQuery",
     "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
@@ -848,10 +826,8 @@ Get a single object by its ID reference:
 ```
 
 Get a objects of a given schema type:
-
 ```json
-{
-  // Message
+{ // Message
   "descriptor": {
     "method": "CollectionsQuery",
     "schema": "https://schema.org/MusicPlaylist"
@@ -860,10 +836,8 @@ Get a objects of a given schema type:
 ```
 
 Get all objects of a given schema type:
-
 ```json
-{
-  // Message
+{ // Message
   "descriptor": {
     "method": "CollectionsQuery",
     "dataFormat": "image/gif"
@@ -873,14 +847,14 @@ Get all objects of a given schema type:
 
 #### Write
 
-`CollectionsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`CollectionsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** contain a `descriptor` property, and its value \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `CollectionsWrite`.
-  - The object \***\*MUST\*\*** contain an `objectId` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string.
-  - The object \***\*MAY\*\*** contain a `schema` property, and if present its value \***\*Must\*\*** be a URI string that indicates the schema of the associated data.
-  - The object \***\*MUST\*\*** contain a `dateCreated` property, and its value \***\*MUST\*\*** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that \***\*MUST\*\*** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
-  - The object \***\*MAY\*\*** contain a `datePublished` property, and its value \***\*MUST\*\*** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that \***\*MUST\*\*** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
 ```json
 { // Message
@@ -898,13 +872,13 @@ Get all objects of a given schema type:
 
 ##### Processing Instructions
 
-When processing a `CollectionsWrite` message, Hub instances \***\*MUST\*\*** perform the following additional steps:
+When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform the following additional steps:
 
-1. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical entry known to the Hub Instance, the message \***\*MUST\*\*** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
-2. If the incoming message has a lower `dateCreated` value than the message that represents the current state of the logical entry, the message \***\*MUST NOT\*\*** be applied to the logical entry and its data \***\*MAY\*\*** be discarded.
+1. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical entry known to the Hub Instance, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
+2. If the incoming message has a lower `dateCreated` value than the message that represents the current state of the logical entry, the message ****MUST NOT**** be applied to the logical entry and its data ****MAY**** be discarded.
 3. If the incoming message has a `dateCreated` value equal to the message that represents the current state of the logical entry, the incoming message's IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
-   - If the incoming message has a higher lexicographic value than the message that represents the current state, perform the actions described in Step 1 of this instruction set.
-   - If the incoming message has a lower lexicographic value than the message that represents the current state, perform the actions described in Step 2 of this instruction set.
+    - If the incoming message has a higher lexicographic value than the message that represents the current state, perform the actions described in Step 1 of this instruction set.
+    - If the incoming message has a lower lexicographic value than the message that represents the current state, perform the actions described in Step 2 of this instruction set.
 
 #### Commit
 
@@ -923,46 +897,42 @@ When processing a `CollectionsWrite` message, Hub instances \***\*MUST\*\*** per
 }
 ```
 
-`CollectionsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`CollectionsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** `descriptor` property \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `CollectionsCommit`.
-  - The object \***\*MUST\*\*** contain an `objectId` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string.
-  - The object \***\*MAY\*\*** contain a `schema` property, and if present its value \***\*Must\*\*** be a URI string that indicates the schema of the associated data.
-  - The object \***\*MUST\*\*** contain a `dateCreated` property, and its value \***\*MUST\*\*** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that \***\*MUST\*\*** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
-  - The object \***\*MAY\*\*** contain a `datePublished` property, and its value \***\*MUST\*\*** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that \***\*MUST\*\*** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
 #### Delete
 
 ```json
-{
-  // Message
-  "descriptor": {
-    // Message Descriptor
+{ // Message
+  "descriptor": { // Message Descriptor
     "method": "CollectionsDelete",
     "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
 }
 ```
 
-`CollectionsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`CollectionsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** `descriptor` property \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `CollectionsDelete`.
-  - The object \***\*MUST\*\*** contain an `objectId` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string of the object to be deleted.
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsDelete`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the object to be deleted.
 
 ### Threads
 
-Threads are a linked series of topically associated messages that are intended to result
+Threads are a linked series of topically associated messages that are intended to result 
 in activities performed by entities participating in the message thread.
 
 #### Query
 
 ```json
-{
-  // Message
-  "descriptor": {
-    // Message Descriptor
+{ // Message
+  "descriptor": { // Message Descriptor
     "method": "ThreadsQuery",
     "schema": "https://schema.org/LikeAction"
   }
@@ -982,12 +952,12 @@ in activities performed by entities participating in the message thread.
 }
 ```
 
-`ThreadsCreate` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`ThreadsCreate` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** `descriptor` property \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `ThreadsCreate`.
-  - The object \***\*MUST\*\*** contain an `objectId` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string for the Thread being created.
-  - The object \***\*MUST\*\*** contain a `schema` property, and its value \***\*Must\*\*** be a URI string that indicates the schema of the associated data.
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsCreate`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string for the Thread being created.
+  - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
 
 #### Reply
 
@@ -1004,56 +974,52 @@ in activities performed by entities participating in the message thread.
 }
 ```
 
-`ThreadsReply` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`ThreadsReply` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** `descriptor` property \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `ThreadsReply`.
-  - The object \***\*MUST\*\*** contain an `objectId` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
-  - The object \***\*MUST\*\*** contain a `schema` property, and its value \***\*Must\*\*** be a URI string that indicates the schema of the associated data.
-  - The object \***\*MUST\*\*** contain a `root` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
-  - The object \***\*MUST\*\*** contain a `parent` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string of the message in the Thread being replied to.
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsReply`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
+  - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
+  - The object ****MUST**** contain a `parent` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the message in the Thread being replied to.
 
 #### Close
 
 ```json
-{
-  // Message
-  "descriptor": {
-    // Message Descriptor
+{ // Message
+  "descriptor": { // Message Descriptor
     "method": "ThreadsClose",
-    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
   }
 }
 ```
 
-`ThreadsClose` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`ThreadsClose` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** `descriptor` property \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `ThreadsClose`.
-  - The object \***\*MUST\*\*** contain a `root` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsClose`.
+  - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
 
 #### Delete
 
 ```json
-{
-  // Message
-  "descriptor": {
-    // Message Descriptor
+{ // Message
+  "descriptor": { // Message Descriptor
     "method": "ThreadsDelete",
-    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+    "root": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
   }
 }
 ```
 
-`ThreadsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which \***\*must\*\*** be composed as follows:
+`ThreadsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object \***\*MUST\*\*** `descriptor` property \***\*MUST\*\*** be a JSON object composed as follows:
-  - The object \***\*MUST\*\*** contain a `method` property, and its value \***\*MUST\*\*** be the string `ThreadsDelete`.
-  - The object \***\*MUST\*\*** contain a `root` property, and its value \***\*MUST\*\*** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
+- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsDelete`.
+  - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
 
 ### Permissions
 
-The Permissions interface provides a mechanism for external entities to request access
+The Permissions interface provides a mechanism for external entities to request access 
 to a Hub User's non-public data.
 
 #### Request
@@ -1095,10 +1061,8 @@ to a Hub User's non-public data.
 #### Revoke
 
 ```json
-{
-  // Message
-  "descriptor": {
-    // Message Descriptor
+{ // Message
+  "descriptor": { // Message Descriptor
     "method": "PermissionsRevoke",
     "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
   }
@@ -1137,6 +1101,7 @@ This Hub configuration is ideal for implementers who seek to expose intentionall
   }
 }
 ```
+
 
 ## Normative References
 
