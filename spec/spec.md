@@ -1130,11 +1130,14 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
 
 #### Revoke
 
+Revocation of a permission is the act of closing off any additional invocation of that permission's granted capabilities. The Revoke interface method allows for the invoker to specify a permission to target for revocation via reference to the target permission's `objectId`. Upon ingest of a valid `PermissionsRevoke` invocation the implementation ****MUST**** use the `inclusionProof` value to ensure that only the object entries indicated by the proof are allowed in relation to invocation of the permission. The process of permission revocation effectively encapsulates all valid invocations of the permission and provides a deterministic means for ensuring that no future or unauthorized invocations are allowed.
+
 ```json
 { // Message
   "descriptor": { // Message Descriptor
     "method": "PermissionsRevoke",
-    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr"
+    "objectId": "Qm65765jrn7be64v5q35v6we675br68jr",
+    "inclusionProof": "..." 
   }
 }
 ```
