@@ -771,7 +771,6 @@ The following properties and values are defined for the Feature Detection object
     method, while a boolean `false` value or omission of the property indicates the interface 
     method is not supported:
       - `PermissionsRequest`
-      - `PermissionsQuery`
       - `PermissionsGrant`
       - `PermissionsRevoke`
 - The object ****MAY**** contain a `messaging` property, and its value ****MAY**** be an object composed of the following:
@@ -899,7 +898,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 
 `CollectionsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
   - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
@@ -919,7 +918,7 @@ When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform
 
 `CollectionsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsDelete`.
   - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the object to be deleted.
 
@@ -954,7 +953,7 @@ in activities performed by entities participating in the message thread.
 
 `ThreadsCreate` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsCreate`.
   - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string for the Thread being created.
   - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
@@ -976,7 +975,7 @@ in activities performed by entities participating in the message thread.
 
 `ThreadsReply` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsReply`.
   - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
   - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
@@ -996,7 +995,7 @@ in activities performed by entities participating in the message thread.
 
 `ThreadsClose` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsClose`.
   - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
 
@@ -1013,48 +1012,119 @@ in activities performed by entities participating in the message thread.
 
 `ThreadsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object ****MUST**** `descriptor` property ****MUST**** be a JSON object composed as follows:
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsDelete`.
   - The object ****MUST**** contain a `root` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
 
 ### Permissions
 
 The Permissions interface provides a mechanism for external entities to request access 
-to a Hub User's non-public data.
+to various data and functionality provided by an Identity Hub. Permissions employ a 
+capabilities-based architecture that allows for DID-based authorization and delegation 
+of authorized capabilities to others, if allowed by the Identity Hub owner.
 
 #### Request
 
+`PermissionsRequest` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsRequest`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
+  - The object ****MUST**** contain a `requester` property, and its value ****MUST**** be the DID URI of the party requesting the permission.
+  - The object ****MAY**** contain a `description` property, and its value ****MUST**** be a string that the requesting party uses to communicate what the permission is being used for.
+  - The object ****MUST**** contain a `ability` property, and its value ****Must**** be an object of the following properties:
+    - The object ****MUST**** contain a `can` property, and its value ****Must**** be an object of the following properties:
+      - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
+      - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
+    - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
+      - The object ****MAY**** contain a `attestation` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data signing directives:
+        - `0` - indicates that the object ****MUST NOT**** be signed.
+        - `1` - indicates that the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party, represented in the [[spec:rfc7515]] JSON Web Signature (JWS) format.
+      - The object ****MAY**** contain an `encryption` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data encryption directives:
+        - `0` - indicates that the object ****MUST NOT**** be encrypted.
+        - `1` - indicates that the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+      - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
+        party wants the ability to delegate the capability to other entities.
+      - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
+        party wants the ability to use the permission against any object or data that aligns with the capability's definition, regardless of which 
+        entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the 
+        requesting party only needs the ability to invoke the permission against objects or data it creates.
+- The message object ****MUST**** contain an `attestation` property, which ****MUST**** be a JSON object as defined by the [Signed Data](#signed-data) 
+  section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
+
 ```json
-{ // Message
-  "data": {...},
-  "descriptor": { // Message Descriptor
+{
+  "descriptor": {
     "method": "PermissionsRequest",
-    "schema": "https://schema.org/MusicPlaylist"
-  }
-}
-```
-
-#### Query
-
-```json
-{ // Message
-  "data": {...},
-  "descriptor": { // Message Descriptor
-    "method": "PermissionsQuery",
-    "schema": "https://schema.org/MusicPlaylist",
+    "objectId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "requester": "did:example:bob",
+    "description": "Help you create and edit your music playlists",
+    "ability": {
+      "can": {
+        "method": "CollectionsWrite",
+        "schema": "https://schema.org/MusicPlaylist"
+      },
+      "conditions": {
+        "encryption": 1,
+        "attestation": 0,
+        "delegation": true,
+        "sharedAccess": true
+      }
+    }
+  },
+  "attestation": {
+    "protected": {
+      "alg": "ES256K",
+      "kid": "did:example:bob#key-1"
+    },
+    "payload": CID(descriptor),
+    "signature": Sign(protected + payload)
   }
 }
 ```
 
 #### Grant
 
+`PermissionsGrant` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsRequest`.
+  - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
+  - If the granted permission is in response to a `PermissionRequest`, the object ****MUST**** contain a `grantedFor` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string of the `PermissionRequest` object the permission is being granted in relation to.
+  - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded JSON Web Token for the granted permission, as defined in the [Capability Objects](#capability-objects) section below.
+  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `application/json`, as all granted permissions are represented as JSON Web Tokens generally adherent to the [UCAN](https://github.com/ucan-wg/spec#325-attenuations) capabilities construction.
+- The message object ****MUST**** contain an `attestation` property, which ****MUST**** be a JSON object as defined by the [Signed Data](#signed-data) 
+  section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
+- The message will contain a `data` payload, which is a JSON Web Token representation of the granted permission as defined in the [Capability Objects](#capability-objects) section below.
+
 ```json
-{ // Message
-  "data": {...},
-  "descriptor": { // Message Descriptor
+{
+  "descriptor": {
     "method": "PermissionsGrant",
-    "schema": "https://schema.org/MusicPlaylist"
-  }
+    "objectId": "f45wve-5b56v5w-5657b4e-56gqf35v",
+    "grantedFor": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "cid": "bf34455ev6v365eb7r8n9mnbesv5e6be7rn879m",
+    "dataFormat": "application/json"
+  },
+  "data": {
+    "payload": {
+      "iss": "did:example:alice",
+      "aud": "did:example:bob",
+      "exp": 1575606941,
+      "att": [{
+        "can": {
+          "method": "CollectionsWrite",
+          "schema": "https://schema.org/MusicPlaylist",
+        },
+        "conditions": {
+          "encryption": 1,
+          "attestation": 0,
+          "sharedAccess": true
+        }
+      }]
+    },
+    "signature": "fw547v63bo5687wvwbcqp349vwo876uc3q..."
+  } 
 }
 ```
 
@@ -1068,6 +1138,67 @@ to a Hub User's non-public data.
   }
 }
 ```
+
+#### Capability Objects
+
+Capabilities granted via the Permissions interface are [[spec:rfc7516]] JSON Web Token (JWT) used to secure and attenuate the scope permitted activities. 
+The JWTs used in this specification to represent capabilities generally adhere to the JWT variant defined in the 
+[UCAN](https://github.com/ucan-wg/spec#325-attenuations) capability-based authorization construction.
+
+Capability objects are JSON Web Tokens that ****must**** be composed as follows:
+
+- The message object ****MUST**** contain a `header` property, and its value ****MUST**** be an object composed as follows:
+  - The object ****MUST**** contain an `alg` property, and its value ****MUST**** be a string that notes the algorithm used in signing the JWT.
+  - The object ****MUST**** contain an `typ` property, and its value ****MUST**** be the string `JWT`, indicating the object is a [[spec:rfc7516]] JSON Web Token.
+- The message object ****MUST**** contain a `payload` property, and its value ****MUST**** be an object composed as follows:
+  - The object ****MUST**** contain an `iss` property, and its value ****MUST**** be the DID URI string of the party issuing the capability.
+  - The object ****MUST**** contain an `aud` property, and its value ****MUST**** be the DID URI string of requesting party.
+  - The object ****MAY**** contain an `nbf` property, and its value ****MUST**** be a number representing the UTC Unix Timestamp of when the capability is first active.
+  - The object ****MUST**** contain an `exp` property, and its value ****MUST**** be a number representing the UTC Unix Timestamp of when the capability expires.
+  - The object ****MAY**** contain an `nnc` property, and its value ****MUST**** be a unique string that ****SHOULD**** be cryptographically random.
+  - The object ****MUST**** contain an `att` property, and its value ****MUST**** be an array with exactly one entry that is a JSON object composed as follows, with values selected at the discretion of the granting Hub owner:
+    - The object ****MUST**** contain a `can` property, and its value ****Must**** be an object of the following properties:
+      - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the granting Hub owner will allow the requesting party wants to invoke.
+      - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data the Hub owner is allowing the grantee to access.
+    - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
+      - The object ****MAY**** contain a `attestation` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data signing directives:
+        - `0` - indicates that the object ****MUST NOT**** be signed.
+        - `1` - indicates that the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party, represented in the [[spec:rfc7515]] JSON Web Signature (JWS) format.
+      - The object ****MAY**** contain an `encryption` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data encryption directives:
+        - `0` - indicates that the object ****MUST NOT**** be encrypted.
+        - `1` - indicates that the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+      - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to delegate the capability.
+      - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to access any object or data that aligns with the capability's definition, regardless of which entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the grantee ****MUST NOT**** be allowed to invoke the capability against any object or data they are not the author of.
+  - The object ****MAY**** contain an `prf` property, and its value ****MUST**** be an array of [Capability Objects](#capability-objects) in stringified form that provide proof of delegation for the capability being invoked.
+  - The object ****MAY**** contain an `fct` property, and if present its value ****MUST**** be an array of facts or assertions required for processing the capability that can be verified by the Hub evaluating invocation of the capability.
+
+:::example
+```json
+{
+    "payload": {
+      "iss": "did:example:alice",
+      "aud": "did:example:bob",
+      "nbf": 1529496683,
+      "exp": 1575606941,
+      "nnc": "f5we67hrn8676bwv5cq24WF5WVE6B76F",
+      "att": [{
+        "with": "did:example:bob",
+        "can": {
+          "method": "CollectionsWrite",
+          "schema": "https://schema.org/MusicPlaylist",
+        },
+        "conditions": {
+          "encryption": 1,
+          "attestation": 0,
+          "sharedAccess": true
+        }
+      }],
+      "prf": ["eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsInVhdiI6IjAuMS4wIn0.eyJhdWQiOiJkaWQ6a2V5OnpTdEVacHpTTXRUdDlrMnZzemd2Q3dGNGZMU..."]
+    },
+    "signature": "fw547v63bo5687wvwbcqp349vwo876uc3q..."
+  } 
+```
+:::
 
 ## Commit Strategies
 
