@@ -1040,13 +1040,11 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
       - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
       - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
-      - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it indicates no signing conditions are desired.
-        - `undefined` - no signing conditions are desired.
-        - `0` - the object ****MUST NOT**** be signed.
+      - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
+        - `0` - the object ****WILL NOT**** be signed.
         - `1` - the object ****MAY**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
         - `2` - the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
-      - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it indicates no encryption conditions are desired.
-        - `undefined` - no encryption conditions are desired.
+      - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****MUST NOT**** be encrypted.
         - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
         - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
@@ -1179,13 +1177,11 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
       - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the granting Hub owner will allow the requesting party wants to invoke.
       - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data the Hub owner is allowing the grantee to access.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
-      - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it indicates no signing conditions will be enforced.
-        - `undefined` - no signing conditions will be enforced.
+      - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****MUST NOT**** be signed.
         - `1` - the object ****MAY**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
         - `2` - the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
-      - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it indicates no encryption conditions will be enforced.
-        - `undefined` - no encryption conditions will be enforced.
+      - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****MUST NOT**** be encrypted.
         - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
         - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
