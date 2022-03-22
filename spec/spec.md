@@ -1049,7 +1049,7 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
         - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
         - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
       - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
-        party wants the ability to delegate the capability to other entities.
+        party wants the ability to delegate the capability to other entities, and `false` or the omission of the property indicates no request is being made for delegation ability.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
         party wants the ability to use the permission against any object or data that aligns with the capability's definition, regardless of which 
         entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the 
@@ -1185,7 +1185,7 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
         - `0` - the object ****MUST NOT**** be encrypted.
         - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
         - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
-      - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to delegate the capability.
+      - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the ability to delegate the capability to other entities has been granted, and `false` or the omission of the property indicates the ability to delegate has not been granted.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to access any object or data that aligns with the capability's definition, regardless of which entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the grantee ****MUST NOT**** be allowed to invoke the capability against any object or data they are not the author of.
   - The object ****MAY**** contain an `prf` property, and its value ****MUST**** be an array of [Capability Objects](#capability-objects) in stringified form that provide proof of delegation for the capability being invoked.
   - The object ****MAY**** contain an `fct` property, and if present its value ****MUST**** be an array of facts or assertions required for processing the capability that can be verified by the Hub evaluating invocation of the capability.

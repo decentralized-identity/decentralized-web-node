@@ -184,7 +184,7 @@ as a single logical unit for users.</p>
 </tr>
 </tbody>
 </table>
-<div id="todo-41" class="notice todo"><a class="notice-link" href="#todo-41">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
+<div id="todo-49" class="notice todo"><a class="notice-link" href="#todo-49">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
 </div>
 <h2 id="service-endpoints"><a class="toc-anchor" href="#service-endpoints" >§</a> Service Endpoints</h2>
 <p>The following DID Document Service Endpoint entries <strong><strong>MUST</strong></strong> be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner’s Hub instances:</p>
@@ -229,7 +229,7 @@ with a given DID, as located via the DID resolution process.</p>
 </ol>
 <h4 id="request-construction"><a class="toc-anchor" href="#request-construction" >§</a> Request Construction</h4>
 <p><strong>DID-Relative URL example for passing multiple messages:</strong></p>
-<div id="note-21" class="notice note"><a class="notice-link" href="#note-21">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Identity Hub URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
+<div id="note-25" class="notice note"><a class="notice-link" href="#note-25">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Identity Hub URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
 </div>
 <pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=IdentityHub&amp;queries=<span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span> <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
 </code></pre>
@@ -538,7 +538,7 @@ BODY <span class="token punctuation">{</span>
 <p>If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation <strong><strong>must</strong></strong> include a message-level <code>status</code> property, and its value must be an object as defined below.</p>
 <p><strong>Message succeeded for query/read-type interface that expects results</strong></p>
 <p>If a message is processed correctly and a set of result <code>entries</code> is expected, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>200</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message was successfully processed</code> as the status <code>text</code>.</p>
-<div id="note-22" class="notice note"><a class="notice-link" href="#note-22">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
+<div id="note-26" class="notice note"><a class="notice-link" href="#note-26">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
 </div>
 <p><em>Request Example:</em></p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
@@ -664,10 +664,10 @@ BODY <span class="token punctuation">{</span>
 </code></pre>
 </div>
 <h2 id="access-permissions"><a class="toc-anchor" href="#access-permissions" >§</a> Access &amp; Permissions</h2>
-<div id="todo-42" class="notice todo"><a class="notice-link" href="#todo-42">TODO</a><p>Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.</p>
+<div id="todo-50" class="notice todo"><a class="notice-link" href="#todo-50">TODO</a><p>Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.</p>
 </div>
 <h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
-<div id="todo-43" class="notice todo"><a class="notice-link" href="#todo-43">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
+<div id="todo-51" class="notice todo"><a class="notice-link" href="#todo-51">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
 </div>
 <h2 id="interfaces"><a class="toc-anchor" href="#interfaces" >§</a> Interfaces</h2>
 <h3 id="feature-detection"><a class="toc-anchor" href="#feature-detection" >§</a> Feature Detection</h3>
@@ -1002,7 +1002,7 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.</p>
 </ul>
 </li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>delegation</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the requesting
-party wants the ability to delegate the capability to other entities.</li>
+party wants the ability to delegate the capability to other entities, and <code>false</code> or the omission of the property indicates no request is being made for delegation ability.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>sharedAccess</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the requesting
 party wants the ability to use the permission against any object or data that aligns with the capability’s definition, regardless of which
 entity created the object or data. A value of <code>false</code> or omission of the property <strong><strong>MUST</strong></strong> be evaluated as false, and indicates the
@@ -1147,7 +1147,7 @@ The JWTs used in this specification to represent capabilities generally adhere t
 <li><code>2</code> - the object <strong><strong>MUST</strong></strong> be encrypted using the key provided by the owner of the Hub in the [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) format.</li>
 </ul>
 </li>
-<li>The object <strong><strong>MAY</strong></strong> contain a <code>delegation</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the issuing party is allowing the grantee the ability to delegate the capability.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>delegation</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the ability to delegate the capability to other entities has been granted, and <code>false</code> or the omission of the property indicates the ability to delegate has not been granted.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>sharedAccess</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the issuing party is allowing the grantee the ability to access any object or data that aligns with the capability’s definition, regardless of which entity created the object or data. A value of <code>false</code> or omission of the property <strong><strong>MUST</strong></strong> be evaluated as false, and indicates the grantee <strong><strong>MUST NOT</strong></strong> be allowed to invoke the capability against any object or data they are not the author of.</li>
 </ul>
 </li>
@@ -1158,7 +1158,7 @@ The JWTs used in this specification to represent capabilities generally adhere t
 </ul>
 </li>
 </ul>
-<div id="example-11" class="notice example"><a class="notice-link" href="#example-11">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+<div id="example-13" class="notice example"><a class="notice-link" href="#example-13">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"iss"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
     <span class="token property">"aud"</span><span class="token operator">:</span> <span class="token string">"did:example:bob"</span><span class="token punctuation">,</span>
@@ -1187,7 +1187,7 @@ The JWTs used in this specification to represent capabilities generally adhere t
 <h3 id="last-write-wins"><a class="toc-anchor" href="#last-write-wins" >§</a> Last-Write Wins</h3>
 <p>Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.</p>
 <h3 id="json-merge-patch"><a class="toc-anchor" href="#json-merge-patch" >§</a> JSON Merge Patch</h3>
-<div id="todo-44" class="notice todo"><a class="notice-link" href="#todo-44">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
+<div id="todo-52" class="notice todo"><a class="notice-link" href="#todo-52">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
 </div>
 <h2 id="hub-configurations"><a class="toc-anchor" href="#hub-configurations" >§</a> Hub Configurations</h2>
 <p>While it is strongly encouraged to implement the full set of Identity Hub features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Identity Hub feature sets that tend to serve different purposes.</p>
