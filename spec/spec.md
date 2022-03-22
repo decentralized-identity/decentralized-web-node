@@ -14,6 +14,7 @@ Identity Hub
 **Contributors:**
 ~ [Henry Tsai](https://www.linkedin.com/in/henry-tsai-6b884014/) (Microsoft)
 ~ [XinAn Xu](https://www.linkedin.com/in/xinan-xu-b868a326/) (Microsoft)
+~ [Moe Jangda](https://www.linkedin.com/in/moejangda/) (Block)
 
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/identity-hub)
