@@ -1037,12 +1037,16 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
       - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
       - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
-      - The object ****MAY**** contain a `attestation` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data signing directives:
-        - `0` - indicates that the object ****MUST NOT**** be signed.
-        - `1` - indicates that the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party, represented in the [[spec:rfc7515]] JSON Web Signature (JWS) format.
-      - The object ****MAY**** contain an `encryption` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data encryption directives:
-        - `0` - indicates that the object ****MUST NOT**** be encrypted.
-        - `1` - indicates that the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+      - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it indicates no signing conditions are desired.
+        - `undefined` - no signing conditions are desired.
+        - `0` - the object ****MUST NOT**** be signed.
+        - `1` - the object ****MAY**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+        - `2` - the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+      - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it indicates no encryption conditions are desired.
+        - `undefined` - no encryption conditions are desired.
+        - `0` - the object ****MUST NOT**** be encrypted.
+        - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+        - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
       - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
         party wants the ability to delegate the capability to other entities.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
@@ -1088,7 +1092,7 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
 `PermissionsGrant` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsRequest`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsGrant`.
   - The object ****MUST**** contain an `objectId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
   - If the granted permission is in response to a `PermissionRequest`, the object ****MUST**** contain a `grantedFor` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string of the `PermissionRequest` object the permission is being granted in relation to.
   - The object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded JSON Web Token for the granted permission, as defined in the [Capability Objects](#capability-objects) section below.
@@ -1130,7 +1134,7 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
 
 #### Revoke
 
-Revocation of a permission is the act of closing off any additional invocation of that permission's granted capabilities. The Revoke interface method allows for the invoker to specify a permission to target for revocation via reference to the target permission's `objectId`. Upon ingest of a valid `PermissionsRevoke` invocation the implementation ****MUST**** use the `inclusionProof` value to ensure that only the object entries indicated by the proof are allowed in relation to invocation of the permission. The process of permission revocation effectively encapsulates all valid invocations of the permission and provides a deterministic means for ensuring that no future or unauthorized invocations are allowed.
+Revocation of a permission is the act of closing off any additional or invalid invocations of that permission. The Revoke interface method enables revocation of a permission via direct reference to the permission's `objectId`. When executing a valid `PermissionsRevoke` invocation an implementation ****MUST**** use the `inclusionProof` value to ensure that only the entries in the Hub indicated by the proof are allowed to be retained in relation to the permission. The process of permission revocation effectively encapsulates all valid invocations of the permission and provides a deterministic means for ensuring no invalid invocations are allowed or persisted across any Hub instance.
 
 ```json
 { // Message
@@ -1164,12 +1168,16 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
       - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the granting Hub owner will allow the requesting party wants to invoke.
       - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data the Hub owner is allowing the grantee to access.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
-      - The object ****MAY**** contain a `attestation` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data signing directives:
-        - `0` - indicates that the object ****MUST NOT**** be signed.
-        - `1` - indicates that the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party, represented in the [[spec:rfc7515]] JSON Web Signature (JWS) format.
-      - The object ****MAY**** contain an `encryption` property. If this property is not present it reflects the same directive as the `0` value below. If the property is present its value ****Must**** be one of the following enums representing different data encryption directives:
-        - `0` - indicates that the object ****MUST NOT**** be encrypted.
-        - `1` - indicates that the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+      - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it indicates no signing conditions will be enforced.
+        - `undefined` - no signing conditions will be enforced.
+        - `0` - the object ****MUST NOT**** be signed.
+        - `1` - the object ****MAY**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+        - `2` - the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+      - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it indicates no encryption conditions will be enforced.
+        - `undefined` - no encryption conditions will be enforced.
+        - `0` - the object ****MUST NOT**** be encrypted.
+        - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+        - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
       - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to delegate the capability.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to access any object or data that aligns with the capability's definition, regardless of which entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the grantee ****MUST NOT**** be allowed to invoke the capability against any object or data they are not the author of.
   - The object ****MAY**** contain an `prf` property, and its value ****MUST**** be an array of [Capability Objects](#capability-objects) in stringified form that provide proof of delegation for the capability being invoked.
@@ -1185,7 +1193,6 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
       "exp": 1575606941,
       "nnc": "f5we67hrn8676bwv5cq24WF5WVE6B76F",
       "att": [{
-        "with": "did:example:bob",
         "can": {
           "method": "CollectionsWrite",
           "schema": "https://schema.org/MusicPlaylist",
