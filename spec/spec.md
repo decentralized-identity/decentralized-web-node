@@ -192,7 +192,9 @@ The following process defines how a DID-Relative URL addressing an Identity Hub 
 
 1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
 2. As indicated by the presence of the `service` parameter, locate the `IdentityHub` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
-3. Parse the `IdentityHub` Service Endpoint and let the first located `IdentityHub` Service Endpoint URI be the base URI of the Hub request being constructed. NOTE: there may be multiple Hub URIs within the `IdentityHub` Service Endpoint entry, and it is ****recommended**** that implementers address them in index order.
+3. Parse the `IdentityHub` Service Endpoint object and select the first URI present in the `serviceEndpoint` objects `instance` array. NOTE: implementers ****SHOULD**** select from the URIs in the `instance` array in index order.
+4. If the URI located in step 3 is not a DID URI, proceed to step 5. If the URI from step 3 is a DID, resolve the DID and follow steps 2 and 3 to select the first URI in the DID's `IdentityHub` Service Endpoint object `instance` array that is not a DID URI. Do not iterate this loop more than once - if a non-DID URI cannot be located after one loop of recursive resolution, terminate resolution and produce an error.
+5. Assuming a non-DID URI was located in steps 2-4, let the located URI be the base URI of the Hub request being constructed.
 
 #### Request Construction
 
@@ -1090,7 +1092,7 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
 
 #### Grant
 
-`PermissionsGrant` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+`PermissionsGrant` messages are JSON objects that are generated either in response to evaluation of a `PermissionsRequest` message or optimistically by a user agent. `PermissionsGrant` messages include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsGrant`.
@@ -1132,6 +1134,14 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
   } 
 }
 ```
+
+##### Grantor `PermissionsGrant` Storage
+
+After generating a `PermissionsGrant` the user agent (e.g. wallet app with access to authoritative keys for a given DID) ****MUST**** commit the granted permission object to the Hub of the DID the grant was issued from. This will ensure that the permission is present when addressed in subsequent interface method invocations.
+
+##### Grantee `PermissionsGrant` Delivery
+
+Once a user agent (e.g. wallet app with access to authoritative keys for a given DID) generates a `PermissionsGrant` for an entity to permit access to data and Hub functionality, it is the responsibility of the user agent that generated the `PermissionsGrant` to deliver it to the entity that is the subject. To do this, the user agent ****MUST**** generate a Request that includes the `PermissionsGrant` and send it to the Hub of the subject it has been granted to, in accordance with the [Resolution](#resolution) and [Request Construction](#request-construction) sections of this specification. 
 
 #### Revoke
 
@@ -1187,27 +1197,27 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
 :::example
 ```json
 {
-    "payload": {
-      "iss": "did:example:alice",
-      "aud": "did:example:bob",
-      "nbf": 1529496683,
-      "exp": 1575606941,
-      "nnc": "f5we67hrn8676bwv5cq24WF5WVE6B76F",
-      "att": [{
-        "can": {
-          "method": "CollectionsWrite",
-          "schema": "https://schema.org/MusicPlaylist",
-        },
-        "conditions": {
-          "encryption": 1,
-          "attestation": 0,
-          "sharedAccess": true
-        }
-      }],
-      "prf": ["eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsInVhdiI6IjAuMS4wIn0.eyJhdWQiOiJkaWQ6a2V5OnpTdEVacHpTTXRUdDlrMnZzemd2Q3dGNGZMU..."]
-    },
-    "signature": "fw547v63bo5687wvwbcqp349vwo876uc3q..."
-  } 
+  "payload": {
+    "iss": "did:example:alice",
+    "aud": "did:example:bob",
+    "nbf": 1529496683,
+    "exp": 1575606941,
+    "nnc": "f5we67hrn8676bwv5cq24WF5WVE6B76F",
+    "att": [{
+      "can": {
+        "method": "CollectionsWrite",
+        "schema": "https://schema.org/MusicPlaylist",
+      },
+      "conditions": {
+        "encryption": 1,
+        "attestation": 0,
+        "sharedAccess": true
+      }
+    }],
+    "prf": ["eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsInVhdiI6IjAuMS4wIn0.eyJhdWQiOiJkaWQ6a2V5OnpTdEVacHpTTXRUdDlrMnZzemd2Q3dGNGZMU..."]
+  },
+  "signature": "fw547v63bo5687wvwbcqp349vwo876uc3q..."
+} 
 ```
 :::
 
