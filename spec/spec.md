@@ -321,7 +321,7 @@ In order to enable data replication features for a [[ref: Hub Instance]], all Me
       - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
       - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
       - If the message requires authorization to execute, the Message object ****MUST**** include a `capabilities` property with the required authorization material as its value.
-  3. The Message object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+  3. The Message object ****MUST**** include a `signature` property, and its value ****MUST**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
 
 
 ### Message Descriptors
