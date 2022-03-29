@@ -443,7 +443,7 @@ The message generating party ****MUST**** construct an encrypted message as foll
 
 1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
 2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
-3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
+3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 2, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
 
 #### Signed & Encrypted Data
 
