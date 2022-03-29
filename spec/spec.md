@@ -447,7 +447,7 @@ The message generating party ****MUST**** construct an encrypted message as foll
 
 #### Signed & Encrypted Data
 
-If the object is to be both attributed to a signer and encrypted encrypted, it ****MUST**** be structured as follows:
+If the object is to be both attributed to a signer and encrypted, it ****MUST**** be structured as follows:
 
 ```json
 { // Message
