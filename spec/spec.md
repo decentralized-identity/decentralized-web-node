@@ -1,10 +1,11 @@
-Identity Hub
+
+Decentralized Web Node
 ==================
 
 **Specification Status:** Draft
 
 **Latest Draft:**
-  [identity.foundation/identity-hub/spec](https://identity.foundation/identity-hub/spec)
+  [identity.foundation/decentralized-web-node/spec](https://identity.foundation/decentralized-web-node/spec)
 <!-- -->
 
 **Editors:**
@@ -17,9 +18,9 @@ Identity Hub
 ~ [Moe Jangda](https://www.linkedin.com/in/moejangda/) (Block)
 
 **Participate:**
-~ [GitHub repo](https://github.com/decentralized-identity/identity-hub)
-~ [File a bug](https://github.com/decentralized-identity/identity-hub/issues)
-~ [Commit history](https://github.com/decentralized-identity/identity-hub/commits/master)
+~ [GitHub repo](https://github.com/decentralized-identity/decentralized-web-node)
+~ [File a bug](https://github.com/decentralized-identity/decentralized-web-node/issues)
+~ [Commit history](https://github.com/decentralized-identity/decentralized-web-node/commits/master)
 
 ------------------------------------
 
@@ -29,17 +30,17 @@ Most digital activities between people, organizations, devices, and other entiti
 require the exchange of messages and data. For entities to exchange messages and 
 data for credential, app, or service flows, they need an interface through which 
 to store, discover, and fetch data related to the flows and experiences they are 
-participating in. Identity Hubs are a data storage and message relay mechanism 
+participating in. A Decentralized Web Node (DWN) is a data storage and message relay mechanism 
 entities can use to locate public or private permissioned data related to a given 
-Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction 
-that enable an entity to operate multiple instances that sync to the same state across 
+Decentralized Identifier (DID). Decentralized Web Nodes are a mesh-like datastore construction 
+that enable an entity to operate multiple nodes that sync to the same state across 
 one another, enabling the owning entity to secure, manage, and transact their data 
 with others without reliance on location or provider-specific infrastructure, 
 interfaces, or routing mechanisms.
 
 ## Status of This Document
 
-Identity Hub is a _DRAFT_ specification under development within
+Decentralized Web Node is a _DRAFT_ specification under development within
 the Decentralized Identity Foundation (DIF). It incorporates requirements and
 learnings from related work of many active industry players into a shared
 specification that meets the collective needs of the community.
@@ -47,26 +48,15 @@ specification that meets the collective needs of the community.
 The specification will be updated to incorporate feedback, from DIF members and 
 the wider community, with a reference implementation being developed within DIF 
 that exercises the features and requirements defined here. We encourage reviewers 
-to submit [GitHub Issues](https://github.com/decentralized-identity/identity-hub/issues) 
+to submit [GitHub Issues](https://github.com/decentralized-identity/decentralized-web-node/issues) 
 as the means by which to communicate feedback and contributions.
 
 ## Terminology
 
-[[def:Identity Hub]]
+[[def:Decentralized Web Node, Decentralized Web Nodes, DWN, Node, Nodes]]
 ~ A decentralized personal and application data storage and message relay node, 
-as defined in the DIF Identity Hub specification.
-
-[[def:Hub Instance, Hub Instances]]
-~ An instance of an Identity Hub running on a local device or at a remote location.
-
-[[def:Hub Operator]]
-~ Any entity, including individuals, who runs an Hub Instance on a device or 
-infrastructure they control.
-
-[[def:Hub User]]
-~ An entity that stores DID-associated data and transmits messages via a given 
-Hub Instance, which may be running on a device in their possession, or on the 
-device or infrastructure of a Hub Operator.
+as defined in the DIF Decentralized Web Node specification. Users may have multiple 
+Nodes that replicate their data between them.
 
 [[def:Decentralized Identifiers, Decentralized Identifier, DID]]
 ~ Unique ID URI string and PKI metadata document format for describing the
@@ -123,8 +113,8 @@ distributed ledger).
   }
 </style>
 
-Identity Hubs are comprised of the following component layers, each of which is defined 
-in this specification to ensure multiple Hub implementations can be used together and operate 
+Decentralized Web Nodes are comprised of the following component layers, each of which is defined 
+in this specification to ensure multiple Decentralized Web Node implementations can be used together and operate 
 as a single logical unit for users.
 
 :----: |
@@ -143,16 +133,16 @@ Finalize the component stack list - are these correct? Are we missing any?
 
 ## Service Endpoints
 
-The following DID Document Service Endpoint entries ****MUST**** be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner's Hub instances:
+The following DID Document Service Endpoint entries ****MUST**** be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner's Decentralized Web Nodes:
 
 ```json
 {
   "id": "did:example:123",
   "service": [{
-    "id":"#hub",
-    "type": "IdentityHub",
+    "id":"#dwn",
+    "type": "DecentralizedWebNode",
     "serviceEndpoint": {
-      "instances": ["https://hub.example.com", "https://example.org/hub"]
+      "nodes": ["https://dwn.example.com", "https://example.org/dwn"]
     }
   }]
 }
@@ -160,61 +150,60 @@ The following DID Document Service Endpoint entries ****MUST**** be present in t
 
 ## Addressing
 
-A user's logical Identity Hub (their collection of Hub Instances) can be addressed in many ways, 
-but the mechanisms below ****MUST**** be supported by a compliant Identity Hub implementation:
+A user's Decentralized Web Nodes can be addressed in many ways, but the mechanisms below ****MUST**** be supported by a compliant Decentralized Web Node implementation:
 
 ### DID-Relative URLs
 
-The following DID URL constructions are used to address [[ref: Hub Instances]] found to be associated 
+The following DID URL constructions are used to address [[ref: Decentralized Web Nodes]] found to be associated 
 with a given DID, as located via the DID resolution process.
 
 #### Composition
 
-The following process defines how a Identity Hub DID-Relative URL is composed:
+The following process defines how a DID-Relative URL is composed to address a Decentralized Web Node:
 
 1. Let the base URI authority portion of the DID URL string be the target DID being addressed.
-2. Append a `service` parameter to the DID URL string with the value `Identity Hub`.
+2. Append a `service` parameter to the DID URL string with the value `DecentralizedWebNode`.
 3. Assemble an array of the [Message Descriptor](#message-descriptors) objects are desired for encoding in the DID-relative URL
 4. JSON stringify the array of [Message Descriptor](#message-descriptors) objects from Step 3, then Base64Url encode the stringified output.
 5. Append a `queries` parameter to the DID URL string with the value set to the JSON stringified, Base64Url encoded output of Step 4.
 
 **DID-relative URLs are composed of the following segments**
 
-`did:example:123` + `?service=IdentityHub` + `&queries=` + `toBase64Url( JSON.stringify( [{ DESCRIPTOR_1 }, { DESCRIPTOR_N }] ) )`
+`did:example:123` + `?service=DecentralizedWebNode` + `&queries=` + `toBase64Url( JSON.stringify( [{ DESCRIPTOR_1 }, { DESCRIPTOR_N }] ) )`
 
 ```json
-did:example:123?service=IdentityHub&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
+did:example:123?service=DecentralizedWebNode&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
 ```
 
 #### Resolution
 
-The following process defines how a DID-Relative URL addressing an Identity Hub is resolved:
+The following process defines how a DID-Relative URL for a Decentralized Web Node is resolved:
 
 1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
-2. As indicated by the presence of the `service` parameter, locate the `IdentityHub` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
-3. Parse the `IdentityHub` Service Endpoint object and select the first URI present in the `serviceEndpoint` objects `instance` array. NOTE: implementers ****SHOULD**** select from the URIs in the `instance` array in index order.
-4. If the URI located in step 3 is not a DID URI, proceed to step 5. If the URI from step 3 is a DID, resolve the DID and follow steps 2 and 3 to select the first URI in the DID's `IdentityHub` Service Endpoint object `instance` array that is not a DID URI. Do not iterate this loop more than once - if a non-DID URI cannot be located after one loop of recursive resolution, terminate resolution and produce an error.
-5. Assuming a non-DID URI was located in steps 2-4, let the located URI be the base URI of the Hub request being constructed.
+2. As indicated by the presence of the `service` parameter, locate the `DecentralizedWebNode` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
+3. Parse the `DecentralizedWebNode` Service Endpoint object and select the first URI present in the `serviceEndpoint` objects `nodes` array. NOTE: implementers ****SHOULD**** select from the URIs in the `nodes` array in index order.
+4. If the URI located in step 3 is not a DID URI, proceed to step 5. If the URI from step 3 is a DID, resolve the DID and follow steps 2 and 3 to select the first URI in the DID's `DecentralizedWebNode` Service Endpoint object `nodes` array that is not a DID URI. Do not iterate this loop more than once - if a non-DID URI cannot be located after one loop of recursive resolution, terminate resolution and produce an error.
+5. Assuming a non-DID URI was located in steps 2-4, let the located URI be the base URI of the [[ref: Decentralized Web Node]] request being constructed.
 
 #### Request Construction
 
 **DID-Relative URL example for passing multiple messages:**
 
 ::: note
-For example purposes, the `queries` parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Identity Hub URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).
+For example purposes, the `queries` parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).
 :::
 
 ```json
-did:example:123?service=IdentityHub&queries=[{ "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
+did:example:123?service=DecentralizedWebNode&queries=[{ "method": "CollectionsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
 ```
 
 ```json
-did:example:123?service=IdentityHub&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
+did:example:123?service=DecentralizedWebNode&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
 ```
 
-**Resolve DID to locate the Identity Hub URIs:**
+**Resolve DID to locate its Decentralized Web Node URIs:**
 
-`did:example:123` -->  resolve to Identity Hub endpoint(s)  -->  `https://hub.example.com/`
+`did:example:123` -->  resolve to Decentralized Web Node endpoint(s)  -->  `https://dwn.example.com/`
 
 **Construct the *Request Object*{id=request-object}:**
 
@@ -230,7 +219,7 @@ did:example:123?service=IdentityHub&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9O
 *HTTP POST example:*
 
 ```json5
-POST https://hub.example.com/
+POST https://dwn.example.com/
 
 BODY {
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
@@ -249,7 +238,7 @@ BODY {
 
 ## Request Objects
 
-Request Objects are JSON object envelopes used to pass messages to Identity Hub instances.
+Request Objects are JSON object envelopes used to pass messages to Decentralized Web Nodes.
 
 ```json
 {  // Request Object
@@ -271,7 +260,7 @@ Request Objects are composed as follows:
 
 ## Messages
 
-All Identity Hub messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPFS CIDs and DAG APIs.
+All Decentralized Web Node messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPFS CIDs and DAG APIs.
 
 ```json
 {  // Request Object
@@ -310,7 +299,7 @@ All Identity Hub messaging is transacted via Messages JSON objects. These object
 
 Messages objects ****MUST**** be composed as follows:
 
-In order to enable data replication features for a [[ref: Hub Instance]], all Messages MUST be committed to an IPFS DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object.
+In order to enable data replication features for a [[ref: Decentralized Web Node]], all Messages MUST be committed to an IPFS DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object.
 
 - Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object, as defined by the [Message Descriptors](#message-descriptors) section of this specification.
 - Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a JSON value of the Message's data.
@@ -326,7 +315,7 @@ In order to enable data replication features for a [[ref: Hub Instance]], all Me
 
 ### Message Descriptors
 
-The Identity Hub data structure that resides in the `descriptor` property of the [Message](#messages) is comprised of a common JSON structure that contains the following properties regardless of whether the message data is signed/encrypted:
+The Decentralized Web Node data structure that resides in the `descriptor` property of the [Message](#messages) is comprised of a common JSON structure that contains the following properties regardless of whether the message data is signed/encrypted:
 
 ```json
 {  // Request Object
@@ -350,7 +339,7 @@ The Identity Hub data structure that resides in the `descriptor` property of the
 
 Message Descriptors are JSON objects that contains the parameters, signatory proof, and other details about the message and any data associated with it. All Message Descriptor objects share the following property options:
 
-- The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Hub Interface method.
+- The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Decentralized Web Node Interface method.
 - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `cid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
 - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
   - `application/vc+jwt` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
@@ -378,7 +367,7 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
 
 #### Signed Data
 
-If the object is to be attested by a signer (e.g the Hub owner via signature with their DID key), the object ****MUST**** contain the following additional properties to produce a [[spec:rfc7515]] Flattened JSON Web Signature (JWS) object:
+If the object is to be attested by a signer (e.g the Node owner via signature with their DID key), the object ****MUST**** contain the following additional properties to produce a [[spec:rfc7515]] Flattened JSON Web Signature (JWS) object:
 
 ```json
 { // Message
@@ -407,15 +396,15 @@ The message generating party ****MUST**** construct the signed message object as
 
 1. If the [Message](#messages) includes associated data, passed directly via the [Message](#messages) object's `data` property or through a channel external to the [Message](#messages), add a `cid` property to the `descriptor` object and set its value as the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
 2. The [Message](#messages) object ****MUST**** contain an `attestation` property, and its value ****MUST**** be a Flattened object representation of a [[spec:rfc7515]] JSON Web Signature composed as follows: 
-  1. The Message object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
-  2. The Message object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
-      - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
-      - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
-  3. The Message object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+    - The object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
+    - The object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
+        - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
+        - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
+    - The object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
 
 #### Encrypted Data
 
-If the object is to be encrypted (e.g the Hub owner encrypting their data to keep it private), the `descriptor` object ****MUST**** be constructed as follows:
+If the object is to be encrypted (e.g the Node owner encrypting their data to keep it private), the `descriptor` object ****MUST**** be constructed as follows:
 
 ```json
 { // Message
@@ -504,7 +493,7 @@ If any of the scenarios described in this section are encountered during general
 
 **Target DID not found**
 
-If the DID targeted by a request object is not found within the Hub instance, the implementation ****MUST**** produce a request-level `status` with the code `404`, and ****SHOULD**** use `Target DID not found within the Identity Hub instance` as the status `text`.
+If the DID targeted by a request object is not found within the Decentralized Web Node, the implementation ****MUST**** produce a request-level `status` with the code `404`, and ****SHOULD**** use `Target DID not found within the Decentralized Web Node` as the status `text`.
 
 *Response Example:*
 
@@ -514,7 +503,7 @@ If the DID targeted by a request object is not found within the Hub instance, th
   "requestId": "c5784162-84af-4aab-aff5-f1f8438dfc3d",
   "status": {
     "code": 404,
-    "text": "Target DID not found within the Identity Hub instance"
+    "text": "Target DID not found within the Decentralized Web Node"
   }
 }
 ```
@@ -707,31 +696,18 @@ If a message attempts to invoke an interface `method` that is not the implementa
 ```
 :::
 
-## Access & Permissions
-
-::: todo
-Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.
-:::
-
-
-## Sync & Replication
-
-::: todo
-IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?
-:::
-
 ## Interfaces
 
 ### Feature Detection
 
-The Identity Hub specification defines well-recognized Hub configurations to maximize 
-interoperability (see Hub Configurations), but implementers may wish to support a custom 
+The Decentralized Web Node specification defines well-recognized Decentralized Web Node configurations to maximize 
+interoperability (see Configurations), but implementers may wish to support a custom 
 subset of the Interfaces and features. The Feature Detection interface is the means by 
-which a Hub expresses support for the Interfaces and features it implements.
+which a Decentralized Web Node expresses support for the Interfaces and features it implements.
 
 #### Data Model
 
-A compliant Identity Hub ****MUST**** produce a Feature Detection object 
+A compliant Decentralized Web Node ****MUST**** produce a Feature Detection object 
 defined as follows:
 
 ```json
@@ -747,7 +723,7 @@ The following properties and values are defined for the Feature Detection object
 
 - The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows: 
     - The object ****MAY**** contain a `collections` property. If the property is not present, 
-    it indicates the Hub implementation does not support any methods of the interface. If the 
+    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
@@ -757,7 +733,7 @@ The following properties and values are defined for the Feature Detection object
       - `CollectionsCommit`
       - `CollectionsDelete`
     - The object ****MAY**** contain a `actions` property. If the property is not present, 
-    it indicates the Hub implementation does not support any methods of the interface. If the 
+    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
@@ -768,7 +744,7 @@ The following properties and values are defined for the Feature Detection object
       - `ThreadsClose`
       - `ThreadsDelete`
     - The object ****MAY**** contain a `permissions` property. If the property is not present, 
-    it indicates the Hub implementation does not support any methods of the interface. If the 
+    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
     following properties, wherein a boolean `true` value indicates support for the interface 
     method, while a boolean `false` value or omission of the property indicates the interface 
@@ -777,12 +753,12 @@ The following properties and values are defined for the Feature Detection object
       - `PermissionsGrant`
       - `PermissionsRevoke`
 - The object ****MAY**** contain a `messaging` property, and its value ****MAY**** be an object composed of the following:
-    - The object ****MAY**** contain a `batching` property, and if present its value ****MUST**** be a boolean indicating whether the Hub Instance handles multiple messages in a single request. The absence of this property ****shall**** indicate that the Hub Instance ****does**** support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they ****MUST**** include this property and explicitly set its value to `false`.
+    - The object ****MAY**** contain a `batching` property, and if present its value ****MUST**** be a boolean indicating whether the Decentralized Web Node handles multiple messages in a single request. The absence of this property ****shall**** indicate that the Decentralized Web Node ****does**** support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they ****MUST**** include this property and explicitly set its value to `false`.
   
 
 #### Read
 
-All compliant Hubs ****MUST**** respond with a valid Feature Detection object when receiving 
+All compliant Decentralized Web Nodes ****MUST**** respond with a valid Feature Detection object when receiving 
 the following request object:
 
 ```json
@@ -795,7 +771,7 @@ the following request object:
 
 ### Collections
 
-To maximize decentralized app and service interoperability, the Collections interface of Identity Hubs 
+To maximize decentralized app and service interoperability, the Collections interface of Decentralized Web Nodes 
 provides a mechanism to store data relative to shared schemas. By storing data in accordance with a 
 given schema, which may be well-known in a given vertical or industry, apps and services can leverage 
 the same datasets across one another, enabling a cohesive, cross-platform, cross-device, cross-app 
@@ -807,7 +783,7 @@ experience for users.
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsQuery`.
-  - The object ****MAY**** contain an `objectId` property, and if present its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string intended to identify a logical object the [[ref: Hub Instance]] contains.
+  - The object ****MAY**** contain an `objectId` property, and if present its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string intended to identify a logical object the [[ref: Decentralized Web Node]] contains.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
   - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
@@ -874,9 +850,9 @@ Get all objects of a given schema type:
 
 ##### Processing Instructions
 
-When processing a `CollectionsWrite` message, Hub instances ****MUST**** perform the following additional steps:
+When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**** perform the following additional steps:
 
-1. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical entry known to the Hub Instance, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
+1. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical entry known to the Decentralized Web Node, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
 2. If the incoming message has a lower `dateCreated` value than the message that represents the current state of the logical entry, the message ****MUST NOT**** be applied to the logical entry and its data ****MAY**** be discarded.
 3. If the incoming message has a `dateCreated` value equal to the message that represents the current state of the logical entry, the incoming message's IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
     - If the incoming message has a higher lexicographic value than the message that represents the current state, perform the actions described in Step 1 of this instruction set.
@@ -1022,9 +998,9 @@ in activities performed by entities participating in the message thread.
 ### Permissions
 
 The Permissions interface provides a mechanism for external entities to request access 
-to various data and functionality provided by an Identity Hub. Permissions employ a 
+to various data and functionality provided by a Decentralized Web Node. Permissions employ a 
 capabilities-based architecture that allows for DID-based authorization and delegation 
-of authorized capabilities to others, if allowed by the Identity Hub owner.
+of authorized capabilities to others, if allowed by the owner of a Decentralized Web Node.
 
 #### Request
 
@@ -1042,12 +1018,12 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
       - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****WILL NOT**** be signed.
-        - `1` - the object ****MAY**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
-        - `2` - the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+        - `1` - the object ****MAY**** be signed using a key linked to the DID of the owner of a Decentralized Web Node or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+        - `2` - the object ****MUST**** be signed using a key linked to the DID of the owner of a Decentralized Web Node or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
       - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****MUST NOT**** be encrypted.
-        - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
-        - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+        - `1` - the object ****MAY**** be encrypted using the key provided by the owner of a Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+        - `2` - the object ****MUST**** be encrypted using the key provided by the owner of a Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
       - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
         party wants the ability to delegate the capability to other entities, and `false` or the omission of the property indicates no request is being made for delegation ability.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
@@ -1135,15 +1111,15 @@ of authorized capabilities to others, if allowed by the Identity Hub owner.
 
 ##### Grantor `PermissionsGrant` Storage
 
-After generating a `PermissionsGrant` the user agent (e.g. wallet app with access to authoritative keys for a given DID) ****MUST**** commit the granted permission object to the Hub of the DID the grant was issued from. This will ensure that the permission is present when addressed in subsequent interface method invocations.
+After generating a `PermissionsGrant` the user agent (e.g. wallet app with access to authoritative keys for a given DID) ****MUST**** commit the granted permission object to the Decentralized Web Node of the DID the grant was issued from. This will ensure that the permission is present when addressed in subsequent interface method invocations.
 
 ##### Grantee `PermissionsGrant` Delivery
 
-Once a user agent (e.g. wallet app with access to authoritative keys for a given DID) generates a `PermissionsGrant` for an entity to permit access to data and Hub functionality, it is the responsibility of the user agent that generated the `PermissionsGrant` to deliver it to the entity that is the subject. To do this, the user agent ****MUST**** generate a Request that includes the `PermissionsGrant` and send it to the Hub of the subject it has been granted to, in accordance with the [Resolution](#resolution) and [Request Construction](#request-construction) sections of this specification. 
+Once a user agent (e.g. wallet app with access to authoritative keys for a given DID) generates a `PermissionsGrant` for an entity to permit access to data and functionality, it is the responsibility of the user agent that generated the `PermissionsGrant` to deliver it to the entity that is the subject. To do this, the user agent ****MUST**** generate a Request that includes the `PermissionsGrant` and send it to the Decentralized Web Node of the subject it has been granted to, in accordance with the [Resolution](#resolution) and [Request Construction](#request-construction) sections of this specification. 
 
 #### Revoke
 
-Revocation of a permission is the act of closing off any additional or invalid invocations of that permission. The Revoke interface method enables revocation of a permission via direct reference to the permission's `objectId`. When executing a valid `PermissionsRevoke` invocation an implementation ****MUST**** use the `inclusionProof` value to ensure that only the entries in the Hub indicated by the proof are allowed to be retained in relation to the permission. The process of permission revocation effectively encapsulates all valid invocations of the permission and provides a deterministic means for ensuring no invalid invocations are allowed or persisted across any Hub instance.
+Revocation of a permission is the act of closing off any additional or invalid invocations of that permission. The Revoke interface method enables revocation of a permission via direct reference to the permission's `objectId`. When executing a valid `PermissionsRevoke` invocation an implementation ****MUST**** use the `inclusionProof` value to ensure that only the entries in the Decentralized Web Node indicated by the proof are allowed to be retained in relation to the permission. The process of permission revocation effectively encapsulates all valid invocations of the permission and provides a deterministic means for ensuring no invalid invocations are allowed or persisted across any of a user's Decentralized Web Nodes.
 
 ```json
 { // Message
@@ -1172,23 +1148,23 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
   - The object ****MAY**** contain an `nbf` property, and its value ****MUST**** be a number representing the UTC Unix Timestamp of when the capability is first active.
   - The object ****MUST**** contain an `exp` property, and its value ****MUST**** be a number representing the UTC Unix Timestamp of when the capability expires.
   - The object ****MAY**** contain an `nnc` property, and its value ****MUST**** be a unique string that ****SHOULD**** be cryptographically random.
-  - The object ****MUST**** contain an `att` property, and its value ****MUST**** be an array with exactly one entry that is a JSON object composed as follows, with values selected at the discretion of the granting Hub owner:
+  - The object ****MUST**** contain an `att` property, and its value ****MUST**** be an array with exactly one entry that is a JSON object composed as follows, with values selected at the discretion of the granting Decentralized Web Node owner:
     - The object ****MUST**** contain a `can` property, and its value ****Must**** be an object of the following properties:
-      - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the granting Hub owner will allow the requesting party wants to invoke.
-      - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data the Hub owner is allowing the grantee to access.
+      - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the granting Decentralized Web Node owner will allow the requesting party wants to invoke.
+      - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data the Decentralized Web Node owner is allowing the grantee to access.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
       - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****MUST NOT**** be signed.
-        - `1` - the object ****MAY**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
-        - `2` - the object ****MUST**** be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+        - `1` - the object ****MAY**** be signed using a key linked to the DID of the owner's Decentralized Web Node or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
+        - `2` - the object ****MUST**** be signed using a key linked to the DID of the owner's Decentralized Web Node or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
       - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be an integer representing the encryption conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****MUST NOT**** be encrypted.
-        - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
-        - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Hub in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+        - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
+        - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
       - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the ability to delegate the capability to other entities has been granted, and `false` or the omission of the property indicates the ability to delegate has not been granted.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to access any object or data that aligns with the capability's definition, regardless of which entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the grantee ****MUST NOT**** be allowed to invoke the capability against any object or data they are not the author of.
   - The object ****MAY**** contain an `prf` property, and its value ****MUST**** be an array of [Capability Objects](#capability-objects) in stringified form that provide proof of delegation for the capability being invoked.
-  - The object ****MAY**** contain an `fct` property, and if present its value ****MUST**** be an array of facts or assertions required for processing the capability that can be verified by the Hub evaluating invocation of the capability.
+  - The object ****MAY**** contain an `fct` property, and if present its value ****MUST**** be an array of facts or assertions required for processing the capability that can be verified by the Decentralized Web Node evaluating invocation of the capability.
 
 :::example
 ```json
@@ -1217,6 +1193,11 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
 ```
 :::
 
+### Sync
+
+The Sync interface and its methods allow different Decentralized Web Nodes to communicate and sync on the state of the data they contain, including replication of messages and files.
+
+
 ## Commit Strategies
 
 Some interface methods may be bound to, or allow for choice between, the data modification algorithms detailed below. Interfaces methods that are bound to one or more of these strategies will indicate it within their interface definitions under the [Interfaces](#interfaces) section.
@@ -1231,13 +1212,13 @@ Last-Write Wins is the most basic Commit Strategy that allows for the traditiona
 Detail JSON Merge Patch as a commit strategy option.
 :::
 
-## Hub Configurations
+## Configurations
 
-While it is strongly encouraged to implement the full set of Identity Hub features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Identity Hub feature sets that tend to serve different purposes.
+While it is strongly encouraged to implement the full set of Decentralized Web Node features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Decentralized Web Node feature sets that tend to serve different purposes.
 
 ### Open Data Publication
 
-This Hub configuration is ideal for implementers who seek to expose intentionally public data via the Identity Hub semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.
+This Decentralized Web Node configuration is ideal for implementers who seek to expose intentionally public data via the Decentralized Web Node semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.
 
 ```json
 {
