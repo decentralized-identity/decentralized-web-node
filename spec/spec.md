@@ -283,13 +283,8 @@ All Decentralized Web Node messaging is transacted via Messages JSON objects. Th
         "signature": Sign(protected + payload)
       },
       "authorization": {
-        "protected": {
-          "alg": "ES256K",
-          "kid": "did:example:456#key-2",
-          "capabilities": "...",
-        },
-        "payload": CID(descriptor),
-        "signature": Sign(protected + payload)
+        "payload": CAPABILITY_JWT,
+        "signature": Sign(protected + payload + CID(descriptor))
       }
     },
     {...}
@@ -304,13 +299,7 @@ In order to enable data replication features for a [[ref: Decentralized Web Node
 - Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object, as defined by the [Message Descriptors](#message-descriptors) section of this specification.
 - Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a JSON value of the Message's data.
 - Message objects ****MAY**** contain an `attestation` property, and if present its value ****MUST**** be an object, as defined by the [Signed Data](#signed-data) section of this specification.
-- If a Message object requires signatory and/or permission-evaluated authorization, it ****must**** include an `authorization` property, and its value ****MUST**** be a [[spec:rfc7515]] JSON Web Signature composed as follows: 
-  1. The Message object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
-  2. The Message object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
-      - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
-      - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
-      - If the message requires authorization to execute, the Message object ****MUST**** include a `capabilities` property with the required authorization material as its value.
-  3. The Message object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `payload` value in Step 1, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+- If a Message object requires signatory and/or permission-evaluated authorization, it ****must**** include an `authorization` property, and its value ****MUST**** be a valid [Capability](#capability-objects) invocation, as described in the [Permissions](#permissions) interface section.
 
 
 ### Message Descriptors
