@@ -1015,6 +1015,7 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
     - The object ****MUST**** contain a `can` property, and its value ****Must**** be an object of the following properties:
       - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
       - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
+      - The object ****MAY**** contain an `objectId` property, and its value ****Must**** be a UUID 4 string reference to an object. If the `objectId` property is present the `ability` object ****MUST**** include a `schema` property.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
       - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****WILL NOT**** be signed.
@@ -1024,8 +1025,6 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
         - `0` - the object ****MUST NOT**** be encrypted.
         - `1` - the object ****MAY**** be encrypted using the key provided by the owner of a Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
         - `2` - the object ****MUST**** be encrypted using the key provided by the owner of a Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
-      - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
-        party wants the ability to delegate the capability to other entities, and `false` or the omission of the property indicates no request is being made for delegation ability.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the requesting 
         party wants the ability to use the permission against any object or data that aligns with the capability's definition, regardless of which 
         entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the 
@@ -1048,7 +1047,6 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
       "conditions": {
         "encryption": 1,
         "attestation": 0,
-        "delegation": true,
         "sharedAccess": true
       }
     }
@@ -1152,6 +1150,7 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
     - The object ****MUST**** contain a `can` property, and its value ****Must**** be an object of the following properties:
       - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the granting Decentralized Web Node owner will allow the requesting party wants to invoke.
       - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data the Decentralized Web Node owner is allowing the grantee to access.
+      - The object ****MAY**** contain an `objectId` property, and its value ****Must**** be a UUID 4 string reference to an object. If the `objectId` property is present the `ability` object ****MUST**** include a `schema` property.
     - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
       - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****MUST NOT**** be signed.
@@ -1161,7 +1160,6 @@ Capability objects are JSON Web Tokens that ****must**** be composed as follows:
         - `0` - the object ****MUST NOT**** be encrypted.
         - `1` - the object ****MAY**** be encrypted using the key provided by the owner of the Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
         - `2` - the object ****MUST**** be encrypted using the key provided by the owner of the Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
-      - The object ****MAY**** contain a `delegation` property, and its value ****Must**** be a boolean, wherein `true` indicates the ability to delegate the capability to other entities has been granted, and `false` or the omission of the property indicates the ability to delegate has not been granted.
       - The object ****MAY**** contain a `sharedAccess` property, and its value ****Must**** be a boolean, wherein `true` indicates the issuing party is allowing the grantee the ability to access any object or data that aligns with the capability's definition, regardless of which entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the grantee ****MUST NOT**** be allowed to invoke the capability against any object or data they are not the author of.
   - The object ****MAY**** contain an `prf` property, and its value ****MUST**** be an array of [Capability Objects](#capability-objects) in stringified form that provide proof of delegation for the capability being invoked.
   - The object ****MAY**** contain an `fct` property, and if present its value ****MUST**** be an array of facts or assertions required for processing the capability that can be verified by the Decentralized Web Node evaluating invocation of the capability.
