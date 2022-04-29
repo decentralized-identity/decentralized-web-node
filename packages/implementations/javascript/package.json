@@ -27,7 +27,7 @@
     "browserify-shim": "^3.8.14",
     "canonicalize": "1.0.5",
     "cids": "1.1.7",
-    "cross-fetch": "3.1.4",
+    "cross-fetch": "3.1.5",
     "ipfs-core": "0.8.0",
     "it-all": "1.0.6",
     "jose": "3.14.3",
