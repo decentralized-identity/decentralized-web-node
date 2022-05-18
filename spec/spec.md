@@ -268,7 +268,7 @@ All Decentralized Web Node messaging is transacted via Messages JSON objects. Th
   "target": "did:example:123",
   "messages": [  // Message Objects
     {
-      "data": BASE64_STRING,
+      "data": BASE64URL_STRING,
       "descriptor": {
         "method": INTERFACE_METHOD_STRING,
         "cid": DATA_CID_STRING,
@@ -297,10 +297,9 @@ Messages objects ****MUST**** be composed as follows:
 In order to enable data replication features for a [[ref: Decentralized Web Node]], all Messages MUST be committed to an IPFS DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object.
 
 - Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object, as defined by the [Message Descriptors](#message-descriptors) section of this specification.
-- Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a JSON value of the Message's data.
+- Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a `base64Url` encoded string of the Message's data.
 - Message objects ****MAY**** contain an `attestation` property, and if present its value ****MUST**** be an object, as defined by the [Signed Data](#signed-data) section of this specification.
 - If a Message object requires signatory and/or permission-evaluated authorization, it ****must**** include an `authorization` property, and its value ****MUST**** be a valid [Capability](#capability-objects) invocation, as described in the [Permissions](#permissions) interface section.
-
 
 ### Message Descriptors
 
@@ -419,7 +418,7 @@ If the object is to be encrypted (e.g the Node owner encrypting their data to ke
 
 The message generating party ****MUST**** construct an encrypted message as follows:
 
-1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `JWE`.
+1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `jwe`.
 2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
 3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `cid` property of the `descriptor` object as the stringified representation of the CID.
 
@@ -1005,7 +1004,7 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
       - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
       - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
       - The object ****MAY**** contain an `objectId` property, and its value ****Must**** be a UUID 4 string reference to an object. If the `objectId` property is present the `ability` object ****MUST**** include a `schema` property.
-    - The object ****MAY**** contain a `conditions` property, and its value ****Must**** be an object of the following properties:
+    - The object ****MAY**** contain a [`conditions` property](#permission-conditions){ id=permission-conditions }, and its value ****Must**** be an object of the following properties:
       - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be an integer representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to a value of `1`.
         - `0` - the object ****WILL NOT**** be signed.
         - `1` - the object ****MAY**** be signed using a key linked to the DID of the owner of a Decentralized Web Node or authoring party (whichever is relevant to the application-level use case), and the signature ****MUST**** be in the [[spec:rfc7515]] JSON Web Signature (JWS) format. 
@@ -1063,7 +1062,8 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
   - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `application/json`, as all granted permissions are represented as JSON Web Tokens generally adherent to the [UCAN](https://github.com/ucan-wg/spec#325-attenuations) capabilities construction.
 - The message object ****MUST**** contain an `attestation` property, which ****MUST**** be a JSON object as defined by the [Signed Data](#signed-data) 
   section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
-- The message will contain a `data` payload, which is a JSON Web Token representation of the granted permission as defined in the [Capability Objects](#capability-objects) section below.
+- The message ****MUST**** contain a `data` payload, which is a JSON Web Token representation of the granted permission, as defined in the [Capability Objects](#capability-objects) section below.
+- The message ****MUST**** contain an `encryptionKey` property if the data transacted using the permission grant is to be encrypted, per the directives for encryption under the `encryption` field of the permission's [conditions](#permission-conditions). If present, the value of the `encryptionKey` property ****MUST**** be a [[spec:rfc7516]] JSON Web Encryption (JWE) object that contains the encrypted key material required for an authorized party to decrypt the JWE represented by the `cid` value within the `descriptor` object.
 
 ```json
 {
@@ -1092,9 +1092,26 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
       }]
     },
     "signature": "fw547v63bo5687wvwbcqp349vwo876uc3q..."
-  } 
+  },
+  "encryptionKey": { 
+    "protected": ...,
+    "recipients": ...,
+    "ciphertext": ...,
+    "iv": ...,
+    "tag": ... 
+  }
 }
 ```
+
+##### Granted Encryption Keys
+
+The `encryptionKey` attribute of a `PermissionsGrant` is a [[spec:rfc7516]] JSON Web Encryption (JWE) object that is composed as follows:
+
+1. The `kid` field of the JWE header ****MUST**** be a DID URL that identifies the `X25519` public key designated for encryption in the DID Document of the `PermissionGrant` recipient.
+2. The `ciphertext` field ****MUST**** be encrypted with the `X25519` public key designated for encryption in the DID Document of the `PermissionGrant` recipient.
+3. The data encrypted in the object's `ciphertext` field ****MUST**** be the JSON Web Key (JWK) object representation of a `AES-256` symmetric encryption key generated by the owner of the DWeb Node that will be used to encrypt the data transacted in relation to the associated `PermissionGrant`.
+
+
 
 ##### Grantor `PermissionsGrant` Storage
 
