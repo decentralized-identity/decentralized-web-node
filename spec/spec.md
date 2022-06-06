@@ -1218,7 +1218,8 @@ This Decentralized Web Node configuration is ideal for implementers who seek to 
 
 A conforming implementation ****MUST**** be capable of encrypting and decrypting data stored in Decentralized Web Nodes 
 using the following combinations of cryptographic schemes. Each scheme is a pair, wherein the first item is the asymmetric 
-encryption scheme used to encrypt the data, and the second is the scheme used to encrypt the private key of the first item:
+encryption scheme used to encrypt the symmetric key it is paired with, and the symmetric key is used to encrypt the actual 
+data being protected.
 
 
 | Asymmetric Encryption of Data  | Symmetric Encryption of Keys |
