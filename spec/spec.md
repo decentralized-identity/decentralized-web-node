@@ -1096,7 +1096,6 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
       party wants the ability to use the permission against any object or data that aligns with the capability's definition, regardless of which 
       entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the 
       requesting party only needs the ability to invoke the permission against objects or data it creates.
-  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be the string `application/jwt`, as all granted permissions are represented as JSON Web Tokens generally adherent to the [UCAN](https://github.com/ucan-wg/spec#325-attenuations) capabilities construction.
 - The message object ****MUST**** contain an `attestation` property, which ****MUST**** be a JSON object as defined by the [Signed Data](#signed-data) 
   section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
 - The message ****MUST**** contain a `data` payload, which is a JSON Web Token representation of the granted permission, as defined in the [Capability Objects](#capability-objects) section below.
