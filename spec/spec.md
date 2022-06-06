@@ -824,7 +824,7 @@ seattle vet specialists / aes
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
   - The object ****MUST**** contain an `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
-  - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public querying and consumption without requiring authorization. A value of `false` or the absence of the property indicates 
+  - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the record ****MUST NOT**** be served in response to public queries that lack proper authorization.
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
 
@@ -836,6 +836,7 @@ seattle vet specialists / aes
     "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "dataCid": CID(data),
     "dateCreated": 123456789,
+    "published": true,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
     "dataFormat": DATA_FORMAT
@@ -924,7 +925,8 @@ in activities performed by entities participating in the message thread.
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "method": "ThreadsCreate",
     "schema": "https://schema.org/LikeAction",
-    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "published": true
   }
 }
 ```
@@ -935,6 +937,7 @@ in activities performed by entities participating in the message thread.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsCreate`.
   - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MUST**** contain an `threadId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string for the Thread being created.
+  - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the thread's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the thread ****MUST NOT**** be served in response to public queries that lack proper authorization.
 
 #### Reply
 
