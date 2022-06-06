@@ -279,14 +279,21 @@ All Decentralized Web Node messaging is transacted via Messages JSON objects. Th
       "attestation": {
         "protected": {
           "alg": "ES256K",
-          "kid": "did:example:123#key-1"
+          "kid": "did:example:456#key-1"
         },
         "payload": CID(descriptor),
         "signature": Sign(protected + payload)
       },
       "authorization": {
-        "payload": CAPABILITY_JWT,
-        "signature": Sign(protected + payload + CID(descriptor))
+        "header": {
+          "grant": GRANT_OBJECT
+        },
+        "protected": {
+          "alg": "ES256K",
+          "kid": "did:example:456#key-1"
+        },
+        "payload": [CID(grant), CID(descriptor)],
+        "signature": Sign(protected + payload)
       }
     },
     {...}
@@ -301,7 +308,7 @@ In order to enable data replication features for a [[ref: Decentralized Web Node
 - Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object, as defined by the [Message Descriptors](#message-descriptors) section of this specification.
 - Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a `base64Url` encoded string of the Message's data.
 - Message objects ****MAY**** contain an `attestation` property, and if present its value ****MUST**** be an object, as defined by the [Signed Data](#signed-data) section of this specification.
-- If a Message object requires signatory and/or permission-evaluated authorization, it ****must**** include an `authorization` property, and its value ****MUST**** be a valid [Capability](#capability-objects) invocation, as described in the [Permissions](#permissions) interface section.
+- If a Message object requires signatory and/or permission-evaluated authorization, it ****must**** include an `authorization` property, and its value ****MUST**** be a valid [Permission Grant](#grant) invocation, as described in the [Permissions](#permissions) interface section.
 
 ### Message Descriptors
 
