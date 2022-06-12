@@ -822,7 +822,7 @@ Get all objects of a given schema type:
   }
 }
 ```
-seattle vet specialists / aes 
+ 
 #### Write
 
 `CollectionsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
