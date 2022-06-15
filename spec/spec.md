@@ -20,7 +20,7 @@ Decentralized Web Node
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/decentralized-web-node)
 ~ [File a bug](https://github.com/decentralized-identity/decentralized-web-node/issues)
-~ [Commit history](https://github.com/decentralized-identity/decentralized-web-node/commits/master)
+~ [Commit history](https://github.com/decentralized-identity/decentralized-web-node/commits/main)
 
 ------------------------------------
 
@@ -41,7 +41,7 @@ interfaces, or routing mechanisms.
 ## Status of This Document
 
 Decentralized Web Node is a _DRAFT_ specification under development within
-the [Decentralized Identity Foundation](identity.foundation) (DIF). It is an active work item of the 
+the [Decentralized Identity Foundation](https://identity.foundation) (DIF). It is an active work item of the 
 [Secure Data Storage Working Group at DIF](https://identity.foundation/working-groups/secure-data-storage.html).
 It incorporates requirements and learnings from related work of many active industry players into a shared
 specification that meets the collective needs of the community. 
