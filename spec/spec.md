@@ -164,7 +164,7 @@ The following process defines how a DID-Relative URL is composed to address a De
 
 1. Let the base URI authority portion of the DID URL string be the target DID being addressed.
 2. Append a `service` parameter to the DID URL string with the value `DecentralizedWebNode`.
-3. Assemble an array of the [Message Descriptor](#message-descriptors) objects are desired for encoding in the DID-relative URL
+3. Assemble an array of the [Message Descriptor](#message-descriptors) objects as desired for encoding in the DID-relative URL
 4. JSON stringify the array of [Message Descriptor](#message-descriptors) objects from Step 3, then Base64Url encode the stringified output.
 5. Append a `queries` parameter to the DID URL string with the value set to the JSON stringified, Base64Url encoded output of Step 4.
 
