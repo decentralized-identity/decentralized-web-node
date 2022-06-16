@@ -69,6 +69,14 @@ distributed ledger).
 
 <img src="images/topology.svg" style="display: block; margin: 0 auto; padding: 1em 0; width: 100%; max-width: 1000px;" />
 
+### Relay Nodes
+
+Relay nodes act as publically accessable service endpoints for DWN infrastructure that may be advertized within a user's DID document.  Relay nodes do not contain private key material and as such do not encrypt, sign, or authorize access to data.  Relay nodes queue and store incoming messages which need to be accessed by a user's local node, and also serve as remote data stores for data assocaited with the DID controled by a user's local node. A relay node may answer a request without requiring interaction from a user's local node if those permissions already exist.
+
+### Local Nodes
+
+A local node is a fully featured DWN which operates on devices such as phones, laptops, tablets, desktop computers, etc., and are under the direct control of the associated DID controller. A local node's primary differentiator from relay nodes is that a local node stores private key material to facilitate data signing, encrpytion, and authorization issuance to data stored within a relay node's remote data store. Local nodes are not required to be publically accessable, and can remain behind network firewalls, utalize NAT, and have intermittent internet access without affecting functionality. Local nodes communicate with relay nodes to replicate and access the data they need.
+
 ## Protocol Stack
 
 Decentralized Web Nodes are comprised of the following component layers, each of which is defined 
