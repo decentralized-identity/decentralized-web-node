@@ -48,11 +48,18 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
       
                     <article id="content">
                       <h1 id="identity-hub"><a class="toc-anchor" href="#identity-hub" >§</a> Identity Hub</h1>
-<p><strong>Specification Status:</strong> Strawman</p>
+<p><strong>Specification Status:</strong> Draft</p>
 <p><strong>Latest Draft:</strong>
-<a path-0="identity.foundation"path-1="identity-hub"href="https://identity.foundation/identity-hub" >identity.foundation/identity-hub</a></p>
+<a path-0="identity.foundation"path-1="identity-hub"path-2="spec"href="https://identity.foundation/identity-hub/spec" >identity.foundation/identity-hub/spec</a></p>
 <!-- -->
 <dl>
+<dt><strong>Editors:</strong></dt>
+<dd><a path-0="www.linkedin.com"path-1="in"path-2="dbuchner"path-3=""href="https://www.linkedin.com/in/dbuchner/" >Daniel Buchner</a> (Block)</dd>
+<dd><a path-0="www.linkedin.com"path-1="in"path-2="tplooker"href="https://www.linkedin.com/in/tplooker" >Tobias Looker</a> (Mattr)</dd>
+<dt><strong>Contributors:</strong></dt>
+<dd><a path-0="www.linkedin.com"path-1="in"path-2="henry-tsai-6b884014"path-3=""href="https://www.linkedin.com/in/henry-tsai-6b884014/" >Henry Tsai</a> (Microsoft)</dd>
+<dd><a path-0="www.linkedin.com"path-1="in"path-2="xinan-xu-b868a326"path-3=""href="https://www.linkedin.com/in/xinan-xu-b868a326/" >XinAn Xu</a> (Microsoft)</dd>
+<dd><a path-0="www.linkedin.com"path-1="in"path-2="moejangda"path-3=""href="https://www.linkedin.com/in/moejangda/" >Moe Jangda</a> (Block)</dd>
 <dt><strong>Participate:</strong></dt>
 <dd><a path-0="github.com"path-1="decentralized-identity"path-2="identity-hub"href="https://github.com/decentralized-identity/identity-hub" >GitHub repo</a></dd>
 <dd><a path-0="github.com"path-1="decentralized-identity"path-2="identity-hub"path-3="issues"href="https://github.com/decentralized-identity/identity-hub/issues" >File a bug</a></dd>
@@ -60,9 +67,19 @@ customElements.define("slide-panels",class extends HTMLElement{static get observ
 </dl>
 <hr>
 <h2 id="abstract"><a class="toc-anchor" href="#abstract" >§</a> Abstract</h2>
-<p>Most activities between people, organizations, devices, and other entities requires</p>
+<p>Most digital activities between people, organizations, devices, and other entities
+require the exchange of messages and data. For entities to exchange messages and
+data for credential, app, or service flows, they need an interface through which
+to store, discover, and fetch data related to the flows and experiences they are
+participating in. Identity Hubs are a data storage and message relay mechanism
+entities can use to locate public or private permissioned data related to a given
+Decentralized Identifier (DID). Identity Hubs are a mesh-like datastore construction
+that enable an entity to operate multiple instances that sync to the same state across
+one another, enabling the owning entity to secure, manage, and transact their data
+with others without reliance on location or provider-specific infrastructure,
+interfaces, or routing mechanisms.</p>
 <h2 id="status-of-this-document"><a class="toc-anchor" href="#status-of-this-document" >§</a> Status of This Document</h2>
-<p>Identity Hub is a <em>STRAWMAN</em> specification under development within
+<p>Identity Hub is a <em>DRAFT</em> specification under development within
 the Decentralized Identity Foundation (DIF). It incorporates requirements and
 learnings from related work of many active industry players into a shared
 specification that meets the collective needs of the community.</p>
@@ -76,7 +93,7 @@ as the means by which to communicate feedback and contributions.</p>
 <dt><span id="term:identity-hub">Identity Hub</span></dt>
 <dd>A decentralized personal and application data storage and message relay node,
 as defined in the DIF Identity Hub specification.</dd>
-<dt><span id="term:hub-instance">Hub Instance</span></dt>
+<dt><span id="term:hub-instances"><span id="term:hub-instance">Hub Instance</span></span></dt>
 <dd>An instance of an Identity Hub running on a local device or at a remote location.</dd>
 <dt><span id="term:hub-operator">Hub Operator</span></dt>
 <dd>Any entity, including individuals, who runs an Hub Instance on a device or
@@ -88,7 +105,7 @@ device or infrastructure of a Hub Operator.</dd>
 <dt><span id="term:did"><span id="term:decentralized-identifier"><span id="term:decentralized-identifiers">Decentralized Identifiers</span></span></span></dt>
 <dd>Unique ID URI string and PKI metadata document format for describing the
 cryptographic keys and other fundamental PKI values linked to a unique,
-user-controlled, self-sovereign identifier in a target system (i.e. blockchain,
+user-controlled, self-sovereign identifier in a target system (e.g., blockchain,
 distributed ledger).</dd>
 </dl>
 <h2 id="topology"><a class="toc-anchor" href="#topology" >§</a> Topology</h2>
@@ -157,7 +174,7 @@ as a single logical unit for users.</p>
 <td style="text-align:center">Object Format</td>
 </tr>
 <tr>
-<td style="text-align:center">Object Encryption</td>
+<td style="text-align:center">Object Signing / Encryption</td>
 </tr>
 <tr>
 <td style="text-align:center">File Structure</td>
@@ -165,173 +182,565 @@ as a single logical unit for users.</p>
 <tr>
 <td style="text-align:center">IPFS</td>
 </tr>
-<tr>
-<td style="text-align:center">Database</td>
-</tr>
 </tbody>
 </table>
-<div id="todo-7" class="notice todo"><a class="notice-link" href="#todo-7">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
+<div id="todo-49" class="notice todo"><a class="notice-link" href="#todo-49">TODO</a><p>Finalize the component stack list - are these correct? Are we missing any?</p>
 </div>
-<h2 id="file-structures"><a class="toc-anchor" href="#file-structures" >§</a> File Structures</h2>
-<div id="todo-8" class="notice todo"><a class="notice-link" href="#todo-8">TODO</a><p><strong>Needs Decision</strong></p>
-<p>Considerations:</p>
-<ul>
-<li>Files accessible to multiple external parties, in multiple overlapping combinations</li>
-<li>Should files be distributed across separate buckets, a shared tree, or something else?</li>
-<li>What kind of pointers are required, if any?</li>
-<li>Is tombstoning required?</li>
-</ul>
-</div>
-<h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
-<div id="todo-9" class="notice todo"><a class="notice-link" href="#todo-9">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
-</div>
-<h2 id="commit-strategies"><a class="toc-anchor" href="#commit-strategies" >§</a> Commit Strategies</h2>
-<h3 id="full-replace"><a class="toc-anchor" href="#full-replace" >§</a> Full Replace</h3>
-<div id="todo-10" class="notice todo"><a class="notice-link" href="#todo-10">TODO</a><p>How is replace handle? Do we allow switching between Commit Strategies for a given object after creation?</p>
-</div>
-<h3 id="delta-based-merge"><a class="toc-anchor" href="#delta-based-merge" >§</a> Delta-based Merge</h3>
-<div id="todo-11" class="notice todo"><a class="notice-link" href="#todo-11">TODO</a><p>We need to pick a standard delta-based CRDT - which one?</p>
-</div>
-<h2 id="general-object-format"><a class="toc-anchor" href="#general-object-format" >§</a> General Object Format</h2>
-<p>All objects within an Identity Hub Instance <strong><strong>MUST</strong></strong> be constructed using the same
-top-level format, as defined below:</p>
-<h3 id="secure-wrapper"><a class="toc-anchor" href="#secure-wrapper" >§</a> Secure Wrapper</h3>
-<div id="todo-12" class="notice todo"><a class="notice-link" href="#todo-12">TODO</a><p>Objects need to use a standard means of encryption. Some considerations are:</p>
-<ul>
-<li>Must account for our multi-recipient access requirements</li>
-<li>Try to minimize need for re-encryption when permissions change</li>
-</ul>
-</div>
-<h3 id="payload"><a class="toc-anchor" href="#payload" >§</a> Payload</h3>
+<h2 id="service-endpoints"><a class="toc-anchor" href="#service-endpoints" >§</a> Service Endpoints</h2>
+<p>The following DID Document Service Endpoint entries <strong><strong>MUST</strong></strong> be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner’s Hub instances:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"ProfileWrite"</span><span class="token punctuation">,</span> <span class="token comment">// CollectionsWrite, CollectionsQuery, ActionsWrite, etc.</span>
-  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span>
+  <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"service"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+    <span class="token property">"id"</span><span class="token operator">:</span><span class="token string">"#hub"</span><span class="token punctuation">,</span>
+    <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"IdentityHub"</span><span class="token punctuation">,</span>
+    <span class="token property">"serviceEndpoint"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"instances"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"https://hub.example.com"</span><span class="token punctuation">,</span> <span class="token string">"https://example.org/hub"</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h2 id="addressing"><a class="toc-anchor" href="#addressing" >§</a> Addressing</h2>
+<p>A user’s logical Identity Hub (their collection of Hub Instances) can be addressed in many ways,
+but the mechanisms below <strong><strong>MUST</strong></strong> be supported by a compliant Identity Hub implementation:</p>
+<h3 id="did-relative-urls"><a class="toc-anchor" href="#did-relative-urls" >§</a> DID-Relative URLs</h3>
+<p>The following DID URL constructions are used to address <a class="term-reference" href="#term:hub-instances">Hub Instances</a> found to be associated
+with a given DID, as located via the DID resolution process.</p>
+<h4 id="composition"><a class="toc-anchor" href="#composition" >§</a> Composition</h4>
+<p>The following process defines how a Identity Hub DID-Relative URL is composed:</p>
+<ol>
+<li>Let the base URI authority portion of the DID URL string be the target DID being addressed.</li>
+<li>Append a <code>service</code> parameter to the DID URL string with the value <code>Identity Hub</code>.</li>
+<li>Assemble an array of the <a href="#message-descriptors" >Message Descriptor</a> objects are desired for encoding in the DID-relative URL</li>
+<li>JSON stringify the array of <a href="#message-descriptors" >Message Descriptor</a> objects from Step 3, then Base64Url encode the stringified output.</li>
+<li>Append a <code>queries</code> parameter to the DID URL string with the value set to the JSON stringified, Base64Url encoded output of Step 4.</li>
+</ol>
+<p><strong>DID-relative URLs are composed of the following segments</strong></p>
+<p><code>did:example:123</code> + <code>?service=IdentityHub</code> + <code>&amp;queries=</code> + <code>toBase64Url( JSON.stringify( [{ DESCRIPTOR_1 }, { DESCRIPTOR_N }] ) )</code></p>
+<pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=IdentityHub&amp;queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
+</code></pre>
+<h4 id="resolution"><a class="toc-anchor" href="#resolution" >§</a> Resolution</h4>
+<p>The following process defines how a DID-Relative URL addressing an Identity Hub is resolved:</p>
+<ol>
+<li>Resolve the DID in the authority portion of the URL in accordance with the <a path-0="w3c.github.io"path-1="did-core"path-2="#resolution"href="https://w3c.github.io/did-core/#resolution" >W3C Decentralized Identifier Resolution</a> process, which returns the DID Document for the resolved DID.</li>
+<li>As indicated by the presence of the <code>service</code> parameter, locate the <code>IdentityHub</code> entry in the DID Document’s <a path-0="w3c.github.io"path-1="did-core"path-2="#services"href="https://w3c.github.io/did-core/#services" >Service Endpoint</a> entries.</li>
+<li>Parse the <code>IdentityHub</code> Service Endpoint object and select the first URI present in the <code>serviceEndpoint</code> objects <code>instance</code> array. NOTE: implementers <strong><strong>SHOULD</strong></strong> select from the URIs in the <code>instance</code> array in index order.</li>
+<li>If the URI located in step 3 is not a DID URI, proceed to step 5. If the URI from step 3 is a DID, resolve the DID and follow steps 2 and 3 to select the first URI in the DID’s <code>IdentityHub</code> Service Endpoint object <code>instance</code> array that is not a DID URI. Do not iterate this loop more than once - if a non-DID URI cannot be located after one loop of recursive resolution, terminate resolution and produce an error.</li>
+<li>Assuming a non-DID URI was located in steps 2-4, let the located URI be the base URI of the Hub request being constructed.</li>
+</ol>
+<h4 id="request-construction"><a class="toc-anchor" href="#request-construction" >§</a> Request Construction</h4>
+<p><strong>DID-Relative URL example for passing multiple messages:</strong></p>
+<div id="note-25" class="notice note"><a class="notice-link" href="#note-25">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Identity Hub URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
+</div>
+<pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=IdentityHub&amp;queries=<span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span> <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
+</code></pre>
+<pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=IdentityHub&amp;queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
+</code></pre>
+<p><strong>Resolve DID to locate the Identity Hub URIs:</strong></p>
+<p><code>did:example:123</code> --&gt;  resolve to Identity Hub endpoint(s)  --&gt;  <code>https://hub.example.com/</code></p>
+<p><strong>Construct the <em id="request-object">Request Object</em>:</strong></p>
+<ol>
+<li>Create a JSON object for the request.</li>
+<li>The <em>Request Object</em> <strong><strong>MUST</strong></strong> include a <code>id</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string to identify the request.</li>
+<li>The <em>Request Object</em> <strong><strong>MUST</strong></strong> include a <code>target</code> property, and its value <strong><strong>MUST</strong></strong> be the Decentralized Identifier base URI of the DID-relative URL.</li>
+<li>The <em>Request Object</em> <strong><strong>MUST</strong></strong> include a <code>messages</code> property, and its value <strong><strong>MUST</strong></strong> be an array composed of <a href="#messages" >Message</a> objects that are generated by parsing the DID-relative URL’s <code>queries</code> parameter value as a JSON array and performing the following steps for each entry:
+<ol>
+<li>Construct a <a href="#messages" >Message</a> object.</li>
+<li>Set the <code>descriptor</code> property of the <a href="#messages" >Message</a> object to the entry, ensuring it is a valid <a href="#message-descriptors" >Message Descriptor</a> object.</li>
+<li>Augment the <a href="#messages" >Message</a> object with any signing and authorization values required, as described in the <a href="#messages" >Messages</a> section.</li>
+<li>Append the object to the <a href="#request-objects" >Request Object</a>’s <code>messages</code> array.</li>
+</ol>
+</li>
+</ol>
+<p><em>HTTP POST example:</em></p>
+<pre class="language-json5"><code class="language-json5">POST <span class="token property unquoted">https</span><span class="token operator">:</span><span class="token comment">//hub.example.com/</span>
+
+BODY <span class="token punctuation">{</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
+        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="request-objects"><a class="toc-anchor" href="#request-objects" >§</a> Request Objects</h2>
+<p>Request Objects are JSON object envelopes used to pass messages to Identity Hub instances.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
+    <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Request Objects are composed as follows:</p>
+<ol>
+<li>The <em>Request Object</em> <strong><strong>MUST</strong></strong> include a <code>requestId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string to identify the request.</li>
+<li>The <em>Request Object</em> <strong><strong>MUST</strong></strong> include a <code>target</code> property, and its value <strong><strong>MUST</strong></strong> be the Decentralized Identifier base URI of the DID-relative URL.</li>
+<li>The <em>Request Object</em> <strong><strong>MUST</strong></strong> include a <code>messages</code> property, and its value <strong><strong>MUST</strong></strong> be an array composed of <a href="#messages" >Message</a> objects.</li>
+</ol>
+<h2 id="messages"><a class="toc-anchor" href="#messages" >§</a> Messages</h2>
+<p>All Identity Hub messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPFS CIDs and DAG APIs.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"data"</span><span class="token operator">:</span> BASE64_STRING<span class="token punctuation">,</span>
+      <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> INTERFACE_METHOD_STRING<span class="token punctuation">,</span>
+        <span class="token property">"cid"</span><span class="token operator">:</span> DATA_CID_STRING<span class="token punctuation">,</span>
+        <span class="token property">"dataFormat"</span><span class="token operator">:</span> DATA_FORMAT_STRING<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES256K"</span><span class="token punctuation">,</span>
+          <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"did:example:123#key-1"</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"payload"</span><span class="token operator">:</span> CID(descriptor)<span class="token punctuation">,</span>
+        <span class="token property">"signature"</span><span class="token operator">:</span> Sign(protected + payload)
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"authorization"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES256K"</span><span class="token punctuation">,</span>
+          <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"did:example:456#key-2"</span><span class="token punctuation">,</span>
+          <span class="token property">"capabilities"</span><span class="token operator">:</span> <span class="token string">"..."</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"payload"</span><span class="token operator">:</span> CID(descriptor)<span class="token punctuation">,</span>
+        <span class="token property">"signature"</span><span class="token operator">:</span> Sign(protected + payload)
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Messages objects <strong><strong>MUST</strong></strong> be composed as follows:</p>
+<p>In order to enable data replication features for a <a class="term-reference" href="#term:hub-instance">Hub Instance</a>, all Messages MUST be committed to an IPFS DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded object.</p>
+<ul>
+<li>Message objects <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be an object, as defined by the <a href="#message-descriptors" >Message Descriptors</a> section of this specification.</li>
+<li>Message objects <strong><strong>MAY</strong></strong> contain a <code>data</code> property, and if present its value <strong><strong>MUST</strong></strong> be a JSON value of the Message’s data.</li>
+<li>Message objects <strong><strong>MAY</strong></strong> contain an <code>attestation</code> property, and if present its value <strong><strong>MUST</strong></strong> be an object, as defined by the <a href="#signed-data" >Signed Data</a> section of this specification.</li>
+<li>If a Message object requires signatory and/or permission-evaluated authorization, it <strong><strong>must</strong></strong> include an <code>authorization</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature composed as follows:
+<ol>
+<li>The Message object <strong><strong>must</strong></strong> include a <code>payload</code> property, and its value <strong><strong>must</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>descriptor</code> object, whose composition is defined in the <a href="#message-descriptors" >Message Descriptor</a> section of this specification.</li>
+<li>The Message object <strong><strong>MUST</strong></strong> include a <code>protected</code> property, and its value <strong><strong>must</strong></strong> be an object composed of the following values:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> include an <code>alg</code> property, and its value <strong><strong>MUST</strong></strong> be the string representing the algorithm used to verify the signature (as defined by the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature specification).</li>
+<li>The object <strong><strong>MUST</strong></strong> include a <code>kid</code> property, and its value <strong><strong>MUST</strong></strong> be a <a path-0="w3c.github.io"path-1="did-core"path-2="#example-a-unique-verification-method-in-a-did-document"href="https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document" >DID URL</a> string identifying the key to be used in verifying the signature.</li>
+<li>If the message requires authorization to execute, the Message object <strong><strong>MUST</strong></strong> include a <code>capabilities</code> property with the required authorization material as its value.</li>
+</ul>
+</li>
+<li>The Message object <strong><strong>MUST</strong></strong> include a <code>signature</code> property, and its value <strong><strong>must</strong></strong> be a signature string produced by signing the <code>payload</code> value in Step 1, in accordance with the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature specification.</li>
+</ol>
+</li>
+</ul>
+<h3 id="message-descriptors"><a class="toc-anchor" href="#message-descriptors" >§</a> Message Descriptors</h3>
+<p>The Identity Hub data structure that resides in the <code>descriptor</code> property of the <a href="#messages" >Message</a> is comprised of a common JSON structure that contains the following properties regardless of whether the message data is signed/encrypted:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"data"</span><span class="token operator">:</span> BASE64_STRING<span class="token punctuation">,</span>
+      <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>  <span class="token comment">// Message Descriptor</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> INTERFACE_METHOD_STRING<span class="token punctuation">,</span>
+        <span class="token property">"cid"</span><span class="token operator">:</span> DATA_CID_STRING<span class="token punctuation">,</span>
+        <span class="token property">"dataFormat"</span><span class="token operator">:</span> DATA_FORMAT_STRING<span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"authorization"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>Message Descriptors are JSON objects that contains the parameters, signatory proof, and other details about the message and any data associated with it. All Message Descriptor objects share the following property options:</p>
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be a string that matches a Hub Interface method.</li>
+<li>If the <a href="#messages" >Message</a> has data associated with it, passed directly via the <code>data</code> property of the <a href="#messages" >Message</a> object or through a channel external to the message object, the <code>descriptor</code> object <strong><strong>MUST</strong></strong> contain a <code>cid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-pb.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md" >DAG PB</a> encoded data.</li>
+<li>If the <a href="#messages" >Message</a> has data associated with it, passed directly via the <code>data</code> property of the <a href="#messages" >Message</a> object or through a channel external to the message object, the <code>descriptor</code> object <strong><strong>MUST</strong></strong> contain a <code>dataFormat</code> property, and its value <strong><strong>MUST</strong></strong> be a string that corresponds with a registered <a path-0="www.iana.org"path-1="assignments"path-2="media-types"path-3="media-types.xhtml"href="https://www.iana.org/assignments/media-types/media-types.xhtml" >IANA Media Type</a> data format (the most common being plain JSON, which is indicated by setting the value of the <code>dataFormat</code> property to <code>application/json</code>), or one of the following format strings pending registration:
+<ul>
+<li><code>application/vc+jwt</code> - the data is a JSON Web Token (JWT) [<a class="spec-reference" href="#ref:RFC7519">RFC7519</a>] formatted variant of a <a path-0="www.w3.org"path-1="TR"path-2="vc-data-model"path-3="#json-web-token"href="https://www.w3.org/TR/vc-data-model/#json-web-token" >W3C Verifiable Credential</a>.</li>
+<li><code>application/vc+ldp</code> - the data is a JSON-LD formatted <a path-0="www.w3.org"path-1="TR"path-2="vc-data-model"href="https://www.w3.org/TR/vc-data-model" >W3C Verifiable Credential</a>.</li>
+</ul>
+</li>
+</ul>
+<p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
+<h4 id="raw-data"><a class="toc-anchor" href="#raw-data" >§</a> Raw Data</h4>
+<p>If there is no need or desire to sign or encrypt the content of a message (i.e. public repudiable data), the message <code>descriptor</code> object is the only property required in a <a href="#messages" >Message</a> (with any method-specific properties required). An optional <code>data</code> property may be passed at the <a href="#messages" >Message</a> level that contains the data associated with the message (when data is desired or required to be present for a given method invocation).</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> BASE64_STRING<span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+    <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="signed-data"><a class="toc-anchor" href="#signed-data" >§</a> Signed Data</h4>
+<p>If the object is to be attested by a signer (e.g the Hub owner via signature with their DID key), the object <strong><strong>MUST</strong></strong> contain the following additional properties to produce a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] Flattened JSON Web Signature (JWS) object:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+    <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES256K"</span><span class="token punctuation">,</span>
+      <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"did:example:123#key-1"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"payload"</span><span class="token operator">:</span> CID(descriptor)<span class="token punctuation">,</span>
+    <span class="token property">"signature"</span><span class="token operator">:</span> Sign(protected + payload)
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The message generating party <strong><strong>MUST</strong></strong> construct the signed message object as follows:</p>
+<ol>
+<li>If the <a href="#messages" >Message</a> includes associated data, passed directly via the <a href="#messages" >Message</a> object’s <code>data</code> property or through a channel external to the <a href="#messages" >Message</a>, add a <code>cid</code> property to the <code>descriptor</code> object and set its value as the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-pb.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md" >DAG PB</a> encoded data.</li>
+<li>The <a href="#messages" >Message</a> object <strong><strong>MUST</strong></strong> contain an <code>attestation</code> property, and its value <strong><strong>MUST</strong></strong> be a Flattened object representation of a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature composed as follows:</li>
+<li>The Message object <strong><strong>must</strong></strong> include a <code>payload</code> property, and its value <strong><strong>must</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>descriptor</code> object, whose composition is defined in the <a href="#message-descriptors" >Message Descriptor</a> section of this specification.</li>
+<li>The Message object <strong><strong>MUST</strong></strong> include a <code>protected</code> property, and its value <strong><strong>must</strong></strong> be an object composed of the following values:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> include an <code>alg</code> property, and its value <strong><strong>MUST</strong></strong> be the string representing the algorithm used to verify the signature (as defined by the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature specification).</li>
+<li>The object <strong><strong>MUST</strong></strong> include a <code>kid</code> property, and its value <strong><strong>MUST</strong></strong> be a <a path-0="w3c.github.io"path-1="did-core"path-2="#example-a-unique-verification-method-in-a-did-document"href="https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document" >DID URL</a> string identifying the key to be used in verifying the signature.</li>
+</ul>
+</li>
+<li>The Message object <strong><strong>MUST</strong></strong> include a <code>signature</code> property, and its value <strong><strong>must</strong></strong> be a signature string produced by signing the <code>protected</code> and <code>payload</code> values, in accordance with the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature specification.</li>
+</ol>
+<h4 id="encrypted-data"><a class="toc-anchor" href="#encrypted-data" >§</a> Encrypted Data</h4>
+<p>If the object is to be encrypted (e.g the Hub owner encrypting their data to keep it private), the <code>descriptor</code> object <strong><strong>MUST</strong></strong> be constructed as follows:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span> 
+    <span class="token property">"protected"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"recipients"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"ciphertext"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"iv"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"tag"</span><span class="token operator">:</span> ... 
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+    <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+    <span class="token property">"encryption"</span><span class="token operator">:</span> <span class="token string">"jwe"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  ...
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The message generating party <strong><strong>MUST</strong></strong> construct an encrypted message as follows:</p>
+<ol>
+<li>The <code>encryption</code> property of the <code>descriptor</code> object <strong><strong>MUST</strong></strong> be set to the string value <code>JWE</code>.</li>
+<li>Generate an [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) object for the data that is to be represented in the message.</li>
+<li>Generate a <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> from the JWE of the data produced in Step 1, and set the <code>cid</code> property of the <code>descriptor</code> object as the stringified representation of the CID.</li>
+</ol>
+<h4 id="signed-encrypted-data"><a class="toc-anchor" href="#signed-encrypted-data" >§</a> Signed &amp; Encrypted Data</h4>
+<p>If the object is to be both attributed to a signer and encrypted encrypted, it <strong><strong>MUST</strong></strong> be structured as follows:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span> 
+    <span class="token property">"protected"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"recipients"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"ciphertext"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"iv"</span><span class="token operator">:</span> ...<span class="token punctuation">,</span>
+    <span class="token property">"tag"</span><span class="token operator">:</span> ... 
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+    <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span><span class="token punctuation">,</span>
+    <span class="token property">"encryption"</span><span class="token operator">:</span> <span class="token string">"jwe"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES256K"</span><span class="token punctuation">,</span>
+      <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"did:example:123#key-1"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"payload"</span><span class="token operator">:</span> CID(descriptor)<span class="token punctuation">,</span>
+    <span class="token property">"signature"</span><span class="token operator">:</span> Sign(protected + payload)
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>The message generating party <strong><strong>MUST</strong></strong> construct the signed and encrypted message as follows:</p>
+<ol>
+<li>Follow the instructions described in the <a href="#encrypted-data" >Encrypted Data</a> section to add the required properties to the <code>descriptor</code> and produce a [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) object from the associated data.</li>
+<li>Follow the instructions described in the <a href="#signed-data" >Signed Data</a> section to add an <code>attestation</code> property with a Flattened object representation of a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature as its value.</li>
+</ol>
+<h3 id="response-objects"><a class="toc-anchor" href="#response-objects" >§</a> Response Objects</h3>
+<p>Responses from Interface method invocations are JSON objects that <strong><strong>MUST</strong></strong> be constructed as follows:</p>
+<ol>
+<li>The object <strong><strong>MUST</strong></strong> include an <code>requestId</code> property, and its value <strong><strong>MUST</strong></strong> be the [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string from the <code>requestId</code> property of the <a href="#request-object" ><em>Request Object</em></a> it is in response to.</li>
+<li>The object <strong><strong>MAY</strong></strong> have a <code>status</code> property if an error is produced from a general request-related issue, and if present its value <strong><strong>MUST</strong></strong> be an object composed of the following properties:
+<ul>
+<li>The status object <strong><strong>MUST</strong></strong> have a <code>code</code> property, and its value <strong><strong>MUST</strong></strong> be an integer set to the <a path-0="developer.mozilla.org"path-1="en-US"path-2="docs"path-3="Web"path-4="HTTP"path-5="Status"href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" >HTTP Status Code</a> appropriate for the status of the response.</li>
+<li>The status object <strong><strong>MAY</strong></strong> have a <code>message</code> property, and if present its value <strong><strong>MUST</strong></strong> be a string that describes a terse summary of the status. It is <strong><strong>recommended</strong></strong> that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> have a <code>replies</code> property, and if present its value <strong><strong>MUST</strong></strong> be an array of <em id="message-results-objects">Message Result Objects</em>, which are constructed as follows:
+<ol>
+<li>The object <strong><strong>MUST</strong></strong> have a <code>messageId</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the associated message in the <a href="#request-object" ><em>Request Object</em></a> from which it was received.</li>
+<li>The object <strong><strong>MUST</strong></strong> have a <code>status</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed of the following properties:
+<ul>
+<li>The status object <strong><strong>MUST</strong></strong> have a <code>code</code> property, and its value <strong><strong>MUST</strong></strong> be an integer set to the <a path-0="developer.mozilla.org"path-1="en-US"path-2="docs"path-3="Web"path-4="HTTP"path-5="Status"href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status" >HTTP Status Code</a> appropriate for the status of the response.</li>
+<li>The status object <strong><strong>MAY</strong></strong> have a <code>message</code> property, and if present its value <strong><strong>MUST</strong></strong> be a string that describes a terse summary of the status. It is <strong><strong>recommended</strong></strong> that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> have a <code>entries</code> property if the message request was successful. If present, its value <strong><strong>MUST</strong></strong> be the resulting message entries returned from the invocation of the corresponding message.</li>
+</ol>
+</li>
+</ol>
+<h4 id="request-level-status-coding"><a class="toc-anchor" href="#request-level-status-coding" >§</a> Request-Level Status Coding</h4>
+<p>If any of the scenarios described in this section are encountered during general message processing, the implementation <strong><strong>must</strong></strong> include a request-level <code>status</code> property, and its value must be an object as defined below.</p>
+<p><strong>Target DID not found</strong></p>
+<p>If the DID targeted by a request object is not found within the Hub instance, the implementation <strong><strong>MUST</strong></strong> produce a request-level <code>status</code> with the code <code>404</code>, and <strong><strong>SHOULD</strong></strong> use <code>Target DID not found within the Identity Hub instance</code> as the status <code>text</code>.</p>
+<p><em>Response Example:</em></p>
+<div id="target-did-is-not-found" class="notice example"><a class="notice-link" href="#target-did-is-not-found">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">404</span><span class="token punctuation">,</span>
+    <span class="token property">"text"</span><span class="token operator">:</span> <span class="token string">"Target DID not found within the Identity Hub instance"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p><strong>General request-level processing errors</strong></p>
+<p>If a general request-level error in processing occurs that is not covered by one of the specific status cases above and prevent the implementation from correctly evaluating the request, the implementation <strong><strong>MUST</strong></strong> produce a request-level <code>status</code> with the code <code>500</code>, and <strong><strong>SHOULD</strong></strong> use <code>The request cannot not be processed</code> as the status <code>text</code>.</p>
+<p><em>Response Example:</em></p>
+<div id="general-request-processing-error" class="notice example"><a class="notice-link" href="#general-request-processing-error">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">500</span><span class="token punctuation">,</span>
+    <span class="token property">"text"</span><span class="token operator">:</span> <span class="token string">"The request could not be processed correctly"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<h4 id="message-level-status-coding"><a class="toc-anchor" href="#message-level-status-coding" >§</a> Message-Level Status Coding</h4>
+<p>If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation <strong><strong>must</strong></strong> include a message-level <code>status</code> property, and its value must be an object as defined below.</p>
+<p><strong>Message succeeded for query/read-type interface that expects results</strong></p>
+<p>If a message is processed correctly and a set of result <code>entries</code> is expected, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>200</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message was successfully processed</code> as the status <code>text</code>.</p>
+<div id="note-26" class="notice note"><a class="notice-link" href="#note-26">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
+</div>
+<p><em>Request Example:</em></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
+        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    ...
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>Response Example:</em></p>
+<div id="example-response-object" class="notice example"><a class="notice-link" href="#example-response-object">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"replies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"messageId"</span><span class="token operator">:</span> <span class="token string">"bm4vvfvsdfovsj..."</span><span class="token punctuation">,</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">200</span><span class="token punctuation">,</span> <span class="token property">"text"</span><span class="token operator">:</span> <span class="token string">"OK"</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"entries"</span><span class="token operator">:</span> <span class="token punctuation">[</span>...<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p><strong>Improperly constructed message</strong></p>
+<p>If a message is malformed or constructed with invalid properties/values, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>400</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message was malformed or improperly constructed</code> as the status <code>text</code>.</p>
+<p><em>Request Example:</em></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"descriptorization"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"methodical"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
+        <span class="token property">"schemata"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>Response Example:</em></p>
+<div id="example-response-object-1" class="notice example"><a class="notice-link" href="#example-response-object-1">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"replies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"messageId"</span><span class="token operator">:</span> <span class="token string">"bm4vvfvsdfovsj..."</span><span class="token punctuation">,</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">400</span><span class="token punctuation">,</span> <span class="token property">"text"</span><span class="token operator">:</span> <span class="token string">"The message was malformed or improperly constructed"</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p><strong>Message failed authorization requirements</strong></p>
+<p>If a message fails to meet authorization requirements during processing, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>401</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message failed authorization requirements</code> as the status <code>text</code>.</p>
+<p><em>Request Example:</em></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
+    <span class="token punctuation">{</span> <span class="token comment">// Message</span>
+      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+        <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+        <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
+      <span class="token punctuation">}</span>
+
+      ^  `authorization` PROPERTY MISSING
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>Response Example:</em></p>
+<div id="example-response-object-2" class="notice example"><a class="notice-link" href="#example-response-object-2">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"replies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"messageId"</span><span class="token operator">:</span> <span class="token string">"bm2343w4vw45gh..."</span><span class="token punctuation">,</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">401</span><span class="token punctuation">,</span> <span class="token property">"text"</span><span class="token operator">:</span> <span class="token string">"OK"</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p><strong>Interface is not implemented</strong></p>
+<p>If a message attempts to invoke an interface <code>method</code> that is not the implementation does not support, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>501</code>, and <strong><strong>SHOULD</strong></strong> use <code>The interface method is not implemented</code> as the status <code>text</code>.</p>
+<p><em>Request Example:</em></p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
+  <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
+    <span class="token punctuation">{</span> <span class="token comment">// Message</span>
+      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+        <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsCreate"</span><span class="token punctuation">,</span>
+        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/LikeAction"</span><span class="token punctuation">,</span>
+        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><em>Response Example:</em></p>
+<div id="example-response-object-3" class="notice example"><a class="notice-link" href="#example-response-object-3">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"requestId"</span><span class="token operator">:</span> <span class="token string">"c5784162-84af-4aab-aff5-f1f8438dfc3d"</span><span class="token punctuation">,</span>
+  <span class="token property">"replies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"messageId"</span><span class="token operator">:</span> <span class="token string">"bm2343w4vw45gh..."</span><span class="token punctuation">,</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">501</span><span class="token punctuation">,</span> <span class="token property">"text"</span><span class="token operator">:</span> <span class="token string">"The interface method is not implemented"</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
 <h2 id="access-permissions"><a class="toc-anchor" href="#access-permissions" >§</a> Access &amp; Permissions</h2>
+<div id="todo-50" class="notice todo"><a class="notice-link" href="#todo-50">TODO</a><p>Agree on an access/permission scheme (e.g. Object Capabilities) for Hub interactions that require it.</p>
+</div>
+<h2 id="sync-replication"><a class="toc-anchor" href="#sync-replication" >§</a> Sync &amp; Replication</h2>
+<div id="todo-51" class="notice todo"><a class="notice-link" href="#todo-51">TODO</a><p>IPFS can provide this to some extent, but do we need anything in addition to what native IPFS provides?</p>
+</div>
 <h2 id="interfaces"><a class="toc-anchor" href="#interfaces" >§</a> Interfaces</h2>
 <h3 id="feature-detection"><a class="toc-anchor" href="#feature-detection" >§</a> Feature Detection</h3>
 <p>The Identity Hub specification defines well-recognized Hub configurations to maximize
 interoperability (see Hub Configurations), but implementers may wish to support a custom
 subset of the Interfaces and features. The Feature Detection interface is the means by
 which a Hub expresses support for the Interfaces and features it implements.</p>
-<h4 id="object-definition"><a class="toc-anchor" href="#object-definition" >§</a> Object Definition</h4>
-<p>A compliant Identity Hub Profile interface <strong><strong>MUST</strong></strong> produce a Feature Detection object
+<h4 id="data-model"><a class="toc-anchor" href="#data-model" >§</a> Data Model</h4>
+<p>A compliant Identity Hub <strong><strong>MUST</strong></strong> produce a Feature Detection object
 defined as follows:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetection"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetection"</span><span class="token punctuation">,</span>
   <span class="token property">"interfaces"</span><span class="token operator">:</span> <span class="token punctuation">{</span> ... <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p>All compliant Hubs <strong><strong>MUST</strong></strong> respond with a valid Feature Detection object when receiving
-the following request object:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetectionRead"</span>
 <span class="token punctuation">}</span>
 </code></pre>
 <h5 id="properties-values"><a class="toc-anchor" href="#properties-values" >§</a> Properties &amp; Values</h5>
 <p>The following properties and values are defined for the Feature Detection object:</p>
 <ul>
-<li>The value of the <code>interfaces</code> property <strong><strong>MUST</strong></strong> be an object, composed of the following
-optional properties:
+<li>The object <strong><strong>MUST</strong></strong> include an <code>interfaces</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed as follows:
 <ul>
-<li>The object <strong><strong>MAY</strong></strong> contain a <code>profile</code> property. If the property is not present,
-it indicates the Hub implementation does not support any aspects of the interface. If the
-property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
-following properties, wherein a boolean <code>true</code> value indicates support for the interface
-capability, while a boolean <code>false</code> value or omission of the property indicates the interface
-capability is not supported:
-<ul>
-<li><code>ProfileRead</code></li>
-<li><code>ProfileWrite</code></li>
-<li><code>ProfileDelete</code></li>
-</ul>
-</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>collections</code> property. If the property is not present,
-it indicates the Hub implementation does not support any aspects of the interface. If the
+it indicates the Hub implementation does not support any methods of the interface. If the
 property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
 following properties, wherein a boolean <code>true</code> value indicates support for the interface
-capability, while a boolean <code>false</code> value or omission of the property indicates the interface
-capability is not supported:
+method, while a boolean <code>false</code> value or omission of the property indicates the interface
+method is not supported:
 <ul>
 <li><code>CollectionsQuery</code></li>
 <li><code>CollectionsWrite</code></li>
+<li><code>CollectionsCommit</code></li>
 <li><code>CollectionsDelete</code></li>
 </ul>
 </li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>actions</code> property. If the property is not present,
-it indicates the Hub implementation does not support any aspects of the interface. If the
+it indicates the Hub implementation does not support any methods of the interface. If the
 property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
 following properties, wherein a boolean <code>true</code> value indicates support for the interface
-capability, while a boolean <code>false</code> value or omission of the property indicates the interface
-capability is not supported:
+method, while a boolean <code>false</code> value or omission of the property indicates the interface
+method is not supported:
 <ul>
-<li><code>ActionsQuery</code></li>
-<li><code>ActionsWrite</code></li>
-<li><code>ActionsDelete</code></li>
+<li><code>ThreadsQuery</code></li>
+<li><code>ThreadsCreate</code></li>
+<li><code>ThreadsReply</code></li>
+<li><code>ThreadsClose</code></li>
+<li><code>ThreadsDelete</code></li>
 </ul>
 </li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>permissions</code> property. If the property is not present,
-it indicates the Hub implementation does not support any aspects of the interface. If the
+it indicates the Hub implementation does not support any methods of the interface. If the
 property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
 following properties, wherein a boolean <code>true</code> value indicates support for the interface
-capability, while a boolean <code>false</code> value or omission of the property indicates the interface
-capability is not supported:
+method, while a boolean <code>false</code> value or omission of the property indicates the interface
+method is not supported:
 <ul>
 <li><code>PermissionsRequest</code></li>
-<li><code>PermissionsQuery</code></li>
-<li><code>PermissionsWrite</code></li>
-<li><code>PermissionsDelete</code></li>
+<li><code>PermissionsGrant</code></li>
+<li><code>PermissionsRevoke</code></li>
 </ul>
 </li>
 </ul>
 </li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>messaging</code> property, and its value <strong><strong>MAY</strong></strong> be an object composed of the following:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>batching</code> property, and if present its value <strong><strong>MUST</strong></strong> be a boolean indicating whether the Hub Instance handles multiple messages in a single request. The absence of this property <strong><strong>shall</strong></strong> indicate that the Hub Instance <strong><strong>does</strong></strong> support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they <strong><strong>MUST</strong></strong> include this property and explicitly set its value to <code>false</code>.</li>
 </ul>
-<h3 id="profile"><a class="toc-anchor" href="#profile" >§</a> Profile</h3>
-<p>The Profile interface provides a simple mechanism for setting and retrieving a JSON object
-with basic profile information that describes the target DID entity.</p>
-<h4 id="object-format"><a class="toc-anchor" href="#object-format" >§</a> Object Format</h4>
-<p>A compliant Identity Hub Profile interface <strong><strong>MUST</strong></strong> produce an object of the following
-structure, if a Profile has been established by the controller of a DID:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"Profile"</span><span class="token punctuation">,</span>
-  <span class="token property">"descriptors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"http://schema.org"</span><span class="token punctuation">,</span>
-      <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"Person"</span><span class="token punctuation">,</span>
-      <span class="token property">"name"</span><span class="token operator">:</span> <span class="token string">"Jeffrey Lebowski"</span><span class="token punctuation">,</span>
-      <span class="token property">"givenName"</span><span class="token operator">:</span> <span class="token string">"Jeffery"</span><span class="token punctuation">,</span>
-      <span class="token property">"middleName"</span><span class="token operator">:</span> <span class="token string">"The Big"</span><span class="token punctuation">,</span>
-      <span class="token property">"familyName"</span><span class="token operator">:</span> <span class="token string">"Lebowski"</span><span class="token punctuation">,</span>
-      <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"That's just, like, your opinion, man."</span><span class="token punctuation">,</span>
-      <span class="token property">"website"</span><span class="token operator">:</span> <span class="token string">"https://ilovebowling.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"email"</span><span class="token operator">:</span> <span class="token string">"jeff@ilovebowling.com"</span><span class="token punctuation">,</span>
-      <span class="token property">"image"</span><span class="token operator">:</span> IMG_URL<span class="token punctuation">,</span>
-      <span class="token property">"address"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"PostalAddress"</span><span class="token punctuation">,</span>
-        <span class="token property">"streetAddress"</span><span class="token operator">:</span> <span class="token string">"5227 Santa Monica Boulevard"</span><span class="token punctuation">,</span>
-        <span class="token property">"addressLocality"</span><span class="token operator">:</span> <span class="token string">"Los Angeles"</span><span class="token punctuation">,</span>
-        <span class="token property">"addressRegion"</span><span class="token operator">:</span> <span class="token string">"CA"</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>...<span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p>An object <strong><strong>MUST</strong></strong> have one or more descriptors. The first element of the descriptors array is primary, and <strong><strong>SHOULD</strong></strong> be used unless another schema in the array is explicitly required.</p>
-<h4 id="write"><a class="toc-anchor" href="#write" >§</a> Write</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"ProfileWrite"</span><span class="token punctuation">,</span>
-  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-    <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"Profile"</span><span class="token punctuation">,</span>
-    <span class="token property">"descriptors"</span><span class="token operator">:</span> <span class="token punctuation">[</span>...<span class="token punctuation">]</span>
+</li>
+</ul>
+<h4 id="read"><a class="toc-anchor" href="#read" >§</a> Read</h4>
+<p>All compliant Hubs <strong><strong>MUST</strong></strong> respond with a valid Feature Detection object when receiving
+the following request object:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"FeatureDetectionRead"</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -342,149 +751,486 @@ given schema, which may be well-known in a given vertical or industry, apps and 
 the same datasets across one another, enabling a cohesive, cross-platform, cross-device, cross-app
 experience for users.</p>
 <h4 id="query"><a class="toc-anchor" href="#query" >§</a> Query</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
-  <span class="token property">"statements"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"uri"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
+<p><code>CollectionsQuery</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsQuery</code>.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>objectId</code> property, and if present its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string intended to identify a logical object the <a class="term-reference" href="#term:hub-instance">Hub Instance</a> contains.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>dataFormat</code> property, and its value <strong><strong>MUST</strong></strong> be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the <code>dataFormat</code> property to <code>application/json</code>.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>dateSort</code> field, and if present its value <strong><strong>MUST</strong></strong> be one of the following strings:
+<ul>
+<li><code>createdAscending</code>: return results in order from the earliest <code>dateCreated</code> value to the latest.</li>
+<li><code>createdDescending</code>: return results in order from the latest <code>dateCreated</code> value to the earliest.</li>
+<li><code>publishedAscending</code>: return results in order from the earliest <code>datePublished</code> value to the latest.</li>
+<li><code>publishedDescending</code>: return results in order from the latest <code>datePublished</code> value to the earliest.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>Get a single object by its ID reference:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h4 id="write-2"><a class="toc-anchor" href="#write-2" >§</a> Write</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
-  <span class="token property">"entries"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"create"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// A new entry of the https://schema.org/MusicPlaylist schema</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"modify"</span><span class="token operator">:</span> <span class="token string">"Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// A delta-based modification targeting an existing object's top-level ID</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"create"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/Event"</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// A new entry of the https://schema.org/Event schema</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"replace"</span><span class="token operator">:</span> <span class="token string">"Qm65765jrn7be64v5q35v6we675br68jr"</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// An entire replacement targeting an existing object's top-level ID</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
+<p>Get a objects of a given schema type:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<p>Get all objects of a given schema type:</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"image/gif"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="write"><a class="toc-anchor" href="#write" >§</a> Write</h4>
+<p><code>CollectionsWrite</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsWrite</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>objectId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>dateCreated</code> property, and its value <strong><strong>MUST</strong></strong> be an <a path-0="pubs.opengroup.org"path-1="onlinepubs"path-2="9699919799"path-3="basedefs"path-4="V1_chap04.html#tag_04_16"href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16" >Unix epoch timestamp</a> that <strong><strong>MUST</strong></strong> be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>datePublished</code> property, and its value <strong><strong>MUST</strong></strong> be an <a path-0="pubs.opengroup.org"path-1="onlinepubs"path-2="9699919799"path-3="basedefs"path-4="V1_chap04.html#tag_04_16"href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16" >Unix epoch timestamp</a> that <strong><strong>MUST</strong></strong> be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.</li>
+</ul>
+</li>
+</ul>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+    <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> DATA_FORMAT
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h5 id="processing-instructions"><a class="toc-anchor" href="#processing-instructions" >§</a> Processing Instructions</h5>
+<p>When processing a <code>CollectionsWrite</code> message, Hub instances <strong><strong>MUST</strong></strong> perform the following additional steps:</p>
+<ol>
+<li>If the incoming message has a higher <code>dateCreated</code> value than all of the other messages for the logical entry known to the Hub Instance, the message <strong><strong>MUST</strong></strong> be designated as the latest state of the logical entry and fully replace all previous messages for the entry.</li>
+<li>If the incoming message has a lower <code>dateCreated</code> value than the message that represents the current state of the logical entry, the message <strong><strong>MUST NOT</strong></strong> be applied to the logical entry and its data <strong><strong>MAY</strong></strong> be discarded.</li>
+<li>If the incoming message has a <code>dateCreated</code> value equal to the message that represents the current state of the logical entry, the incoming message’s IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
+<ul>
+<li>If the incoming message has a higher lexicographic value than the message that represents the current state, perform the actions described in Step 1 of this instruction set.</li>
+<li>If the incoming message has a lower lexicographic value than the message that represents the current state, perform the actions described in Step 2 of this instruction set.</li>
+</ul>
+</li>
+</ol>
+<h4 id="commit"><a class="toc-anchor" href="#commit" >§</a> Commit</h4>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"cid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
+    <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsCommit"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+    <span class="token property">"strategy"</span><span class="token operator">:</span> <span class="token string">"merge-patch"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> DATA_FORMAT
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>CollectionsCommit</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsCommit</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>objectId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>dateCreated</code> property, and its value <strong><strong>MUST</strong></strong> be an <a path-0="pubs.opengroup.org"path-1="onlinepubs"path-2="9699919799"path-3="basedefs"path-4="V1_chap04.html#tag_04_16"href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16" >Unix epoch timestamp</a> that <strong><strong>MUST</strong></strong> be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>datePublished</code> property, and its value <strong><strong>MUST</strong></strong> be an <a path-0="pubs.opengroup.org"path-1="onlinepubs"path-2="9699919799"path-3="basedefs"path-4="V1_chap04.html#tag_04_16"href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16" >Unix epoch timestamp</a> that <strong><strong>MUST</strong></strong> be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.</li>
+</ul>
+</li>
+</ul>
 <h4 id="delete"><a class="toc-anchor" href="#delete" >§</a> Delete</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"CollectionsDelete"</span><span class="token punctuation">,</span>
-  <span class="token property">"targets"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
-    <span class="token string">"Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"</span><span class="token punctuation">,</span>
-    <span class="token string">"https://schema.org/Event"</span><span class="token punctuation">,</span>
-    <span class="token string">"Qm65765jrn7be64v5q35v6we675br68jr"</span>
-  <span class="token punctuation">]</span>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsDelete"</span><span class="token punctuation">,</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"Qm65765jrn7be64v5q35v6we675br68jr"</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h3 id="actions"><a class="toc-anchor" href="#actions" >§</a> Actions</h3>
-<p>Actions are notifications that are based on some form of directed action the Sender
-wants to convey to the <a class="term-reference" href="#term:hub-user">Hub User</a>. All Actions <strong><strong>MUST</strong></strong> be of a type defined
-under the <code>schema.org/Action</code> family of objects.</p>
+<p><code>CollectionsDelete</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsDelete</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>objectId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the object to be deleted.</li>
+</ul>
+</li>
+</ul>
+<h3 id="threads"><a class="toc-anchor" href="#threads" >§</a> Threads</h3>
+<p>Threads are a linked series of topically associated messages that are intended to result
+in activities performed by entities participating in the message thread.</p>
 <h4 id="query-2"><a class="toc-anchor" href="#query-2" >§</a> Query</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"ActionsQuery"</span><span class="token punctuation">,</span>
-  <span class="token property">"statements"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/LikeAction"</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsQuery"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/LikeAction"</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h4 id="write-3"><a class="toc-anchor" href="#write-3" >§</a> Write</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"ActionsSend"</span><span class="token punctuation">,</span>
-  <span class="token property">"entries"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/LikeAction"</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// A new entry of the https://schema.org/LikeAction schema</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/FollowAction"</span><span class="token punctuation">,</span>
-      <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token comment">// A new entry of the https://schema.org/FollowAction schema</span>
-      <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
+<h4 id="create"><a class="toc-anchor" href="#create" >§</a> Create</h4>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsCreate"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/LikeAction"</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<p><code>ThreadsCreate</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsCreate</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>objectId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string for the Thread being created.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>schema</code> property, and its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
+</ul>
+</li>
+</ul>
+<h4 id="reply"><a class="toc-anchor" href="#reply" >§</a> Reply</h4>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"65efm7eg-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsReply"</span><span class="token punctuation">,</span>
+    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://fintech.org/BidAcceptance"</span><span class="token punctuation">,</span>
+    <span class="token property">"root"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-7gab-aff5-j8f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"parent"</span><span class="token operator">:</span> <span class="token string">"r7874162-84af-4aab-aff5-f1f8438dfc1e"</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>ThreadsReply</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsReply</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>objectId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string representing the reply object.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>schema</code> property, and its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>root</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the initiating Thread message.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>parent</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the message in the Thread being replied to.</li>
+</ul>
+</li>
+</ul>
+<h4 id="close"><a class="toc-anchor" href="#close" >§</a> Close</h4>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsClose"</span><span class="token punctuation">,</span>
+    <span class="token property">"root"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><code>ThreadsClose</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsClose</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>root</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the initiating Thread message.</li>
+</ul>
+</li>
+</ul>
 <h4 id="delete-2"><a class="toc-anchor" href="#delete-2" >§</a> Delete</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"ActionsDelete"</span><span class="token punctuation">,</span>
-  <span class="token property">"targets"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token string">"https://schema.org/ReadAction"</span><span class="token punctuation">,</span>
-    <span class="token string">"https://schema.org/BefriendAction"</span><span class="token punctuation">,</span>
-    <span class="token string">"Qmf9w548h8sc54p3584h6ow45aa56fvs5"</span><span class="token punctuation">,</span>
-    <span class="token string">"Qm65765jrn7be64v5q35v6we675br68jr"</span>
-  <span class="token punctuation">]</span>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsDelete"</span><span class="token punctuation">,</span>
+    <span class="token property">"root"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<p><code>ThreadsDelete</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsDelete</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>root</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the initiating Thread message.</li>
+</ul>
+</li>
+</ul>
 <h3 id="permissions"><a class="toc-anchor" href="#permissions" >§</a> Permissions</h3>
 <p>The Permissions interface provides a mechanism for external entities to request access
-to a Hub User’s non-public data.</p>
+to various data and functionality provided by an Identity Hub. Permissions employ a
+capabilities-based architecture that allows for DID-based authorization and delegation
+of authorized capabilities to others, if allowed by the Identity Hub owner.</p>
 <h4 id="request"><a class="toc-anchor" href="#request" >§</a> Request</h4>
+<p><code>PermissionsRequest</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>PermissionsRequest</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>objectId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string representing the reply object.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>requester</code> property, and its value <strong><strong>MUST</strong></strong> be the DID URI of the party requesting the permission.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>description</code> property, and its value <strong><strong>MUST</strong></strong> be a string that the requesting party uses to communicate what the permission is being used for.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>ability</code> property, and its value <strong><strong>Must</strong></strong> be an object of the following properties:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>can</code> property, and its value <strong><strong>Must</strong></strong> be an object of the following properties:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the interface method the requesting party wants to invoke.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>conditions</code> property, and its value <strong><strong>Must</strong></strong> be an object of the following properties:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>attestation</code> property, and if present its value <strong><strong>Must</strong></strong> be an integer representing the signing conditions detailed below. If the property is not present it <strong><strong>MUST</strong></strong> be evaluated as if it were set to a value of <code>1</code>.
+<ul>
+<li><code>0</code> - the object <strong><strong>WILL NOT</strong></strong> be signed.</li>
+<li><code>1</code> - the object <strong><strong>MAY</strong></strong> be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature <strong><strong>MUST</strong></strong> be in the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature (JWS) format.</li>
+<li><code>2</code> - the object <strong><strong>MUST</strong></strong> be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature <strong><strong>MUST</strong></strong> be in the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature (JWS) format.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>encryption</code> property, and if present its value <strong><strong>Must</strong></strong> be an integer representing the encryption conditions detailed below. If the property is not present it <strong><strong>MUST</strong></strong> be evaluated as if it were set to a value of <code>1</code>.
+<ul>
+<li><code>0</code> - the object <strong><strong>MUST NOT</strong></strong> be encrypted.</li>
+<li><code>1</code> - the object <strong><strong>MAY</strong></strong> be encrypted using the key provided by the owner of the Hub in the [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) format.</li>
+<li><code>2</code> - the object <strong><strong>MUST</strong></strong> be encrypted using the key provided by the owner of the Hub in the [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) format.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>delegation</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the requesting
+party wants the ability to delegate the capability to other entities, and <code>false</code> or the omission of the property indicates no request is being made for delegation ability.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>sharedAccess</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the requesting
+party wants the ability to use the permission against any object or data that aligns with the capability’s definition, regardless of which
+entity created the object or data. A value of <code>false</code> or omission of the property <strong><strong>MUST</strong></strong> be evaluated as false, and indicates the
+requesting party only needs the ability to invoke the permission against objects or data it creates.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The message object <strong><strong>MUST</strong></strong> contain an <code>attestation</code> property, which <strong><strong>MUST</strong></strong> be a JSON object as defined by the <a href="#signed-data" >Signed Data</a>
+section of this specification, with the requirement that the <code>kid</code> and <code>signature</code> <strong><strong>MUST</strong></strong> match the DID of the requesting party.</li>
+</ul>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"PermissionRequest"</span><span class="token punctuation">,</span>
-  <span class="token property">"entries"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
-      <span class="token property">"tags"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"classic rock"</span><span class="token punctuation">,</span> <span class="token string">"rock"</span><span class="token punctuation">,</span> <span class="token string">"rock and roll"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"Qm09myn76rvs5e4ce4eb57h5bd6sv55v6e"</span><span class="token punctuation">,</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/Event"</span><span class="token punctuation">,</span>
-      <span class="token property">"tags"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"concerts"</span><span class="token punctuation">]</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span>
-      <span class="token property">"id"</span><span class="token operator">:</span> <span class="token string">"Qm65765jrn7be64v5q35v6we675br68jr"</span><span class="token punctuation">,</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"PermissionsRequest"</span><span class="token punctuation">,</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"requester"</span><span class="token operator">:</span> <span class="token string">"did:example:bob"</span><span class="token punctuation">,</span>
+    <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"Help you create and edit your music playlists"</span><span class="token punctuation">,</span>
+    <span class="token property">"ability"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"can"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"conditions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"encryption"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token property">"delegation"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token property">"sharedAccess"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+      <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
-  <span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"protected"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"alg"</span><span class="token operator">:</span> <span class="token string">"ES256K"</span><span class="token punctuation">,</span>
+      <span class="token property">"kid"</span><span class="token operator">:</span> <span class="token string">"did:example:bob#key-1"</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"payload"</span><span class="token operator">:</span> CID(descriptor)<span class="token punctuation">,</span>
+    <span class="token property">"signature"</span><span class="token operator">:</span> Sign(protected + payload)
+  <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h4 id="grant"><a class="toc-anchor" href="#grant" >§</a> Grant</h4>
+<p><code>PermissionsGrant</code> messages are JSON objects that are generated either in response to evaluation of a <code>PermissionsRequest</code> message or optimistically by a user agent. <code>PermissionsGrant</code> messages include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>PermissionsGrant</code>.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>objectId</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string representing the reply object.</li>
+<li>If the granted permission is in response to a <code>PermissionRequest</code>, the object <strong><strong>MUST</strong></strong> contain a <code>grantedFor</code> property, and its value <strong><strong>MUST</strong></strong> be the [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the <code>PermissionRequest</code> object the permission is being granted in relation to.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>cid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-pb.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md" >DAG PB</a> encoded JSON Web Token for the granted permission, as defined in the <a href="#capability-objects" >Capability Objects</a> section below.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>dataFormat</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>application/json</code>, as all granted permissions are represented as JSON Web Tokens generally adherent to the <a path-0="github.com"path-1="ucan-wg"path-2="spec#325-attenuations"href="https://github.com/ucan-wg/spec#325-attenuations" >UCAN</a> capabilities construction.</li>
+</ul>
+</li>
+<li>The message object <strong><strong>MUST</strong></strong> contain an <code>attestation</code> property, which <strong><strong>MUST</strong></strong> be a JSON object as defined by the <a href="#signed-data" >Signed Data</a>
+section of this specification, with the requirement that the <code>kid</code> and <code>signature</code> <strong><strong>MUST</strong></strong> match the DID of the requesting party.</li>
+<li>The message will contain a <code>data</code> payload, which is a JSON Web Token representation of the granted permission as defined in the <a href="#capability-objects" >Capability Objects</a> section below.</li>
+</ul>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"PermissionsGrant"</span><span class="token punctuation">,</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"f45wve-5b56v5w-5657b4e-56gqf35v"</span><span class="token punctuation">,</span>
+    <span class="token property">"grantedFor"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"cid"</span><span class="token operator">:</span> <span class="token string">"bf34455ev6v365eb7r8n9mnbesv5e6be7rn879m"</span><span class="token punctuation">,</span>
+    <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"iss"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
+      <span class="token property">"aud"</span><span class="token operator">:</span> <span class="token string">"did:example:bob"</span><span class="token punctuation">,</span>
+      <span class="token property">"exp"</span><span class="token operator">:</span> <span class="token number">1575606941</span><span class="token punctuation">,</span>
+      <span class="token property">"att"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+        <span class="token property">"can"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+          <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token property">"conditions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+          <span class="token property">"encryption"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+          <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+          <span class="token property">"sharedAccess"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">]</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">"signature"</span><span class="token operator">:</span> <span class="token string">"fw547v63bo5687wvwbcqp349vwo876uc3q..."</span>
+  <span class="token punctuation">}</span> 
+<span class="token punctuation">}</span>
+</code></pre>
+<h5 id="grantor-permissionsgrant-storage"><a class="toc-anchor" href="#grantor-permissionsgrant-storage" >§</a> Grantor <code>PermissionsGrant</code> Storage</h5>
+<p>After generating a <code>PermissionsGrant</code> the user agent (e.g. wallet app with access to authoritative keys for a given DID) <strong><strong>MUST</strong></strong> commit the granted permission object to the Hub of the DID the grant was issued from. This will ensure that the permission is present when addressed in subsequent interface method invocations.</p>
+<h5 id="grantee-permissionsgrant-delivery"><a class="toc-anchor" href="#grantee-permissionsgrant-delivery" >§</a> Grantee <code>PermissionsGrant</code> Delivery</h5>
+<p>Once a user agent (e.g. wallet app with access to authoritative keys for a given DID) generates a <code>PermissionsGrant</code> for an entity to permit access to data and Hub functionality, it is the responsibility of the user agent that generated the <code>PermissionsGrant</code> to deliver it to the entity that is the subject. To do this, the user agent <strong><strong>MUST</strong></strong> generate a Request that includes the <code>PermissionsGrant</code> and send it to the Hub of the subject it has been granted to, in accordance with the <a href="#resolution" >Resolution</a> and <a href="#request-construction" >Request Construction</a> sections of this specification.</p>
+<h4 id="revoke"><a class="toc-anchor" href="#revoke" >§</a> Revoke</h4>
+<p>Revocation of a permission is the act of closing off any additional or invalid invocations of that permission. The Revoke interface method enables revocation of a permission via direct reference to the permission’s <code>objectId</code>. When executing a valid <code>PermissionsRevoke</code> invocation an implementation <strong><strong>MUST</strong></strong> use the <code>inclusionProof</code> value to ensure that only the entries in the Hub indicated by the proof are allowed to be retained in relation to the permission. The process of permission revocation effectively encapsulates all valid invocations of the permission and provides a deterministic means for ensuring no invalid invocations are allowed or persisted across any Hub instance.</p>
+<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
+  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
+    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"PermissionsRevoke"</span><span class="token punctuation">,</span>
+    <span class="token property">"objectId"</span><span class="token operator">:</span> <span class="token string">"Qm65765jrn7be64v5q35v6we675br68jr"</span><span class="token punctuation">,</span>
+    <span class="token property">"inclusionProof"</span><span class="token operator">:</span> <span class="token string">"..."</span> 
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="capability-objects"><a class="toc-anchor" href="#capability-objects" >§</a> Capability Objects</h4>
+<p>Capabilities granted via the Permissions interface are [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Token (JWT) used to secure and attenuate the scope permitted activities.
+The JWTs used in this specification to represent capabilities generally adhere to the JWT variant defined in the
+<a path-0="github.com"path-1="ucan-wg"path-2="spec#325-attenuations"href="https://github.com/ucan-wg/spec#325-attenuations" >UCAN</a> capability-based authorization construction.</p>
+<p>Capability objects are JSON Web Tokens that <strong><strong>must</strong></strong> be composed as follows:</p>
+<ul>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>header</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>alg</code> property, and its value <strong><strong>MUST</strong></strong> be a string that notes the algorithm used in signing the JWT.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>typ</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>JWT</code>, indicating the object is a [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Token.</li>
+</ul>
+</li>
+<li>The message object <strong><strong>MUST</strong></strong> contain a <code>payload</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed as follows:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>iss</code> property, and its value <strong><strong>MUST</strong></strong> be the DID URI string of the party issuing the capability.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>aud</code> property, and its value <strong><strong>MUST</strong></strong> be the DID URI string of requesting party.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>nbf</code> property, and its value <strong><strong>MUST</strong></strong> be a number representing the UTC Unix Timestamp of when the capability is first active.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>exp</code> property, and its value <strong><strong>MUST</strong></strong> be a number representing the UTC Unix Timestamp of when the capability expires.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>nnc</code> property, and its value <strong><strong>MUST</strong></strong> be a unique string that <strong><strong>SHOULD</strong></strong> be cryptographically random.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain an <code>att</code> property, and its value <strong><strong>MUST</strong></strong> be an array with exactly one entry that is a JSON object composed as follows, with values selected at the discretion of the granting Hub owner:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>can</code> property, and its value <strong><strong>Must</strong></strong> be an object of the following properties:
+<ul>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the interface method the granting Hub owner will allow the requesting party wants to invoke.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data the Hub owner is allowing the grantee to access.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>conditions</code> property, and its value <strong><strong>Must</strong></strong> be an object of the following properties:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>attestation</code> property, and if present its value <strong><strong>Must</strong></strong> be an integer representing the signing conditions detailed below. If the property is not present it <strong><strong>MUST</strong></strong> be evaluated as if it were set to a value of <code>1</code>.
+<ul>
+<li><code>0</code> - the object <strong><strong>MUST NOT</strong></strong> be signed.</li>
+<li><code>1</code> - the object <strong><strong>MAY</strong></strong> be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature <strong><strong>MUST</strong></strong> be in the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature (JWS) format.</li>
+<li><code>2</code> - the object <strong><strong>MUST</strong></strong> be signed using a key linked to the DID of the Hub owner or authoring party (whichever is relevant to the application-level use case), and the signature <strong><strong>MUST</strong></strong> be in the [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] JSON Web Signature (JWS) format.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>encryption</code> property, and if present its value <strong><strong>Must</strong></strong> be an integer representing the encryption conditions detailed below. If the property is not present it <strong><strong>MUST</strong></strong> be evaluated as if it were set to a value of <code>1</code>.
+<ul>
+<li><code>0</code> - the object <strong><strong>MUST NOT</strong></strong> be encrypted.</li>
+<li><code>1</code> - the object <strong><strong>MAY</strong></strong> be encrypted using the key provided by the owner of the Hub in the [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) format.</li>
+<li><code>2</code> - the object <strong><strong>MUST</strong></strong> be encrypted using the key provided by the owner of the Hub in the [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) format.</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>delegation</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the ability to delegate the capability to other entities has been granted, and <code>false</code> or the omission of the property indicates the ability to delegate has not been granted.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>sharedAccess</code> property, and its value <strong><strong>Must</strong></strong> be a boolean, wherein <code>true</code> indicates the issuing party is allowing the grantee the ability to access any object or data that aligns with the capability’s definition, regardless of which entity created the object or data. A value of <code>false</code> or omission of the property <strong><strong>MUST</strong></strong> be evaluated as false, and indicates the grantee <strong><strong>MUST NOT</strong></strong> be allowed to invoke the capability against any object or data they are not the author of.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>prf</code> property, and its value <strong><strong>MUST</strong></strong> be an array of <a href="#capability-objects" >Capability Objects</a> in stringified form that provide proof of delegation for the capability being invoked.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>fct</code> property, and if present its value <strong><strong>MUST</strong></strong> be an array of facts or assertions required for processing the capability that can be verified by the Hub evaluating invocation of the capability.</li>
+</ul>
+</li>
+</ul>
+<div id="example-13" class="notice example"><a class="notice-link" href="#example-13">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"payload"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+    <span class="token property">"iss"</span><span class="token operator">:</span> <span class="token string">"did:example:alice"</span><span class="token punctuation">,</span>
+    <span class="token property">"aud"</span><span class="token operator">:</span> <span class="token string">"did:example:bob"</span><span class="token punctuation">,</span>
+    <span class="token property">"nbf"</span><span class="token operator">:</span> <span class="token number">1529496683</span><span class="token punctuation">,</span>
+    <span class="token property">"exp"</span><span class="token operator">:</span> <span class="token number">1575606941</span><span class="token punctuation">,</span>
+    <span class="token property">"nnc"</span><span class="token operator">:</span> <span class="token string">"f5we67hrn8676bwv5cq24WF5WVE6B76F"</span><span class="token punctuation">,</span>
+    <span class="token property">"att"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span>
+      <span class="token property">"can"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
+        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span><span class="token punctuation">,</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      <span class="token property">"conditions"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"encryption"</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token property">"attestation"</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token property">"sharedAccess"</span><span class="token operator">:</span> <span class="token boolean">true</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token property">"prf"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsInVhdiI6IjAuMS4wIn0.eyJhdWQiOiJkaWQ6a2V5OnpTdEVacHpTTXRUdDlrMnZzemd2Q3dGNGZMU..."</span><span class="token punctuation">]</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token property">"signature"</span><span class="token operator">:</span> <span class="token string">"fw547v63bo5687wvwbcqp349vwo876uc3q..."</span>
+<span class="token punctuation">}</span> 
+</code></pre>
+</div>
+<h2 id="commit-strategies"><a class="toc-anchor" href="#commit-strategies" >§</a> Commit Strategies</h2>
+<p>Some interface methods may be bound to, or allow for choice between, the data modification algorithms detailed below. Interfaces methods that are bound to one or more of these strategies will indicate it within their interface definitions under the <a href="#interfaces" >Interfaces</a> section.</p>
+<h3 id="last-write-wins"><a class="toc-anchor" href="#last-write-wins" >§</a> Last-Write Wins</h3>
+<p>Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.</p>
+<h3 id="json-merge-patch"><a class="toc-anchor" href="#json-merge-patch" >§</a> JSON Merge Patch</h3>
+<div id="todo-52" class="notice todo"><a class="notice-link" href="#todo-52">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
+</div>
 <h2 id="hub-configurations"><a class="toc-anchor" href="#hub-configurations" >§</a> Hub Configurations</h2>
 <p>While it is strongly encouraged to implement the full set of Identity Hub features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Identity Hub feature sets that tend to serve different purposes.</p>
 <h3 id="open-data-publication"><a class="toc-anchor" href="#open-data-publication" >§</a> Open Data Publication</h3>
 <p>This Hub configuration is ideal for implementers who seek to expose intentionally public data via the Identity Hub semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"@context"</span><span class="token operator">:</span> <span class="token string">"https://identity.foundation/schemas/hub"</span><span class="token punctuation">,</span>
-  <span class="token property">"@type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetection"</span><span class="token punctuation">,</span>
+  <span class="token property">"type"</span><span class="token operator">:</span> <span class="token string">"FeatureDetection"</span><span class="token punctuation">,</span>
   <span class="token property">"interfaces"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-    <span class="token property">"profile"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-      <span class="token property">"ProfileRead"</span><span class="token operator">:</span> <span class="token boolean">true</span>
-    <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token property">"collections"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
       <span class="token property">"CollectionsQuery"</span><span class="token operator">:</span> <span class="token boolean">true</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h2 id="normative-references"><a class="toc-anchor" href="#normative-references" >§</a> Normative References</h2>
+<p>
+<dl class="reference-list">
+        <dt id="ref:RFC4122">RFC4122</dt>
+        <dd>
+          <cite><a href="https://tools.ietf.org/html/rfc4122">A Universally Unique IDentifier (UUID) URN Namespace</a></cite>. 
+          P. Leach; M. Mealling; R. Salz; 2005-07. <span class="reference-status">Status: Proposed Standard</span>.
+        </dd>
+      
+        <dt id="ref:RFC7515">RFC7515</dt>
+        <dd>
+          <cite><a href="https://tools.ietf.org/html/rfc7515">JSON Web Signature (JWS)</a></cite>. 
+          M. Jones; J. Bradley; N. Sakimura; 2015-05. <span class="reference-status">Status: Proposed Standard</span>.
+        </dd>
+      
+        <dt id="ref:RFC7516">RFC7516</dt>
+        <dd>
+          <cite><a href="https://tools.ietf.org/html/rfc7516">JSON Web Encryption (JWE)</a></cite>. 
+          M. Jones; J. Hildebrand; 2015-05. <span class="reference-status">Status: Proposed Standard</span>.
+        </dd>
+      
+        <dt id="ref:RFC7519">RFC7519</dt>
+        <dd>
+          <cite><a href="https://tools.ietf.org/html/rfc7519">JSON Web Token (JWT)</a></cite>. 
+          M. Jones; J. Bradley; N. Sakimura; 2015-05. <span class="reference-status">Status: Proposed Standard</span>.
+        </dd>
+      
+</dl>
+</p>
 
                     </article>    
       
@@ -514,53 +1260,78 @@ to a Hub User’s non-public data.</p>
 <li><a href="#terminology" >Terminology</a></li>
 <li><a href="#topology" >Topology</a></li>
 <li><a href="#protocol-stack" >Protocol Stack</a></li>
-<li><a href="#file-structures" >File Structures</a></li>
-<li><a href="#sync-replication" >Sync &amp; Replication</a></li>
-<li><a href="#commit-strategies" >Commit Strategies</a>
+<li><a href="#service-endpoints" >Service Endpoints</a></li>
+<li><a href="#addressing" >Addressing</a>
 <ul>
-<li><a href="#full-replace" >Full Replace</a></li>
-<li><a href="#delta-based-merge" >Delta-based Merge</a></li>
+<li><a href="#did-relative-urls" >DID-Relative URLs</a>
+<ul>
+<li><a href="#composition" >Composition</a></li>
+<li><a href="#resolution" >Resolution</a></li>
+<li><a href="#request-construction" >Request Construction</a></li>
 </ul>
 </li>
-<li><a href="#general-object-format" >General Object Format</a>
+</ul>
+</li>
+<li><a href="#request-objects" >Request Objects</a></li>
+<li><a href="#messages" >Messages</a>
 <ul>
-<li><a href="#secure-wrapper" >Secure Wrapper</a></li>
-<li><a href="#payload" >Payload</a></li>
+<li><a href="#message-descriptors" >Message Descriptors</a>
+<ul>
+<li><a href="#raw-data" >Raw Data</a></li>
+<li><a href="#signed-data" >Signed Data</a></li>
+<li><a href="#encrypted-data" >Encrypted Data</a></li>
+<li><a href="#signed-encrypted-data" >Signed &amp; Encrypted Data</a></li>
+</ul>
+</li>
+<li><a href="#response-objects" >Response Objects</a>
+<ul>
+<li><a href="#request-level-status-coding" >Request-Level Status Coding</a></li>
+<li><a href="#message-level-status-coding" >Message-Level Status Coding</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#access-permissions" >Access &amp; Permissions</a></li>
+<li><a href="#sync-replication" >Sync &amp; Replication</a></li>
 <li><a href="#interfaces" >Interfaces</a>
 <ul>
 <li><a href="#feature-detection" >Feature Detection</a>
 <ul>
-<li><a href="#object-definition" >Object Definition</a></li>
-</ul>
-</li>
-<li><a href="#profile" >Profile</a>
-<ul>
-<li><a href="#object-format" >Object Format</a></li>
-<li><a href="#write" >Write</a></li>
+<li><a href="#data-model" >Data Model</a></li>
+<li><a href="#read" >Read</a></li>
 </ul>
 </li>
 <li><a href="#collections" >Collections</a>
 <ul>
 <li><a href="#query" >Query</a></li>
-<li><a href="#write-2" >Write</a></li>
+<li><a href="#write" >Write</a></li>
+<li><a href="#commit" >Commit</a></li>
 <li><a href="#delete" >Delete</a></li>
 </ul>
 </li>
-<li><a href="#actions" >Actions</a>
+<li><a href="#threads" >Threads</a>
 <ul>
 <li><a href="#query-2" >Query</a></li>
-<li><a href="#write-3" >Write</a></li>
+<li><a href="#create" >Create</a></li>
+<li><a href="#reply" >Reply</a></li>
+<li><a href="#close" >Close</a></li>
 <li><a href="#delete-2" >Delete</a></li>
 </ul>
 </li>
 <li><a href="#permissions" >Permissions</a>
 <ul>
 <li><a href="#request" >Request</a></li>
+<li><a href="#grant" >Grant</a></li>
+<li><a href="#revoke" >Revoke</a></li>
+<li><a href="#capability-objects" >Capability Objects</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li><a href="#commit-strategies" >Commit Strategies</a>
+<ul>
+<li><a href="#last-write-wins" >Last-Write Wins</a></li>
+<li><a href="#json-merge-patch" >JSON Merge Patch</a></li>
 </ul>
 </li>
 <li><a href="#hub-configurations" >Hub Configurations</a>
@@ -568,6 +1339,7 @@ to a Hub User’s non-public data.</p>
 <li><a href="#open-data-publication" >Open Data Publication</a></li>
 </ul>
 </li>
+<li><a href="#normative-references" >Normative References</a></li>
 </ul>
 
                       </div>
