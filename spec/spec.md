@@ -71,7 +71,7 @@ distributed ledger).
 
 ### Relay Nodes
 
-Relay nodes act as publically accessable service endpoints for DWN infrastructure that may be advertized within a user's DID document.  Relay nodes do not contain private key material and as such do not encrypt, sign, or authorize access to data.  Relay nodes queue and store incoming messages which need to be accessed by a user's local node, and also serve as remote data stores for data assocaited with the DID controled by a user's local node. A relay node may answer a request without requiring interaction from a user's local node if those permissions already exist.
+Relay nodes act as publicly accessible service endpoints for DWN infrastructure that may be advertised within a user's DID document.  Relay nodes do not contain private key material and as such do not encrypt, sign, or authorize access to data.  Relay nodes queue and store incoming messages which need to be accessed by a user's local node, and also serve as remote data stores for data associated with the DID controlled by a user's local node. A relay node may answer a request without requiring interaction from a user's local node if those permissions already exist.
 
 ### Local Nodes
 
