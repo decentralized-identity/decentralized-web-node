@@ -75,7 +75,7 @@ Relay nodes act as publicly accessible service endpoints for DWN infrastructure 
 
 ### Local Nodes
 
-A local node is a fully featured DWN which operates on devices such as phones, laptops, tablets, desktop computers, etc., and are under the direct control of the associated DID controller. A local node's primary differentiator from relay nodes is that a local node stores private key material to facilitate data signing, encrpytion, and authorization issuance to data stored within a relay node's remote data store. Local nodes are not required to be publically accessable, and can remain behind network firewalls, utalize NAT, and have intermittent internet access without affecting functionality. Local nodes communicate with relay nodes to replicate and access the data they need.
+A local node is a fully featured DWN which operates on devices such as phones, laptops, tablets, desktop computers, etc., and is under the direct control of the associated DID controller. A local node's primary differentiator from a relay node is that a local node stores private key material to facilitate data signing, encryption, and authorization issuance to data stored within a relay node's remote data store. Local nodes are not required to be publicly accessible, and can remain behind network firewalls, utilize NAT, and have intermittent internet access without affecting functionality. Local nodes communicate with relay nodes to replicate and access the data they need.
 
 ## Protocol Stack
 
