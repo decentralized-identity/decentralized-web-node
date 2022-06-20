@@ -1222,8 +1222,8 @@ keys using the asymmetric key of each recipient.
 
 | Asymmetric Key | Symmetric Key       |
 | -----          | -----               |
-| `X225519`      | `AES-GCM`           |
-| `X225519`      | `XSalsa20-Poly1305` |
+| `X25519`      | `AES-GCM`           |
+| `X25519`      | `XSalsa20-Poly1305` |
 
 ## Normative References
 
