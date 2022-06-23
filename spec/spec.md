@@ -8,6 +8,9 @@ Decentralized Web Node
   [identity.foundation/decentralized-web-node/spec](https://identity.foundation/decentralized-web-node/spec)
 <!-- -->
 
+**Previous Draft:**
+  [0.0.1-predraft](https://identity.foundation/decentralized-web-node/spec/0.0.1-predraft/)
+
 **Editors:**
 ~ [Daniel Buchner](https://www.linkedin.com/in/dbuchner/) (Block)
 ~ [Tobias Looker](https://www.linkedin.com/in/tplooker) (Mattr)
