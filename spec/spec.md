@@ -185,7 +185,7 @@ The following process defines how a DID-Relative URL for a Decentralized Web Nod
 
 1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
 2. As indicated by the presence of the `service` parameter, locate the `DecentralizedWebNode` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
-3. Parse the `DecentralizedWebNode` Service Endpoint object and select the first URI present in the `serviceEndpoint` objects `nodes` array. NOTE: implementers ****SHOULD**** select from the URIs in the `nodes` array in index order.
+3. Parse the `DecentralizedWebNode` Service Endpoint object and select the first URI present in the `serviceEndpoint` objects `nodes` array. NOTE: implementers ****SHOULD**** select from the URIs in the `nodes` array in index order because `nodes` ****SHOULD**** be ordered by availability.
 4. If the URI located in step 3 is not a DID URI, proceed to step 5. If the URI from step 3 is a DID, resolve the DID and follow steps 2 and 3 to select the first URI in the DID's `DecentralizedWebNode` Service Endpoint object `nodes` array that is not a DID URI. Do not iterate this loop more than once - if a non-DID URI cannot be located after one loop of recursive resolution, terminate resolution and produce an error.
 5. Assuming a non-DID URI was located in steps 2-4, let the located URI be the base URI of the [[ref: Decentralized Web Node]] request being constructed.
 
