@@ -292,7 +292,7 @@ Individual Interface methods may describe additional properties that the `descri
 
 ### Message Authorization
 
-Some messages may require authorization material for processing them in accordance with the permissions a [ref: DWeb Node] owner has specified. If a message requires authorization it ****MUST**** include an `authorization` property with a value that is a [[spec:rfc7515]] General JSON Web Signature (JWS), constructed as follows:
+Some messages may require authorization material for processing them in accordance with the permissions a [[ref: Decentralized Web Node]] owner has specified. If a message requires authorization it ****MUST**** include an `authorization` property with a value that is a [[spec:rfc7515]] General JSON Web Signature (JWS), constructed as follows:
 
 ```json
 {  // Request Object
