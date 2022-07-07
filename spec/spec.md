@@ -298,7 +298,7 @@ Some messages may require authorization material for processing them in accordan
 {  // Request Object
   "target": "did:example:123",
   "messages": [  // Message Objects
-      "data": BASE64_STRING,
+      "data": BASE64URL_STRING,
       "descriptor": {
         "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
         "method": "CollectionsWrite",
@@ -342,7 +342,7 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
 
 ```json
 { // Message
-  "data": BASE64_STRING,
+  "data": BASE64URL_STRING,
   "descriptor": {
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "method": "ThreadsWrite",
