@@ -215,7 +215,7 @@ with a given DID, as located via the DID resolution process.</p>
 </ol>
 <h4 id="request-construction"><a class="toc-anchor" href="#request-construction" >§</a> Request Construction</h4>
 <p><strong>DID-Relative URL example for passing multiple messages:</strong></p>
-<div id="note-7" class="notice note"><a class="notice-link" href="#note-7">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
+<div id="note-10" class="notice note"><a class="notice-link" href="#note-10">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
 </div>
 <pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=DecentralizedWebNode&amp;queries=<span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span> <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
 </code></pre>
@@ -305,10 +305,10 @@ BODY <span class="token punctuation">{</span>
 </ul>
 </li>
 </ul>
-<div id="note-8" class="notice note"><a class="notice-link" href="#note-8">NOTE</a><p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
+<div id="note-11" class="notice note"><a class="notice-link" href="#note-11">NOTE</a><p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
 </div>
 <h3 id="message-authorization"><a class="toc-anchor" href="#message-authorization" >§</a> Message Authorization</h3>
-<p>Some messages may require authorization material for processing them in accordance with the permissions a [ref: DWeb Node] owner has specified. If a message requires authorization it <strong><strong>MUST</strong></strong> include an <code>authorization</code> property with a value that is a [spec:rfc7515]] General JSON Web Signature (JWS), constructed as follows:</p>
+<p>Some messages may require authorization material for processing them in accordance with the permissions a [ref: DWeb Node] owner has specified. If a message requires authorization it <strong><strong>MUST</strong></strong> include an <code>authorization</code> property with a value that is a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] General JSON Web Signature (JWS), constructed as follows:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
   <span class="token property">"target"</span><span class="token operator">:</span> <span class="token string">"did:example:123"</span><span class="token punctuation">,</span>
   <span class="token property">"messages"</span><span class="token operator">:</span> <span class="token punctuation">[</span>  <span class="token comment">// Message Objects</span>
@@ -511,7 +511,7 @@ BODY <span class="token punctuation">{</span>
 <p>If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation <strong><strong>must</strong></strong> include a message-level <code>status</code> property, and its value must be an object as defined below.</p>
 <p><strong>Message succeeded for query/read-type interface that expects results</strong></p>
 <p>If a message is processed correctly and a set of result <code>entries</code> is expected, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>200</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message was successfully processed</code> as the status <code>detail</code> value.</p>
-<div id="note-9" class="notice note"><a class="notice-link" href="#note-9">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
+<div id="note-12" class="notice note"><a class="notice-link" href="#note-12">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
 </div>
 <p><em>Request Example:</em></p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
@@ -1160,7 +1160,7 @@ section of this specification, with the requirement that the <code>kid</code> an
 <h3 id="last-write-wins"><a class="toc-anchor" href="#last-write-wins" >§</a> Last-Write Wins</h3>
 <p>Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.</p>
 <h3 id="json-merge-patch"><a class="toc-anchor" href="#json-merge-patch" >§</a> JSON Merge Patch</h3>
-<div id="todo-3" class="notice todo"><a class="notice-link" href="#todo-3">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
+<div id="todo-4" class="notice todo"><a class="notice-link" href="#todo-4">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
 </div>
 <h2 id="configurations"><a class="toc-anchor" href="#configurations" >§</a> Configurations</h2>
 <p>While it is strongly encouraged to implement the full set of Decentralized Web Node features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Decentralized Web Node feature sets that tend to serve different purposes.</p>
