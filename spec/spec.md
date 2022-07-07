@@ -1012,7 +1012,7 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
       party wants the ability to use the permission against any object or data that aligns with the capability's definition, regardless of which 
       entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the 
       requesting party only needs the ability to invoke the permission against objects or data it creates.
-- The message object ****MUST**** contain an `authorization` property, which ****MUST**** be a JSON object as defined by the [Signed Data](#signed-data) 
+- The message object ****MUST**** contain an `authorization` property, which ****MUST**** be a JSON object as defined by the [Message Authorization](#message-authorization) 
   section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
 
 ```json
@@ -1076,7 +1076,7 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
       party wants the ability to use the permission against any object or data that aligns with the capability's definition, regardless of which 
       entity created the object or data. A value of `false` or omission of the property ****MUST**** be evaluated as false, and indicates the 
       requesting party only needs the ability to invoke the permission against objects or data it creates.
-- The message object ****MUST**** contain an `authorization` property, which ****MUST**** be a JSON object as defined by the [Signed Data](#signed-data) 
+- The message object ****MUST**** contain an `authorization` property, which ****MUST**** be a JSON object as defined by the [Message Authorization](#message-authorization) 
   section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
 - The message ****MUST**** contain a `data` payload, which is a JSON Web Token representation of the granted permission, as defined in the [Capability Objects](#capability-objects) section below.
 - The message ****MUST**** contain an `encryptionKey` property if the data transacted using the permission grant is to be encrypted, per the directives for encryption under the `encryption` field of the permission's [conditions](#permission-conditions). If present, the value of the `encryptionKey` property ****MUST**** be a [[spec:rfc7516]] JSON Web Encryption (JWE) object that contains the encrypted key material required for an authorized party to decrypt the JWE represented by the `dataCid` value within the `descriptor` object.
