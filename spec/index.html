@@ -215,7 +215,7 @@ with a given DID, as located via the DID resolution process.</p>
 </ol>
 <h4 id="request-construction"><a class="toc-anchor" href="#request-construction" >§</a> Request Construction</h4>
 <p><strong>DID-Relative URL example for passing multiple messages:</strong></p>
-<div id="note-19" class="notice note"><a class="notice-link" href="#note-19">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
+<div id="note-28" class="notice note"><a class="notice-link" href="#note-28">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
 </div>
 <pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=DecentralizedWebNode&amp;queries=<span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span> <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
 </code></pre>
@@ -305,7 +305,7 @@ BODY <span class="token punctuation">{</span>
 </ul>
 </li>
 </ul>
-<div id="note-20" class="notice note"><a class="notice-link" href="#note-20">NOTE</a><p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
+<div id="note-29" class="notice note"><a class="notice-link" href="#note-29">NOTE</a><p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
 </div>
 <h3 id="message-authorization"><a class="toc-anchor" href="#message-authorization" >§</a> Message Authorization</h3>
 <p>Some messages may require authorization material for processing them in accordance with the permissions a <a class="term-reference" href="#term:decentralized-web-node">Decentralized Web Node</a> owner has specified. If a message requires authorization it <strong><strong>MUST</strong></strong> include an <code>authorization</code> property with a value that is a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] General JSON Web Signature (JWS), constructed as follows:</p>
@@ -316,8 +316,8 @@ BODY <span class="token punctuation">{</span>
       <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
         <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
-        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/InviteAction"</span><span class="token punctuation">,</span>
-        <span class="token property">"threadId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+        <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
+        <span class="token property">"recordId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
         <span class="token property">"dataCid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
         <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
         <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
@@ -350,9 +350,9 @@ BODY <span class="token punctuation">{</span>
 </li>
 <li>The JWS <strong><strong>MUST</strong></strong> include a <code>payload</code> property, and its value <strong><strong>must</strong></strong> be an object composed of the following values:
 <ul>
-<li>The object <strong><strong>MUST</strong></strong> include an <code>descriptorCid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>descriptor</code> object.</li>
-<li>The object <strong><strong>MAY</strong></strong> include an <code>permissionsGrantCid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded  <a href="#grant" >Permission Grant</a> being invoked.</li>
-<li>If attestation of an object is permitted the <code>payload</code> <strong><strong>MAY</strong></strong> include an <code>attestationCid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>attestation</code> string.</li>
+<li>The object <strong><strong>MUST</strong></strong> include a <code>descriptorCid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>descriptor</code> object.</li>
+<li>The object <strong><strong>MAY</strong></strong> include a <code>permissionsGrantCid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded  <a href="#grant" >Permission Grant</a> being invoked.</li>
+<li>If attestation of an object is permitted the <code>payload</code> <strong><strong>MAY</strong></strong> include a <code>attestationCid</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>attestation</code> string.</li>
 </ul>
 </li>
 </ul>
@@ -511,7 +511,7 @@ BODY <span class="token punctuation">{</span>
 <p>If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation <strong><strong>must</strong></strong> include a message-level <code>status</code> property, and its value must be an object as defined below.</p>
 <p><strong>Message succeeded for query/read-type interface that expects results</strong></p>
 <p>If a message is processed correctly and a set of result <code>entries</code> is expected, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>200</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message was successfully processed</code> as the status <code>detail</code> value.</p>
-<div id="note-21" class="notice note"><a class="notice-link" href="#note-21">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
+<div id="note-30" class="notice note"><a class="notice-link" href="#note-30">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
 </div>
 <p><em>Request Example:</em></p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
@@ -621,7 +621,25 @@ BODY <span class="token punctuation">{</span>
 <div id="example-response-object-3" class="notice example"><a class="notice-link" href="#example-response-object-3">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"replies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
     <span class="token punctuation">{</span>
-      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">501</span><span class="token punctuation">,</span> <span class="token property">"detail"</span><span class="token operator">:</span> <span class="token string">"The interface method is not implemented"</span> <span class="token punctuation">}</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">501</span><span class="token punctuation">,</span>
+        <span class="token property">"detail"</span><span class="token operator">:</span> <span class="token string">"The interface method is not implemented"</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+</div>
+<p><strong>Resource consumption limit exceeded</strong></p>
+<p>If the DWeb Node instance receiving the request has determined that the rate of resource consumption has exceeded its tolerances and cannot process the request, the instance <strong><strong>MUST</strong></strong> respond with the following status entry:</p>
+<p><em>Response Example:</em></p>
+<div id="example-response-object-4" class="notice example"><a class="notice-link" href="#example-response-object-4">EXAMPLE</a><pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
+  <span class="token property">"replies"</span><span class="token operator">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      <span class="token property">"status"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token property">"code"</span><span class="token operator">:</span> <span class="token number">429</span><span class="token punctuation">,</span>
+        <span class="token property">"detail"</span><span class="token operator">:</span> <span class="token string">"Resource consumption has exceeded tolerances"</span>
+      <span class="token punctuation">}</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">]</span>
 <span class="token punctuation">}</span>
@@ -657,20 +675,6 @@ method is not supported:
 <li><code>CollectionsWrite</code></li>
 <li><code>CollectionsCommit</code></li>
 <li><code>CollectionsDelete</code></li>
-</ul>
-</li>
-<li>The object <strong><strong>MAY</strong></strong> contain a <code>actions</code> property. If the property is not present,
-it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the
-property is present, its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> include any of the
-following properties, wherein a boolean <code>true</code> value indicates support for the interface
-method, while a boolean <code>false</code> value or omission of the property indicates the interface
-method is not supported:
-<ul>
-<li><code>ThreadsQuery</code></li>
-<li><code>ThreadsCreate</code></li>
-<li><code>ThreadsReply</code></li>
-<li><code>ThreadsClose</code></li>
-<li><code>ThreadsDelete</code></li>
 </ul>
 </li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>permissions</code> property. If the property is not present,
@@ -715,8 +719,11 @@ experience for users.</p>
 <li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsQuery</code>.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>filter</code> property, and if present its value <strong><strong>MUST</strong></strong> be an object that <strong><strong>MAY</strong></strong> contain the following properties:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>contextId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
-<li>The object <strong><strong>MAY</strong></strong> contain an <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>dataFormat</code> property, and its value <strong><strong>MUST</strong></strong> be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the <code>dataFormat</code> property to <code>application/json</code>.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>dateSort</code> field, and if present its value <strong><strong>MUST</strong></strong> be one of the following strings:
 <ul>
@@ -729,12 +736,16 @@ experience for users.</p>
 </ul>
 </li>
 </ul>
+</li>
+</ul>
 <p>Get a single object by its ID reference:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
   <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
     <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
-    <span class="token property">"recordId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
+    <span class="token property">"filter"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"recordId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span>
+    <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -743,7 +754,9 @@ experience for users.</p>
   <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
     <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
-    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span>
+    <span class="token property">"filter"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/MusicPlaylist"</span>
+    <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -752,7 +765,10 @@ experience for users.</p>
   <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
     <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span>
-    <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"image/gif"</span>
+    <span class="token property">"dateSort"</span><span class="token operator">:</span> <span class="token string">"createdDescending"</span><span class="token punctuation">,</span>
+    <span class="token property">"filter"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+      <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token string">"image/gif"</span>
+    <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
@@ -762,7 +778,8 @@ experience for users.</p>
 <li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsWrite</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain an <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>contextId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>published</code> property, and if present its value <strong><strong>Must</strong></strong> be a boolean indicating the record’s publication state. A value of <code>true</code> indicates the record has been published for public queries and consumption without requiring authorization. A value of <code>false</code> or the absence of the property indicates the record <strong><strong>MUST NOT</strong></strong> be served in response to public queries that lack proper authorization.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>dateCreated</code> property, and its value <strong><strong>MUST</strong></strong> be a <a path-0="pubs.opengroup.org"path-1="onlinepubs"path-2="9699919799"path-3="basedefs"path-4="V1_chap04.html#tag_04_16"href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16" >Unix epoch timestamp</a> that <strong><strong>MUST</strong></strong> be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.</li>
@@ -816,7 +833,7 @@ experience for users.</p>
 <li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsCommit</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain an <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>dateCreated</code> property, and its value <strong><strong>MUST</strong></strong> be a <a path-0="pubs.opengroup.org"path-1="onlinepubs"path-2="9699919799"path-3="basedefs"path-4="V1_chap04.html#tag_04_16"href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16" >Unix epoch timestamp</a> that <strong><strong>MUST</strong></strong> be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>datePublished</code> property, and its value <strong><strong>MUST</strong></strong> be a <a path-0="pubs.opengroup.org"path-1="onlinepubs"path-2="9699919799"path-3="basedefs"path-4="V1_chap04.html#tag_04_16"href="https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16" >Unix epoch timestamp</a> that <strong><strong>MUST</strong></strong> be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.</li>
@@ -837,103 +854,7 @@ experience for users.</p>
 <li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>CollectionsDelete</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain an <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the record to be deleted.</li>
-</ul>
-</li>
-</ul>
-<h3 id="threads"><a class="toc-anchor" href="#threads" >§</a> Threads</h3>
-<p>Threads are a linked series of topically associated messages that are intended to result
-in activities performed by entities participating in the message thread.</p>
-<h4 id="query-2"><a class="toc-anchor" href="#query-2" >§</a> Query</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
-  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
-    <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
-    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsQuery"</span><span class="token punctuation">,</span>
-    <span class="token property">"threadId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<h4 id="create"><a class="toc-anchor" href="#create" >§</a> Create</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
-  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
-    <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
-    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsCreate"</span><span class="token punctuation">,</span>
-    <span class="token property">"threadId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
-    <span class="token property">"threadType"</span><span class="token operator">:</span> <span class="token string">"https://fintech.org/dex"</span><span class="token punctuation">,</span>
-    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/ask"</span><span class="token punctuation">,</span>
-    <span class="token property">"dataType"</span><span class="token operator">:</span> <span class="token string">"application/json"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p><code>ThreadsCreate</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
-<ul>
-<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
-<ul>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsCreate</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>threadId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string for the Thread being created.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>threadType</code> property, and its value <strong><strong>Must</strong></strong> be a URI string that indicates the overall type of thread that is being transacted.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>schema</code> property, and its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the data being passed in the thread message.</li>
-<li>The object <strong><strong>MAY</strong></strong> contain a <code>published</code> property, and if present its value <strong><strong>Must</strong></strong> be a boolean indicating the thread’s publication state. A value of <code>true</code> indicates the record has been published for public queries and consumption without requiring authorization. A value of <code>false</code> or the absence of the property indicates the thread <strong><strong>MUST NOT</strong></strong> be served in response to public queries that lack proper authorization.</li>
-</ul>
-</li>
-</ul>
-<h4 id="reply"><a class="toc-anchor" href="#reply" >§</a> Reply</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
-  <span class="token property">"data"</span><span class="token operator">:</span> <span class="token punctuation">{</span>...<span class="token punctuation">}</span><span class="token punctuation">,</span>
-  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
-    <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
-    <span class="token property">"threadId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-7gab-aff5-j8f8438dfc1e"</span><span class="token punctuation">,</span>
-    <span class="token property">"parentId"</span><span class="token operator">:</span> <span class="token string">"r7874162-r6hr-456h-g65e-f1f8438dfc1e"</span><span class="token punctuation">,</span>
-    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsReply"</span><span class="token punctuation">,</span>
-    <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://fintech.org/BidAcceptance"</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p><code>ThreadsReply</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
-<ul>
-<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
-<ul>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsReply</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>threadId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the Thread to which the reply belongs.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>parentId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the message in the Thread being replied to.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>schema</code> property, and its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the data being passed in the thread message.</li>
-</ul>
-</li>
-</ul>
-<h4 id="close"><a class="toc-anchor" href="#close" >§</a> Close</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
-  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
-    <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
-    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsClose"</span><span class="token punctuation">,</span>
-    <span class="token property">"threadId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p><code>ThreadsClose</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
-<ul>
-<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
-<ul>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsClose</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>threadId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the initiating Thread message.</li>
-</ul>
-</li>
-</ul>
-<h4 id="delete-2"><a class="toc-anchor" href="#delete-2" >§</a> Delete</h4>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
-  <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
-    <span class="token property">"nonce"</span><span class="token operator">:</span> <span class="token string">"9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106"</span><span class="token punctuation">,</span>
-    <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ThreadsDelete"</span><span class="token punctuation">,</span>
-    <span class="token property">"threadId"</span><span class="token operator">:</span> <span class="token string">"b6464162-84af-4aab-aff5-f1f8438dfc1e"</span><span class="token punctuation">,</span>
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span>
-</code></pre>
-<p><code>ThreadsDelete</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
-<ul>
-<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
-<ul>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ThreadsDelete</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>threadId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the initiating Thread message.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>recordId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the record to be deleted.</li>
 </ul>
 </li>
 </ul>
@@ -1021,7 +942,7 @@ section of this specification, with the requirement that the <code>kid</code> an
 <li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
 <ul>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>PermissionsGrant</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain an <code>permissionGrantId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string representing the reply object.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>permissionGrantId</code> property, and its value <strong><strong>MUST</strong></strong> be a [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string representing the reply object.</li>
 <li>If the granted permission is in response to a <code>PermissionRequest</code>, the object <strong><strong>MUST</strong></strong> contain a <code>permissionRequestId</code> property, and its value <strong><strong>MUST</strong></strong> be the [<a class="spec-reference" href="#ref:RFC4122">RFC4122</a>] UUID Version 4 string of the <code>PermissionRequest</code> object the permission is being granted in relation to.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>grantedBy</code> property, and its value <strong><strong>MUST</strong></strong> be the DID URI string of the party that is granting the permission.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>grantedTo</code> property, and its value <strong><strong>MUST</strong></strong> be the DID URI string of the party that is being granted the permission.</li>
@@ -1125,7 +1046,7 @@ section of this specification, with the requirement that the <code>kid</code> an
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h4 id="query-3"><a class="toc-anchor" href="#query-3" >§</a> Query</h4>
+<h4 id="query-2"><a class="toc-anchor" href="#query-2" >§</a> Query</h4>
 <p>The <code>PermissionQuery</code> method exists to facilitate lookup of any retained Permissions objects that exist in a given DID’s DWeb Node instance.</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span> <span class="token comment">// Message</span>
   <span class="token property">"descriptor"</span><span class="token operator">:</span> <span class="token punctuation">{</span> <span class="token comment">// Message Descriptor</span>
@@ -1156,12 +1077,15 @@ section of this specification, with the requirement that the <code>kid</code> an
 <h3 id="sync"><a class="toc-anchor" href="#sync" >§</a> Sync</h3>
 <p>The Sync interface and its methods allow different Decentralized Web Nodes to communicate and sync on the state of the data they contain, including replication of messages and files.</p>
 <h2 id="commit-strategies"><a class="toc-anchor" href="#commit-strategies" >§</a> Commit Strategies</h2>
-<p>Some interface methods may be bound to, or allow for choice between, the data modification algorithms detailed below. Interfaces methods that are bound to one or more of these strategies will indicate it within their interface definitions under the <a href="#interfaces" >Interfaces</a> section.</p>
+<p>Collections interface records may operate under the data modification algorithms detailed below. A record may only operate under one commit strategy at a time, as indicated via the value set on the <code>strategy</code> property of the current <code>CollectionsWrite</code> root.</p>
 <h3 id="last-write-wins"><a class="toc-anchor" href="#last-write-wins" >§</a> Last-Write Wins</h3>
-<p>Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.</p>
+<p>Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data. This strategy is the default and need not be declared. All Writes and Commits replace all of the preceding record entries.</p>
+<h3 id="json-patch"><a class="toc-anchor" href="#json-patch" >§</a> JSON Patch</h3>
+<p>To declare a record is operating under the JSON Merge Patch commit strategy the <code>strategy</code> property of the current root <code>CollectionsWrite</code> <strong><strong>MUST</strong></strong> be set to the value <code>json-patch</code>.</p>
+<p><a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc6902"href="https://datatracker.ietf.org/doc/html/rfc6902" >JSON Patch</a> is an IETF standard [spec:rfc6902] for modifying the content of JSON documents based on a JSON-encoded delta based operation syntax that, when applied to the target JSON document in accordance with the standard’s rules, may add, remove, or modify the target document. To read more about the syntax of patches, consult IETF JSON Patch [spec:rfc6902].</p>
 <h3 id="json-merge-patch"><a class="toc-anchor" href="#json-merge-patch" >§</a> JSON Merge Patch</h3>
-<div id="todo-7" class="notice todo"><a class="notice-link" href="#todo-7">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
-</div>
+<p>To declare a record is operating under the JSON Merge Patch commit strategy the <code>strategy</code> property of the current root <code>CollectionsWrite</code> <strong><strong>MUST</strong></strong> be set to the value <code>json-merge-patch</code>.</p>
+<p><a path-0="datatracker.ietf.org"path-1="doc"path-2="html"path-3="rfc7386"href="https://datatracker.ietf.org/doc/html/rfc7386" >JSON Merge Patch</a> is an IETF standard [spec:rfc7386] for modifying the content of JSON documents based on partial deltas of a target JSON document that add, remove, and modify the target document when applied according to the standard processing rules. To read more about the syntax of patches, consult IETF JSON Merge Patch [spec:rfc7386].</p>
 <h2 id="configurations"><a class="toc-anchor" href="#configurations" >§</a> Configurations</h2>
 <p>While it is strongly encouraged to implement the full set of Decentralized Web Node features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Decentralized Web Node feature sets that tend to serve different purposes.</p>
 <h3 id="open-data-publication"><a class="toc-anchor" href="#open-data-publication" >§</a> Open Data Publication</h3>
@@ -1194,7 +1118,7 @@ keys using the asymmetric key of each recipient.</p>
 </tr>
 <tr>
 <td><code>X25519</code></td>
-<td><code>XSalsa20-Poly1305</code></td>
+<td><code>XChaCha20-Poly1305</code></td>
 </tr>
 </tbody>
 </table>
@@ -1300,21 +1224,12 @@ keys using the asymmetric key of each recipient.</p>
 <li><a href="#delete" >Delete</a></li>
 </ul>
 </li>
-<li><a href="#threads" >Threads</a>
-<ul>
-<li><a href="#query-2" >Query</a></li>
-<li><a href="#create" >Create</a></li>
-<li><a href="#reply" >Reply</a></li>
-<li><a href="#close" >Close</a></li>
-<li><a href="#delete-2" >Delete</a></li>
-</ul>
-</li>
 <li><a href="#permissions" >Permissions</a>
 <ul>
 <li><a href="#request" >Request</a></li>
 <li><a href="#grant" >Grant</a></li>
 <li><a href="#revoke" >Revoke</a></li>
-<li><a href="#query-3" >Query</a></li>
+<li><a href="#query-2" >Query</a></li>
 </ul>
 </li>
 <li><a href="#sync" >Sync</a></li>
@@ -1323,6 +1238,7 @@ keys using the asymmetric key of each recipient.</p>
 <li><a href="#commit-strategies" >Commit Strategies</a>
 <ul>
 <li><a href="#last-write-wins" >Last-Write Wins</a></li>
+<li><a href="#json-patch" >JSON Patch</a></li>
 <li><a href="#json-merge-patch" >JSON Merge Patch</a></li>
 </ul>
 </li>
