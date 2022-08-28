@@ -302,8 +302,8 @@ Some messages may require authorization material for processing them in accordan
       "descriptor": {
         "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
         "method": "CollectionsWrite",
-        "schema": "https://schema.org/InviteAction",
-        "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+        "schema": "https://schema.org/SocialMediaPosting",
+        "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
         "dataCid": CID(data),
         "dateCreated": 123456789,
         "dataFormat": "application/json"
@@ -332,9 +332,9 @@ Some messages may require authorization material for processing them in accordan
   - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
   - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
 - The JWS ****MUST**** include a `payload` property, and its value ****must**** be an object composed of the following values:
-  - The object ****MUST**** include an `descriptorCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object.
-  - The object ****MAY**** include an `permissionsGrantCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded  [Permission Grant](#grant) being invoked.
-  - If attestation of an object is permitted the `payload` ****MAY**** include an `attestationCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `attestation` string.
+  - The object ****MUST**** include a `descriptorCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object.
+  - The object ****MAY**** include a `permissionsGrantCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded  [Permission Grant](#grant) being invoked.
+  - If attestation of an object is permitted the `payload` ****MAY**** include a `attestationCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `attestation` string.
 
 ### Raw Data
 
@@ -656,7 +656,31 @@ If a message attempts to invoke an interface `method` that is not the implementa
 {
   "replies": [
     {
-      "status": { "code": 501, "detail": "The interface method is not implemented" }
+      "status": {
+        "code": 501,
+        "detail": "The interface method is not implemented"
+      }
+    }
+  ]
+}
+```
+:::
+
+**Resource consumption limit exceeded**
+
+If the DWeb Node instance receiving the request has determined that the rate of resource consumption has exceeded its tolerances and cannot process the request, the instance ****MUST**** respond with the following status entry:
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "replies": [
+    {
+      "status": {
+        "code": 429,
+        "detail": "Resource consumption has exceeded tolerances"
+      }
     }
   ]
 }
@@ -699,17 +723,6 @@ The following properties and values are defined for the Feature Detection object
       - `CollectionsWrite`
       - `CollectionsCommit`
       - `CollectionsDelete`
-    - The object ****MAY**** contain a `actions` property. If the property is not present, 
-    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `ThreadsQuery`
-      - `ThreadsCreate`
-      - `ThreadsReply`
-      - `ThreadsClose`
-      - `ThreadsDelete`
     - The object ****MAY**** contain a `permissions` property. If the property is not present, 
     it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -751,14 +764,16 @@ experience for users.
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsQuery`.
-  - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
-  - The object ****MAY**** contain an `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
-  - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
-  - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
-      - `createdAscending`: return results in order from the earliest `dateCreated` value to the latest.
-      - `createdDescending`: return results in order from the latest `dateCreated` value to the earliest.
-      - `publishedAscending`: return results in order from the earliest `datePublished` value to the latest.
-      - `publishedDescending`: return results in order from the latest `datePublished` value to the earliest.
+  - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
+    - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+    - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+    - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+    - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
+    - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
+        - `createdAscending`: return results in order from the earliest `dateCreated` value to the latest.
+        - `createdDescending`: return results in order from the latest `dateCreated` value to the earliest.
+        - `publishedAscending`: return results in order from the earliest `datePublished` value to the latest.
+        - `publishedDescending`: return results in order from the latest `datePublished` value to the earliest.
 
 Get a single object by its ID reference:
 
@@ -767,7 +782,9 @@ Get a single object by its ID reference:
   "descriptor": {
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "method": "CollectionsQuery",
-    "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "filter": {
+      "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+    }
   }
 }
 ```
@@ -778,7 +795,9 @@ Get a objects of a given schema type:
   "descriptor": {
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "method": "CollectionsQuery",
-    "schema": "https://schema.org/MusicPlaylist"
+    "filter": {
+      "schema": "https://schema.org/MusicPlaylist"
+    }
   }
 }
 ```
@@ -789,7 +808,10 @@ Get all objects of a given schema type:
   "descriptor": {
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "method": "CollectionsQuery",
-    "dataFormat": "image/gif"
+    "dateSort": "createdDescending",
+    "filter": {
+      "dataFormat": "image/gif"
+    }
   }
 }
 ```
@@ -800,7 +822,8 @@ Get all objects of a given schema type:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
-  - The object ****MUST**** contain an `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the record ****MUST NOT**** be served in response to public queries that lack proper authorization.
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
@@ -854,7 +877,7 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
-  - The object ****MUST**** contain an `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
@@ -875,108 +898,7 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsDelete`.
-  - The object ****MUST**** contain an `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string of the record to be deleted.
-
-### Threads
-
-Threads are a linked series of topically associated messages that are intended to result 
-in activities performed by entities participating in the message thread.
-
-#### Query
-
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-    "method": "ThreadsQuery",
-    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
-  }
-}
-```
-
-#### Create
-
-```json
-{ // Message
-  "data": {...},
-  "descriptor": { // Message Descriptor
-    "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-    "method": "ThreadsCreate",
-    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-    "threadType": "https://fintech.org/dex",
-    "schema": "https://schema.org/ask",
-    "dataType": "application/json"
-  }
-}
-```
-
-`ThreadsCreate` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsCreate`.
-  - The object ****MUST**** contain a `threadId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string for the Thread being created.
-  - The object ****MUST**** contain a `threadType` property, and its value ****Must**** be a URI string that indicates the overall type of thread that is being transacted.
-  - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the data being passed in the thread message.
-  - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the thread's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the thread ****MUST NOT**** be served in response to public queries that lack proper authorization.
-
-#### Reply
-
-```json
-{ // Message
-  "data": {...},
-  "descriptor": { // Message Descriptor
-    "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-    "threadId": "b6464162-84af-7gab-aff5-j8f8438dfc1e",
-    "parentId": "r7874162-r6hr-456h-g65e-f1f8438dfc1e",
-    "method": "ThreadsReply",
-    "schema": "https://fintech.org/BidAcceptance"
-  }
-}
-```
-
-`ThreadsReply` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsReply`.
-  - The object ****MUST**** contain a `threadId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string of the Thread to which the reply belongs.
-  - The object ****MUST**** contain a `parentId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string of the message in the Thread being replied to.
-  - The object ****MUST**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the data being passed in the thread message.
-
-#### Close
-
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-    "method": "ThreadsClose",
-    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-  }
-}
-```
-
-`ThreadsClose` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsClose`.
-  - The object ****MUST**** contain a `threadId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
-
-#### Delete
-
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-    "method": "ThreadsDelete",
-    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-  }
-}
-```
-
-`ThreadsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ThreadsDelete`.
-  - The object ****MUST**** contain a `threadId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string of the initiating Thread message.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string of the record to be deleted.
 
 ### Permissions
 
@@ -1052,7 +974,7 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsGrant`.
-  - The object ****MUST**** contain an `permissionGrantId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string representing the reply object.
+  - The object ****MUST**** contain a `permissionGrantId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string representing the reply object.
   - If the granted permission is in response to a `PermissionRequest`, the object ****MUST**** contain a `permissionRequestId` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string of the `PermissionRequest` object the permission is being granted in relation to.
   - The object ****MUST**** contain a `grantedBy` property, and its value ****MUST**** be the DID URI string of the party that is granting the permission.
   - The object ****MUST**** contain a `grantedTo` property, and its value ****MUST**** be the DID URI string of the party that is being granted the permission.
@@ -1187,17 +1109,23 @@ The Sync interface and its methods allow different Decentralized Web Nodes to co
 
 ## Commit Strategies
 
-Some interface methods may be bound to, or allow for choice between, the data modification algorithms detailed below. Interfaces methods that are bound to one or more of these strategies will indicate it within their interface definitions under the [Interfaces](#interfaces) section.
+Collections interface records may operate under the data modification algorithms detailed below. A record may only operate under one commit strategy at a time, as indicated via the value set on the `strategy` property of the current `CollectionsWrite` root.
 
 ### Last-Write Wins
 
-Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.
+Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data. This strategy is the default and need not be declared. All Writes and Commits replace all of the preceding record entries.
+
+### JSON Patch
+
+To declare a record is operating under the JSON Merge Patch commit strategy the `strategy` property of the current root `CollectionsWrite` ****MUST**** be set to the value `json-patch`.
+
+[JSON Patch](https://datatracker.ietf.org/doc/html/rfc6902) is an IETF standard [spec:rfc6902] for modifying the content of JSON documents based on a JSON-encoded delta based operation syntax that, when applied to the target JSON document in accordance with the standard's rules, may add, remove, or modify the target document. To read more about the syntax of patches, consult IETF JSON Patch [spec:rfc6902].
 
 ### JSON Merge Patch
 
-::: todo
-Detail JSON Merge Patch as a commit strategy option.
-:::
+To declare a record is operating under the JSON Merge Patch commit strategy the `strategy` property of the current root `CollectionsWrite` ****MUST**** be set to the value `json-merge-patch`.
+
+[JSON Merge Patch](https://datatracker.ietf.org/doc/html/rfc7386) is an IETF standard [spec:rfc7386] for modifying the content of JSON documents based on partial deltas of a target JSON document that add, remove, and modify the target document when applied according to the standard processing rules. To read more about the syntax of patches, consult IETF JSON Merge Patch [spec:rfc7386].
 
 ## Configurations
 
@@ -1225,10 +1153,10 @@ using the following combinations of cryptographic schemes. Each scheme is a pair
 encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric 
 keys using the asymmetric key of each recipient.
 
-| Asymmetric Key | Symmetric Key       |
-| -----          | -----               |
-| `X25519`      | `AES-GCM`           |
-| `X25519`      | `XSalsa20-Poly1305` |
+| Asymmetric Key | Symmetric Key        |
+| -----          | -----                |
+| `X25519`       | `AES-GCM`            |
+| `X25519`       | `XChaCha20-Poly1305` |
 
 ## Normative References
 
