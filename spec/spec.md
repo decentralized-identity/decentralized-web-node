@@ -1123,7 +1123,7 @@ To declare a record is operating under the JSON Merge Patch commit strategy the 
 
 ### JSON Merge Patch
 
-To declare a record is operating under the JSON Merge Patch commit strategy the `strategy` property of the current root `CollectionsWrite` ****MUST**** be set to the value `json-merge-patch`.
+To declare that a record is operating under the JSON Merge Patch commit strategy, the `strategy` property of the current root `CollectionsWrite` ****MUST**** be set to the value `json-merge-patch`.
 
 [JSON Merge Patch](https://datatracker.ietf.org/doc/html/rfc7386) is an IETF standard [spec:rfc7386] for modifying the content of JSON documents based on partial deltas of a target JSON document that add, remove, and modify the target document when applied according to the standard processing rules. To read more about the syntax of patches, consult IETF JSON Merge Patch [spec:rfc7386].
 
