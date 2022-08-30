@@ -416,7 +416,7 @@ If the object is to be encrypted (e.g the Node owner encrypting their data to ke
 The message generating party ****MUST**** construct an encrypted message as follows:
 
 1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string value `jwe`.
-2. Generate an [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
+2. Generate a [[spec:rfc7516]] JSON Web Encryption (JWE) object for the data that is to be represented in the message.
 3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the JWE of the data produced in Step 1, and set the `dataCid` property of the `descriptor` object as the stringified representation of the CID.
 
 ### Signed & Encrypted Data
@@ -765,9 +765,9 @@ experience for users.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsQuery`.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
-    - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+    - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
     - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
-    - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+    - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
     - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
     - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
         - `createdAscending`: return results in order from the earliest `dateCreated` value to the latest.
@@ -822,8 +822,8 @@ Get all objects of a given schema type:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
-  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
-  - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the record ****MUST NOT**** be served in response to public queries that lack proper authorization.
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
@@ -877,7 +877,7 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
-  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
@@ -898,7 +898,7 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsDelete`.
-  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string of the record to be deleted.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the record to be deleted.
 
 ### Permissions
 
@@ -974,11 +974,11 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsGrant`.
-  - The object ****MUST**** contain a `permissionGrantId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string representing the reply object.
+  - The object ****MUST**** contain a `permissionGrantId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
   - If the granted permission is in response to a `PermissionRequest`, the object ****MUST**** contain a `permissionRequestId` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string of the `PermissionRequest` object the permission is being granted in relation to.
   - The object ****MUST**** contain a `grantedBy` property, and its value ****MUST**** be the DID URI string of the party that is granting the permission.
   - The object ****MUST**** contain a `grantedTo` property, and its value ****MUST**** be the DID URI string of the party that is being granted the permission.
-  - If the `PermissionsGrant` is a delegated permission, the object ****MUST**** contain a `delegatedFrom` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string matching the `permissionGrantId` of the `PermissionsGrant` it was delegated from.
+  - If the `PermissionsGrant` is a delegated permission, the object ****MUST**** contain a `delegatedFrom` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string matching the `permissionGrantId` of the `PermissionsGrant` it was delegated from.
   - The object ****MUST**** contain a `expiry` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that can be used to trigger revocation activities.
   - The object ****MUST**** contain a `scope` property, and its value ****Must**** be an object of the following properties:
     - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
