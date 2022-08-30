@@ -1119,7 +1119,7 @@ Last-Write Wins is the most basic Commit Strategy that allows for the traditiona
 
 To declare a record is operating under the JSON Merge Patch commit strategy the `strategy` property of the current root `CollectionsWrite` ****MUST**** be set to the value `json-patch`.
 
-[JSON Patch](https://datatracker.ietf.org/doc/html/rfc6902) is an IETF standard [spec:rfc6902] for modifying the content of JSON documents based on a JSON-encoded delta based operation syntax that, when applied to the target JSON document in accordance with the standard's rules, may add, remove, or modify the target document. To read more about the syntax of patches, consult IETF JSON Patch [spec:rfc6902].
+[JSON Patch](https://datatracker.ietf.org/doc/html/rfc6902) is an IETF standard [spec:rfc6902] for modifying the content of JSON documents based on a JSON-encoded delta-based operation syntax that, when applied to the target JSON document in accordance with the standard's rules, may add, remove, or modify the target document. To read more about the syntax of patches, consult IETF JSON Patch [spec:rfc6902].
 
 ### JSON Merge Patch
 
