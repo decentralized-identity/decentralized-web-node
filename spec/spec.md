@@ -345,9 +345,8 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
   "data": BASE64URL_STRING,
   "descriptor": {
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-    "method": "ThreadsWrite",
+    "method": "CollectionsWrite",
     "schema": "https://schema.org/InviteAction",
-    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "dataCid": CID(data),
     "dateCreated": 123456789,
     "dataFormat": "application/json"
@@ -364,9 +363,8 @@ If the object is to be attested by a signer (e.g the Node owner via signature wi
   "data": {...},
   "descriptor": {
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-    "method": "ThreadsWrite",
+    "method": "CollectionsWrite",
     "schema": "https://schema.org/InviteAction",
-    "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "dataCid": CID(data),
     "dateCreated": 123456789,
     "dataFormat": "application/json"
@@ -638,9 +636,8 @@ If a message attempts to invoke an interface `method` that is not the implementa
       "data": {...},
       "descriptor": {
         "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
-        "threadId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
         "dataCid": CID(data),
-        "method": "ThreadsCreate",
+        "method": "CollectionsWrite",
         "schema": "https://schema.org/LikeAction",
         "dataFormat": "application/json"
       }
@@ -919,7 +916,10 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
   - The object ****MUST**** contain a `scope` property, and its value ****Must**** be an object of the following properties:
     - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
     - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
-    - The object ****MAY**** contain an identifier property that corresponds with the `method` specified (i.e. `recordId` for Collections, `threadId` for Threads), and its value ****Must**** be a UUID 4 string reference to an object. If an identifier property is present the `scope` object ****MUST**** include a `schema` property.
+    - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
+    - The object ****MAY**** contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
+    - The object ****MAY**** contain a `recordId` property, and its value ****Must**** be a UUID 4 string reference to an object.
+    - The object ****MAY**** contain a `contextId` property, and its value ****Must**** be a UUID 4 string reference to a contextually segmented group of objects.
   - The object ****MAY**** contain a [`conditions` property](#permission-conditions){ id=permission-conditions }, and its value ****Must**** be an object of the following properties:
     - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be a `string` representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to the value `optional`.
       - `prohibited` - the object ****MUST NOT**** be signed.
@@ -983,7 +983,10 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
   - The object ****MUST**** contain a `scope` property, and its value ****Must**** be an object of the following properties:
     - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
     - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
-    - The object ****MAY**** contain an identifier property that corresponds with the `method` specified (i.e. `recordId` for Collections, `threadId` for Threads), and its value ****Must**** be a UUID 4 string reference to an object. If an identifier property is present the `scope` object ****MUST**** include a `schema` property.
+    - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
+    - The object ****MAY**** contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
+    - The object ****MAY**** contain a `recordId` property, and its value ****Must**** be a UUID 4 string reference to an object.
+    - The object ****MAY**** contain a `contextId` property, and its value ****Must**** be a UUID 4 string reference to a contextually segmented group of objects.
   - The object ****MAY**** contain a [`conditions` property](#permission-conditions){ id=permission-conditions }, and its value ****Must**** be an object of the following properties:
     - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be a `string` representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to the value `optional`.
       - `prohibited` - the object ****MUST NOT**** be signed.
