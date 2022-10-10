@@ -1273,19 +1273,13 @@ Collections interface records may operate under the data modification algorithms
 
 ### Last-Write Wins
 
-Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data. This strategy is the default and need not be declared. All Writes and Commits replace all of the preceding record entries.
-
-### JSON Patch
-
-To declare a record is operating under the JSON Merge Patch commit strategy, the `strategy` property of the current root `CollectionsWrite` ****MUST**** be set to the value `json-patch`.
-
-[JSON Patch](https://datatracker.ietf.org/doc/html/rfc6902) is an IETF standard [spec:rfc6902] for modifying the content of JSON documents based on a JSON-encoded delta-based operation syntax that, when applied to the target JSON document in accordance with the standard's rules, may add, remove, or modify the target document. To read more about the syntax of patches, consult IETF JSON Patch [spec:rfc6902].
+Last-Write Wins is the most basic Commit Strategy that allows for the traditional experience of posting an update to a file that fully replaces the data.
 
 ### JSON Merge Patch
 
-To declare that a record is operating under the JSON Merge Patch commit strategy, the `strategy` property of the current root `CollectionsWrite` ****MUST**** be set to the value `json-merge-patch`.
-
-[JSON Merge Patch](https://datatracker.ietf.org/doc/html/rfc7386) is an IETF standard [spec:rfc7386] for modifying the content of JSON documents based on partial deltas of a target JSON document that add, remove, and modify the target document when applied according to the standard processing rules. To read more about the syntax of patches, consult IETF JSON Merge Patch [spec:rfc7386].
+::: todo
+Detail JSON Merge Patch as a commit strategy option.
+:::
 
 ## Configurations
 
@@ -1313,10 +1307,10 @@ using the following combinations of cryptographic schemes. Each scheme is a pair
 encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric 
 keys using the asymmetric key of each recipient.
 
-| Asymmetric Key | Symmetric Key        |
-| -----          | -----                |
-| `X25519`       | `AES-GCM`            |
-| `X25519`       | `XChaCha20-Poly1305` |
+| Asymmetric Key | Symmetric Key       |
+| -----          | -----               |
+| `X25519`      | `AES-GCM`           |
+| `X25519`      | `XSalsa20-Poly1305` |
 
 ## Normative References
 
