@@ -856,10 +856,12 @@ Get all objects of a given schema type:
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsWrite`.
   - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****Must**** include a `parentCid` property, unless the message is the initial `CollectionsWrite` entry for a logically distinct record, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `CollectionsWrite` or `CollectionsDelete` entry in the record's lineage.
   - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
     - If the object contains a `protocol` property the object ****MUST**** also contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
+  - The object ****MAY**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
   - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the record ****MUST NOT**** be served in response to public queries that lack proper authorization.
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
@@ -870,11 +872,13 @@ Get all objects of a given schema type:
   "descriptor": { // Message Descriptor
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "parentCid": CID(PREVIOUS_DESCRIPTOR),
     "dataCid": CID(data),
     "dateCreated": 123456789,
     "published": true,
     "method": "CollectionsWrite",
     "schema": "https://schema.org/SocialMediaPosting",
+    "commitStrategy": "json-merge",
     "dataFormat": DATA_FORMAT
   }
 }
@@ -882,11 +886,12 @@ Get all objects of a given schema type:
 
 ##### Processing Instructions
 
-When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**** perform the following additional steps:
+When processing a `CollectionsWrite` message, a conforming implementation ****MUST**** perform the following steps:
 
-1. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical entry known to the Decentralized Web Node, the message ****MUST**** be designated as the latest state of the logical entry and fully replace all previous messages for the entry.
-2. If the incoming message has a lower `dateCreated` value than the message that represents the current state of the logical entry, the message ****MUST NOT**** be applied to the logical entry and its data ****MAY**** be discarded.
-3. If the incoming message has a `dateCreated` value equal to the message that represents the current state of the logical entry, the incoming message's IPFS CID and the IPFS CID of the message that represents the current state must be lexicographically compared and handled as follows:
+1. If the message does not have a `parentCid` property, it is asserting that it is the root of the logical record indicated. If no other root entries exist for the logical record, store the entry as a root for the logical record. If another root entry is found for the logical record (an existing object that has a matching `recordId`), proceed with the steps below to determine which root entry to retain for the logical record and delete any entries that are chained from the entry being deleted. 
+2. If the incoming message has a higher `dateCreated` value than all of the other messages for the logical record known to the Decentralized Web Node, the message ****MUST**** be designated as the latest state of the logical record and fully replace all previous messages for the record.
+3. If the incoming message has a lower `dateCreated` value than the message that represents the current state of the logical record, the message ****MUST NOT**** be applied to the logical record and its data ****MAY**** be discarded.
+4. If the incoming message has a `dateCreated` value equal to the message that represents the current state of the logical record, the incoming message's `descriptor` CID and the `descriptor` CID of the message that represents the current state must be lexicographically compared and handled as follows:
     - If the incoming message has a higher lexicographic value than the message that represents the current state, perform the actions described in Step 1 of this instruction set.
     - If the incoming message has a lower lexicographic value than the message that represents the current state, perform the actions described in Step 2 of this instruction set.
 
@@ -902,7 +907,7 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
     "dateCreated": 123456789,
     "method": "CollectionsCommit",
     "schema": "https://schema.org/SocialMediaPosting",
-    "strategy": "merge-patch",
+    "commitStrategy": "json-merge",
     "dataFormat": DATA_FORMAT
   }
 }
@@ -912,13 +917,24 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsCommit`.
-  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string that matches the `recordId` of the entry referenced by the `parentCid`.
+  - The object ****Must**** include a `parentCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `CollectionsWrite` or `CollectionsCommit` ancestor in the record's lineage.
   - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string.
   - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
     - If the object contains a `protocol` property the object ****MUST**** also contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
-  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was created by the DID owner or another permitted party.
-  - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical entry was published by the DID owner or another permitted party.
+  - The object ****MUST**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
+  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical record was created by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that ****MUST**** be set and interpreted as the time the logical record was published by the DID owner or another permitted party.
+
+##### Processing Instructions
+
+When processing a `CollectionsCommit` message, a conforming implementation ****MUST**** perform the following steps:
+
+1. The ancestor referenced by the `parentCid` ****MUST**** be a `CollectionsWrite` or `CollectionsCommit` entry, if the referenced ancestor is of any other method type, discard the commit and cease processing.
+2. The ancestor referenced by the `parentCid` ****MUST**** have the same `recordId` value as the commit's `recordId`. If it does not, discard the commit and cease processing.
+3. The ancestor referenced by the `parentCid` ****MUST**** have the same `commitStrategy` value as the commit. If it does not, discard the commit and cease processing.
+4. If all of the above steps are cleared, store the commit in reference to the logical record.
 
 #### Delete
 
@@ -927,7 +943,8 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
   "descriptor": { // Message Descriptor
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "method": "CollectionsDelete",
-    "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+    "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+    "parentCid": CID(PREVIOUS_DESCRIPTOR)
   }
 }
 ```
@@ -937,6 +954,23 @@ When processing a `CollectionsWrite` message, Decentralized Web Nodes ****MUST**
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `CollectionsDelete`.
   - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string of the record to be deleted.
+  - The object ****Must**** include a `parentCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `CollectionsWrite` ancestor in the record's lineage.
+
+  ##### Processing Instructions
+
+When processing a `CollectionsDelete` message, a conforming implementation ****MUST**** perform the following steps:
+
+1. The ancestor referenced by the `parentCid` ****MUST**** be a `CollectionsWrite` entry, if the referenced ancestor is of any other method type, discard the delete and cease processing.
+2. The ancestor referenced by the `parentCid` ****MUST**** have the same `recordId` value as the delete's `recordId`. If it does not, discard the delete and cease processing.
+3. If all of the above steps are cleared, erase all previous entries related to the record and store the delete in reference to the logical record as a tombstone.
+
+### Protocols
+
+DWeb Nodes are designed to act the substrate upon which a wide variety of decentralized applications and services can be written. With an interface like [Collections](#collections) alone, a DWeb Node owner and those they permission can write isolated records, but that alone is not enough to support and facilitate decentralized apps. Protocols introduces a mechanism for declaratively encoding an app or service's underlying protocol rules, including segmentation of records, relationships between records, data-level requirements, and constraints on how participants interact with a protocol. With the DWeb Node Protocols mechanism, one can model the underpinning protocols for a vast array of use cases in a way that enables interop-by-default between app implementations that ride on top of them.
+
+#### Configure
+
+`ProtocolsConfigure` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 ### Permissions
 
@@ -1159,7 +1193,7 @@ DWeb Node Hooks aim to not only allow permissioned subscribers to be notified of
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `HooksWrite`.
   - The object ****MAY**** contain a `hookId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
-  - The object ****MAY**** contain a `previousCid` property, and its value ****MUST**** be a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the previous `HooksWrite` in the chain.
+  - The object ****MAY**** contain a `parentCid` property, and its value ****MUST**** be a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the `descriptor` for the previous `HooksWrite` in the chain.
   - The object ****MUST**** contain a `uri` property, and its value ****MUST**** be a URI string.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
     - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
@@ -1191,7 +1225,7 @@ Updating a previously added hook:
 ```json
 { // Message
   "descriptor": {
-    "previousCid": CID_OF_PREVIOUS_INSTANCE,
+    "parentCid": CID_OF_PREVIOUS_INSTANCE,
     "method": "HooksWrite",
     "hookId": "234452-563658-5563-63546",
     "uri": "https://a-different-domain.com/new/path",
@@ -1205,9 +1239,9 @@ Updating a previously added hook:
 
 ##### `HooksWrite` Ingest Instructions
 
-If the `previousCid` property:
+If the `parentCid` property:
 - ****IS NOT**** present, index the CID of the hook for future evaluation and cease processing.
-- ****IS**** present, delete the hook referenced by the `previousCid` and index the CID of the new version of the hook for future evaluation and cease processing.
+- ****IS**** present, delete the hook referenced by the `parentCid` and index the CID of the new version of the hook for future evaluation and cease processing.
 
 #### Query
 
@@ -1242,7 +1276,7 @@ Get all active hooks Alice has written:
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `HooksDelete`.
   - The object ****MUST**** contain a `hookId` property, and its value ****MUST**** be a [[spec:rfc4122]] UUID Version 4 string.
-  - The object ****MAY**** contain a `previousCid` property, and its value ****MUST**** be a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the previous `HooksWrite` in the chain.
+  - The object ****MAY**** contain a `parentCid` property, and its value ****MUST**** be a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the `descriptor` for the previous `HooksWrite` in the chain.
  
 Deleting a hook:
 
@@ -1252,15 +1286,15 @@ Deleting a hook:
     "nonce": "9b9c7f1fcabfc471ee2682890b58a427ba2c8db59ddf3c2d5ad16ccc84bb3106",
     "method": "HooksDelete",
     "hookId": "234452-563658-5563-63546",
-    "previousCid": CID_OF_HOOK_INSTANCE_TO_DELETE
+    "parentCid": CID_OF_HOOK_INSTANCE_TO_DELETE
   }
 }
 ```
 
  ##### `HooksDelete` Ingest Instructions
 
-1. If the `previousCid` or `hookId` properties are ****IS NOT**** present, discard the object and return a [Message-Level Status Coding](#message-level-status-coding) error response of 400.
-2. If the `previousCid` property ****IS**** present and the message indicated by the CID has the same `hookId` property value, delete the hook message referenced by the `previousCid`, and retain the `HooksDelete` message as a tombstone.
+1. If the `parentCid` or `hookId` properties are ****IS NOT**** present, discard the object and return a [Message-Level Status Coding](#message-level-status-coding) error response of 400.
+2. If the `parentCid` property ****IS**** present and the message indicated by the CID has the same `hookId` property value, delete the hook message referenced by the `parentCid`, and retain the `HooksDelete` message as a tombstone.
 
 ### Sync
 
@@ -1270,6 +1304,13 @@ The Sync interface and its methods allow different Decentralized Web Nodes to co
 ## Commit Strategies
 
 Collections interface records may operate under the data modification algorithms detailed below. A record may only operate under one commit strategy at a time, as indicated via the value set on the `strategy` property of the current `CollectionsWrite` root.
+
+| Strategy Name | Notes                                                                                         |
+| ------------- | --------------------------------------------------------------------------------------------- |
+| ---           | Default strategy, no need to add a `commitStrategy` property is required.                     |
+| `json-patch`  | Delta-based JSON-type document patching, as defined in [spec:rfc6902]                         |
+| `json-merge`  | Simple deep-merge modification strategy for JSON-type documents, as defined in [spec:rfc7386] |
+
 
 ### Last-Write Wins
 
@@ -1308,9 +1349,9 @@ encrypt the data being protected, then subsequently shared with permitted recipi
 keys using the asymmetric key of each recipient.
 
 | Asymmetric Key | Symmetric Key       |
-| -----          | -----               |
-| `X25519`      | `AES-GCM`           |
-| `X25519`      | `XSalsa20-Poly1305` |
+| -------------- | ------------------- |
+| `X25519`       | `AES-GCM`           |
+| `X25519`       | `XSalsa20-Poly1305` |
 
 ## Normative References
 
