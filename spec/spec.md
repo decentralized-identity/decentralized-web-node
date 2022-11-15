@@ -997,7 +997,7 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
   - The object ****Must**** include a `lastConfiguration` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded generated record ID of the previous `ProtocolsConfigure` for that matches the `protocol` and `protocolVersion` tuple.
   - The object ****MUST**** contain a `retainedRecords` property, and if present its value ****Must**** be a CHAMP encoded as a string.
 
-#### Protocol Definitions
+##### Protocol Definitions
 
 Protocol Definition objects are declarative rules within `ProtocolConfigure` messages that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.
 
