@@ -938,7 +938,7 @@ Detail how IDs are computed for record contexts.
 
 #### Retained Message Processing
 
-Retained messages in the Collections interface are those that may be stored against the specific record the are associated with. Within the Collections interface the `CollectionsWrite`, `CollectionsCommit`, `CollectionsDelete` messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation ****MUST**** perform the following steps to process retained messages:
+Retained messages in the Collections interface are those that may be stored against the specific record they are associated with. Within the Collections interface the `CollectionsWrite`, `CollectionsCommit`, `CollectionsDelete` messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation ****MUST**** perform the following steps to process retained messages:
 
 ##### If the message is a `CollectionsWrite`:
 
@@ -973,9 +973,33 @@ Retained messages in the Collections interface are those that may be stored agai
 
 DWeb Nodes are designed to act the substrate upon which a wide variety of decentralized applications and services can be written. With an interface like [Collections](#collections) alone, a DWeb Node owner and those they permission can write isolated records, but that alone is not enough to support and facilitate decentralized apps. Protocols introduces a mechanism for declaratively encoding an app or service's underlying protocol rules, including segmentation of records, relationships between records, data-level requirements, and constraints on how participants interact with a protocol. With the DWeb Node Protocols mechanism, one can model the underpinning protocols for a vast array of use cases in a way that enables interop-by-default between app implementations that ride on top of them.
 
-#### Definition Objects
+#### `ProtocolsConfigure`
 
-Protocol Definition objects are declarative rules that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.
+`ProtocolsConfigure` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+```json
+{
+  "method": "ProtocolsConfigure", // required
+  "protocol": "identity.foundation/protocols/credential-issuance", // required
+  "protocolVersion": "1.0.0", // required
+  "definition": { PROTOCOL_DEFINITION_OBJ }, // optional
+  "lastConfiguration": CID_OF_PREVIOUS_CONFIG, // required if previous exists
+  "retainedRecords": CHAMP_OF_INCLUDED_ENTRIES // optional
+}
+```
+
+- The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProtocolsConfigure`.
+  - The object ****MUST**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol the configuration pertains to.
+  - The object ****MUST**** contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the configuration pertains to.
+  - The object ****MUST**** contain a `definition` property, and its value ****Must**** be a [Protocol Definition](#protocol-definitions) object.
+  - The object ****Must**** include a `lastConfiguration` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded generated record ID of the previous `ProtocolsConfigure` for that matches the `protocol` and `protocolVersion` tuple.
+  - The object ****MUST**** contain a `retainedRecords` property, and if present its value ****Must**** be a CHAMP encoded as a string.
+
+#### Protocol Definitions
+
+Protocol Definition objects are declarative rules within `ProtocolConfigure` messages that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.
 
 ```json
 {
@@ -1030,21 +1054,6 @@ Protocol Definition objects are declarative rules that specify the types, relati
       }
     }
   }
-}
-```
-
-#### `ProtocolsConfigure`
-
-`ProtocolsConfigure` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-```json
-{
-  "method": "ProtocolsConfigure", // required
-  "protocol": "identity.foundation/protocols/credential-issuance", // required
-  "version": "1.0.0", // required
-  "definition": { PROTOCOL_DEFINITION_OBJ }, // optional
-  "lastConfiguration": CID_OF_PREVIOUS_CONFIG, // required if previous exists
-  "retainedRecords": CHAMP_OF_INCLUDED_ENTRIES // optional
 }
 ```
 
