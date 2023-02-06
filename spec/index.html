@@ -215,11 +215,7 @@ with a given DID, as located via the DID resolution process.</p>
 </ol>
 <h4 id="request-construction"><a class="toc-anchor" href="#request-construction" >§</a> Request Construction</h4>
 <p><strong>DID-Relative URL example for passing multiple messages:</strong></p>
-<<<<<<< HEAD
-<div id="note-10" class="notice note"><a class="notice-link" href="#note-10">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
-=======
-<div id="note-250" class="notice note"><a class="notice-link" href="#note-250">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
+<div id="note-34" class="notice note"><a class="notice-link" href="#note-34">NOTE</a><p>For example purposes, the <code>queries</code> parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the <a href="#composition" >DID-relative URL Composition</a> instructions above).</p>
 </div>
 <pre class="language-json"><code class="language-json">did<span class="token operator">:</span>example<span class="token operator">:</span><span class="token number">123</span>?service=DecentralizedWebNode&amp;queries=<span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsQuery"</span><span class="token punctuation">,</span> <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
 </code></pre>
@@ -332,11 +328,7 @@ BODY <span class="token punctuation">{</span>
 </ul>
 </li>
 </ul>
-<<<<<<< HEAD
-<div id="note-11" class="notice note"><a class="notice-link" href="#note-11">NOTE</a><p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
-=======
-<div id="note-251" class="notice note"><a class="notice-link" href="#note-251">NOTE</a><p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
+<div id="note-35" class="notice note"><a class="notice-link" href="#note-35">NOTE</a><p>Individual Interface methods may describe additional properties that the <code>descriptor</code> object <strong><strong>MUST</strong></strong> or <strong><strong>MAY</strong></strong> contain, which are detailed in the <a href="#interfaces" >Interfaces</a> section of the specification.</p>
 </div>
 <h3 id="message-authorization"><a class="toc-anchor" href="#message-authorization" >§</a> Message Authorization</h3>
 <p>Some messages may require authorization material for processing them in accordance with the permissions a <a class="term-reference" href="#term:decentralized-web-node">Decentralized Web Node</a> owner has specified. If a message requires authorization it <strong><strong>MUST</strong></strong> include an <code>authorization</code> property with a value that is a [<a class="spec-reference" href="#ref:RFC7515">RFC7515</a>] General JSON Web Signature (JWS), constructed as follows:</p>
@@ -477,9 +469,9 @@ BODY <span class="token punctuation">{</span>
 </code></pre>
 <p>The message generating party <strong><strong>MUST</strong></strong> construct an encrypted message as follows:</p>
 <ol>
-<li>The <code>encryption</code> property of the <code>descriptor</code> object <strong><strong>MUST</strong></strong> be set to the string value <code>jwe</code>.</li>
-<li>Generate a [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) object for the data that is to be represented in the message.</li>
-<li>Generate a <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> from the JWE of the data produced in Step 1, and set the <code>dataCid</code> property of the <code>descriptor</code> object as the stringified representation of the CID.</li>
+<li>The <code>encryption</code> property of the <code>descriptor</code> object <strong><strong>MUST</strong></strong> be set to the string label value of a <a href="#supported-encryption-format" >Supported Encryption Format</a>.</li>
+<li>Generate an encrypted payload from the data conformant with the format specified in the <code>encryption</code> property…</li>
+<li>Generate a <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> from the payload produced in Step 2 and let the <code>dataCid</code> property of the <code>descriptor</code> object be the stringified representation of the CID.</li>
 </ol>
 <h3 id="signed-encrypted-data"><a class="toc-anchor" href="#signed-encrypted-data" >§</a> Signed &amp; Encrypted Data</h3>
 <p>If the object is to be both attributed to a signer and encrypted encrypted, it <strong><strong>MUST</strong></strong> be structured as follows:</p>
@@ -564,11 +556,7 @@ BODY <span class="token punctuation">{</span>
 <p>If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation <strong><strong>must</strong></strong> include a message-level <code>status</code> property, and its value must be an object as defined below.</p>
 <p><strong>Message succeeded for query/read-type interface that expects results</strong></p>
 <p>If a message is processed correctly and a set of result <code>entries</code> is expected, the implementation <strong><strong>MUST</strong></strong> include a message-level <code>status</code> object with its <code>code</code> property set to <code>200</code>, and <strong><strong>SHOULD</strong></strong> use <code>The message was successfully processed</code> as the status <code>detail</code> value.</p>
-<<<<<<< HEAD
-<div id="note-12" class="notice note"><a class="notice-link" href="#note-12">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
-=======
-<div id="note-252" class="notice note"><a class="notice-link" href="#note-252">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
+<div id="note-36" class="notice note"><a class="notice-link" href="#note-36">NOTE</a><p>If no results are found, the <code>status</code> remains <code>200</code>, and the implementation <strong><strong>MUST</strong></strong> return an empty <code>entries</code> array.</p>
 </div>
 <p><em>Request Example:</em></p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>  <span class="token comment">// Request Object</span>
@@ -851,6 +839,7 @@ experience for users.</p>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>Must</strong></strong> be a URI string that indicates the schema of the associated data and <strong><strong>MUST</strong></strong> be treated as an immutable value for the lifetime of the logical record.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>commitStrategy</code> property, and if present its value <strong><strong>Must</strong></strong> be a string from the table of registered <a href="#commit-strategies" >Commit Strategies</a>.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>published</code> property, and if present its value <strong><strong>Must</strong></strong> be a boolean indicating the record’s publication state. A value of <code>true</code> indicates the record has been published for public queries and consumption without requiring authorization. A value of <code>false</code> or the absence of the property indicates the record <strong><strong>MUST NOT</strong></strong> be served in response to public queries that lack proper authorization.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>encryption</code> property, and if present its value <strong><strong>Must</strong></strong> be a string that matches one of the <a href="#supported-encryption-format" >Supported Encryption Formats</a>, indicating the encryption format with which the data is encrypted. The absence of this property indicates the data is not encrypted.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>dateCreated</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC3339">RFC3339</a>] ISO 8601 timestamp that <strong><strong>MUST</strong></strong> be set and interpreted as the time the <code>CollectionsWrite</code> was created by the DID owner or another permitted party.</li>
 <li>The object <strong><strong>MAY</strong></strong> contain a <code>datePublished</code> property, and its value <strong><strong>MUST</strong></strong> be an [<a class="spec-reference" href="#ref:RFC3339">RFC3339</a>] ISO 8601 timestamp that <strong><strong>MUST</strong></strong> be set and interpreted as the time the <code>CollectionsWrite</code> was published by the DID owner or another permitted party.</li>
 </ul>
@@ -864,6 +853,7 @@ experience for users.</p>
     <span class="token property">"dataCid"</span><span class="token operator">:</span> CID(data)<span class="token punctuation">,</span>
     <span class="token property">"dateCreated"</span><span class="token operator">:</span> <span class="token number">123456789</span><span class="token punctuation">,</span>
     <span class="token property">"published"</span><span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token property">"encryption"</span><span class="token operator">:</span> <span class="token string">"jwe"</span><span class="token punctuation">,</span>
     <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"CollectionsWrite"</span><span class="token punctuation">,</span>
     <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://schema.org/SocialMediaPosting"</span><span class="token punctuation">,</span>
     <span class="token property">"commitStrategy"</span><span class="token operator">:</span> <span class="token string">"json-merge"</span><span class="token punctuation">,</span>
@@ -917,17 +907,10 @@ experience for users.</p>
 </li>
 </ul>
 <h4 id="computed-context-ids"><a class="toc-anchor" href="#computed-context-ids" >§</a> Computed Context IDs</h4>
-<<<<<<< HEAD
-<div id="todo-13" class="notice todo"><a class="notice-link" href="#todo-13">TODO</a><p>Detail how IDs are computed for record contexts.</p>
+<div id="todo-45" class="notice todo"><a class="notice-link" href="#todo-45">TODO</a><p>Detail how IDs are computed for record contexts.</p>
 </div>
 <h4 id="retained-message-processing"><a class="toc-anchor" href="#retained-message-processing" >§</a> Retained Message Processing</h4>
 <p>Retained messages in the Collections interface are those that may be stored against the specific record they are associated with. Within the Collections interface the <code>CollectionsWrite</code>, <code>CollectionsCommit</code>, <code>CollectionsDelete</code> messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation <strong><strong>MUST</strong></strong> perform the following steps to process retained messages:</p>
-=======
-<div id="todo-250" class="notice todo"><a class="notice-link" href="#todo-250">TODO</a><p>Detail how IDs are computed for record contexts.</p>
-</div>
-<h4 id="retained-message-processing"><a class="toc-anchor" href="#retained-message-processing" >§</a> Retained Message Processing</h4>
-<p>Retained messages in the Collections interface are those that may be stored against the specific record the are associated with. Within the Collections interface the <code>CollectionsWrite</code>, <code>CollectionsCommit</code>, <code>CollectionsDelete</code> messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation <strong><strong>MUST</strong></strong> perform the following steps to process retained messages:</p>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
 <h5 id="if-the-message-is-a-collectionswrite"><a class="toc-anchor" href="#if-the-message-is-a-collectionswrite" >§</a> If the message is a <code>CollectionsWrite</code>:</h5>
 <ol>
 <li>Generate the message’s <a href="#collection-entry-id" id="collection-entry-id" ><em>Entry ID</em></a> by performing the <a href="#recordid-generation" ><em>Record ID Generation Process</em></a>.
@@ -965,7 +948,6 @@ experience for users.</p>
 </ol>
 <h3 id="protocols"><a class="toc-anchor" href="#protocols" >§</a> Protocols</h3>
 <p>DWeb Nodes are designed to act the substrate upon which a wide variety of decentralized applications and services can be written. With an interface like <a href="#collections" >Collections</a> alone, a DWeb Node owner and those they permission can write isolated records, but that alone is not enough to support and facilitate decentralized apps. Protocols introduces a mechanism for declaratively encoding an app or service’s underlying protocol rules, including segmentation of records, relationships between records, data-level requirements, and constraints on how participants interact with a protocol. With the DWeb Node Protocols mechanism, one can model the underpinning protocols for a vast array of use cases in a way that enables interop-by-default between app implementations that ride on top of them.</p>
-<<<<<<< HEAD
 <h4 id="protocolsconfigure"><a class="toc-anchor" href="#protocolsconfigure" >§</a> <code>ProtocolsConfigure</code></h4>
 <p><code>ProtocolsConfigure</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
@@ -984,6 +966,7 @@ experience for users.</p>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ProtocolsConfigure</code>.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>protocol</code> property, and its value <strong><strong>Must</strong></strong> be a URI that denotes the Protocol the configuration pertains to.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>protocolVersion</code> property, and its value <strong><strong>Must</strong></strong> be a <a path-0="semver.org"path-1=""href="https://semver.org/" >SemVer</a> string that denotes the version of the Protocol the configuration pertains to.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>description</code> property, and its value <strong><strong>Must</strong></strong> be a string that describes what the protocol is designed to do.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>definition</code> property, and its value <strong><strong>Must</strong></strong> be a <a href="#protocol-definitions" >Protocol Definition</a> object.</li>
 <li>The object <strong><strong>Must</strong></strong> include a <code>lastConfiguration</code> property, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded generated record ID of the previous <code>ProtocolsConfigure</code> for that matches the <code>protocol</code> and <code>protocolVersion</code> tuple.</li>
 <li>The object <strong><strong>MUST</strong></strong> contain a <code>retainedRecords</code> property, and if present its value <strong><strong>Must</strong></strong> be a CHAMP encoded as a string.</li>
@@ -992,26 +975,26 @@ experience for users.</p>
 </ul>
 <h4 id="protocol-definitions"><a class="toc-anchor" href="#protocol-definitions" >§</a> Protocol Definitions</h4>
 <p>Protocol Definition objects are declarative rules within <code>ProtocolConfigure</code> messages that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.</p>
-=======
-<h4 id="definition-objects"><a class="toc-anchor" href="#definition-objects" >§</a> Definition Objects</h4>
-<p>Protocol Definition objects are declarative rules that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.</p>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
 <pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
   <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ProtocolsConfigure"</span><span class="token punctuation">,</span>
   <span class="token property">"protocol"</span><span class="token operator">:</span> <span class="token string">"https://decentralized-social-example.org/protocol/"</span><span class="token punctuation">,</span>
   <span class="token property">"protocolVersion"</span><span class="token operator">:</span> <span class="token string">"1.0.0"</span><span class="token punctuation">,</span>
-  <span class="token property">"protocolDefinition"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+  <span class="token property">"description"</span><span class="token operator">:</span> <span class="token string">"..."</span><span class="token punctuation">,</span>
+  <span class="token property">"definition"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
     <span class="token property">"labels"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
       <span class="token property">"post"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://decentralized-social-example.org/schemas/post"</span><span class="token punctuation">,</span>
-        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"application/json"</span><span class="token punctuation">]</span>
+        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"application/json"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"purpose"</span><span class="token operator">:</span> <span class="token string">"Enables you to post social messages others can read"</span>
       <span class="token punctuation">}</span><span class="token punctuation">,</span>
       <span class="token property">"reply"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
         <span class="token property">"schema"</span><span class="token operator">:</span> <span class="token string">"https://decentralized-social-example.org/schemas/reply"</span><span class="token punctuation">,</span>
-        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"application/json"</span><span class="token punctuation">]</span>
+        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"application/json"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"purpose"</span><span class="token operator">:</span> <span class="token string">"Allows others to reply to your social posts"</span>
       <span class="token punctuation">}</span><span class="token punctuation">,</span>
       <span class="token property">"image"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"image/jpeg"</span><span class="token punctuation">,</span> <span class="token string">"image/png"</span><span class="token punctuation">,</span> <span class="token string">"image/gif"</span><span class="token punctuation">]</span>
+        <span class="token property">"dataFormat"</span><span class="token operator">:</span> <span class="token punctuation">[</span><span class="token string">"image/jpeg"</span><span class="token punctuation">,</span> <span class="token string">"image/png"</span><span class="token punctuation">,</span> <span class="token string">"image/gif"</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token property">"purpose"</span><span class="token operator">:</span> <span class="token string">"Attach images to posts and replies"</span>
       <span class="token punctuation">}</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token property">"records"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
@@ -1024,7 +1007,7 @@ experience for users.</p>
               <span class="token property">"image"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
                 <span class="token property">"allow"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
                   <span class="token property">"author"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
-                    <span class="token property">"of"</span><span class="token operator">:</span> <span class="token string">"post/reply"</span><span class="token punctuation">,</span>
+                    <span class="token property">"of"</span><span class="token operator">:</span> <span class="token string">"post.reply"</span><span class="token punctuation">,</span>
                     <span class="token property">"to"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
                       <span class="token property">"create"</span><span class="token operator">:</span> <span class="token punctuation">{</span>
                         <span class="token property">"publication"</span><span class="token operator">:</span> <span class="token string">"required"</span>
@@ -1050,36 +1033,61 @@ experience for users.</p>
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<<<<<<< HEAD
-=======
-<h4 id="protocolsconfigure"><a class="toc-anchor" href="#protocolsconfigure" >§</a> <code>ProtocolsConfigure</code></h4>
-<p><code>ProtocolsConfigure</code> messages are JSON objects that include general <a href="#message-descriptors" >Message Descriptor</a> properties and the following additional properties, which <strong><strong>must</strong></strong> be composed as follows:</p>
-<pre class="language-json"><code class="language-json"><span class="token punctuation">{</span>
-  <span class="token property">"method"</span><span class="token operator">:</span> <span class="token string">"ProtocolsConfigure"</span><span class="token punctuation">,</span> <span class="token comment">// required</span>
-  <span class="token property">"protocol"</span><span class="token operator">:</span> <span class="token string">"identity.foundation/protocols/credential-issuance"</span><span class="token punctuation">,</span> <span class="token comment">// required</span>
-  <span class="token property">"version"</span><span class="token operator">:</span> <span class="token string">"1.0.0"</span><span class="token punctuation">,</span> <span class="token comment">// required</span>
-  <span class="token property">"definition"</span><span class="token operator">:</span> <span class="token punctuation">{</span> PROTOCOL_DEFINITION_OBJ <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token comment">// optional</span>
-  <span class="token property">"lastConfiguration"</span><span class="token operator">:</span> CID_OF_PREVIOUS_CONFIG<span class="token punctuation">,</span> <span class="token comment">// required if previous exists</span>
-  <span class="token property">"retainedRecords"</span><span class="token operator">:</span> CHAMP_OF_INCLUDED_ENTRIES <span class="token comment">// optional</span>
-<span class="token punctuation">}</span>
-</code></pre>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
 <ul>
-<li>The message object <strong><strong>MUST</strong></strong> contain a <code>descriptor</code> property, and its value <strong><strong>MUST</strong></strong> be a JSON object composed as follows:
+<li>
+<p>The <em>Protocols Definition</em> object <strong><strong>MUST</strong></strong> contain a <code>labels</code> property, and its value <strong><strong>MUST</strong></strong> be an object composed as follows:</p>
 <ul>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>method</code> property, and its value <strong><strong>MUST</strong></strong> be the string <code>ProtocolsConfigure</code>.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>protocol</code> property, and its value <strong><strong>Must</strong></strong> be a URI that identifies the protocol.</li>
-<li>The object <strong><strong>MUST</strong></strong> contain a <code>protocolVersion</code> property, and its value <strong><strong>Must</strong></strong> be a <a path-0="semver.org"path-1=""href="https://semver.org/" >SemVer</a> string that denotes the version of the protocol being configured.</li>
-<li>The object <strong><strong>MAY</strong></strong> contain a <code>protocolDefinition</code> property, and its value <strong><strong>Must</strong></strong> be a valid <em>Protocols Definition</em>.</li>
-<li>The object <strong><strong>MUST</strong></strong> include a <code>lastConfiguration</code> property if it is not the initial configuration record for a given protocol version, and its value <strong><strong>MUST</strong></strong> be the stringified <a path-0="docs.ipfs.io"path-1="concepts"path-2="content-addressing"path-3="#identifier-formats"href="https://docs.ipfs.io/concepts/content-addressing/#identifier-formats" >Version 1 CID</a> of the <a path-0="github.com"path-1="ipld"path-2="specs"path-3="blob"path-4="master"path-5="block-layer"path-6="codecs"path-7="dag-cbor.md"href="https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md" >DAG CBOR</a> encoded <code>descriptor</code> object of the previous <code>ProtocolsConfigure</code> ancestor in the record’s lineage.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>dataFormat</code> property, and its value <strong><strong>MUST</strong></strong> be an array of strings that indicate the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the <code>dataFormat</code> property to <code>application/json</code>.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>schema</code> property, and if present its value <strong><strong>MUST</strong></strong> be a valid URI string that identifies the protocol the definition pertains to.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>purpose</code> property, and if present its value <strong><strong>MUST</strong></strong> be a string that provides a description for how the data is being used in the protocol. This information will often be used by User Agent applications to display in user consent UI.</li>
+</ul>
+</li>
+<li>
+<p>The <em>Protocols Definition</em> object <strong><strong>MUST</strong></strong> contain a <code>records</code> property, and its value <strong><strong>MUST</strong></strong> be a <em>Record Rules</em> object whose keys match the labels defined in the <em>Protocols Definition</em> object. This object is recursive, allowing subsequent record relationships to be defined within. Labeled members of the object are composed as follows:</p>
+<ul>
+<li>The object <strong><strong>may</strong></strong> contain an <code>allow</code> property, and its value <strong><strong>MUST</strong></strong> be an object that defines access, interaction, and data relationship rules. The object is composed as follows:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>author</code> property, and if present its value <strong><strong>must</strong></strong> be an <em>Actor Object</em> composed as follows:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>of</code> property, and if present its value <strong><strong>must</strong></strong> be a dot delimited path reference to another record entry in the <em>Record Rules</em> tree. A conforming implementer <strong><strong>MUST</strong></strong> regard the absence of this property as a reference to the author of the labeled member object of the <em>Record Rule</em> it is contained within.</li>
+<li>The object <strong><strong>MUST</strong></strong> contain a <code>to</code> property, and if present its value <strong><strong>must</strong></strong> be an <em>Allowed Activity</em> object composed as follows:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>create</code> property, and if present its value <strong><strong>MUST</strong></strong> be an object composed as follows:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>publication</code> property, and if present its value <strong><strong>MUST</strong></strong> be a boolean.</li>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>encryption</code> property, and if present its value <strong><strong>MUST</strong></strong> be one of the following string values:
+<ul>
+<li><code>optional</code> - the object <strong><strong>MAY</strong></strong> be encrypted using the key provided by the owner of a Decentralized Web Node in the [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) format.</li>
+<li><code>required</code> - the object <strong><strong>MUST</strong></strong> be encrypted using the key provided by the owner of a Decentralized Web Node in the [<a class="spec-reference" href="#ref:RFC7516">RFC7516</a>] JSON Web Encryption (JWE) format.</li>
 </ul>
 </li>
 </ul>
-<<<<<<< HEAD
-<div id="todo-14" class="notice todo"><a class="notice-link" href="#todo-14">TODO</a><p>ADD PROTOCOL DEFINITION SPEC TEXT</p>
-=======
-<div id="todo-251" class="notice todo"><a class="notice-link" href="#todo-251">TODO</a><p>ADD PROTOCOL DEFINITION SPEC TEXT</p>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>update</code> property, and if present its value <strong><strong>MUST</strong></strong> be an object composed as follows:
+<ul>
+<li>…</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>delete</code> property, and if present its value <strong><strong>MUST</strong></strong> be an object composed as follows:
+<ul>
+<li>…</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>The object <strong><strong>MAY</strong></strong> contain a <code>recipient</code> property, and if present its value <strong><strong>must</strong></strong> be an <em>Actor Object</em> composed as follows:
+<ul>
+<li>The object <strong><strong>MAY</strong></strong> contain an <code>of</code> property, and if present its value <strong><strong>must</strong></strong> be a dot delimited path reference to another record entry in the <em>Record Rules</em> tree. A conforming implementer <strong><strong>MUST</strong></strong> regard the absence of this property as a reference to the recipient of the labeled member object of the <em>Record Rule</em> it is contained within.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<div id="todo-46" class="notice todo"><a class="notice-link" href="#todo-46">TODO</a><p>ADD PROTOCOL DEFINITION SPEC TEXT</p>
 </div>
 <h5 id="processing-instructions"><a class="toc-anchor" href="#processing-instructions" >§</a> Processing Instructions</h5>
 <p>When processing a <code>ProtocolsConfigure</code> message, a conforming implementation <strong><strong>MUST</strong></strong> perform the following steps:</p>
@@ -1458,17 +1466,10 @@ section of this specification, with the requirement that the <code>kid</code> an
 </tbody>
 </table>
 <h3 id="json-patch"><a class="toc-anchor" href="#json-patch" >§</a> JSON Patch</h3>
-<<<<<<< HEAD
-<div id="todo-15" class="notice todo"><a class="notice-link" href="#todo-15">TODO</a><p>Detail JSON Patch as a commit strategy option.</p>
+<div id="todo-47" class="notice todo"><a class="notice-link" href="#todo-47">TODO</a><p>Detail JSON Patch as a commit strategy option.</p>
 </div>
 <h3 id="json-merge-patch"><a class="toc-anchor" href="#json-merge-patch" >§</a> JSON Merge Patch</h3>
-<div id="todo-16" class="notice todo"><a class="notice-link" href="#todo-16">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
-=======
-<div id="todo-252" class="notice todo"><a class="notice-link" href="#todo-252">TODO</a><p>Detail JSON Patch as a commit strategy option.</p>
-</div>
-<h3 id="json-merge-patch"><a class="toc-anchor" href="#json-merge-patch" >§</a> JSON Merge Patch</h3>
-<div id="todo-253" class="notice todo"><a class="notice-link" href="#todo-253">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
+<div id="todo-48" class="notice todo"><a class="notice-link" href="#todo-48">TODO</a><p>Detail JSON Merge Patch as a commit strategy option.</p>
 </div>
 <h2 id="configurations"><a class="toc-anchor" href="#configurations" >§</a> Configurations</h2>
 <p>While it is strongly encouraged to implement the full set of Decentralized Web Node features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Decentralized Web Node feature sets that tend to serve different purposes.</p>
@@ -1484,10 +1485,7 @@ section of this specification, with the requirement that the <code>kid</code> an
 <span class="token punctuation">}</span>
 </code></pre>
 <h2 id="supported-encryption-schemes"><a class="toc-anchor" href="#supported-encryption-schemes" >§</a> Supported Encryption Schemes</h2>
-<p>A conforming implementation <strong><strong>MUST</strong></strong> be capable of encrypting and decrypting data stored in Decentralized Web Nodes
-using the following combinations of cryptographic schemes. Each scheme is a pair, wherein the symmetric keys are used to
-encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric
-keys using the asymmetric key of each recipient.</p>
+<p>A conforming implementation <strong><strong>MUST</strong></strong> be capable of encrypting and decrypting data stored in Decentralized Web Nodes using the following combinations of cryptographic schemes. Each scheme is a pair, wherein the symmetric keys are used to encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric keys using the asymmetric key of each recipient.</p>
 <table>
 <thead>
 <tr>
@@ -1498,6 +1496,26 @@ keys using the asymmetric key of each recipient.</p>
 <tbody>
 <tr>
 <td><code>X25519</code></td>
+<td><code>AES-GCM</code></td>
+</tr>
+<tr>
+<td><code>X25519</code></td>
+<td><code>XSalsa20-Poly1305</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="supported-encryption-formats"><a class="toc-anchor" href="#supported-encryption-formats" >§</a> Supported Encryption Formats</h2>
+<p>A conforming implementation <strong><strong>MUST</strong></strong> be capable of encrypting and decrypting data stored in Decentralized Web Nodes using the following combinations of cryptographic schemes. Each scheme is a pair, wherein the symmetric keys are used to encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric keys using the asymmetric key of each recipient.</p>
+<table>
+<thead>
+<tr>
+<th>Label</th>
+<th>Format</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>jwe</code></td>
 <td><code>AES-GCM</code></td>
 </tr>
 <tr>
@@ -1618,13 +1636,8 @@ keys using the asymmetric key of each recipient.</p>
 </li>
 <li><a href="#protocols" >Protocols</a>
 <ul>
-<<<<<<< HEAD
 <li><a href="#protocolsconfigure" ><code>ProtocolsConfigure</code></a></li>
 <li><a href="#protocol-definitions" >Protocol Definitions</a></li>
-=======
-<li><a href="#definition-objects" >Definition Objects</a></li>
-<li><a href="#protocolsconfigure" ><code>ProtocolsConfigure</code></a></li>
->>>>>>> cebe92f452cc1075d5ac5e71c295f917ee0567ce
 <li><a href="#protocolsquery" ><code>ProtocolsQuery</code></a></li>
 </ul>
 </li>
@@ -1658,6 +1671,7 @@ keys using the asymmetric key of each recipient.</p>
 </ul>
 </li>
 <li><a href="#supported-encryption-schemes" >Supported Encryption Schemes</a></li>
+<li><a href="#supported-encryption-formats" >Supported Encryption Formats</a></li>
 <li><a href="#normative-references" >Normative References</a></li>
 </ul>
 
