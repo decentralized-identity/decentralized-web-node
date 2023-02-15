@@ -108,6 +108,43 @@ In this section, focus will be to show how this would work, and elaborate on the
 
 ## DWNS at Scale
 
+### Multiple DWN Architecture
+
+#### Scenario:
+
+- Alice and Bob
+- Alice has a Chat App. 1 Replica. Full sync.
+- Bob's does not have a replica. Single node deployment.
+- Todo App's are self contained.
+- Chat aggregator is a message board, shows messages from many chats.
+
+#### Topology
+
+```mermaid
+graph TD
+  subgraph Bob
+    subgraph BChatApp[Chat App]
+      BDWN[DWN1]
+    end
+    subgraph BTodoApp[Todo App]
+      BDWN1[DWN2]
+    end
+  end
+  subgraph Alice
+    subgraph AChatApp[Chat App did:ion:alice1]
+      ADWN[DWN1]
+      ADWN1[DWN2]
+      ADWN -->|sync| ADWN1
+    end
+    subgraph ATodoApp[Todo App]
+      ADWN2[DWN2]
+    end
+  end
+  DWNAgg[DWN Chat Aggregator]
+  ADWN1 --> DWNAgg
+  BDWN --> DWNAgg
+```
+
 ## Reference Implementations
 
 - [TBD's JS SDK](https://github.com/TBD54566975/dwn-sdk-js) : Javascript sdk
@@ -281,3 +318,21 @@ Given ${n_0, n_1, n_n} \in n_{DID}$,
 - Use Case #8: Trust Ping
 - https://didcomm.org/trust-ping/2.0/
   - Can Carol ping Bob's DWN and get a trust ping back? What about reverse?
+
+### Question and Answer
+
+- **For the base case many DWNs should I expect a particular person to have?** A person is
+  expected to have a few DWNs. Maybe more than 1 but less than 10.
+- **If I replicate DWNs for a service, how many DID's should be assigned?** One
+  did can refer to multiple DWNs. There is a preference toward the first service
+  endpoint in the [resolution array](https://identity.foundation/decentralized-web-node/spec/#resolution)
+- **How does it work when there is an asymmetry of resources across DWNs w.r.t
+  sync?** There eventually will be selective sync that can allow you to filter
+  certain things to sync across DWNs.
+- **How does latency impact sync?** All DWNs are built on a CRDT, so they will
+  eventually resolve without conflict, however you can expect that latency may
+  impact the speed of the resolution. Therefore, it's recommended to pick the
+  most highly available node for sending data across.
+- **How does the CRDT system work?** There are 2 levels of CRDT. The base layer,
+  object level CRDT, and the second layer, which is the data CRDT. These are
+  managed with commit strategies. See [here] for more information.
