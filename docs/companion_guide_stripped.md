@@ -7,6 +7,8 @@
 - [Decentralized Web Node Companion Guide (DWN)](#decentralized-web-node-companion-guide-dwn)
   - [Overview](#overview)
   - [Target Audience](#target-audience)
+  - [Scope](#scope)
+  - [Disclaimers](#disclaimers)
   - [Terminology](#terminology)
   - [Technology Comparision](#technology-comparision)
   - [How To Use A DWN](#how-to-use-a-dwn)
@@ -39,6 +41,14 @@ TODO
 ## Target Audience
 
 TODO
+
+## Scope
+
+TODO
+
+## Disclaimers
+
+TODO: Note about opinioation
 
 ## Terminology
 
