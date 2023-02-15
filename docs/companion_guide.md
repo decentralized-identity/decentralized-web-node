@@ -1,6 +1,6 @@
 # Decentralized Web Node Companion Guide (DWN)
 
-**STATUS:** DRAFT
+**STATUS:** PRE-DRAFT
 
 The companion guide is intended to be a supportive guide to the core [spec guide](https://identity.foundation/decentralized-web-node/spec/). It is intended to make DWN's more accessible for the general audience.
 
