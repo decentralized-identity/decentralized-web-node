@@ -1,325 +1,324 @@
 # Decentralized Web Node Companion Guide (DWN)
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+
+**Table of Contents**
+
+- [Decentralized Web Node Companion Guide (DWN)](#decentralized-web-node-companion-guide-dwn)
+  - [Overview :chatgpt:](#overview-chatgpt)
+    - [What Are Decentralized Web Nodes? :chatgpt:](#what-are-decentralized-web-nodes-chatgpt)
+  - [Target Audience :chatgpt:](#target-audience-chatgpt)
+  - [Scope :chatgpt:](#scope-chatgpt)
+  - [Disclaimer](#disclaimer)
+  - [Terminology :chatgpt:](#terminology-chatgpt)
+  - [Technology Comparision](#technology-comparision)
+  - [Architecture and Components :chatgpt:](#architecture-and-components-chatgpt)
+  - [Node Discovery and Peer-to-Peer Networking :chatgpt:](#node-discovery-and-peer-to-peer-networking-chatgpt)
+  - [Data Sharing and Interoperability :chatgpt:](#data-sharing-and-interoperability-chatgpt)
+  - [Security and Privacy :chatgpt:](#security-and-privacy-chatgpt)
+  - [Testing and Debugging :chatgpt:](#testing-and-debugging-chatgpt)
+  - [Deployment and Operations :chatgpt:](#deployment-and-operations-chatgpt)
+    - [Example Deployment (Simple)](#example-deployment-simple)
+    - [Example Deployment (Complex)](#example-deployment-complex)
+  - [Miscellaneous](#miscellaneous)
+    - [Example Use Cases](#example-use-cases)
+    - [Real World Applications](#real-world-applications)
+    - [DWN Adoption](#dwn-adoption)
+    - [Ecosystem interplay](#ecosystem-interplay)
+    - [Limitations and Other Considerations](#limitations-and-other-considerations)
+    - [Q&A](#qa)
+    - [Reference Implementations](#reference-implementations)
+
+<!-- markdown-toc end -->
+
+## Overview :chatgpt:
+
+The Decentralized Web Node (DWN) companion guide is a non-normative guide that
+provides an overview of the functional requirements and design processes for
+implementing the DWN specification developed by the Decentralized Identity
+Foundation (DIF). This guide is intended to be used by developers, architects,
+and solution providers who are interested in building decentralized web
+applications and services that conform to the DWN specification.
+
+This companion guide is not a [formal
+specification](https://identity.foundation/decentralized-web-node/spec/), but
+rather a practical resource that provides guidance on implementing the DWN
+specification in a way that promotes best practices and ensures interoperability
+with other decentralized web nodes. The guide covers a range of topics,
+including functional requirements, design considerations, and best practices for
+building and deploying decentralized web nodes.
+
+The contents of this companion guide include:
+
+- An overview of the DWN specification, including its purpose, scope, and key
+  features.
+- Functional requirements for implementing the DWN specification, including node
+  discovery, peer-to-peer networking, and data sharing protocols.
+- Design considerations for building decentralized web nodes that conform to the
+  DWN specification, including the use of decentralized storage systems like
+  IPFS, and cryptographic protocols for secure data sharing and verification.
+- Best practices for building and deploying decentralized web nodes, including
+  strategies for testing, debugging, and monitoring.
+
+This companion guide is intended to supplement the [formal DWN
+specification](https://identity.foundation/decentralized-web-node/spec/)
+developed by the DIF. By providing practical guidance on implementing the
+specification, this guide can help developers, architects, and solution
+providers to build decentralized web applications and services that promote
+greater privacy, security, and user control over their data.
+
+Overall, the Decentralized Web Node companion guide is a valuable resource for
+anyone who is interested in building decentralized web nodes that conform to the
+DWN specification.
+
 **STATUS:** PRE-DRAFT
 
-The companion guide is intended to be a supportive guide to the core [spec guide](https://identity.foundation/decentralized-web-node/spec/). It is intended to make DWN's more accessible for the general audience.
+### What Are Decentralized Web Nodes? :chatgpt:
 
-- 3 efforts need to happen:
-  - Improving the specifications on DWNs
-  - Providing better tools for adoption both code and documentation
-  - Better understanding of how the larger ecosystem interacts with DWNs.
+The DWN specification is a set of standards for building and deploying
+decentralized web nodes, which are the building blocks of a decentralized web
+infrastructure.
 
-## Overview
+The DWN specification defines a set of protocols and APIs that enable
+decentralized web nodes to communicate and work together in a secure and
+interoperable way. This includes standards for data sharing, node discovery, and
+peer-to-peer networking.
 
-- Describe the intent of DWNs
-  - Implicit: Why are other methods not sufficient.
-- Why it's valuable and who benefits from DWNs.
-- Overview of DWNs.
-  - What they do
-  - How they work
-  - Basic architecture
-- Design principles of DWNs
-  - What's the Lift?
+The DWN specification is designed to enable developers to build decentralized
+web applications and services that can operate independently of centralized
+infrastructure. This can help to improve the privacy, security, and resilience
+of the web, while also promoting greater user control over their data.
 
-## Target audience of this document
+The functional advantages of DWN's are that they are very good at scaling
+decentralized web apps. They enable multi-party data transactions with minimal
+overhead.
 
-- Proposal: Developers implementing DWNs, Architects, and Solution providers trying to understand the value proposition of DWNs.
+Overall, the DWN specification is an important part of the DIF's work to promote
+the development of decentralized web technologies and standards. By providing a
+clear set of guidelines and best practices for building and deploying
+decentralized web nodes, the DWN specification can help to accelerate the
+adoption of a more decentralized and open web.
 
-## Terminology
+## Target Audience :chatgpt:
 
-This is explaining terminology on a funcational level, not a specification level.
+This target audience for this document are those that have a strong technical
+background and experience in building web applications, as well as a good
+understanding of decentralized systems and protocols. They may also have
+experience with blockchain technologies, distributed computing, and peer-to-peer
+networking.
 
-- **IPFS** :: A protocol, hypermedia and file sharing peer-to-peer network for storing and sharing data in a distributed file system.
-- **DWN** :: A data storage and message relay mechanism entities can use to locate public or private permissioned data related to a given Decentralized Identifier (DID).
-- **DID** :: Decentralized identifiers (DIDs) are a type of globally unique identifier that enables an entity to be identified in a manner that is verifiable, persistent (as long as the DID controller desires), and does not require the use of a centralized registry.
-- **[DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md)** :: DAG-CBOR is a codec that implements the IPLD Data Model as a subset of CBOR, plus some additional constraints for hash consistent representations.
-- **Requests Objects** :: Request Objects are JSON object envelopes used to pass messages to Decentralized Web Nodes.
-- **Collection** :: An interface of Decentralized Web Nodes provides a mechanism to store data relative to shared schemas.
-- **Protocol** :: Protocols introduces a mechanism for declaratively encoding an app or service’s underlying protocol rules, including segmentation of records, relationships between records, data-level requirements, and constraints on how participants interact with a protocol
+Developers who intend to implement the DWN specification will need to have a
+good understanding of the protocols and APIs defined in the specification, as
+well as the underlying technologies that support it. This may include
+familiarity with decentralized storage systems like IPFS, as well as
+cryptographic protocols for secure data sharing and verification. This guide is
+intended to provide descriptive and functional color around some of the more
+formal specifications provided by the core specs.
+
+Architects and solution providers will also need to have a good understanding of
+the broader decentralized web ecosystem, including emerging standards and best
+practices. This can help to inform the design of decentralized web applications
+and services that are secure, scalable, and interoperable.
+
+Overall, the target audience for the DWN companion guide is a technical community
+that is committed to building a more decentralized and open web. By leveraging
+the DWN specification, developers, architects, and solution providers can help
+to accelerate the adoption of decentralized web technologies, and promote
+greater privacy, security, and user control over their data.
+
+## Scope :chatgpt:
+
+This non-normative guide is intended to provide an overview of the functional
+requirements and design processes for implementing the Decentralized Web Node
+(DWN) specification developed by the Decentralized Identity Foundation (DIF).
+This guide is intended to be used by developers, architects, and solution
+providers who are interested in building decentralized web applications and
+services that conform to the DWN specification.
+
+The guide covers the following topics:
+
+- An overview of the DWN specification, including its purpose, scope, and key
+  features.
+- Functional requirements for implementing the DWN specification,
+  including node discovery, peer-to-peer networking, and data sharing protocols.
+- Design considerations for building decentralized web nodes that conform to the
+  DWN specification, including the use of decentralized storage systems like IPFS,
+  and cryptographic protocols for secure data sharing and verification.
+- Bestpractices for building and deploying decentralized web nodes, including
+  strategies for testing, debugging, and monitoring.
+
+This guide is intended to be a non-normative companion to the formal DWN
+specification developed by the DIF. While it is not a formal specification, this
+guide is intended to provide practical guidance for implementing the DWN
+specification in a way that promotes best practices and ensures interoperability
+with other decentralized web nodes.
+
+Overall, the scope of this non-normative guide is to provide developers,
+architects, and solution providers with a clear and practical overview of the
+functional requirements and design processes for implementing the DWN
+specification developed by the DIF.
+
+## Disclaimer
+
+This Decentralized Web Node (DWN) companion guide is a non-normative resource
+that is intended to provide practical guidance on implementing the DWN
+specification developed by the Decentralized Identity Foundation (DIF). This
+guide is not a formal specification, and as such, it is not intended to replace
+or supersede the DWN specification.
+
+The contents of this guide are based on the opinions and experiences of the
+authors, and are not necessarily endorsed by the DIF or any other organization.
+The guide is intended to be opinionated in the sense that it represents a
+particular perspective on how best to implement the DWN specification, based on
+the authors' experiences and insights.
+
+Readers are encouraged to use their own judgment and discretion when
+implementing the DWN specification, and to consider a range of approaches and
+best practices. This companion guide is not intended to be prescriptive or
+comprehensive, and readers are encouraged to consult other resources and experts
+in the field to inform their decisions.
+
+Overall, this companion guide is intended to provide a helpful resource for
+those interested in implementing the DWN specification, but it should be
+understood that the opinions and recommendations expressed in this guide are not
+the only or definitive way to approach decentralized web node design and
+implementation
+
+## Terminology :chatgpt:
+
+The Terminology section of the Decentralized Web Node (DWN) companion guide is
+intended to provide a comprehensive and accessible reference for the key terms
+and concepts related to the DWN specification. This section aims to define
+important technical terms and concepts in a clear and concise manner, and to
+provide examples and illustrations where appropriate. The Terminology section is
+designed to be a useful resource for developers, architects, and solution
+providers who are new to the world of decentralized web technologies, as well as
+for those who are more experienced and looking for a refresher or clarification
+on certain terms and concepts.
+
+- **IPFS** :: A protocol, hypermedia and file sharing peer-to-peer network for
+  storing and sharing data in a distributed file system.
+- **DWN** :: A data storage and message relay mechanism entities can use to
+  locate public or private permissioned data related to a given Decentralized
+  Identifier (DID).
+- **DID** :: Decentralized identifiers (DIDs) are a type of globally unique
+  identifier that enables an entity to be identified in a manner that is
+  verifiable, persistent (as long as the DID controller desires), and does not
+  require the use of a centralized registry.
+- **[DAG
+  CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md)**
+  :: DAG-CBOR is a codec that implements the IPLD Data Model as a subset of
+  CBOR, plus some additional constraints for hash consistent representations.
+- **Requests Objects** :: Request Objects are JSON object envelopes used to pass
+  messages to Decentralized Web Nodes.
+- **Collection** :: An interface of Decentralized Web Nodes provides a mechanism
+  to store data relative to shared schemas.
+- **Protocol** :: Protocols introduces a mechanism for declaratively encoding an
+  app or service’s underlying protocol rules, including segmentation of records,
+  relationships between records, data-level requirements, and constraints on how
+  participants interact with a protocol
 - **Hook** :: Web Hooks are one-way pushes of data to subscribed entities.
-- **[IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml)** :: A two-part identifier for file formats and format contents transmitted on the Internet aka MIME type.
-- **JSON Web Signature ( JWS )** :: Content secured with digital signatures or Message Authentication Codes (MACs) using JSON-based data structures
+- **[IANA Media
+  Type](https://www.iana.org/assignments/media-types/media-types.xhtml)** :: A
+  two-part identifier for file formats and format contents transmitted on the
+  Internet aka MIME type.
+- **JSON Web Signature ( JWS )** :: Content secured with digital signatures or
+  Message Authentication Codes (MACs) using JSON-based data structures
 - **Content Identifier (CID)** :: A label used to point to material in IPFS
-- **Message** :: All Decentralized Web Node messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information
+- **Message** :: All Decentralized Web Node messaging is transacted via Messages
+  JSON objects. These objects contain message execution parameters,
+  authorization material, authorization signatures, and signing/encryption
+  information
 
-## Technology Comparison
+## Technology Comparision
 
-Note from @andorsk : I had a conversation with Simon about this, and @simon will be adding his comparisions to this.
-TODO: what technology should beon t
+TODO
 
-### DWN vs DIDComm vs. KERI
+## Architecture and Components :chatgpt:
 
-Note from @andorsk. This is really early. I need to go through this more carefully tbh, and there are details I need to review.
+This section provides an overview of the high-level architecture of a DWN,
+including the different components that make up a typical DWN, such as the
+network layer, data storage layer, identity and access control layer, and the
+application layer. The section could also provide guidance on how to design and
+implement each of these components to conform to the DWN specification.
 
-| Capability                          | DWN           | KERI | DIDComm |
-| ----------------------------------- | ------------- | ---- | ------- |
-| Web Hooks                           | Yes           | No   | No      |
-| Permissions                         | Yes           | ?    | ?       |
-| Standard Storage Layer              | Yes           | ?    | ?       |
-| JSON Schema Based                   | Yes.          | ?    | ?       |
-| Custom Protocols                    | Yes           | No   | Yes     |
-| Multi-Node Sync                     | Yes.          | ?    | ?       |
-| DID Based                           | Yes.          | .    | Yes     |
-| Out of Band Support                 | No            | Yes  | Yes     |
-| Multiple CryptoSuites               | No            |      | Yes     |
-| Off Ledger                          | No.           | Yes  | Yes     |
-| 3+ Node Interactions                | Yes.          | ?    | ?       |
-| Distributed sync                    | ? ( Future? ) | ?    | ?       |
-| Completely Anonymous Transactions   |               |      |         |
-| p2p ( no intermediary ) trasactions | No.           | Yes  | Yes     |
+## Node Discovery and Peer-to-Peer Networking :chatgpt:
 
-## Using a DWN
+This section provides detailed guidance on how to implement the node discovery
+and peer-to-peer networking protocols that are required for a DWN to function
+properly. This section could cover topics such as how to bootstrap a new node
+onto the network, how to maintain a list of known nodes, how to discover and
+connect to new peers, and how to propagate data across the network.
 
-### Architecture
+## Data Sharing and Interoperability :chatgpt:
 
-TODO: Commentary on architecture
+This section provides guidance on how to design and implement data sharing
+protocols that conform to the DWN specification, including the use of
+decentralized storage systems like IPFS and the InterPlanetary Linked Data
+(IPLD) format. This section could also cover strategies for promoting
+interoperability between different decentralized web nodes and data sharing
+protocols, such as the use of standardized data formats and metadata.
 
-<img src="https://i.imgur.com/9qzOMP5.png" width=200px>
+## Security and Privacy :chatgpt:
 
-### Data Flow
+This section provides guidance on how to design and implement security and
+privacy features that conform to the DWN specification, including the use of
+cryptographic protocols like Public Key Infrastructure (PKI) and Self-Sovereign
+Identity (SSI) for secure data sharing and verification. This section could also
+cover best practices for securing DWN infrastructure and protecting user data
+against common attacks and threats.
 
-TODO: Commentary on data flow
+## Testing and Debugging :chatgpt:
 
-![Topology](https://identity.foundation/decentralized-web-node/spec/images/topology.svg)
+This section provides guidance on how to test and debug a DWN implementation,
+including strategies for testing individual components and the network as a
+whole, as well as tools and techniques for troubleshooting issues that may arise
+during development or deployment.
 
-### Building your own applications
+## Deployment and Operations :chatgpt:
 
-## Examples
+This section provides guidance on how to deploy and operate a DWN
+implementation in a production environment, including best practices for scaling
+and managing a distributed network, as well as tools and techniques for
+monitoring and managing network performance and reliability. This section could
+also cover strategies for maintaining backward compatibility and promoting
+interoperability with other decentralized web nodes and protocols.
 
-In this section, focus will be to show how this would work, and elaborate on the advantages a DWN based solution would have over a DIDComm based solution.
+### Example Deployment (Simple)
 
-#### Chat App
+In this simple example, each actor has a remote (i.e a server) and local
+node (i.e a phone). As an example, you have a chat app with a remote and local
+node. Alice wants to send a message to Bob in this case, and Bob will reply with
+a message back.
 
-#### Todo App
+![DWN Simple Connection](https://identity.foundation/decentralized-web-node/spec/images/topology.svg)
 
-#### Buying a Plane Ticket
+**Steps**
 
-#### Coordinating Travel Plans
+0. Bob shares DID to Alice (via a QR code or some other transport)
+1. Alice Resolve's Bob's DID
+2. Alice sends a message to Bob's node discovered via a Service Endpoint in the
+   DID Document
+3. Bob's Node relays the Alice's message from the remote note to the local node.
+4. Bob resolves Alice's DID and finds the service endpoints
+5. Bob's local node ACTs on the message, sending a message back to Alice's Node
+6. Alice's remote node receives the message and relays it locally.
 
-#### Applying for a job
+### Example Deployment (Complex)
 
-#### Multi-exchange example
+## Miscellaneous
 
-#### Hook example
+### Example Use Cases
 
-#### Share music playlist
+### Real World Applications
 
-#### Medical Health Record: Query attributes of the data
+### DWN Adoption
 
-## DWNS at Scale
+### Ecosystem interplay
 
-### Multiple DWN Architecture
+### Limitations and Other Considerations
 
-#### Scenario:
-
-- Alice and Bob
-- Alice has a Chat App. 1 Replica. Full sync.
-- Bob's does not have a replica. Single node deployment.
-- Todo App's are self contained.
-- Chat aggregator is a message board, shows messages from many chats.
-
-#### Topology
-
-```mermaid
-graph TD
-  subgraph Bob
-    subgraph BChatApp[Chat App]
-      BDWN[DWN1]
-    end
-    subgraph BTodoApp[Todo App]
-      BDWN1[DWN2]
-    end
-  end
-  subgraph Alice
-    subgraph AChatApp[Chat App did:ion:alice1]
-      ADWN[DWN1]
-      ADWN1[DWN2]
-      ADWN -->|sync| ADWN1
-    end
-    subgraph ATodoApp[Todo App]
-      ADWN2[DWN2]
-    end
-  end
-  DWNAgg[DWN Chat Aggregator]
-  ADWN1 --> DWNAgg
-  BDWN --> DWNAgg
-```
-
-## Reference Implementations
-
-- [TBD's JS SDK](https://github.com/TBD54566975/dwn-sdk-js) : Javascript sdk
-- [TBD's Web 5 Implementation](https://github.com/TBD54566975/incubating-web5-labs)
-
-## Use Cases
-
-## Limitations
-
-- Out of band
-  - Possible: Not addressed yet but on roadmap
--
-
-## Other Considerations
-
-- Working with Non-DWN based wallets
-
-## Action Item:
-
-- [ ] Figure out where this document goes.
-
-# DWN Companion Guide
-
-## Use Cases
-
-**Status** IN PROGRESS
-
-Example Use case table
-| Use Case | Reference |
-| -------- | -------- |
-| Exchange credentials | [link](#exchange-credentials)
-| Share Music Playlist | [link](#music-playlist)
-| Apply for a job | [link](#apply-for-job)
-| Rent a car | [link](#rent-a-car)
-| Chat Service | [link](#chat-service)
-| Buy a plane ticket | [link](#plane-ticket)
-| Buy a concert ticket | [link](#concert-ticket)
-| Payroll analysis | [link](#payroll)
-
-### Actors
-
-- Bob: typically the issuer
-- Alice: typically the holder
-- Oscar: typically the role of the adversary
-- Carol: typically the service provider
-- Ted: typically the middle man
-
-### Exchange Credentials
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-### Share Music Playlist
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-### Apply for a Job
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-### Rent a car
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-### Chat Service
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-### Buy a plane ticket
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-### Buy a concert ticket
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-### Manage Payroll
-
-**Description:**
-**Stake Holders:**
-**How it works:**
-**Advantages of using DWNs:**
-
-## Protocol Interplay : DWN and DIDComm
-
-**Status**: IN PROGRESS
-
-### Problem Statement
-
-Given a finite set of $\{n_{DWN}, n_{DIDCOMM}\} \in N$ nodes, with a distributed traction, what are the communication models that power a web of trust.
-
-#### Assumptions
-
-**Not a winner takes all system**: Given a finite number of actors using decentralized identity solutions, a vector $W$ represents the distribution of protcols in the SSI ecosystem. $\{{w_{DIDComm}, w_{DWN}, w_{\lambda}} \in W\}$ and $\sum{W} = 1$.
-
-- $w_{DIDComm} * n_{DID}$ represents the # of DIDComm users.
-- $w_{DWN} * n_{DID}$ represents the # of DWN users
-- $n_{DID}$ represents the total # of users using DID protocols.
-- $n_{DID} / N$ represents the current traction with DID Communication protocols as a whole, versus the entire market possibility.
-
-#### Modeling the Interplay
-
-Given ${n_0, n_1, n_n} \in n_{DID}$,
-
-### Actors
-
-- Bob: DWN User
-- Alice: DWN User
-- Oscar: Aries Agent User
-- Carol: Aries Agent User
-- Ted: KERI User
-
-5P2: 20 permutations
-5P3: 60 permutations ( not quite right )
-5P4: 120 permutations
-
-### Use Cases
-
-- Use Case #1: Credential Exchange
-  - P2P
-    - DWN -> DWN: Bob wants to exchange a credential with Alice
-    - DWN -> DIDComm: Bob wants to exchange a credential with Oscar
-    - DIDComm --> DWN Oscar wants to exchange a credential with Carol
-    - DIDComm --> DIDComm: Carol wants to exchange a credential with Bob
-    - DIDComm --> KERI Carol wants to exchange a credential with Ted
-    - KERI --> DIDComm Ted wants to exchange a credential with Carol
-    - KERI --> DWN Ted wants to exchange a credential with Bob
-    - DWN --> KERI Bob wants to exchange a credential with Ted
-  - Multi-exchange
-    - DWN --> ( DWN, DIDComm ) Bob wants to exchange a credential with Alice and Oscar.
-    - DIDComm --> (DWN, DIDComm) Oscar wants to exchange a credential with Alice and Carol
-    - DWN --> ( DWN, DIDComm, KERI ) Bob wants to exchange a credential with Alice and Oscar, and Ted.
-    - DIDComm --> (DWN, DIDComm, KERI) : Oscar wants to exchange a message with Bob, Carol, and Ted
-- Use Case #2: Chat
-  - How do chat services interact with Agents.
-- Use Case #3: Sharing a music playlist
-  ![](https://i.imgur.com/ScnKx3M.png)
-- Use Case #4: Job Application
-  - Bob wants to apply for a job. The application communicates over DIDComm.
-  - Alice wants to apply for a job. Alice has a Agent, the company a DWN.
-- Use Case #5: Sharing data
-  - Bob wants to share to personal data to Alice.
-- Use Case #6: Hotel Travel Plans
-- ![](https://i.imgur.com/VBuUSW3.png)
-  - If Hotel doesn't have DWN?
-  - If Airline doesn't have DWN?
-  - If Car Rental Doesn't have DWN?
-- Use Case #7: Out of Band Communication
-- https://didcomm.org/out-of-band/2.0/
-  - If Bob wants to share data to Carol out of band?
-- Use Case #8: Trust Ping
-- https://didcomm.org/trust-ping/2.0/
-  - Can Carol ping Bob's DWN and get a trust ping back? What about reverse?
-
-### Question and Answer
+### Q&A
 
 - **For the base case many DWNs should I expect a particular person to have?** A person is
   expected to have a few DWNs. Maybe more than 1 but less than 10.
@@ -336,3 +335,8 @@ Given ${n_0, n_1, n_n} \in n_{DID}$,
 - **How does the CRDT system work?** There are 2 levels of CRDT. The base layer,
   object level CRDT, and the second layer, which is the data CRDT. These are
   managed with commit strategies. See [here] for more information.
+
+### Reference Implementations
+
+- [TBD's JS SDK](https://github.com/TBD54566975/dwn-sdk-js) : Javascript sdk
+- [TBD's Web 5 Implementation](https://github.com/TBD54566975/incubating-web5-labs)
