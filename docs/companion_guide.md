@@ -1,5 +1,7 @@
 # Decentralized Web Node Companion Guide (DWN)
 
+**Note: This document is a WORKING DOCUMENT and IN PROGRESS.**
+
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 
 **Table of Contents**
@@ -71,7 +73,7 @@ Overall, the Decentralized Web Node companion guide is a valuable resource for
 anyone who is interested in building decentralized web nodes that conform to the
 DWN specification.
 
-**STATUS:** PRE-DRAFT
+**STATUS:** PRE-DRAFT / IN PROGRESS
 
 ### What Are Decentralized Web Nodes? :chatgpt:
 
