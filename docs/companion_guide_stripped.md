@@ -89,6 +89,10 @@ web applications and services that can operate independently of centralized
 infrastructure. This can help to improve the privacy, security, and resilience
 of the web, while also promoting greater user control over their data.
 
+The functional advantages of DWN's are that they are very good at scaling
+decentralized web apps. They enable multi-party data transactions with minimal
+overhead.
+
 Overall, the DWN specification is an important part of the DIF's work to promote
 the development of decentralized web technologies and standards. By providing a
 clear set of guidelines and best practices for building and deploying
@@ -282,6 +286,24 @@ interoperability with other decentralized web nodes and protocols.
 
 ### Example Deployment (Simple)
 
+In this simple example, each actor has a remote (i.e a server) and local
+node (i.e a phone). As an example, you have a chat app with a remote and local
+node. Alice wants to send a message to Bob in this case, and Bob will reply with
+a message back.
+
+![DWN Simple Connection](https://identity.foundation/decentralized-web-node/spec/images/topology.svg)
+
+**Steps**
+
+0. Bob shares DID to Alice (via a QR code or some other transport)
+1. Alice Resolve's Bob's DID
+2. Alice sends a message to Bob's node discovered via a Service Endpoint in the
+   DID Document
+3. Bob's Node relays the Alice's message from the remote note to the local node.
+4. Bob resolves Alice's DID and finds the service endpoints
+5. Bob's local node ACTs on the message, sending a message back to Alice's Node
+6. Alice's remote node receives the message and relays it locally.
+
 ### Example Deployment (Complex)
 
 ## Miscellaneous
@@ -298,4 +320,23 @@ interoperability with other decentralized web nodes and protocols.
 
 ### Q&A
 
+- **For the base case many DWNs should I expect a particular person to have?** A person is
+  expected to have a few DWNs. Maybe more than 1 but less than 10.
+- **If I replicate DWNs for a service, how many DID's should be assigned?** One
+  did can refer to multiple DWNs. There is a preference toward the first service
+  endpoint in the [resolution array](https://identity.foundation/decentralized-web-node/spec/#resolution)
+- **How does it work when there is an asymmetry of resources across DWNs w.r.t
+  sync?** There eventually will be selective sync that can allow you to filter
+  certain things to sync across DWNs.
+- **How does latency impact sync?** All DWNs are built on a CRDT, so they will
+  eventually resolve without conflict, however you can expect that latency may
+  impact the speed of the resolution. Therefore, it's recommended to pick the
+  most highly available node for sending data across.
+- **How does the CRDT system work?** There are 2 levels of CRDT. The base layer,
+  object level CRDT, and the second layer, which is the data CRDT. These are
+  managed with commit strategies. See [here] for more information.
+
 ### Reference Implementations
+
+- [TBD's JS SDK](https://github.com/TBD54566975/dwn-sdk-js) : Javascript sdk
+- [TBD's Web 5 Implementation](https://github.com/TBD54566975/incubating-web5-labs)
