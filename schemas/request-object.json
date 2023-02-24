@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "DWN Request Object",
+  "type": "object",
+  "properties": {
+    "messages": {
+      "type": "array",
+      "$ref": "#/definitions/message"
+    }
+  },
+  "required": "messages"
+}

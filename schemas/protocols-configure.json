@@ -1,0 +1,37 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProtocolsConfigure",
+  "type": "object",
+  "properties": {
+    "method": {
+      "type": "string",
+      "default": "ProtocolsConfigure"
+    },
+    "protocol": {
+      "type": "string"
+    },
+    "protocolVersion": {
+      "type": "string"
+    },
+    "definition": {
+      "type": "string"
+    },
+    "definition": {
+      "type": "object"
+    },
+    "lastConfiguration": {
+      "type": "object"
+    },
+    "retainedRecords": {
+      "type": "string",
+      "description": "CHAMP encoded as a string"
+    }
+  },
+  "required": [
+    "method",
+    "protocol",
+    "protocolVersion",
+    "lastConfiguration",
+    "retainedRecords"
+  ]
+}
