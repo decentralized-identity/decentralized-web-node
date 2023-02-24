@@ -2,6 +2,30 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "PermissionsQuery",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "type": "object",
+    "properties": {
+      "method": {
+        "type": "string",
+        "default": "PermissionsGrant"
+      },
+      "permissionGrantId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "grantedBy": {
+        "type": "string",
+        "description": "DID URI string of the party that is granting the permission."
+      },
+      "grantedTo": {
+        "type": "string",
+        "description": "DID URI string of the party that is being granted the permission."
+      },
+      "delegatedFrom": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  },
   "required": []
 }
