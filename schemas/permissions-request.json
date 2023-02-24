@@ -2,6 +2,98 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "PermissionsRequest",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "descriptor": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "default": "PermissionsRequest"
+        },
+        "permissionGrantId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "grantedBy": {
+          "type": "string",
+          "description": "DID URI string of the party that is granting the permission."
+        },
+        "grantedTo": {
+          "type": "string",
+          "description": "DID URI string of the party that is being granted the permission."
+        },
+        "delegatedFrom": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "expiry": {
+          "type": "number",
+          "description": " Unix epoch timestamp that can be used to trigger revocation activities."
+        },
+        "scope": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string"
+            },
+            "schema": {
+              "type": "string"
+            },
+            "protocol": {
+              "type": "string"
+            },
+            "protocolVersion": {
+              "type": "string"
+            },
+            "recordId": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "contextId": {
+              "type": "string"
+            }
+          },
+          "required": ["method"]
+        },
+        "conditions": {
+          "attestation": {
+            "type": "object",
+            "properties": {
+              "prohibited": {
+                "type": "boolean"
+              },
+              "optional": {
+                "type": "boolean"
+              },
+              "required": {
+                "type": "boolean"
+              }
+            }
+          },
+          "encryption": {
+            "type": "object",
+            "properties": {
+              "optional": {
+                "type": "boolean"
+              },
+              "required": {
+                "type": "boolean"
+              }
+            }
+          },
+          "delegation": {
+            "type": "boolean"
+          },
+          "publication": {
+            "type": "boolean"
+          },
+          "sharedAccess": {
+            "type": "boolean"
+          }
+        }
+      },
+      "required": ["method", "permissionGrantId"]
+    }
+  },
   "required": []
 }

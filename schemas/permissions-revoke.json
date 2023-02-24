@@ -2,6 +2,22 @@
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "PermissionsRevoke",
   "type": "object",
-  "properties": {},
+  "properties": {
+    "type": "object",
+    "properties": {
+      "method": {
+        "type": "string",
+        "default": "PermissionsRevoke"
+      },
+      "permissionRevokeId": {
+        "type": "string",
+        "format": "uuid"
+      },
+      "permisisonsGrantId": {
+        "type": "string",
+        "format": "uuid"
+      }
+    }
+  },
   "required": []
 }
