@@ -32,18 +32,18 @@ Bi-weekly DIF call notes on DWN specifications.
 
 ### Agenda
 
-| Item                                                                                     | Time    | Owner            | Description                                                                       |
-| ---------------------------------------------------------------------------------------- | ------- | ---------------- | --------------------------------------------------------------------------------- |
-| Specification Updates                                                                    | 5 min   | @andorsk         |
-| Companion Guide Updates                                                                  | 10 min  | @andorsk @moises | - Questions on AMA <br> - Comparision Matrix (Moises) <br>                        |
-| [Schema PR](https://github.com/decentralized-identity/decentralized-web-node/pull/209)   | 10 min. | @andorsk         | Schemas for objects in DWN                                                        |
-| Test Suite Conversation                                                                  | 10 min. | @andorsk         | Questions around test suite                                                       |
-| [Issue 210](https://github.com/decentralized-identity/decentralized-web-node/issues/210) |         | @csuwildcat      |
-| [Issue 208](https://github.com/decentralized-identity/decentralized-web-node/issues/208) |         | @csuwildcat      |
-| [Issue 207](https://github.com/decentralized-identity/decentralized-web-node/issues/207) |         | @andorsk         |
-| [DWN SDK Updates]()                                                                      |         | @csuwildcat      | - MessageStore Refactoring<br>- Add participants actor to Protocol rules #242<br> |
-| [DWN TBD Updates]()                                                                      |         | @csuwildcat      |                                                                                   |
-| Calls To Action                                                                          |         | @andorsk         |                                                                                   |
+| Item                                                                                                   | Time    | Owner            | Description                                                                                                                               |
+| ------------------------------------------------------------------------------------------------------ | ------- | ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Specification Updates                                                                                  | 5 min   | @andorsk         |                                                                                                                                           |
+| Companion Guide Updates                                                                                | 10 min  | @andorsk @moises | - Questions on AMA <br> - [Comparision Matrix (Moises)](https://github.com/decentralized-identity/decentralized-web-node/issues/212) <br> |
+| [Schema PR](https://github.com/decentralized-identity/decentralized-web-node/pull/209)                 | 10 min. | @andorsk         | Schemas for objects in DWN                                                                                                                |
+| [Test Suite Conversation](https://github.com/decentralized-identity/decentralized-web-node/issues/213) | 10 min. | @andorsk         | Questions around test suite                                                                                                               |
+| [Issue 210](https://github.com/decentralized-identity/decentralized-web-node/issues/210)               |         | @csuwildcat      |                                                                                                                                           |
+| [Issue 208](https://github.com/decentralized-identity/decentralized-web-node/issues/208)               |         | @csuwildcat      |                                                                                                                                           |
+| [Issue 207](https://github.com/decentralized-identity/decentralized-web-node/issues/207)               |         | @andorsk         |                                                                                                                                           |
+| [DWN SDK Updates]()                                                                                    |         | @csuwildcat      | - MessageStore Refactoring<br>- Add participants actor to Protocol rules #242<br>                                                         |
+| [DWN TBD Updates]()                                                                                    |         | @csuwildcat      |                                                                                                                                           |
+| Calls To Action                                                                                        |         | @andorsk         |                                                                                                                                           |
 
 ## DIF Meeting February 22, 2023
 
