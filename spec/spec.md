@@ -1023,7 +1023,7 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
 }
 ```
 
-- The _Protocols Definition_ object ****MUST**** contain a `labels` property, and its value ****MUST**** be an object composed as follows:
+- The _Protocols Definition_ object ****MUST**** contain a `labels` property, it's key ****MUST**** represent a unique path and its value ****MUST**** be an object composed as follows:
   - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be an array of strings that indicate the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
   - The object ****MAY**** contain a `schema` property, and if present its value ****MUST**** be a valid URI string that identifies the protocol the definition pertains to.
   - The object ****MAY**** contain a `purpose` property, and if present its value ****MUST**** be a string that provides a description for how the data is being used in the protocol. This information will often be used by User Agent applications to display in user consent UI.  
