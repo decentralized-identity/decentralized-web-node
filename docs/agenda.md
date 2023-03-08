@@ -29,6 +29,15 @@ Bi-weekly DIF call notes on DWN specifications.
 
 - Andor Kesselman @andorsk
 - Dan Buchner @csuwildcat
+- Kaliya 
+- Clare Nelson (DIF)
+- Liran Cohen
+- Moises Jaramillo
+- Paul Trevithick 
+- Reuben
+- Steve
+- Sergey Kucherenko
+- Kirill Khalitov
 
 ### Agenda
 
@@ -37,15 +46,15 @@ will have to figure out ways to shave or push off some of these conversations.
 
 | Item                                                                                                   | Segment     | Time    | Owner            | Description                                                                                                                                                                                                            |
 | ------------------------------------------------------------------------------------------------------ | ----------- | ------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Co-Chair Updates. Propose Liran as Co-Chair.                                                           | Intro       | 5 min   | @andorsk @liran  |                                                                                                                                                                                                                        |
+| Co-Chair Updates. Nominate Liran as Co-Chair.                                                           | Intro       | 5 min   | @andorsk @liran  |                                                                                                                                                                          Kaliya to follow up                                              |
 | Spec Updates                                                                                           | Updates     | 0 min   |                  | No updates to the specs                                                                                                                                                                                                |
-| Companion Guide Updates                                                                                | Updates     | 10 min  | @andorsk @moises | - [Questions on AMA](https://github.com/decentralized-identity/decentralized-web-node/pull/216) <br> - [Comparision Matrix (Moises)](https://github.com/decentralized-identity/decentralized-web-node/issues/212) <br> |
+| Companion Guide Updates                                                                                | Updates     | 10 min  | @andorsk @moises | - [Questions on AMA](https://github.com/decentralized-identity/decentralized-web-node/pull/216) <br> - [Comparision Matrix (Moises)](https://github.com/decentralized-identity/decentralized-web-node/issues/212) <br> : List of comparables, SOLID PODS, KERI, |
 | [TBD Updates]()                                                                                        | Updates     | 10 min  | @csuwildcat      | - MessageStore Refactoring<br>- Add participants actor to Protocol rules #242<br>                                                                                                                                      |
 | [Issue 210](https://github.com/decentralized-identity/decentralized-web-node/issues/210)               | Maintenance | 5 min   | @csuwildcat      |                                                                                                                                                                                                                        |
 | [Issue 208](https://github.com/decentralized-identity/decentralized-web-node/issues/208)               | Maintenance | 5 min   | @csuwildcat      |                                                                                                                                                                                                                        |
 | [Issue 207](https://github.com/decentralized-identity/decentralized-web-node/issues/207)               | Maintenance | 5 min   | @andorsk         |                                                                                                                                                                                                                        |
 | Tagging and Milestones                                                                                 | Discussion  | 10 min  | @andorsk         |                                                                                                                                                                                                                        |
-| Specification Updates Discussion                                                                       | Discussion  | 5 min   | @andorsk         | Alignment on DWN-SDK vs. spec                                                                                                                                                                                          |
+| Specification Updates Discussion                                                                       | Discussion  | 5 min   | @andorsk         | Alignment on DWN-SDK vs. spec. TODO: Code spec review. @andor to set an issue.                                                                                                                                                                                          |
 | [Milestones and Dates](https://github.com/decentralized-identity/decentralized-web-node/issues/214)    | Discussion  | 20 min. | @andorsk         | Better clarity on milestones and dates                                                                                                                                                                                 |
 | [Schema PR](https://github.com/decentralized-identity/decentralized-web-node/pull/209)                 | Discussion  | 10 min. | @andorsk         | Schemas for objects in DWN                                                                                                                                                                                             |
 | [Test Suite Conversation](https://github.com/decentralized-identity/decentralized-web-node/issues/213) | Discussion  | 10 min. | @andorsk         | Questions around test suite                                                                                                                                                                                            |
@@ -53,6 +62,27 @@ will have to figure out ways to shave or push off some of these conversations.
 | Calls To Action                                                                                        | Closing     | 5 min   | @andorsk         |                                                                                                                                                                                                                        |
 
 ### Notes
+
+* Expanded Query Support: 
+* Making the use of DWNs easier. 
+* https://github.com/TBD54566975/web5-js
+* Rollup of everything. DID Support. Not instantiation. 
+* Easier to interface 
+* Q: SDK up to date with the spec? A: Yes, but sync spec text to add
+@Clare: to look onto documentation on how to milestone this. 
+* Encryption Discussion:
+    * Dan: Cryptree
+* Drummond: ToIP TSP interested in how all these components interlock. Question about EDV encryption. 
+* Q: There is a diagram at the very top of the standard draft and it mentions that each DWN is also a relay server. Do you consider any modifications where the relay server is not self-hosted but is an external service? @andorsk  to add onto the companion guide with an answer. 
+Paul: To help expand on the use case section.
+- Andor Q: Protocol repository at DIF? Liran: not sure. Drummond: nomenclature issue. Protocol as a term is hard term in the larger ecosystem. Must distinguish between Protocol. Paul: Agrees. Discusses **meta-protocol**. Dan: agrees with putting in the repo. Clare: **IPR to consider**
+```mermaid 
+graph TD
+MetaProtocol[Meta Protocol]
+BaseProtocol[Base Protocol]
+MetaProtocol --> BaseProtocol
+```
+
 
 ## DIF Meeting February 22, 2023
 
@@ -64,7 +94,7 @@ will have to figure out ways to shave or push off some of these conversations.
 - Liran Cohen
 - Ajay Jadhav
 - Drummond Reed @talltree
-- Sergey Kucheren
+- Sergey Kucherenko
 - Clare Nelson
 - Paul Trevithick
 
