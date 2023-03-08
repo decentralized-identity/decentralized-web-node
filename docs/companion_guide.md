@@ -322,8 +322,34 @@ a message back.
 
 ### Q&A
 
+#### General Questions
+
+- **How do you pronounce DWNs?**: We've heard a few ways to say it:
+  - DAWN
+  - D Web Node
+  - D W N
+- **How are DWNs different than SOLID Pods?**
 - **For the base case many DWNs should I expect a particular person to have?** A person is
   expected to have a few DWNs. Maybe more than 1 but less than 10.
+
+#### Security Questions
+
+- **Are there Data Privacy Considerations like GDPR. And how are they taken care of in this kinds of a paradigm?**
+  DWN's are basically GRPR by default as you are 100% in control of your data store.
+- **What is the best way to ensure that recipients of PII access via DWN are not
+  persistently storing the information using their own digital agent?**
+  The in-browser embedded DWN does have storage restrictions. Let’s say I have a
+  second DWN hosted by some provider, can the second DWN use a different store,
+
+#### Specification Questions
+
+- **How flexible/dynamic are the protocol control rules?** The point of
+  protocols is so you can create a protocol. What type of actors can do what. Not
+  RBAC. You can define how actors can interface with your protocols.It does NOT
+  specify ids. It's built to shape traffic. They are more for large party interactions.
+
+#### Technical Questions
+
 - **If I replicate DWNs for a service, how many DID's should be assigned?** One
   did can refer to multiple DWNs. There is a preference toward the first service
   endpoint in the [resolution array](https://identity.foundation/decentralized-web-node/spec/#resolution)
@@ -337,6 +363,21 @@ a message back.
 - **How does the CRDT system work?** There are 2 levels of CRDT. The base layer,
   object level CRDT, and the second layer, which is the data CRDT. These are
   managed with commit strategies. See [here] for more information.
+- **Does a DWN run in the cloud, local, or both?**
+  At the very least, they will probaby run locally, and there is a high
+  likelihood that they will also run in the cloud. The remote data will be
+  available in case it needs to be very available.
+- **Do we write into an IPFS vs. IPLD Node?**
+  DWN use IPLD as an encoding format, but it's not required to throw out to the
+  IPFS layer.
+- **What is IPLD?**
+- **What if you want to use a DWN and don't want data on IPFS?**
+- **Does DWN allows or foresees applications that need cross user/company
+  synchronisation? E.g., DeFi applications that pose double-spend risks or supply chain applications including international participants to be synced**
+- **Would a DWN support the notion of a computational enclave that allows to
+  securely execute someone else’s code to access the DWN’s data, e.g., a
+  federated ML model that then the user can control what it sends back out to
+  the sender of the model?**
 
 ### Reference Implementations
 
