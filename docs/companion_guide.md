@@ -372,8 +372,8 @@ a message back.
   IPFS layer.
 - **What is IPLD?**
 - **What if you want to use a DWN and don't want data on IPFS?**
-- **Does DWN allows or foresees applications that need cross user/company
-  synchronisation? E.g., DeFi applications that pose double-spend risks or supply chain applications including international participants to be synced**
+- **Does DWN allow or foresee applications that need cross user/company
+  synchronisation (e.g., DeFi applications that pose double-spend risks or supply chain applications including international participants to be synced)? **
 - **Would a DWN support the notion of a computational enclave that allows to
   securely execute someone else’s code to access the DWN’s data, e.g., a
   federated ML model that then the user can control what it sends back out to
