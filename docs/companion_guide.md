@@ -339,7 +339,7 @@ a message back.
 - **What is the best way to ensure that recipients of PII access via DWN are not
   persistently storing the information using their own digital agent?**
   The in-browser embedded DWN does have storage restrictions. Let’s say I have a
-  second DWN hosted by some provider, can the second DWN use a different store,
+  second DWN hosted by some provider, can the second DWN use a different store?
 
 #### Specification Questions
 
