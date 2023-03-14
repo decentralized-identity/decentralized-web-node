@@ -364,7 +364,7 @@ a message back.
   object level CRDT, and the second layer, which is the data CRDT. These are
   managed with commit strategies. See [here] for more information.
 - **Does a DWN run in the cloud, local, or both?**
-  At the very least, they will probaby run locally, and there is a high
+  At the very least, they will probably run locally, and there is a high
   likelihood that they will also run in the cloud. The remote data will be
   available in case it needs to be very available.
 - **Do we write into an IPFS vs. IPLD Node?**
