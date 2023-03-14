@@ -334,8 +334,8 @@ a message back.
 
 #### Security Questions
 
-- **Are there Data Privacy Considerations like GDPR. And how are they taken care of in this kinds of a paradigm?**
-  DWN's are basically GRPR by default as you are 100% in control of your data store.
+- **Are there Data Privacy Considerations like GDPR? And how are they taken care of in this kind of paradigm?**
+  DWN's are basically GDPR by default, as you are 100% in control of your data store.
 - **What is the best way to ensure that recipients of PII access via DWN are not
   persistently storing the information using their own digital agent?**
   The in-browser embedded DWN does have storage restrictions. Let’s say I have a
