@@ -329,7 +329,7 @@ a message back.
   - D Web Node
   - D W N
 - **How are DWNs different than SOLID Pods?**
-- **For the base case many DWNs should I expect a particular person to have?** A person is
+- **For the base case, how many DWNs should I expect a particular person to have?** A person is
   expected to have a few DWNs. Maybe more than 1 but less than 10.
 
 #### Security Questions
