@@ -21,7 +21,7 @@ Bi-weekly DIF call notes on DWN specifications.
 **Co-Chairs**
 
 - Andor Kesselman @andorsk email: andor@benri.io
-- Liran Cohen @LiranCohen
+- ??
 
 ## DIF Meeting March 22, 2023
 
