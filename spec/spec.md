@@ -190,7 +190,7 @@ For example purposes, the `queries` parameter value below is neither JSON string
 :::
 
 ```json
-did:example:123?service=DecentralizedWebNode&queries=[{ "method": "RecordsQuery", "schema": "https://schema.org/SocialMediaPosting" }]
+did:example:123?service=DecentralizedWebNode&queries=[{ "interface": "Records", "method": "Query", "schema": "https://schema.org/SocialMediaPosting" }]
 ```
 
 ```json
@@ -220,7 +220,8 @@ BODY {
   "messages": [
     {
       "descriptor": {
-        "method": "RecordsQuery",
+        "interface": "Records",
+        "method": "Query",
         "schema": "https://schema.org/SocialMediaPosting"
       }
     },
@@ -256,9 +257,9 @@ All Decentralized Web Node messaging is transacted via Messages JSON objects. Th
   "messages": [  // Message Objects
     {
       "recordId": GENERATED_CID_STRING,
-      "data": BASE64URL_STRING,
       "descriptor": {
-        "method": INTERFACE_METHOD_STRING,
+        "interface": INTERFACE_STRING,
+        "method": METHOD_STRING,
         "dataCid": DATA_CID_STRING,
         "dataFormat": DATA_FORMAT_STRING,
       }
@@ -279,6 +280,7 @@ In order to enable data replication features for a [[ref: Decentralized Web Node
   3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object and output it in its stringified form.
 - Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a `base64Url` encoded string of the Message's data.
 - Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object composed as follows:
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be a string that matches a Decentralized Web Node Interface.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Decentralized Web Node Interface method.
   - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) or an external channel (e.g. IPFS fetch), the `descriptor` object ****MUST**** contain a `dataCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
   - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
@@ -299,7 +301,8 @@ Some messages may require authorization material for processing them in accordan
       "data": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
       "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
       "descriptor": {
-        "method": "RecordsWrite",
+        "interface": "Records",
+        "method": "Write",
         "schema": "https://schema.org/SocialMediaPosting",
         "dataCid": CID(data),
         "dateCreated": 123456789,
@@ -342,7 +345,8 @@ If there is no need or desire to sign or encrypt the content of a message (i.e. 
   "data": BASE64URL_STRING,
   "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
   "descriptor": {
-    "method": "RecordsWrite",
+    "interface": "Records",
+    "method": "Write",
     "schema": "https://schema.org/InviteAction",
     "dataCid": CID(data),
     "dateCreated": 123456789,
@@ -357,10 +361,10 @@ If the object is to be attested by a signer (e.g the Node owner via signature wi
 
 ```json
 { // Message
-  "data": {...},
   "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
   "descriptor": {
-    "method": "RecordsWrite",
+    "interface": "Records",
+    "method": "Write",
     "schema": "https://schema.org/InviteAction",
     "dataCid": CID(data),
     "dateCreated": 123456789,
@@ -401,7 +405,8 @@ If the object is to be encrypted (e.g the Node owner encrypting their data to ke
   },
   "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
   "descriptor": {
-    "method": "RecordsQuery",
+    "interface": "Records",
+    "method": "Query",
     "schema": "https://schema.org/SocialMediaPosting"
   }
   ...
@@ -429,7 +434,8 @@ If the object is to be both attributed to a signer and encrypted encrypted, it *
   },
   "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
   "descriptor": {
-    "method": "RecordsQuery",
+    "interface": "Records",
+    "method": "Query",
     "schema": "https://schema.org/SocialMediaPosting"
   },
   "attestation": {
@@ -517,7 +523,8 @@ If no results are found, the `status` remains `200`, and the implementation ****
   "messages": [  // Message Objects
     {
       "descriptor": {
-        "method": "RecordsQuery",
+        "interface": "Records",
+        "method": "Query",
         "schema": "https://schema.org/SocialMediaPosting"
       }
     },
@@ -552,7 +559,8 @@ If a message is malformed or constructed with invalid properties/values, the imp
   "messages": [  // Message Objects
     {
       "descriptorization": {
-        "methodical": "RecordsQuery",
+        "interface": "Records",
+        "method": "Query",
         "schemata": "https://schema.org/SocialMediaPosting"
       }
     }
@@ -584,12 +592,12 @@ If a message fails to meet authorization requirements during processing, the imp
 {  // Request Object
   "messages": [  // Message Objects
     { // Message
-      "data": {...},
       "descriptor": {
+        "interface": "Records",
+        "method": "Write",
         "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
         "dataCid": CID(data),
         "dateCreated": 123456789,
-        "method": "RecordsWrite",
         "schema": "https://schema.org/SocialMediaPosting",
         "dataFormat": "application/json"
       }
@@ -624,10 +632,11 @@ If a message attempts to invoke an interface `method` that is not the implementa
 {  // Request Object
   "messages": [  // Message Objects
     { // Message
-      "data": {...},
       "descriptor": {
+        "interface": "Records",
+        "method": "Write",
+        "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
         "dataCid": CID(data),
-        "method": "RecordsWrite",
         "schema": "https://schema.org/LikeAction",
         "dataFormat": "application/json"
       }
@@ -699,7 +708,15 @@ defined as follows:
 
 The following properties and values are defined for the Feature Detection object:
 
-- The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows: 
+- The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows:
+    - The object ****MAY**** contain a `protocols` property. If the property is not present, 
+    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
+    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
+    following properties, wherein a boolean `true` value indicates support for the interface 
+    method, while a boolean `false` value or omission of the property indicates the interface 
+    method is not supported:
+      - `ProtocolsQuery`
+      - `ProtocolsConfigure`
     - The object ****MAY**** contain a `records` property. If the property is not present, 
     it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
     property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
@@ -758,7 +775,8 @@ experience for users.
 `RecordsQuery` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `RecordsQuery`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Query`.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
     - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a [_Computed Record ID_](#computed-record-ids).
@@ -777,7 +795,8 @@ Get a single object by its ID reference:
 ```json
 { // Message
   "descriptor": {
-    "method": "RecordsQuery",
+    "interface": "Records",
+    "method": "Query",
     "filter": {
       "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
     }
@@ -789,7 +808,8 @@ Get a objects of a given schema type:
 ```json
 { // Message
   "descriptor": {
-    "method": "RecordsQuery",
+    "interface": "Records",
+    "method": "Query",
     "filter": {
       "schema": "https://schema.org/MusicPlaylist"
     }
@@ -801,7 +821,8 @@ Get all objects of a given schema type:
 ```json
 { // Message
   "descriptor": {
-    "method": "RecordsQuery",
+    "interface": "Records",
+    "method": "Query",
     "dateSort": "createdDescending",
     "filter": {
       "dataFormat": "image/gif"
@@ -817,7 +838,8 @@ Get all objects of a given schema type:
 - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with. If the message is the initial entry for a new record, the value ****MUST**** be set to the resulting string from the [_Record ID Generation Process_](#recordid-generation).
 - If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `RecordsWrite`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Write`.
   - The object ****MUST**** include a `parentId` property if the currently active entry for the record is a `RecordsDelete` or a `CollectionWrite` that has a declared a Commit Strategy. The object ****MUST NOT**** contain a `parentId` under any other circumstance. If present, the value of the `parentId` property ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `RecordsWrite` or `RecordsDelete` entry the message is intending to overwrite.
   - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
     - If the object contains a `protocol` property the object ****MUST**** also contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
@@ -830,7 +852,6 @@ Get all objects of a given schema type:
 
 ```json
 { // Message
-  "data": "...",
   "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
   "descriptor": { // Message Descriptor
     "parentId": CID(PREVIOUS_DESCRIPTOR),
@@ -838,7 +859,8 @@ Get all objects of a given schema type:
     "dateCreated": 123456789,
     "published": true,
     "encryption": "jwe",
-    "method": "RecordsWrite",
+    "interface": "Records",
+    "method": "Write",
     "schema": "https://schema.org/SocialMediaPosting",
     "commitStrategy": "json-merge",
     "dataFormat": DATA_FORMAT
@@ -848,12 +870,23 @@ Get all objects of a given schema type:
 
 #### `RecordsCommit`
 
+`RecordsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+
+- The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
+- If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Commit`.
+  - The object ****Must**** include a `parentId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `RecordsWrite` or `RecordsCommit` ancestor in the record's lineage.
+  - The object ****MUST**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
+  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the commit was generated.
+
 ```json
 { // Message
-  "data": {...},
   "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
   "descriptor": { // Message Descriptor
-    "method": "RecordsCommit",
+    "interface": "Records",
+    "method": "Commit",
     "dataCid": CID(data),
     "parentId": CID(ANCESTOR_CID),
     "dateCreated": 123456789,
@@ -863,33 +896,25 @@ Get all objects of a given schema type:
 }
 ```
 
-`RecordsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
-- If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `RecordsCommit`.
-  - The object ****Must**** include a `parentId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `RecordsWrite` or `RecordsCommit` ancestor in the record's lineage.
-  - The object ****MUST**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
-  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the commit was generated.
-
 #### `RecordsDelete`
-
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "method": "RecordsDelete",
-    "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
-  }
-}
-```
 
 `RecordsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
 - If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `RecordsDelete`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Delete`.
+
+```json
+{ // Message
+  "descriptor": { // Message Descriptor
+    "interface": "Records",
+    "method": "Delete",
+    "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+  }
+}
+```
 
 #### Computed Context IDs
 
@@ -940,7 +965,8 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
 
 ```json
 {
-  "method": "ProtocolsConfigure", // required
+  "interface": "Protocols", // required
+  "method": "Configure", // required
   "protocol": "identity.foundation/protocols/credential-issuance", // required
   "protocolVersion": "1.0.0", // required
   "definition": { PROTOCOL_DEFINITION_OBJ }, // optional
@@ -951,7 +977,8 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
 
 - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `ProtocolsConfigure`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Protocols`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Configure`.
   - The object ****MUST**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol the configuration pertains to.
   - The object ****MUST**** contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the configuration pertains to.
   - The object ****MAY**** contain a `description` property, and its value ****Must**** be a string that describes what the protocol is designed to do.
@@ -965,7 +992,8 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
 
 ```json
 {
-  "method": "ProtocolsConfigure",
+  "interface": "Protocols",
+  "method": "Configure",
   "protocol": "https://decentralized-social-example.org/protocol/",
   "protocolVersion": "1.0.0",
   "description": "...",
@@ -1067,7 +1095,8 @@ The `ProtocolsQuery` interface method allows an outside entity to query for any 
 
 ```json
 {
-	"method": "ProtocolsQuery",
+  "interface": "Protocols",
+  "method": "Query",
   "filter": {
     "protocol": "identity.foundation/protocols/credential-issuance",
     "versions": ["1.0.0", "2.0.0"]
@@ -1088,11 +1117,13 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
 `PermissionsRequest` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsRequest`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Permissions`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Request`.
   - The object ****MUST**** contain a `grantedBy` property, and its value ****MUST**** be the DID URI string of the party that is granting the permission.
   - The object ****MUST**** contain a `grantedTo` property, and its value ****MUST**** be the DID URI string of the party that is being granted the permission.
   - The object ****MAY**** contain a `description` property, and its value ****MUST**** be a string that the requesting party uses to communicate what the permission is being used for.
   - The object ****MUST**** contain a `scope` property, and its value ****Must**** be an object of the following properties:
+    - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the interface the requesting party wants to invoke.
     - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
     - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
@@ -1119,13 +1150,15 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
 ```json
 {
   "descriptor": {
-    "method": "PermissionsRequest",
+  "interface": "Permissions",
+  "method": "Request",
     "permissionRequestId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "grantedBy": "did:example:alice",
     "grantedTo": "did:example:bob",
     "description": "Help you create and edit your music playlists",
     "scope": {
-      "method": "RecordsWrite",
+      "interface": "Records",
+      "method": "Write",
       "schema": "https://schema.org/MusicPlaylist"
     },
     "conditions": {
@@ -1151,7 +1184,8 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
 `PermissionsGrant` messages are JSON objects containing capabilities granted to parties that curtail the scope of permitted activities an invoker can perform. They are generated either in response to a `PermissionsRequest` message or optimistically by a user agent without an initiating `PermissionsRequest`. `PermissionsGrant` messages include general [Message Descriptor](#message-descriptors) properties and the following additional properties:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsGrant`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Permissions`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Grant`.
   - The object ****MUST**** contain a `permissionGrantId` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string representing the reply object.
   - If the granted permission is in response to a `PermissionRequest`, the object ****MUST**** contain a `permissionRequestId` property, and its value ****MUST**** be the [[spec:rfc4122]] UUID Version 4 string of the `PermissionRequest` object the permission is being granted in relation to.
   - The object ****MUST**** contain a `grantedBy` property, and its value ****MUST**** be the DID URI string of the party that is granting the permission.
@@ -1159,6 +1193,7 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
   - If the `PermissionsGrant` is a delegated permission, the object ****MUST**** contain a `delegatedFrom` property, and its value ****MUST**** be an [[spec:rfc4122]] UUID Version 4 string matching the `permissionGrantId` of the `PermissionsGrant` it was delegated from.
   - The object ****MUST**** contain a `expiry` property, and its value ****MUST**** be a [Unix epoch timestamp](https://pubs.opengroup.org/onlinepubs/9699919799/basedefs/V1_chap04.html#tag_04_16) that can be used to trigger revocation activities.
   - The object ****MUST**** contain a `scope` property, and its value ****Must**** be an object of the following properties:
+    - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the interface the requesting party wants to invoke.
     - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the interface method the requesting party wants to invoke.
     - The object ****MAY**** contain a `schema` property, and its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
@@ -1187,7 +1222,8 @@ of authorized capabilities to others, if allowed by the owner of a Decentralized
 ```json
 {
   "descriptor": {
-    "method": "PermissionsGrant",
+    "interface": "Permissions",
+    "method": "Grant",
     "permissionGrantId": "f45wve-5b56v5w-5657b4e-56gqf35v",
     "permissionRequestId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
     "grantedBy": "did:example:bob",
@@ -1249,7 +1285,8 @@ Revocation of a permission is the act of closing off any additional or invalid i
 ```json
 { // Message
   "descriptor": { // Message Descriptor
-    "method": "PermissionsRevoke",
+    "interface": "Permissions",
+    "method": "Revoke",
     "permissionRevokeId": "sdfa4162-84af-4aab-aff5-f1f8438dfc1e",
     "permissionGrantId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
   }
@@ -1263,14 +1300,16 @@ The `PermissionQuery` method exists to facilitate lookup of any retained Permiss
 ```json
 { // Message
   "descriptor": { // Message Descriptor
-    "method": "PermissionsQuery",
+    "interface": "Permissions",
+    "method": "Query",
     "grantedTo": "did:example:bob"
   }
 }
 ```
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `PermissionsQuery`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Permissions`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Query`.
   - The object ****MAY**** contain any of the following properties from the descriptors of `PermissionsRequest`, `PermissionsGrant`, and `PermissionsRevoke` objects:
     - `permissionRequestId`
     - `permissionGrantId`
@@ -1292,7 +1331,8 @@ DWeb Node Hooks aim to not only allow permissioned subscribers to be notified of
 
 - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with. If the message is the initial entry for a new Hook being set, the value ****MUST**** be set to the resulting string from the [_Record ID Generation Process_](#recordid-generation).
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `HooksWrite`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Hooks`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Write`.
   - The object ****MAY**** contain a `parentId` property, and its value ****MUST**** be a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) for the previous `HooksWrite` in the chain.
   - The object ****MUST**** contain a `uri` property, and its value ****MUST**** be a URI string.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
@@ -1308,7 +1348,8 @@ Adding a hook for social media postings:
 ```json
 { // Message
   "descriptor": {
-    "method": "HooksWrite",
+    "interface": "Hooks",
+    "method": "Write",
     "hookId": "234452-563658-5563-63546",
     "uri": "https://some-domain.com/dwn-hook",
     "filter": {
@@ -1325,7 +1366,8 @@ Updating a previously added hook:
 { // Message
   "descriptor": {
     "parentId": CID_OF_PREVIOUS_INSTANCE,
-    "method": "HooksWrite",
+    "interface": "Hooks",
+    "method": "Write",
     "hookId": "234452-563658-5563-63546",
     "uri": "https://a-different-domain.com/new/path",
     "filter": {
@@ -1347,7 +1389,8 @@ If the `parentId` property:
 `HooksQuery` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `HooksQuery`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Hooks`
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Query`.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contains at least one of the following properties:
     - The object ****MAY**** contain a `writer` property, and its value ****MUST**** be the DID string from which hooks were written. Querying by writer can be important in cases where a writer wants to view all the hooks they have set against a target DID's DWeb Nodes.
     - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a the deterministic ID for the logical Hook record. This would be used to fetch a specific hook, as one might do to determine whether it exists in the target DWeb Node.
@@ -1358,7 +1401,8 @@ Get all active hooks Alice has written:
 ```json
 { // Message
   "descriptor": {
-    "method": "HooksQuery",
+    "interface": "Hooks",
+    "method": "Query",
     "filter": {
       "writer": "did:example:alice",
       "active": true
@@ -1372,7 +1416,8 @@ Get all active hooks Alice has written:
 `HooksWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `HooksDelete`.
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Hooks`
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Delete`.
   - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the deterministic ID for the logical Hook record.
   - The object ****MAY**** contain a `parentId` property, and its value ****MUST**** be a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the `descriptor` for the previous `HooksWrite` in the chain.
  
@@ -1381,7 +1426,8 @@ Deleting a hook:
 ```json
 { // Message
   "descriptor": {
-    "method": "HooksDelete",
+    "interface": "Hooks",
+    "method": "Delete",
     "recordId": "234452-563658-5563-63546",
     "parentId": CID_OF_HOOK_INSTANCE_TO_DELETE
   }
