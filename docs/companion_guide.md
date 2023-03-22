@@ -358,9 +358,12 @@ Connection](https://identity.foundation/decentralized-web-node/spec/images/topol
   Privacy](#security-and-privacy-chatgpt) section for additional information.
 
 - **What is the best way to ensure that recipients of PII access via DWN are not
-  persistently storing the information using their own digital agent?** The
-  in-browser embedded DWN does have storage restrictions. Let’s say I have a
-  second DWN hosted by some provider, can the second DWN use a different store?
+  persistently storing the information using their own digital agent?** This
+  question is very dependent on the use case. It is up to the responsibility of
+  the DWN app/user to decide what data to give to whom. For sensitive data such
+  as PII, it would generally be recommended to give as little information as
+  possible and only when required. You can use Zero Knowledge Proofs (ZKP), if
+  you need to prove something over a DWN without sharing the actual data.
 
 #### Specification Questions
 
