@@ -878,7 +878,8 @@ Get all objects of a given schema type:
 ```json
 { // Message
   "descriptor": { // Message Descriptor
-    "method": "RecordsDelete",
+    "interface": "Records",
+    "method": "Delete",
     "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
   }
 }
@@ -889,7 +890,8 @@ Get all objects of a given schema type:
 - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
 - If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `RecordsDelete`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Delete`.
+  - The object ****MUST**** contain a `interface` property, and its value ****MUST**** be the string `Records`.
 
 #### Computed Context IDs
 
