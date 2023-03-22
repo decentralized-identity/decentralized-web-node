@@ -2,24 +2,30 @@
 
 **Note: This document is a WORKING DOCUMENT and IN PROGRESS.**
 
-<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+<!-- markdown-toc start - Don't edit this section. Run M-x
+markdown-toc-refresh-toc -->
 
 **Table of Contents**
 
-- [Decentralized Web Node Companion Guide (DWN)](#decentralized-web-node-companion-guide-dwn)
-  - [Overview :chatgpt:](#overview-chatgpt)
-    - [What Are Decentralized Web Nodes? :chatgpt:](#what-are-decentralized-web-nodes-chatgpt)
-  - [Target Audience :chatgpt:](#target-audience-chatgpt)
-  - [Scope :chatgpt:](#scope-chatgpt)
+- [Decentralized Web Node Companion Guide
+  (DWN)](#decentralized-web-node-companion-guide-dwn)
+  - [Overview ](#overview-chatgpt)
+    - [What Are Decentralized Web Nodes?
+      ](#what-are-decentralized-web-nodes-chatgpt)
+  - [Target Audience ](#target-audience-chatgpt)
+  - [Scope ](#scope-chatgpt)
   - [Disclaimer](#disclaimer)
-  - [Terminology :chatgpt:](#terminology-chatgpt)
+  - [Terminology ](#terminology-chatgpt)
   - [Technology Comparision](#technology-comparision)
-  - [Architecture and Components :chatgpt:](#architecture-and-components-chatgpt)
-  - [Node Discovery and Peer-to-Peer Networking :chatgpt:](#node-discovery-and-peer-to-peer-networking-chatgpt)
-  - [Data Sharing and Interoperability :chatgpt:](#data-sharing-and-interoperability-chatgpt)
-  - [Security and Privacy :chatgpt:](#security-and-privacy-chatgpt)
-  - [Testing and Debugging :chatgpt:](#testing-and-debugging-chatgpt)
-  - [Deployment and Operations :chatgpt:](#deployment-and-operations-chatgpt)
+  - [Architecture and Components
+    ](#architecture-and-components-chatgpt)
+  - [Node Discovery and Peer-to-Peer Networking
+    ](#node-discovery-and-peer-to-peer-networking-chatgpt)
+  - [Data Sharing and Interoperability
+    ](#data-sharing-and-interoperability-chatgpt)
+  - [Security and Privacy ](#security-and-privacy-chatgpt)
+  - [Testing and Debugging ](#testing-and-debugging-chatgpt)
+  - [Deployment and Operations ](#deployment-and-operations-chatgpt)
     - [Example Deployment (Simple)](#example-deployment-simple)
     - [Example Deployment (Complex)](#example-deployment-complex)
   - [Miscellaneous](#miscellaneous)
@@ -27,13 +33,14 @@
     - [Real World Applications](#real-world-applications)
     - [DWN Adoption](#dwn-adoption)
     - [Ecosystem interplay](#ecosystem-interplay)
-    - [Limitations and Other Considerations](#limitations-and-other-considerations)
+    - [Limitations and Other
+      Considerations](#limitations-and-other-considerations)
     - [Q&A](#qa)
     - [Reference Implementations](#reference-implementations)
 
 <!-- markdown-toc end -->
 
-## Overview :chatgpt:
+## Overview
 
 The Decentralized Web Node (DWN) companion guide is a non-normative guide that
 provides an overview of the functional requirements and design processes for
@@ -75,7 +82,7 @@ DWN specification.
 
 **STATUS:** PRE-DRAFT / IN PROGRESS
 
-### What Are Decentralized Web Nodes? :chatgpt:
+### What Are Decentralized Web Nodes?
 
 The DWN specification is a set of standards for building and deploying
 decentralized web nodes, which are the building blocks of a decentralized web
@@ -101,7 +108,7 @@ clear set of guidelines and best practices for building and deploying
 decentralized web nodes, the DWN specification can help to accelerate the
 adoption of a more decentralized and open web.
 
-## Target Audience :chatgpt:
+## Target Audience
 
 This target audience for this document are those that have a strong technical
 background and experience in building web applications, as well as a good
@@ -122,13 +129,13 @@ the broader decentralized web ecosystem, including emerging standards and best
 practices. This can help to inform the design of decentralized web applications
 and services that are secure, scalable, and interoperable.
 
-Overall, the target audience for the DWN companion guide is a technical community
-that is committed to building a more decentralized and open web. By leveraging
-the DWN specification, developers, architects, and solution providers can help
-to accelerate the adoption of decentralized web technologies, and promote
-greater privacy, security, and user control over their data.
+Overall, the target audience for the DWN companion guide is a technical
+community that is committed to building a more decentralized and open web. By
+leveraging the DWN specification, developers, architects, and solution providers
+can help to accelerate the adoption of decentralized web technologies, and
+promote greater privacy, security, and user control over their data.
 
-## Scope :chatgpt:
+## Scope
 
 This non-normative guide is intended to provide an overview of the functional
 requirements and design processes for implementing the Decentralized Web Node
@@ -141,11 +148,11 @@ The guide covers the following topics:
 
 - An overview of the DWN specification, including its purpose, scope, and key
   features.
-- Functional requirements for implementing the DWN specification,
-  including node discovery, peer-to-peer networking, and data sharing protocols.
+- Functional requirements for implementing the DWN specification, including node
+  discovery, peer-to-peer networking, and data sharing protocols.
 - Design considerations for building decentralized web nodes that conform to the
-  DWN specification, including the use of decentralized storage systems like IPFS,
-  and cryptographic protocols for secure data sharing and verification.
+  DWN specification, including the use of decentralized storage systems like
+  IPFS, and cryptographic protocols for secure data sharing and verification.
 - Bestpractices for building and deploying decentralized web nodes, including
   strategies for testing, debugging, and monitoring.
 
@@ -186,7 +193,7 @@ understood that the opinions and recommendations expressed in this guide are not
 the only or definitive way to approach decentralized web node design and
 implementation
 
-## Terminology :chatgpt:
+## Terminology
 
 The Terminology section of the Decentralized Web Node (DWN) companion guide is
 intended to provide a comprehensive and accessible reference for the key terms
@@ -236,7 +243,7 @@ on certain terms and concepts.
 
 TODO
 
-## Architecture and Components :chatgpt:
+## Architecture and Components
 
 This section provides an overview of the high-level architecture of a DWN,
 including the different components that make up a typical DWN, such as the
@@ -244,7 +251,7 @@ network layer, data storage layer, identity and access control layer, and the
 application layer. The section could also provide guidance on how to design and
 implement each of these components to conform to the DWN specification.
 
-## Node Discovery and Peer-to-Peer Networking :chatgpt:
+## Node Discovery and Peer-to-Peer Networking
 
 This section provides detailed guidance on how to implement the node discovery
 and peer-to-peer networking protocols that are required for a DWN to function
@@ -252,7 +259,7 @@ properly. This section could cover topics such as how to bootstrap a new node
 onto the network, how to maintain a list of known nodes, how to discover and
 connect to new peers, and how to propagate data across the network.
 
-## Data Sharing and Interoperability :chatgpt:
+## Data Sharing and Interoperability
 
 This section provides guidance on how to design and implement data sharing
 protocols that conform to the DWN specification, including the use of
@@ -261,7 +268,7 @@ decentralized storage systems like IPFS and the InterPlanetary Linked Data
 interoperability between different decentralized web nodes and data sharing
 protocols, such as the use of standardized data formats and metadata.
 
-## Security and Privacy :chatgpt:
+## Security and Privacy
 
 This section provides guidance on how to design and implement security and
 privacy features that conform to the DWN specification, including the use of
@@ -270,30 +277,31 @@ Identity (SSI) for secure data sharing and verification. This section could also
 cover best practices for securing DWN infrastructure and protecting user data
 against common attacks and threats.
 
-## Testing and Debugging :chatgpt:
+## Testing and Debugging
 
 This section provides guidance on how to test and debug a DWN implementation,
 including strategies for testing individual components and the network as a
 whole, as well as tools and techniques for troubleshooting issues that may arise
 during development or deployment.
 
-## Deployment and Operations :chatgpt:
+## Deployment and Operations
 
-This section provides guidance on how to deploy and operate a DWN
-implementation in a production environment, including best practices for scaling
-and managing a distributed network, as well as tools and techniques for
-monitoring and managing network performance and reliability. This section could
-also cover strategies for maintaining backward compatibility and promoting
-interoperability with other decentralized web nodes and protocols.
+This section provides guidance on how to deploy and operate a DWN implementation
+in a production environment, including best practices for scaling and managing a
+distributed network, as well as tools and techniques for monitoring and managing
+network performance and reliability. This section could also cover strategies
+for maintaining backward compatibility and promoting interoperability with other
+decentralized web nodes and protocols.
 
 ### Example Deployment (Simple)
 
-In this simple example, each actor has a remote (i.e a server) and local
-node (i.e a phone). As an example, you have a chat app with a remote and local
-node. Alice wants to send a message to Bob in this case, and Bob will reply with
-a message back.
+In this simple example, each actor has a remote (i.e a server) and local node
+(i.e a phone). As an example, you have a chat app with a remote and local node.
+Alice wants to send a message to Bob in this case, and Bob will reply with a
+message back.
 
-![DWN Simple Connection](https://identity.foundation/decentralized-web-node/spec/images/topology.svg)
+![DWN Simple
+Connection](https://identity.foundation/decentralized-web-node/spec/images/topology.svg)
 
 **Steps**
 
@@ -325,37 +333,56 @@ a message back.
 #### General Questions
 
 - **How do you pronounce DWNs?**: We've heard a few ways to say it:
-  - DAWN
-  - D Web Node
-  - D W N
-- **How are DWNs different than SOLID Pods?**
-- **For the base case, how many DWNs should I expect a particular person to have?** A person is
-  expected to have a few DWNs. Maybe more than 1 but less than 10.
+
+  - As dawn : _dɔːn_
+  - D Web Node : _diː wɛb nəʊd_
+  - D W N : _diː ˈdʌbᵊljuː ɛn_
+
+- **How are DWNs different than SOLID Pods?** See the [Technology
+  Comparision](#technology-comparision) section for a detailed understanding of
+  how DWNs compare to different technology.
+
+- **For the base case, how many DWNs should I expect a particular person to
+  have?** As a general rule, a person can be expected to have a few DWNs. Possibly
+  more than 1 but less than 10. There may be cases which require more than 10.
 
 #### Security Questions
 
-- **Are there Data Privacy Considerations like GDPR? And how are they taken care of in this kind of paradigm?**
-  DWN's are basically GDPR by default, as you are 100% in control of your data store.
+- **Are there Data Privacy Considerations like GDPR? And how are they taken care
+  of in this kind of paradigm?** The full GDPR rights for individuals are: the
+  right to be informed, the right of access, the right to rectification, the
+  right to erasure, the right to restrict processing, the right to data
+  portability, the right to object and also rights around automated decision
+  making and profiling. Since DWN's are a personal data store where you control
+  your data, they are basically GDPR by default. See the [Security and
+  Privacy](#security-and-privacy-chatgpt) section for additional information.
+
 - **What is the best way to ensure that recipients of PII access via DWN are not
-  persistently storing the information using their own digital agent?**
-  The in-browser embedded DWN does have storage restrictions. Let’s say I have a
+  persistently storing the information using their own digital agent?** The
+  in-browser embedded DWN does have storage restrictions. Let’s say I have a
   second DWN hosted by some provider, can the second DWN use a different store?
 
 #### Specification Questions
 
-- **How flexible/dynamic are the protocol control rules?** The point of
-  protocols is so you can create a protocol. What type of actors can do what. Not
-  RBAC. You can define how actors can interface with your protocols.It does NOT
-  specify ids. It's built to shape traffic. They are more for large party interactions.
+- **How flexible/dynamic are the protocol control rules?** The Protocols
+  interface provides a way to define how another DWN may interact with your DWN.
+  This is different to RBAC controls that you would traditionally see in a
+  centralized control system. You can learn more about the protocols interface
+  [here](https://identity.foundation/decentralized-web-node/spec/#protocols).
+  Protocols introduces a mechanism for declaratively encoding an app or
+  service’s underlying protocol rules, including segmentation of records,
+  relationships between records, data-level requirements, and constraints on how
+  participants interact with a protocol.
 
 #### Technical Questions
 
-- **If I replicate DWNs for a service, how many DID's should be assigned?** One
-  did can refer to multiple DWNs. There is a preference toward the first service
-  endpoint in the [resolution array](https://identity.foundation/decentralized-web-node/spec/#resolution)
-- **How does it work when there is an asymmetry of resources across DWNs w.r.t
-  sync?** There eventually will be selective sync that can allow you to filter
-  certain things to sync across DWNs.
+- **If I replicate DWNs for a service, how many DID's should be assigned?** A
+  single DID may point to multiple DWNs. There is a preference toward the first
+  service endpoint in the [resolution
+  array](https://identity.foundation/decentralized-web-node/spec/#resolution)
+- **What happens when there is asymmetry of resources across DWNs w.r.t sync?**
+  Although it is currently not supported, there eventually will be selective
+  sync that can allow you to filter certain things to sync across DWNs.
 - **How does latency impact sync?** All DWNs are built on a CRDT, so they will
   eventually resolve without conflict, however you can expect that latency may
   impact the speed of the resolution. Therefore, it's recommended to pick the
@@ -363,23 +390,40 @@ a message back.
 - **How does the CRDT system work?** There are 2 levels of CRDT. The base layer,
   object level CRDT, and the second layer, which is the data CRDT. These are
   managed with commit strategies. See [here] for more information.
-- **Does a DWN run in the cloud, local, or both?**
-  At the very least, they will probably run locally, and there is a high
-  likelihood that they will also run in the cloud. The remote data will be
-  available in case it needs to be very available.
-- **Do we write into an IPFS vs. IPLD Node?**
-  DWN use IPLD as an encoding format, but it's not required to throw out to the
-  IPFS layer.
-- **What is IPLD?**
-- **What if you want to use a DWN and don't want data on IPFS?**
+  TODO: Spec does not discuss CRDT.
+- **Does a DWN run in the cloud, local, or both?** At the very least, they will
+  probably run locally, and there is a high likelihood that they will also run
+  in the cloud. The remote data will be available in case it needs to be very
+  available. Imagine for example you go on a hiking trip and you are out of
+  network. The DWN in the cloud would facilitate interactions that you would not
+  be able to do via your phone which is out of service.
+- **Do we write into an IPFS vs. IPLD Node?** DWN use IPLD as an encoding
+  format, but it's not required to throw out to the IPFS layer.
+- **What is IPLD?**IPLD is the data model of the content-addressable web. It
+  allows us to treat all hash-linked data structures as subsets of a unified
+  information space, unifying all data models that link data with hashes as
+  instances of IPLD.
+- **What if you want to use a DWN and don't want data on IPFS?** Not all DWNs
+  require IPFS.
+- **What are the main types of data store?** There are two types of datastores.
+  There's a `message store` that is intended to store metadata about the data
+  you're trying to store. Then there is a `datastore`, which actually has the
+  data you want to store.
 - **Does DWN allow or foresee applications that need cross user/company
-  synchronisation (e.g., DeFi applications that pose double-spend risks or supply chain applications including international participants to be synced)? **
+  synchronisation (e.g., DeFi applications that pose double-spend risks or
+  supply chain applications including international participants to be synced)?**
+  Eventually, yes, DWNs maybe able to facilitate those interactions.
 - **Would a DWN support the notion of a computational enclave that allows to
   securely execute someone else’s code to access the DWN’s data, e.g., a
   federated ML model that then the user can control what it sends back out to
-  the sender of the model?**
+  the sender of the model?** You will be able to define access to a subset of
+  resources within a DWN based upon derived key permissions using Protocols.
+  This will give users the ability to access encrypted data on a DWN for only a
+  subset of a DWN, using a derived key. There is also a vision of DWNs being
+  able to work using homomorphic entryption, however this is an area of research now.
 
 ### Reference Implementations
 
 - [TBD's JS SDK](https://github.com/TBD54566975/dwn-sdk-js) : Javascript sdk
-- [TBD's Web 5 Implementation](https://github.com/TBD54566975/incubating-web5-labs)
+- [TBD's Web 5
+  Implementation](https://github.com/TBD54566975/incubating-web5-labs)
