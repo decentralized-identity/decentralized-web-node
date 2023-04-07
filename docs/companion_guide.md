@@ -383,25 +383,17 @@ Specification	                  | Open-Source Specification. The Atomic Server i
 | Schema / Data Representation | [Pending] |
 | Query Capabilities | The goal is to provide Indexing and Querying capabilities. The working group is in the process of how deciding how this is done. |
 
-Technology	MyDex Personal Data Store
-
-Description	The MyDex Personal Data Store is a secure data vault residing in the cloud and hosted by MyDex Community Interest Company.
-An individual’s data is encrypted at rest using the individual’s key. MyDex does not have access to any key for decryption.
-Specification	Proprietary Specification
-Deployment	Offered as a SaaS solution. Not really decentralized.
-Identity	MyDexID derived from PKI.
-Authentication	SAML and OIDC
-Authorization	Proprietary Data Sharing Agreement
-Transport	REST over HTTP/1.1
-Schema / Data Representation	Json Formatted
-Query Capabilities	[Not found in documentation] 
-
-
-
-
-
-
-
+| MyDex Personal Data Store | https://dev.mydex.org/connection-api/personal-data-store.html |
+| ------------------------- | ----------------------------------------------- |
+| Description	| The MyDex Personal Data Store is a secure data vault residing in the cloud and hosted by MyDex Community Interest Company. An individual’s data is encrypted at rest using the individual’s key. MyDex does not have access to any key for decryption. | 
+| Specification	| Proprietary Specification |
+| Deployment | Offered as a SaaS solution |
+| Identity | MyDexID derived from PKI |
+| Authentication | SAML and OIDC |
+| Authorization	| Proprietary Data Sharing Agreement |
+| Transport	| REST over HTTP/1.1 |
+| Schema / Data Representation | Json Formatted |
+| Query Capabilities | [Not found in documentation] |
 
 
 Technology	The Hub of All Things and HAT Microserver
