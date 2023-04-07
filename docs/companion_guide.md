@@ -392,7 +392,7 @@ Specification	                  | Open-Source Specification. The Atomic Server i
 | Authentication | SAML and OIDC |
 | Authorization	| Proprietary Data Sharing Agreement |
 | Transport	| REST over HTTP/1.1 |
-| Schema / Data Representation | Json Formatted |
+| Schema / Data Representation | JSON Formatted |
 | Query Capabilities | [Not found in documentation] |
 
 
