@@ -331,6 +331,93 @@ FVM Consensus is achieved using their Interplanetary Consensus and it is
 estimated that it will be able to handle transaction in the realm of the 
 billion tps.
 
+### Personal Data Stores
+
+| Solid Pods	   | https://solidproject.org/ |
+| -------------- | ---------------------------------------------------------- |
+| Description	   | Decentralized Data Stores that rely on Linked Data to express identity, and semantic data. The Pod is owned by an agent (Person, Organization, Group, Device, etc..) that is globally identified by a WebID. |
+| Specification  | Open Specification incubated by Inrupt and now the W3C. |
+| Deployment     | A Pod can be hosted by a Solid Pod Provider, or it can be user-deployed using any of its implementations in Node.js, PHP, or as a plugin for Nextcloud. |
+| Identity       | WebID and its corresponding WebID Profile document. The WebId comes in the format of an HTTP URI and it allows the linking of many agents in a web of trust using vocabularies such as Friend of a Friend FOAF semantics. |
+| Authentication | An agent uses its WebID to authenticate using the SOLID-OIDC specification. A Solid Pod server becomes an OpenID provider. |
+| Authorization  | Access to resources is managed by the Web Access Control system and its underlying Access Control List model. Authorizations are described using the ACL Ontology which is granular at the graph subject level. |
+| Transport      | HTTP/1.1 through GET, PUT, POST, PATCH, and DELETE HTTP Methods. |
+| Schema / Data Representation | Data is encoded in graphs using the N3 notation (a superset of an RDF triplet). Schemas are innate in RDF semantic ontologies. Any graphed relationship denotes a schema in its definition. |
+| Query Capabilities | The HTTP GET method allows for the N3 Path Syntax. It is very similar to SPARQL 1.1 Property Path Syntax. |
+ 
+| Ceramic and ComposeDB | https://ceramic.network/ |
+| ---------------------------- | -------------------------------------------- |
+| Description                  | Ceramic is a decentralized data network. Its foundations are laid on top of the Ceramic Event Driven Protocol. The infrastructure to build Personal Data Stores is offered by the Ceramic ComposeDB. ComposeDB replaces IDX and DID Data Store. |
+| Specification                |	Open Specification curated by Ceramic.Network |
+| Deployment                   |	The ComposeDB instance is installed as part of the Ceramic Node deployment. It can only be hosted in a Cloud environment. |
+| Identity                     | Decentralized Identifiers DID's. |
+| Authentication               |	Web3 Wallets and DID. |
+| Authorization	               | Object Capabilities |
+| Transport                    | GraphQL API over HTTP/1.1 |
+| Schema / Data Representation |	API models are defined as GraphQL Schemas. The underlying data store uses graph nodes: Accounts and Documents. Relations are expressed as Edges. |
+| Query Capabilities           | Partial GraphQL Queries. As of this writing, a query cannot be made against any data attributes. |
+
+| Atomic Data and Atomic Server | https://docs.atomicdata.dev/ |
+| ----------------------------- | ------------------------------------------- |
+| Description	                  | Atomic offers a specification and a server to build Json-LD for building privacy preserving applications. |
+Specification	                  | Open-Source Specification. The Atomic Server implementation in Rust is also open sourced. |
+| Deployment                    | It can be deployed in a Cloud environment or User-Hosted |
+| Identity                      | PKI |
+| Authentication                |	Json-AD Authentication Resource |
+| Authorization                 |	Atomic Hierarcy Model |
+| Transport	                    | WebSockets, HTTP 1/1 |
+| Schema / Data Representation  |	Json-AD (Jason-Atomic Data). A variation to Json-LD but Atomic Data supports the definition of schemas to provide type-safey. |
+| Query Capabilities            |	Atomic Paths, SPARQL. |
+
+
+| Encrypted Data Vaults | https://identity.foundation/edv-spec/ |
+| --------------------- | --------------------------------------------------- |
+| Description           |	A specification with the goal of ensuring the privacy of an entity’s data by encrypting the data at rest. |
+| Specification         |	Open-Source Specification incubated by DIF. |
+| Deployment            |	[Pending] |
+| Identity              | Support for various Identity models. DIDs being one of them. |
+| Authentication        |	[Pending] |
+| Authorization         |	Authorization Capabilities |
+| Transport             |	HTTP 1/1, gRPC, Bluetooth |
+| Schema / Data Representation | [Pending] |
+| Query Capabilities | The goal is to provide Indexing and Querying capabilities. The working group is in the process of how deciding how this is done. |
+
+Technology	MyDex Personal Data Store
+
+Description	The MyDex Personal Data Store is a secure data vault residing in the cloud and hosted by MyDex Community Interest Company.
+An individual’s data is encrypted at rest using the individual’s key. MyDex does not have access to any key for decryption.
+Specification	Proprietary Specification
+Deployment	Offered as a SaaS solution. Not really decentralized.
+Identity	MyDexID derived from PKI.
+Authentication	SAML and OIDC
+Authorization	Proprietary Data Sharing Agreement
+Transport	REST over HTTP/1.1
+Schema / Data Representation	Json Formatted
+Query Capabilities	[Not found in documentation] 
+
+
+
+
+
+
+
+
+
+Technology	The Hub of All Things and HAT Microserver
+
+Description	The Hub of All Things is a service provided by DataSwift who developed the HAT Microserver, a personal web server and its accompanying PostgresQL database.
+A Hat Microserver semgments data in namespaces such that data from various verticals / domains / apps can live under the same instance.
+Specification	Proprietary Specification. HAT Microserver implementation in Scala is open sourced.
+Deployment	Offered as a SaaS solution. Not really decentralized.
+Identity	HAT Universal ID.
+Authentication	DataSwift One SSO
+Authorization	HAT Microserver Instructions Contract (HMIC)
+Transport	REST over HTTP1/1.
+Schema / Data Representation	Json Formatted
+Query Capabilities	[Not found in documentation] 
+
+
+
 ## Architecture and Components
 
 This section provides an overview of the high-level architecture of a DWN,
