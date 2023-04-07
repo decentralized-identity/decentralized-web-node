@@ -257,7 +257,7 @@ technologies at scale.
 
 #### **DIDComm** - https://didcomm.org/
 
-A DID based, secured, transport-agnostic, peer-to-peer communications, protocol.
+A DID-based, secured, transport-agnostic, peer-to-peer communications protocol.
 It lays the foundation to build domain/vertical/application specific protocols.
 
 #### **KERI** - https://keri.one/
