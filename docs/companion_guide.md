@@ -260,7 +260,7 @@ technologies at scale.
 A DID-based, secured, transport-agnostic, peer-to-peer communications protocol.
 It lays the foundation to build domain/vertical/application specific protocols.
 
-#### **KERI** - https://keri.one/
+#### **KERI** — https://keri.one/
 
 Enables the portability of Self-Sovereign Identities by eliminating the need
 for a ledger to establish a root of trust.
