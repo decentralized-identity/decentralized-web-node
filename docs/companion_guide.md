@@ -255,7 +255,7 @@ technologies at scale.
 ### Technologies that are not Personal Data Stores
 
 
-#### **DIDComm** - https://didcomm.org/
+#### **DIDComm** — https://didcomm.org/
 
 A DID-based, secured, transport-agnostic, peer-to-peer communications protocol.
 It lays the foundation to build domain/vertical/application specific protocols.
