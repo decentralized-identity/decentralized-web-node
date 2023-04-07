@@ -281,46 +281,55 @@ can be cryptographically verified.
 
 #### **ChainSafe Storage** - https://storage.chainsafe.io/
 
-ChainSafe is an end-to-end file encrypting storage application. It persists symmetric-encrypted information on the IPFS/FileCoin network. 
+ChainSafe is an end-to-end file encrypting storage application. It persists 
+symmetric-encrypted information on the IPFS/FileCoin network. 
+It is meant to transition traditional Web 2.0 integrations with AWS S3 buckets
+to Web 3.0.
 
-It is meant to transition traditional Web 2.0 integrations with AWS S3 buckets to Web 3.0.
+#### **Fleek** - https://docs.fleek.co/
 
-Fleek
+Fleek is a multi-purpose set of technologies that allow Dapp Developers to host
+web applications on IPFS / FileCoin. It also provides general IPFS / FileCoin
+storage management. It is geared towards builders rather than individuals.
+Fleek offers Space and Space Daemon which is intended for building Privacy preserving
+Dapps. It is currently in Alpha.
 
-Reference: https://docs.fleek.co/
+#### **Protocol Labs IPFS, FileCoin, FVM** - https://fvm.filecoin.io/
 
-Fleek is a multi-purpose set of technologies that allow Dapp Developers to host web applications on IPFS / FileCoin. It also provides general IPFS / FileCoin storage management. It is geared towards builders rather than individuals.
+IPFS is without a doubt the most successful storage protocol that decouples 
+data from well-known servers, cloud storage, or any type of centralized storage.
+This is accomplished using Content Addressing (CID) and the segmenting of data
+in Direct Acyclic Graphs. In IPFS, the location of the data is its CID.
+FileCoin runs on top of IPFS and offers an incentive-based model for cold 
+storage so that any entity that wants to profit from offering hardware 
+resources may easily do so.
 
-Fleek offers Space and Space Daemon which is intended for building Privacy preserving Dapps. It is currently in Alpha.
+The biggest drawback with IPFS/FileCoin was that once a rogue party has a hold
+of CIDs, the corresponding data is fully accessible. This paradigm forces 
+client processes to encrypt data prior to storing it. Until now… 
+Protocol Labs has now released the FileCoint Virtual Machine network. It is an
+Ethereum-compatible VM. This means that Solidity developers can also develop in
+the new FVM. 
 
-[TODO: A more exhaustive comparison is needed]
-
-Web3.Storage – [Pending]
-
-Reference: https://web3.storage/
-
-Protocol Labs IPFS, FileCoin, FVM
-
-Reference: https://fvm.filecoin.io/
-
-IPFS is without a doubt the most successful storage protocol that decouples data from well-known servers, cloud storage, or any type of centralized storage. This is accomplished using Content Addressing (CID) and the segmenting of data in Direct Acyclic Graphs. In IPFS, the location of the data is its CID.
-
-FileCoin runs on top of IPFS and offers an incentive-based model for cold storage so that any entity that wants to profit from offering hardware resources may easily do so.
-
-The biggest drawback with IPFS/FileCoin was that once a rogue party has a hold of CIDs, the corresponding data is fully accessible. This paradigm forces client processes to encrypt data prior to storing it. Until now… 
-
-Protocol Labs has now released the FileCoint Virtual Machine network. It is an Ethereum-compatible VM. This means that Solidity developers can also develop in the new FVM. 
-This technology offers the basic L1 plumbing that unleashes the potential for a new open data economy. This in essence works as a decentralized operating system that orchestrates how data is persisted, retrieved, and governed.
-
-One of the basic features is the ability to bring computation to decentralized data. This means that L2 Compute Networks can encrypt/decrypt sensitive information, act as a gatekeeper, and offer the same features as the various Personal Data Stores herein discussed.
+This technology offers the basic L1 plumbing that unleashes the potential for a
+new open data economy. This in essence works as a decentralized operating system
+that orchestrates how data is persisted, retrieved, and governed.
+One of the basic features is the ability to bring computation to decentralized 
+data. This means that L2 Compute Networks can encrypt/decrypt sensitive 
+information, act as a gatekeeper, and offer the same features as the various 
+Personal Data Stores herein discussed.
 
 It is worth mentioning that the FVM uses WebAssembly as the bytecode for Smart Contracts. This means that any program that can be compiled into WebAssembly can be used for on-chain development.
 
-Amongst one of the most powerful features of these FVM smart contracts is the ability to define rules for data to obey, most importantly region and location for the storage of that data to obey. This is important in order to remain compliant for regulations such as GDPR, eg data about EU citizens must remain within the borders of the European Community.
+Amongst one of the most powerful features of these FVM smart contracts is the 
+ability to define rules for data to obey, most importantly region and location
+for the storage of that data to obey. This is important in order to remain
+compliant for regulations such as GDPR, eg data about EU citizens must remain
+within the borders of the European Community.
 
-FVM Consensus is achieved using their Interplanetary Consensus and it is estimated that it will be able to handle transaction in the realm of the billion tps.
-
-
+FVM Consensus is achieved using their Interplanetary Consensus and it is 
+estimated that it will be able to handle transaction in the realm of the 
+billion tps.
 
 ## Architecture and Components
 
