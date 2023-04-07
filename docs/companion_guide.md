@@ -270,8 +270,8 @@ for a ledger to establish a root of trust.
 Nostr has gained some popularity as an open protocol that offers a censorship-resistant
 alternative to Twitter. It relies on relay servers that accept and store posts.
 A client or Dapp signs messages with the user’s private key and posts messages
-to as many relay servers as possible in order to prevent the user’s content to
-be banned.
+to as many relay servers as possible in order to keep the user’s content from
+being banned.
 Relay servers do not communicate with each other thus the responsibility of 
 replication is delegated to the Client application.
 Users are identified by their public key. That is, every post that is signed 
