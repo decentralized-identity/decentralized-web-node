@@ -396,20 +396,17 @@ Specification	                  | Open-Source Specification. The Atomic Server i
 | Query Capabilities | [Not found in documentation] |
 
 
-Technology	The Hub of All Things and HAT Microserver
-
-Description	The Hub of All Things is a service provided by DataSwift who developed the HAT Microserver, a personal web server and its accompanying PostgresQL database.
-A Hat Microserver semgments data in namespaces such that data from various verticals / domains / apps can live under the same instance.
-Specification	Proprietary Specification. HAT Microserver implementation in Scala is open sourced.
-Deployment	Offered as a SaaS solution. Not really decentralized.
-Identity	HAT Universal ID.
-Authentication	DataSwift One SSO
-Authorization	HAT Microserver Instructions Contract (HMIC)
-Transport	REST over HTTP1/1.
-Schema / Data Representation	Json Formatted
-Query Capabilities	[Not found in documentation] 
-
-
+| The Hub of All Things | https://www.hubofallthings.com/ |
+| --------------------- | --------------------------------------------------- |
+| Description	| The Hub of All Things is a service provided by DataSwift who developed the HAT Microserver, a personal web server and its accompanying PostgresQL database. A Hat Microserver semgments data in namespaces such that data from various verticals / domains / apps can live under the same instance. |
+| Specification	| Proprietary Specification. HAT Microserver implementation in Scala is open sourced. |
+| Deployment | Offered as a SaaS solution |
+| Identity | HAT Universal ID. |
+| Authentication | DataSwift One SSO |
+| Authorization	| HAT Microserver Instructions Contract (HMIC) |
+| Transport	| REST over HTTP1/1. |
+| Schema / Data Representation | Json Formatted |
+| Query Capabilities | [Not found in documentation] |
 
 ## Architecture and Components
 
