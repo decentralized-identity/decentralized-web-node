@@ -265,7 +265,7 @@ It lays the foundation to build domain/vertical/application specific protocols.
 Enables the portability of Self-Sovereign Identities by eliminating the need
 for a ledger to establish a root of trust.
 
-#### **Nostr** - https://nostr.com/
+#### **Nostr** — https://nostr.com/
 
 Nostr has gained some popularity as an open protocol that offers a censorship-resistant
 alternative to Twitter. It relies on relay servers that accept and store posts.
