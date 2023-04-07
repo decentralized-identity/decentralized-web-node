@@ -344,7 +344,8 @@ billion tps.
 | Transport      | HTTP/1.1 through GET, PUT, POST, PATCH, and DELETE HTTP Methods. |
 | Schema / Data Representation | Data is encoded in graphs using the N3 notation (a superset of an RDF triplet). Schemas are innate in RDF semantic ontologies. Any graphed relationship denotes a schema in its definition. |
 | Query Capabilities | The HTTP GET method allows for the N3 Path Syntax. It is very similar to SPARQL 1.1 Property Path Syntax. |
- 
+
+
 | Ceramic and ComposeDB | https://ceramic.network/ |
 | ---------------------------- | -------------------------------------------- |
 | Description                  | Ceramic is a decentralized data network. Its foundations are laid on top of the Ceramic Event Driven Protocol. The infrastructure to build Personal Data Stores is offered by the Ceramic ComposeDB. ComposeDB replaces IDX and DID Data Store. |
