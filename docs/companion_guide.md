@@ -250,7 +250,7 @@ compared technologies whether they are a stack, libraries, protocols, or
 frameworks.
 
 This is by no means a comprehensive comparison, and we did not test these 
-technologies at a scale.
+technologies at scale.
 
 ### Technologies that are not Personal Data Stores
 
