@@ -277,7 +277,7 @@ replication is delegated to the Client application.
 Users are identified by their public key. That is, every post that is signed 
 can be cryptographically verified.
 
-### Decentralized Storage that are not intrinsically Personal Data Stores
+### Decentralized Storages that are not intrinsically Personal Data Stores
 
 #### **ChainSafe Storage** - https://storage.chainsafe.io/
 
