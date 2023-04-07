@@ -281,7 +281,7 @@ can be cryptographically verified.
 
 #### **ChainSafe Storage** - https://storage.chainsafe.io/
 
-ChainSafe is an end-to-end file encrypting storage application. It persists 
+ChainSafe is an end-to-end, file-encrypting storage application. It persists 
 symmetric-encrypted information on the IPFS/FileCoin network. 
 It is meant to transition traditional Web 2.0 integrations with AWS S3 buckets
 to Web 3.0.
