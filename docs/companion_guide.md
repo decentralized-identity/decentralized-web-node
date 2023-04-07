@@ -404,8 +404,8 @@ Specification	                  | Open-Source Specification. The Atomic Server i
 | Identity | HAT Universal ID |
 | Authentication | DataSwift One SSO |
 | Authorization	| HAT Microserver Instructions Contract (HMIC) |
-| Transport	| REST over HTTP1/1. |
-| Schema / Data Representation | Json Formatted |
+| Transport	| REST over HTTP 1.1 |
+| Schema / Data Representation | JSON Formatted |
 | Query Capabilities | [Not found in documentation] |
 
 ## Architecture and Components
