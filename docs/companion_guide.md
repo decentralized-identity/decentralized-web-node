@@ -381,7 +381,7 @@ Specification	                  | Open-Source Specification. The Atomic Server i
 | Authorization         |	Authorization Capabilities |
 | Transport             |	HTTP 1/1, gRPC, Bluetooth |
 | Schema / Data Representation | [Pending] |
-| Query Capabilities | The goal is to provide Indexing and Querying capabilities. The working group is in the process of how deciding how this is done. |
+| Query Capabilities | The goal is to provide Indexing and Querying capabilities. The working group is in the process of how deciding how this will be done. |
 
 | MyDex Personal Data Store | https://dev.mydex.org/connection-api/personal-data-store.html |
 | ------------------------- | ----------------------------------------------- |
