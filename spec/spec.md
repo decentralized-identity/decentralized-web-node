@@ -133,12 +133,12 @@ The following DID Document Service Endpoint entries ****MUST**** be present in t
 
 ```json
 {
-  "id": "did:example:123",
+  "id": "did:example:alice",
   "service": [{
     "id":"#dwn",
     "type": "DecentralizedWebNode",
     "serviceEndpoint": {
-      "nodes": ["https://dwn.example.com", "https://example.org/dwn"]
+      "nodes": ["did:example:host", "https://dwn.example.com"]
     }
   }]
 }
@@ -165,10 +165,10 @@ The following process defines how a DID-Relative URL is composed to address a De
 
 **DID-relative URLs are composed of the following segments**
 
-`did:example:123` + `?service=DecentralizedWebNode` + `&queries=` + `toBase64Url( JSON.stringify( [{ DESCRIPTOR_1 }, { DESCRIPTOR_N }] ) )`
+`did:example:alice` + `?service=DecentralizedWebNode` + `&message=` + `toBase64Url( JSON.stringify( { MESSAGE } ) )`
 
 ```json
-did:example:123?service=DecentralizedWebNode&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
+did:example:alice?service=DecentralizedWebNode&message=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
 ```
 
 #### Resolution
@@ -186,20 +186,26 @@ The following process defines how a DID-Relative URL for a Decentralized Web Nod
 **DID-Relative URL example for passing multiple messages:**
 
 ::: note
-For example purposes, the `queries` parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).
+For example purposes, the `message` parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).
 :::
 
 ```json
-did:example:123?service=DecentralizedWebNode&queries=[{ "interface": "Records", "method": "Query", "schema": "https://schema.org/SocialMediaPosting" }]
+did:example:alice?service=DecentralizedWebNode&message={ "interface": "Records", "method": "Query", "schema": "https://schema.org/SocialMediaPosting" }
 ```
 
 ```json
-did:example:123?service=DecentralizedWebNode&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
+did:example:alice?service=DecentralizedWebNode&message=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
 ```
 
 **Resolve DID to locate its Decentralized Web Node URIs:**
 
-`did:example:123` -->  resolve to Decentralized Web Node endpoint(s)  -->  `https://dwn.example.com/`
+`did:example:alice --> resolve DWN endpoint(s) --> `https://dwn.example.com`
+
+`did:example:alice`--> resolve DWN endpoint(s) --> `did:example:host` --> resolve DWN endpoint(s) --> `https://dwn.did-relative-host.com`
+
+::: note
+Only DID URIs in the `nodes` array will be allowed to initiate sync activities with other DWeb Node instances.
+:::
 
 **Construct the *Request Object*{id=request-object}:**
 
