@@ -23,6 +23,32 @@ Bi-weekly DIF call notes on DWN specifications.
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
 
+## DIF Meeting April 19, 2023
+
+### Attendees
+
+- Andor Kesselman @andorsk
+- Liran Cohen @liran
+- Dan Buchner @csuwildcat
+
+### Agenda
+
+Hopefully we can get spec alignment today.
+
+| Item            | Segment                 | Time   | Owner           | Description                                                                     |
+| --------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro           | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda          | Companion Guide Updates | 10 min | @andorsk/Moises | Merge https://github.com/decentralized-identity/decentralized-web-node/pull/226 |
+| [TBD Updates]() | Updates                 | 10 min | @csuwildcat     |                                                                                 |
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk        | Alignment                                                                       |
+| Issue Alignment | Issue Alignment         | 10 min | @liran          | Alignment                                                                       |
+| Calls To Action | Closing                 | 5 min  | @andorsk        |                                                                                 |
+
+### Notes
+
+- Discussed: How we get TBD's updates into issues.
+- We called this meeting short as there were not enough participants.
+
 ## DIF Meeting March 22, 2023
 
 Again this week we are overbooked with content. That's because we have a lot of cleanup to do!
