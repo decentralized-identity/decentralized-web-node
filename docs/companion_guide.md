@@ -418,8 +418,7 @@ billion transactions per second (tps).
 | Deployment     | Offered as a SaaS solution. Can be self hosted. |
 | Identity       | [PKI](https://book.peergos.org/security/pki.html) + [Centralized password management, with password based keypairs(password + username + public salt)](https://book.peergos.org/security/login.html) |
 | Authentication |  Self-authenticated & [S3 V4 Signatures](https://book.peergos.org/security/bats.html)|
-| Authorization  | [Cryptree](https://book.peergos.org/security/cryptree.html)
-| based encryption and [Block access controls](https://book.peergos.org/security/bats.html) |
+| Authorization  | [Cryptree](https://book.peergos.org/security/cryptree.html) based encryption and [Block access controls](https://book.peergos.org/security/bats.html) |
 | Transport      | [HTTP RESTful APIs](https://book.peergos.org/features/apps.html) |
 | Schema / Data Representation | [DAG CBOR Encoded IPLD Objects and Raw Objects](https://book.peergos.org/security/bats.html). JSON Schema for configuration. |
 | Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
