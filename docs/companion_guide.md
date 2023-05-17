@@ -310,9 +310,9 @@ DWN to be a "relay".
   reliable device for services to connect to at scale.
 - **Remote Node:** Remote nodes are meant to be highly available and always
   reachable from other services. If Bob takes a trip to the mountains and Jane
-  sends Bob a message, Jane would sent the message to Bob's remote DWN, which
-  is always available, rather than directly to Bob's phone, which is out of
-  connectivity. This allows Bob to still interact with Jane and receive her
+  sends Bob a message, Jane would send the message to Bob's remote DWN, which
+  is always available, rather than directly to his local DWN (his phone), which is out of
+  range. This allows Bob to still interact with Jane and receive her
   message, despite not being connected to the internet.
 - **Relay:** The relay is a way a remote node to forward information received to a
   local node, or another remote node. When Jane sends a message to Bob's remote
