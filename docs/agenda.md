@@ -23,6 +23,29 @@ Bi-weekly DIF call notes on DWN specifications.
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
 
+## DIF Meeting May 17, 2023
+
+* [Recording]()
+
+### Attendees
+
+- Andor Kesselman @andorsk
+- Liran Cohen @liran
+- Dan Buchner @csuwildcat
+
+### Agenda
+
+| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
+| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda                                    | Companion Guide Updates | 10 min | @andorsk/Moises | [added dwn and peergos to the comparison guide #229](https://github.com/decentralized-identity/decentralized-web-node/pull/229) <br>[Local, Remote, and Relay Nodes. #225](https://github.com/decentralized-identity/decentralized-web-node/pull/225) |
+| [TBD Updates]()                           | Updates                 | 10 min | @csuwildcat     |                                                                                  | 
+| Agenda                                    | Spec PR Review | 10 min | @csuwildcat | [update the Service Endpoint section of the spec #228](https://github.com/decentralized-identity/decentralized-web-node/pull/228) <br> [added JSON schemas for DWN specification #209](https://github.com/decentralized-identity/decentralized-web-node/pull/209) |
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       | Alignment                                                                       |
+| Issue Alignment | Issue Alignment         | 10 min | @liran         | Alignment                                                                       |
+| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
+
+
 ## DIF Meeting May 3, 2023
 
 * [Recording](https://us02web.zoom.us/rec/share/hGruCrcoOs9FaNuryuQlCLTFIOONSNC98-BTCqg1uypG5kD9NY0lT4CQFRlxTO34.gBW6RZlFYRb_Nbf0)
