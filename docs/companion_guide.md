@@ -314,9 +314,9 @@ DWN to be a "relay".
   is always available, rather than directly to his local DWN (his phone), which is out of
   range. This allows Bob to still interact with Jane and receive her
   message, despite not being connected to the internet.
-- **Relay:** The relay is a way a remote node to forward information received to a
-  local node, or another remote node. When Jane sends a message to Bob's remote
-  DWN, Bob's remote DWN "relay's" the message to Bob's local DWN, which allows
+- **Relay:** A relay is a way for a remote node to forward information it receives to a
+  local node, or to another remote node. When Jane sends a message to Bob's remote
+  DWN, Bob's remote DWN "relays" the message to Bob's local DWN, which allows
   Bob to interact with his DWN locally.
 
 ### Example Deployment (Simple)
