@@ -294,7 +294,7 @@ network performance and reliability. This section could also cover strategies
 for maintaining backward compatibility and promoting interoperability with other
 decentralized web nodes and protocols.
 
-### Local, Remote Nodes, and Relays
+### Local Nodes, Remote Nodes, and Relays
 
 This section clarifies the role of a remote node, a local node, and relay with
 respect to a deployment. It is important to note that they are actually all the _same_ 
