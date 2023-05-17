@@ -304,9 +304,9 @@ but in practice a local node may be used slightly differently than a remote node
 This section clarifies how local nodes will be used vs. remote nodes, and what it means for a 
 DWN to be a "relay".
 
-- **Local Node:** This may be a person's phone, computer, or other device that is
-  not expected to always be connected to the internet. For example, if you are
-  traveling in the mountains, your phone would be off, therefore it is not a
+- **Local Node:** This could be a person's phone, computer, or other device that is
+  not expected to always be connected to the internet. For example, if Bob is
+  traveling in the mountains, his phone may be out of range, and so not be a
   reliable device for services to connect to at scale.
 - **Remote Node:** Remote nodes are meant to be highly available and always
   reachable from other services. If Bob takes a trip to the mountains and Jane
