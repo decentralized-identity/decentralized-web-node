@@ -431,13 +431,9 @@ billion transactions per second (tps).
 | Deployment     | [ Pending ] |
 | Identity       | Decentralized Identifiers |
 | Authentication | Web3 Wallets and DID. |
-| Authorization  | Permissions employ a capabilities-based architecture that
-| allows for DID-based authorization and delegation of authorized capabilities
-| to others. Derived key encryption with cryptree like encryption scheme. |
+| Authorization  | Permissions employ a capabilities-based architecture that allows for DID-based authorization and delegation of authorized capabilities to others. Derived key encryption with cryptree like encryption scheme. |
 | Transport      | Transport Agnostic. Currently mostly implemented with HTTP. |
-| Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded
-| Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data)
-| with attached JSON Schema|
+| Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data) with attached JSON Schema|
 | Query Capabilities | Protocols, Hooks, Records, Permissions |
 
 ## Architecture and Components
