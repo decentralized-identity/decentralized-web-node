@@ -1,0 +1,26 @@
+{
+  "$id": "https://identity.foundation/dwn/json-schemas/jwk-verification-method.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "type",
+    "controller",
+    "publicKeyJwk"
+  ],
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "type": {
+      "const": "JsonWebKey2020"
+    },
+    "controller": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+    },
+    "publicKeyJwk": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/public-jwk.json"
+    }
+  }
+}
