@@ -427,7 +427,7 @@ billion transactions per second (tps).
 | Decentralized Web Nodes	   | https://identity.foundation/decentralized-web-node/spec/ |
 | -------------- | ---------------------------------------------------------- |
 | Description	   | Decentralized Web Nodes are a mesh-like datastore construction that enable an entity to operate multiple nodes that sync to the same state across one another, enabling the owning entity to secure, manage, and transact their data with others without reliance on location or provider-specific infrastructure, interfaces, or routing mechanisms. |
-| Specification  |  Open-Source Specification incubated by DIF |
+| Specification  |  [Open-Source Specification incubated by DIF](https://identity.foundation/decentralized-web-node/spec/) |
 | Deployment     | [ Pending ] |
 | Identity       | Decentralized Identifiers |
 | Authentication | Web3 Wallets and DID. |
