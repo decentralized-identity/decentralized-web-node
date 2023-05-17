@@ -424,8 +424,7 @@ billion transactions per second (tps).
 | Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
 
 
-| Decentralized Web Nodes	   |
-| https://identity.foundation/decentralized-web-node/spec/ |
+| Decentralized Web Nodes	   | https://identity.foundation/decentralized-web-node/spec/ |
 | -------------- | ---------------------------------------------------------- |
 | Description	   | Decentralized Web Nodes are a mesh-like datastore construction that enable an entity to operate multiple nodes that sync to the same state across one another, enabling the owning entity to secure, manage, and transact their data with others without reliance on location or provider-specific infrastructure, interfaces, or routing mechanisms. |
 | Specification  |  Open-Source Specification incubated by DIF |
