@@ -301,7 +301,7 @@ respect to a deployment. It is important to note that they are actually all the 
 thing, in that each is actually a DWN with no feature differences across these deployment types,
 but in practice a local node may be used slightly differently than a remote node. 
 
-This section clarifies how local nodes will be used vs. remote nodes, and what it means for a 
+This section clarifies the difference in use between local and remote nodes, and what it means for a 
 DWN to be a "relay".
 
 - **Local Node:** This could be a person's phone, computer, or other device that is
