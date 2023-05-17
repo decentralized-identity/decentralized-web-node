@@ -296,10 +296,10 @@ decentralized web nodes and protocols.
 
 ### Local Nodes, Remote Nodes, and Relays
 
-This section clarifies the role of a remote node, a local node, and relay with
+This section clarifies the role of a remote node, a local node, and a relay, with
 respect to a deployment. It is important to note that they are actually all the _same_ 
-thing, in that they are all actually a DWN with no feature difference across deployment types,
-but local vs. remote nodes in practice may be leveraged slightly differently. 
+thing, in that each is actually a DWN with no feature differences across these deployment types,
+but in practice a local node may be used slightly differently than a remote node. 
 
 This section clarifies how local nodes will be used vs. remote nodes, and what it means for a 
 DWN to be a "relay".
