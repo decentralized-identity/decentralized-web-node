@@ -25,13 +25,16 @@ Bi-weekly DIF call notes on DWN specifications.
 
 ## DIF Meeting May 17, 2023
 
-* [Recording]()
+* [Recording](https://us02web.zoom.us/rec/share/BURjRNnQ2po6lULH-MCit-GrK-i7DIKa3z9Tdqn0TF9j3Usjj52ho2P6Ft5rxaI9.Emf4aY__Zwrbm79H)
 
 ### Attendees
 
 - Andor Kesselman @andorsk
-- Liran Cohen @liran
-- Dan Buchner @csuwildcat
+- Liran Cohen @lirancohen 
+- Alan Karp 
+- Ajay Jadhav
+- Kirill mee.foundation.developer
+- Drummond Reed 
 
 ### Agenda
 
