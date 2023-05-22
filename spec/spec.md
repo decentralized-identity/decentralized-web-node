@@ -217,7 +217,7 @@ Only DID URIs in the `nodes` array will be allowed to initiate sync activities w
 
 *HTTP POST example:*
 
-```json5
+```json
 POST https://dwn.example.com/
 
 BODY {
