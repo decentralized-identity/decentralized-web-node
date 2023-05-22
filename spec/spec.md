@@ -236,21 +236,18 @@ BODY {
 
 ## Request Objects
 
-Request Objects are JSON object envelopes used to pass messages to Decentralized Web Nodes.
+Requests are JSON object used to pass a DWeb Message to a DWeb Node.
 
 ```json
 {  // Request Object
-  "messages": [  // Message Objects
-    {...},
-    {...},
-    {...}
-  ]
+  "message": {...},
+  "target": "did:example:alice"
 }
 ```
 
 Request Objects are composed as follows:
 
-1. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects.
+1. The *Request Object* ****MUST**** include a `message` property, and its value ****MUST**** be a valid DWeb Message.
 
 ## Messages
 
@@ -258,22 +255,19 @@ All Decentralized Web Node messaging is transacted via Messages JSON objects. Th
 
 ```json
 {  // Request Object
-  "messages": [  // Message Objects
-    {
-      "recordId": GENERATED_CID_STRING,
-      "descriptor": {
-        "interface": INTERFACE_STRING,
-        "method": METHOD_STRING,
-        "dataCid": DATA_CID_STRING,
-        "dataFormat": DATA_FORMAT_STRING,
-      }
-    },
-    {...}
-  ]
+  "messages": {
+    "recordId": GENERATED_CID_STRING,
+    "descriptor": {
+      "interface": INTERFACE_STRING,
+      "method": METHOD_STRING,
+      "dataCid": DATA_CID_STRING,
+      "dataFormat": DATA_FORMAT_STRING,
+    }
+  }
 }
 ```
 
-Messages objects ****MUST**** be composed as follows:
+Message objects ****MUST**** be composed as follows:
 
 In order to enable data replication features for a [[ref: Decentralized Web Node]], all Messages MUST be committed to an IPLD DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object.
 
