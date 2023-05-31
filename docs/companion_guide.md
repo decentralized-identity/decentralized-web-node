@@ -412,6 +412,31 @@ billion transactions per second (tps).
 | Schema / Data Representation | JSON Formatted |
 | Query Capabilities | [Not found in documentation] |
 
+| Peergos	   |  https://https://peergos.org/ |
+| -------------- | ---------------------------------------------------------- |
+| Description	   | Peergos is a decentralised protocol and open-source platform for storage, social media and applications |
+| Specification  | Proprietary specification |
+| Deployment     | Offered as a SaaS solution. Can be self hosted. |
+| Identity       | [PKI](https://book.peergos.org/security/pki.html) + [Centralized password management, with password based keypairs(password + username + public salt)](https://book.peergos.org/security/login.html) |
+| Authentication |  Self-authenticated & [S3 V4 Signatures](https://book.peergos.org/security/bats.html)|
+| Authorization  | [Cryptree](https://book.peergos.org/security/cryptree.html) based encryption and [Block access controls](https://book.peergos.org/security/bats.html) |
+| Transport      | [HTTP RESTful APIs](https://book.peergos.org/features/apps.html) |
+| Schema / Data Representation | [DAG CBOR Encoded IPLD Objects and Raw Objects](https://book.peergos.org/security/bats.html). JSON Schema for configuration. |
+| Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
+
+
+| Decentralized Web Nodes	   | https://identity.foundation/decentralized-web-node/spec/ |
+| -------------- | ---------------------------------------------------------- |
+| Description	   | Decentralized Web Nodes are a mesh-like datastore construction that enable an entity to operate multiple nodes that sync to the same state across one another, enabling the owning entity to secure, manage, and transact their data with others without reliance on location or provider-specific infrastructure, interfaces, or routing mechanisms. |
+| Specification  |  [Open-Source Specification incubated by DIF](https://identity.foundation/decentralized-web-node/spec/) |
+| Deployment     | Self Hosted or as a SaaS Multi-Tenant Service |
+| Identity       | Decentralized Identifiers |
+| Authentication | DWN Aware Wallets / DID based  |
+| Authorization  | Permissions employ a capabilities-based architecture that allows for DID-based authorization and delegation of authorized capabilities to others. Derived key encryption with cryptree like encryption scheme. |
+| Transport      | Transport Agnostic. Currently mostly implemented with HTTP. |
+| Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data) with attached JSON Schema|
+| Query Capabilities | Protocols, Hooks, Records, Permissions |
+
 ## Architecture and Components
 
 This section provides an overview of the high-level architecture of a DWN,
