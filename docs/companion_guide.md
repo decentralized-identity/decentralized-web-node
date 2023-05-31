@@ -26,6 +26,7 @@ markdown-toc-refresh-toc -->
   - [Security and Privacy ](#security-and-privacy-chatgpt)
   - [Testing and Debugging ](#testing-and-debugging-chatgpt)
   - [Deployment and Operations ](#deployment-and-operations-chatgpt)
+  - - [Local, Remote Nodes, and Relays](#local-remote-nodes-and-relays)
     - [Example Deployment (Simple)](#example-deployment-simple)
     - [Example Deployment (Complex)](#example-deployment-complex)
   - [Miscellaneous](#miscellaneous)
@@ -241,7 +242,175 @@ on certain terms and concepts.
 
 ## Technology Comparision
 
-TODO
+There has been so much rapid development of Decentralized Storage technologies
+that it’s important to highlight the common aspects, and the differences with
+the goal of matching their unique features with the Use Case at hand.
+
+We will use the term “Personal and Application Data Storage” to denote the 
+compared technologies whether they are a stack, libraries, protocols, or 
+frameworks.
+
+This is by no means a comprehensive comparison, and we did not test these 
+technologies at scale.
+
+### Technologies that are not Personal Data Stores
+
+
+#### **DIDComm** — https://didcomm.org/
+
+A DID-based, secured, transport-agnostic, peer-to-peer communications protocol.
+It lays the foundation to build domain/vertical/application specific protocols.
+
+#### **KERI** — https://keri.one/
+
+Enables the portability of Self-Sovereign Identities by eliminating the need
+for a ledger to establish a root of trust.
+
+#### **Nostr** — https://nostr.com/
+
+Nostr has gained some popularity as an open protocol that offers a censorship-resistant
+alternative to Twitter. It relies on relay servers that accept and store posts.
+A client or Dapp signs messages with the user’s private key and posts messages
+to as many relay servers as possible in order to keep the user’s content from
+being banned.
+Relay servers do not communicate with each other; thus the responsibility of 
+replication is delegated to the Client application.
+Users are identified by their public key. That is, every post that is signed 
+can be cryptographically verified.
+
+### Decentralized Storages that are not intrinsically Personal Data Stores
+
+#### **ChainSafe Storage** — https://storage.chainsafe.io/
+
+ChainSafe is an end-to-end, file-encrypting storage application. It persists 
+symmetric-encrypted information on the IPFS/FileCoin network. 
+It is meant to transition traditional Web 2.0 integrations with AWS S3 buckets
+to Web 3.0.
+
+#### **Fleek** — https://docs.fleek.co/
+
+Fleek is a multi-purpose set of technologies that allow Dapp Developers to host
+web applications on IPFS/FileCoin. It also provides general IPFS/FileCoin
+storage management. It is geared toward builders rather than individuals.
+Fleek offers Space and Space Daemon which are intended for building Privacy preserving
+Dapps. It is currently in Alpha.
+
+#### **Protocol Labs IPFS, FileCoin, FVM** — https://fvm.filecoin.io/
+
+IPFS is without a doubt the most successful storage protocol that decouples 
+data from well-known servers, cloud storage, or any type of centralized storage.
+This is accomplished using Content Addressing (CID) and the segmenting of data
+in Direct Acyclic Graphs. In IPFS, the location of the data is its CID.
+FileCoin runs on top of IPFS and offers an incentive-based model for cold 
+storage so that any entity that wants to profit from offering hardware 
+resources may easily do so.
+
+The biggest drawback with IPFS/FileCoin is that once a rogue party has a hold
+of CIDs, the corresponding data is fully accessible. This paradigm forces
+client processes to encrypt data prior to storing it. Until now…
+
+Protocol Labs has now released the FileCoin Virtual Machine (FVM) network, an
+Ethereum-compatible VM. This means that Solidity developers can also develop in
+the new FVM. 
+
+This technology offers the basic L1 plumbing that unleashes the potential for a
+new open data economy. In essence, this works as a decentralized operating system
+that orchestrates how data is persisted, retrieved, and governed.
+One of the basic features is the ability to bring computation to decentralized 
+data. This means that L2 Compute Networks can encrypt and decrypt sensitive 
+information, act as a gatekeeper, and offer the same features as the various 
+Personal Data Stores discussed herein.
+
+It is worth mentioning that FVM uses WebAssembly as the bytecode for Smart
+Contracts. This means that any program that can be compiled into WebAssembly
+can be used for on-chain development.
+
+One of the most powerful features of these FVM smart contracts is the 
+ability to define rules for data to obey, most importantly region and location
+for the storage of that data. This is important in order to remain
+compliant with regulations such as GDPR; e.g., data about EU citizens must remain
+within the borders of the European Community.
+
+FVM Consensus is achieved using their Interplanetary Consensus, and it is
+estimated that FVM will be able to handle transactions in the realm of one
+billion transactions per second (tps).
+
+### Personal Data Stores
+
+| Solid Pods	   | https://solidproject.org/ |
+| -------------- | ---------------------------------------------------------- |
+| Description	   | Decentralized Data Stores that rely on Linked Data to express identity and semantic data. The Pod is owned by an agent (Person, Organization, Group, Device, etc.) that is globally identified by a WebID. |
+| Specification  | Open Specification incubated by Inrupt and now the [W3C](https://github.com/solid/specification/). |
+| Deployment     | A Pod can be hosted by a Solid Pod Provider, or it can be user-deployed using any of its implementations in Node.js, PHP, or as a plugin for Nextcloud. |
+| Identity       | WebID and its corresponding WebID Profile document. The WebID comes in the form of an HTTP URI, and it allows the linking of many agents in a web of trust using vocabularies such as [Friend of a Friend (FOAF)](http://xmlns.com/foaf/0.1/) semantics. |
+| Authentication | An agent uses its WebID to authenticate using the [SOLID-OIDC specification](https://solidproject.org/TR/oidc). A Solid Pod server becomes an OpenID provider. |
+| Authorization  | Access to resources is managed by the Web Access Control system and its underlying Access Control List model. Authorizations are described using the ACL Ontology which is granular at the graph subject level. |
+| Transport      | HTTP/1.1 through `GET`, `PUT`, `POST`, `PATCH`, and `DELETE` HTTP Methods. |
+| Schema / Data Representation | Data is encoded in graphs using N3 notation (a superset of RDF triples). Schemas are innate in RDF semantic ontologies. Any graphed relationship denotes a schema in its definition. |
+| Query Capabilities | The HTTP `GET` method allows for N3 Path Syntax. It is very similar to SPARQL 1.1 Property Path Syntax. |
+
+
+| Ceramic and ComposeDB | https://ceramic.network/ |
+| ---------------------------- | -------------------------------------------- |
+| Description                  | Ceramic is a decentralized data network. Its foundations are laid on top of the Ceramic Event Driven Protocol. The infrastructure to build Personal Data Stores is offered by the Ceramic ComposeDB. ComposeDB replaces IDX and DID Data Store. |
+| Specification                |	Open Specification curated by Ceramic.Network |
+| Deployment                   |	A ComposeDB instance is installed as part of Ceramic Node deployment. It can only be hosted in a Cloud environment. |
+| Identity                     | Decentralized Identifiers (DIDs) |
+| Authentication               |	Web3 Wallets and DID. |
+| Authorization	               | Object Capabilities |
+| Transport                    | GraphQL API over HTTP/1.1 |
+| Schema / Data Representation |	API models are defined as GraphQL Schemas. The underlying data store uses graph nodes: Accounts and Documents. Relations are expressed as Edges. |
+| Query Capabilities           | Partial GraphQL Queries. As of this writing, a query cannot be made against any data attributes. |
+
+| Atomic Data and Atomic Server | https://docs.atomicdata.dev/ |
+| ----------------------------- | ------------------------------------------- |
+| Description	                  | Atomic offers a specification and a server to build JSON-LD for building privacy preserving applications. |
+| Specification	                  | Open-Source Specification. The Atomic Server implementation in Rust is also open sourced. |
+| Deployment                    | It can be deployed in a Cloud environment or User-Hosted |
+| Identity                      | PKI |
+| Authentication                |	Json-AD Authentication Resource |
+| Authorization                 |	Atomic Hierarchy Model |
+| Transport	                    | WebSockets, HTTP 1/1 |
+| Schema / Data Representation  |	JSON-AD (JSON-Atomic Data). A variation of JSON-LD which supports the definition of schemas to provide type-safety. |
+| Query Capabilities            |	Atomic Paths, SPARQL |
+
+
+| Encrypted Data Vaults | https://identity.foundation/edv-spec/ |
+| --------------------- | --------------------------------------------------- |
+| Description           |	A specification with the goal of ensuring the privacy of an entity’s data by encrypting the data at rest |
+| Specification         |	Open-Source Specification incubated by DIF |
+| Deployment            |	[Pending] |
+| Identity              | Support for various Identity models, DIDs being one such. |
+| Authentication        |	[Pending] |
+| Authorization         |	Authorization Capabilities |
+| Transport             |	HTTP 1/1, gRPC, Bluetooth |
+| Schema / Data Representation | [Pending] |
+| Query Capabilities | The goal is to provide Indexing and Querying capabilities. The working group is in the process of how deciding how this will be done. |
+
+| MyDex Personal Data Store | https://dev.mydex.org/connection-api/personal-data-store.html |
+| ------------------------- | ----------------------------------------------- |
+| Description	| The MyDex Personal Data Store is a secure data vault residing in the cloud and hosted by MyDex Community Interest Company. An individual’s data is encrypted at rest using the individual’s key. MyDex does not have access to any key for decryption. | 
+| Specification	| Proprietary Specification |
+| Deployment | Offered as a SaaS solution |
+| Identity | MyDexID derived from PKI |
+| Authentication | SAML and OIDC |
+| Authorization	| Proprietary Data Sharing Agreement |
+| Transport	| REST over HTTP/1.1 |
+| Schema / Data Representation | JSON Formatted |
+| Query Capabilities | [Not found in documentation] |
+
+
+| The Hub of All Things | https://www.hubofallthings.com/ |
+| --------------------- | --------------------------------------------------- |
+| Description	| The Hub of All Things is a service provided by DataSwift who developed the HAT Microserver, a personal web server and its accompanying PostgresQL database. A Hat Microserver segments data in namespaces, such that data from various verticals/domains/apps can live under the same instance. |
+| Specification	| Proprietary Specification. HAT Microserver implementation in Scala is open sourced. |
+| Deployment | Offered as a SaaS solution |
+| Identity | HAT Universal ID |
+| Authentication | DataSwift One SSO |
+| Authorization	| HAT Microserver Instructions Contract (HMIC) |
+| Transport	| REST over HTTP 1.1 |
+| Schema / Data Representation | JSON Formatted |
+| Query Capabilities | [Not found in documentation] |
 
 ## Architecture and Components
 
@@ -292,6 +461,31 @@ distributed network, as well as tools and techniques for monitoring and managing
 network performance and reliability. This section could also cover strategies
 for maintaining backward compatibility and promoting interoperability with other
 decentralized web nodes and protocols.
+
+### Local Nodes, Remote Nodes, and Relays
+
+This section clarifies the role of a remote node, a local node, and a relay, with
+respect to a deployment. It is important to note that they are actually all the _same_ 
+thing, in that each is actually a DWN with no feature differences across these deployment types,
+but in practice a local node may be used slightly differently than a remote node. 
+
+This section clarifies the difference in use between local and remote nodes, and what it means for a 
+DWN to be a "relay".
+
+- **Local Node:** This could be a person's phone, computer, or other device that is
+  not expected to always be connected to the internet. For example, if Bob is
+  traveling in the mountains, his phone may be out of range, and so not be a
+  reliable device for services to connect to at scale.
+- **Remote Node:** Remote nodes are meant to be highly available and always
+  reachable from other services. If Bob takes a trip to the mountains and Jane
+  sends Bob a message, Jane would send the message to Bob's remote DWN, which
+  is always available, rather than directly to his local DWN (his phone), which is out of
+  range. This allows Bob to still interact with Jane and receive her
+  message, despite not being connected to the internet.
+- **Relay:** A relay is a way for a remote node to forward information it receives to a
+  local node, or to another remote node. When Jane sends a message to Bob's remote
+  DWN, Bob's remote DWN "relays" the message to Bob's local DWN, which allows
+  Bob to interact with his DWN locally.
 
 ### Example Deployment (Simple)
 

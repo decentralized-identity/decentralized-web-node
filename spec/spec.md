@@ -213,7 +213,7 @@ did:example:123?service=DecentralizedWebNode&queries=W3sgTUVTU0FHRV8xIH0sIHsgTUV
 
 *HTTP POST example:*
 
-```json5
+```json
 POST https://dwn.example.com/
 
 BODY {

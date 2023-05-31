@@ -53,6 +53,8 @@ Bi-weekly DIF call notes on DWN specifications.
 
 * [Recording](https://us02web.zoom.us/rec/share/hGruCrcoOs9FaNuryuQlCLTFIOONSNC98-BTCqg1uypG5kD9NY0lT4CQFRlxTO34.gBW6RZlFYRb_Nbf0)
 
+## DIF Meeting April 19, 2023
+
 ### Attendees
 
 - Andor Kesselman @andorsk
@@ -98,6 +100,24 @@ Again this week we are overbooked with content. That's because we have a lot of 
 - Andor Kesselman @andorsk
 - Liran Cohen
 - Dan Buchner @csuwildcat
+
+### Agenda
+
+Hopefully we can get spec alignment today.
+
+| Item            | Segment                 | Time   | Owner           | Description                                                                     |
+| --------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro           | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda          | Companion Guide Updates | 10 min | @andorsk/Moises | Merge https://github.com/decentralized-identity/decentralized-web-node/pull/226 |
+| [TBD Updates]() | Updates                 | 10 min | @csuwildcat     |                                                                                 |
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk        | Alignment                                                                       |
+| Issue Alignment | Issue Alignment         | 10 min | @liran          | Alignment                                                                       |
+| Calls To Action | Closing                 | 5 min  | @andorsk        |                                                                                 |
+
+### Notes
+
+- Discussed: How we get TBD's updates into issues.
+- We called this meeting short as there were not enough participants.
 
 ## DIF Meeting March 22, 2023
 * [Recording](https://us02web.zoom.us/rec/share/SW5VZtYayd21HDKOQcGcPJJRsSvvwzHCcrxfJXm55iK94QoZ4who5cnCdW47pYC9.vCyjDuKgDCLCXoxw)
