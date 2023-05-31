@@ -430,7 +430,7 @@ billion transactions per second (tps).
 | Specification  |  [Open-Source Specification incubated by DIF](https://identity.foundation/decentralized-web-node/spec/) |
 | Deployment     | Self Hosted or as a SaaS Multi-Tenant Service |
 | Identity       | Decentralized Identifiers |
-| Authentication | Web3 Wallets and DID. |
+| Authentication | DWN Aware Wallets / DID based  |
 | Authorization  | Permissions employ a capabilities-based architecture that allows for DID-based authorization and delegation of authorized capabilities to others. Derived key encryption with cryptree like encryption scheme. |
 | Transport      | Transport Agnostic. Currently mostly implemented with HTTP. |
 | Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data) with attached JSON Schema|
