@@ -204,7 +204,7 @@ did:example:alice?service=DecentralizedWebNode&message=W3sgTUVTU0FHRV8xIH0sIHsgT
 `did:example:alice`--> resolve DWN endpoint(s) --> `did:example:host` --> resolve DWN endpoint(s) --> `https://dwn.did-relative-host.com`
 
 ::: note
-Only DID URIs in the `nodes` array will be allowed to initiate sync activities with other DWeb Node instances.
+Only DID URIs in the `nodes` array will be allowed to initiate [sync](https://identity.foundation/decentralized-web-node/spec/#sync) activities with other DWeb Node instances.
 :::
 
 **Construct the *Request Object*{id=request-object}:**
