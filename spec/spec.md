@@ -929,7 +929,9 @@ Retained messages in the Records interface are those that may be stored against 
 ##### If the message is a `RecordsWrite`:
 
 1. Generate the message's [_Entry ID_](#record-entry-id){id=record-entry-id} by performing the [_Record ID Generation Process_](#recordid-generation).
-    - ****IF**** the generated _Entry ID_ matches the `recordId` value of the message it is the [_Initial Entry_](#initial-record-entry){id=initial-record-entry} for a record, store the entry as the [_Initial Entry_](#initial-record-entry) for the record if no [_Initial Entry_](#initial-record-entry) exists and cease any further processing.
+    - ****IF**** the generated _Entry ID_ matches the `recordId` value of the message -- 
+      -  ****IF**** [_Initial Entry_](#initial-record-entry){id=initial-record-entry} exists for a record, store the entry as the [_Initial Entry_](#initial-record-entry) for the record 
+      -  ****IF**** no [_Initial Entry_](#initial-record-entry) exists and cease any further processing.
     - ****ELSE**** the message may be an overwriting entry for the record; continue processing.
 2. If a message is not the [_Initial Entry_](#initial-record-entry), its `descriptor` ****MUST**** contain a `parentId` to determine the entry's position in the record's lineage. If a `parentId` is present proceed with processing, else discard the record and cease processing.
 3. Ensure all immutable values from the [_Initial Entry_](#initial-record-entry) remained unchanged if present in the inbound message. If any have been mutated, discard the message and cease processing.
