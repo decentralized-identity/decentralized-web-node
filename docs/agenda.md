@@ -23,12 +23,82 @@ Bi-weekly DIF call notes on DWN specifications.
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
 
+## DIF Meeting May 17, 2023
+
+* [Recording](https://us02web.zoom.us/rec/share/BURjRNnQ2po6lULH-MCit-GrK-i7DIKa3z9Tdqn0TF9j3Usjj52ho2P6Ft5rxaI9.Emf4aY__Zwrbm79H)
+
+### Attendees
+
+- Andor Kesselman @andorsk
+- Liran Cohen @lirancohen 
+- Alan Karp 
+- Ajay Jadhav
+- Kirill mee.foundation.developer
+- Drummond Reed 
+
+### Agenda
+
+| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
+| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda                                    | Companion Guide Updates | 10 min | @andorsk/Moises | [added dwn and peergos to the comparison guide #229](https://github.com/decentralized-identity/decentralized-web-node/pull/229) <br>[Local, Remote, and Relay Nodes. #225](https://github.com/decentralized-identity/decentralized-web-node/pull/225) |
+| [TBD Updates]()                           | Updates                 | 10 min | @csuwildcat     |                                                                                  | 
+| Agenda                                    | Spec PR Review | 10 min | @csuwildcat | [update the Service Endpoint section of the spec #228](https://github.com/decentralized-identity/decentralized-web-node/pull/228) <br> [added JSON schemas for DWN specification #209](https://github.com/decentralized-identity/decentralized-web-node/pull/209) |
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       | Alignment                                                                       |
+| Issue Alignment | Issue Alignment         | 10 min | @liran         | Alignment                                                                       |
+| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
+
+
+## DIF Meeting May 3, 2023
+
+* [Recording](https://us02web.zoom.us/rec/share/hGruCrcoOs9FaNuryuQlCLTFIOONSNC98-BTCqg1uypG5kD9NY0lT4CQFRlxTO34.gBW6RZlFYRb_Nbf0)
+
 ## DIF Meeting April 19, 2023
 
 ### Attendees
 
 - Andor Kesselman @andorsk
 - Liran Cohen @liran
+- Dan Buchner @csuwildcat
+- @Moises Jaramillo
+- Paul Trevithick
+- Drummond Reed
+
+### Agenda
+
+| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
+| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda                                    | Companion Guide Updates | 10 min | @andorsk/Moises | Merge https://github.com/decentralized-identity/decentralized-web-node/pull/226 |
+| [TBD Updates]()                           | Updates                 | 10 min | @csuwildcat     |  encryption support <br> sync this week. in testing. <br> biggest outstanding thing is permissions                                                                                |
+| IIW Updates and Ecosystem Chat   | Discussion                       | 20 min | @andorsk @liran @csuwildcat     |  
+| Permission Discussion  | Discussion                       | 10 min | @csuwildcat     |                                                                                 ||
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       | Alignment                                                                       |
+| Issue Alignment | Issue Alignment         | 10 min | @liran         | Alignment                                                                       |
+| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
+
+### Notes
+
+- Merged Companion Guide Updates - Comparison Matrix from Moises
+- Merged agenda
+- Permission Discussion: 
+    - DM Opens Start
+    - What happens if you have your DM's open, you accrue some DM's and you want to turn that section off. 
+    - Discussion on sync and latency
+    - Proposal: End of the week
+- Aligned: asap to align spec. 
+- Flag section 
+- Party at Bitcoin Conf: 
+    - 18th 6PM Miami time. 
+
+## DIF Meeting March 22, 2023
+
+Again this week we are overbooked with content. That's because we have a lot of cleanup to do!
+
+### Attendees
+
+- Andor Kesselman @andorsk
+- Liran Cohen
 - Dan Buchner @csuwildcat
 
 ### Agenda
@@ -50,6 +120,7 @@ Hopefully we can get spec alignment today.
 - We called this meeting short as there were not enough participants.
 
 ## DIF Meeting March 22, 2023
+* [Recording](https://us02web.zoom.us/rec/share/SW5VZtYayd21HDKOQcGcPJJRsSvvwzHCcrxfJXm55iK94QoZ4who5cnCdW47pYC9.vCyjDuKgDCLCXoxw)
 
 Again this week we are overbooked with content. That's because we have a lot of cleanup to do!
 
@@ -93,6 +164,8 @@ Suggestion For Next Meeting:
 - [ ] Call next week : Spec walkthrough. Henry to run through the spec and update it to the current state of the sdk. 
 
 ## DIF Meeting March 8, 2023
+
+* [Recording](https://us02web.zoom.us/rec/share/SzX33iVda2e-fHTA59kBo1HcxOdC_jKEpPK2AbudkJd6rSs1VyB_jcmukmgGPCI3.UXhKc_QMpnSSUqDV)
 
 ### Attendees
 
@@ -154,7 +227,7 @@ MetaProtocol --> BaseProtocol
 
 
 ## DIF Meeting February 22, 2023
-
+* [Recording](https://us02web.zoom.us/rec/share/IL6w4JnvQUJC_qgXYmfPphrTHs2zWmVeGAo2RjuQ4-rTH7yRLpIeAwNS3SDBklYX.1UpamO7QSnkdx-8f)
 ### Attendees
 
 - Andor Kesselman @andorsk

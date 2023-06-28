@@ -26,6 +26,7 @@ markdown-toc-refresh-toc -->
   - [Security and Privacy ](#security-and-privacy-chatgpt)
   - [Testing and Debugging ](#testing-and-debugging-chatgpt)
   - [Deployment and Operations ](#deployment-and-operations-chatgpt)
+  - - [Local, Remote Nodes, and Relays](#local-remote-nodes-and-relays)
     - [Example Deployment (Simple)](#example-deployment-simple)
     - [Example Deployment (Complex)](#example-deployment-complex)
   - [Miscellaneous](#miscellaneous)
@@ -417,6 +418,31 @@ billion transactions per second (tps).
 | Schema / Data Representation | JSON Formatted |
 | Query Capabilities | [Not found in documentation] |
 
+| Peergos	   |  https://https://peergos.org/ |
+| -------------- | ---------------------------------------------------------- |
+| Description	   | Peergos is a decentralised protocol and open-source platform for storage, social media and applications |
+| Specification  | Proprietary specification |
+| Deployment     | Offered as a SaaS solution. Can be self hosted. |
+| Identity       | [PKI](https://book.peergos.org/security/pki.html) + [Centralized password management, with password based keypairs(password + username + public salt)](https://book.peergos.org/security/login.html) |
+| Authentication |  Self-authenticated & [S3 V4 Signatures](https://book.peergos.org/security/bats.html)|
+| Authorization  | [Cryptree](https://book.peergos.org/security/cryptree.html) based encryption and [Block access controls](https://book.peergos.org/security/bats.html) |
+| Transport      | [HTTP RESTful APIs](https://book.peergos.org/features/apps.html) |
+| Schema / Data Representation | [DAG CBOR Encoded IPLD Objects and Raw Objects](https://book.peergos.org/security/bats.html). JSON Schema for configuration. |
+| Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
+
+
+| Decentralized Web Nodes	   | https://identity.foundation/decentralized-web-node/spec/ |
+| -------------- | ---------------------------------------------------------- |
+| Description	   | Decentralized Web Nodes are a mesh-like datastore construction that enable an entity to operate multiple nodes that sync to the same state across one another, enabling the owning entity to secure, manage, and transact their data with others without reliance on location or provider-specific infrastructure, interfaces, or routing mechanisms. |
+| Specification  |  [Open-Source Specification incubated by DIF](https://identity.foundation/decentralized-web-node/spec/) |
+| Deployment     | Self Hosted or as a SaaS Multi-Tenant Service |
+| Identity       | Decentralized Identifiers |
+| Authentication | DWN Aware Wallets / DID based  |
+| Authorization  | Permissions employ a capabilities-based architecture that allows for DID-based authorization and delegation of authorized capabilities to others. Derived key encryption with cryptree like encryption scheme. |
+| Transport      | Transport Agnostic. Currently mostly implemented with HTTP. |
+| Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data) with attached JSON Schema|
+| Query Capabilities | Protocols, Hooks, Records, Permissions |
+
 ## Architecture and Components
 
 This section provides an overview of the high-level architecture of a DWN,
@@ -466,6 +492,31 @@ distributed network, as well as tools and techniques for monitoring and managing
 network performance and reliability. This section could also cover strategies
 for maintaining backward compatibility and promoting interoperability with other
 decentralized web nodes and protocols.
+
+### Local Nodes, Remote Nodes, and Relays
+
+This section clarifies the role of a remote node, a local node, and a relay, with
+respect to a deployment. It is important to note that they are actually all the _same_ 
+thing, in that each is actually a DWN with no feature differences across these deployment types,
+but in practice a local node may be used slightly differently than a remote node. 
+
+This section clarifies the difference in use between local and remote nodes, and what it means for a 
+DWN to be a "relay".
+
+- **Local Node:** This could be a person's phone, computer, or other device that is
+  not expected to always be connected to the internet. For example, if Bob is
+  traveling in the mountains, his phone may be out of range, and so not be a
+  reliable device for services to connect to at scale.
+- **Remote Node:** Remote nodes are meant to be highly available and always
+  reachable from other services. If Bob takes a trip to the mountains and Jane
+  sends Bob a message, Jane would send the message to Bob's remote DWN, which
+  is always available, rather than directly to his local DWN (his phone), which is out of
+  range. This allows Bob to still interact with Jane and receive her
+  message, despite not being connected to the internet.
+- **Relay:** A relay is a way for a remote node to forward information it receives to a
+  local node, or to another remote node. When Jane sends a message to Bob's remote
+  DWN, Bob's remote DWN "relays" the message to Bob's local DWN, which allows
+  Bob to interact with his DWN locally.
 
 ### Example Deployment (Simple)
 
