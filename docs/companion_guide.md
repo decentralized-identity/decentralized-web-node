@@ -429,7 +429,7 @@ billion transactions per second (tps).
 | Transport      | [HTTP RESTful APIs](https://book.peergos.org/features/apps.html) |
 | Schema / Data Representation | [DAG CBOR Encoded IPLD Objects and Raw Objects](https://book.peergos.org/security/bats.html). JSON Schema for configuration. |
 | Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
-
+| License            |	[GNU Affero General Public License v3.0](https://github.com/Peergos/Peergos/blob/master/Licence.txt)|
 
 | Decentralized Web Nodes	   | https://identity.foundation/decentralized-web-node/spec/ |
 | -------------- | ---------------------------------------------------------- |
@@ -442,6 +442,7 @@ billion transactions per second (tps).
 | Transport      | Transport Agnostic. Currently mostly implemented with HTTP. |
 | Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data) with attached JSON Schema|
 | Query Capabilities | Protocols, Hooks, Records, Permissions |
+| License            |	|
 
 ## Architecture and Components
 
