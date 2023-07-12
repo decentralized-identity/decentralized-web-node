@@ -415,13 +415,13 @@ billion transactions per second (tps).
 | Peergos	   |  https://https://peergos.org/ |
 | -------------- | ---------------------------------------------------------- |
 | Description	   | Peergos is a decentralised protocol and open-source platform for storage, social media and applications |
-| Specification  | Proprietary specification |
-| Deployment     | Offered as a SaaS solution. Can be self hosted. |
-| Identity       | [PKI](https://book.peergos.org/security/pki.html) + [Centralized password management, with password based keypairs(password + username + public salt)](https://book.peergos.org/security/login.html) |
-| Authentication |  Self-authenticated & [S3 V4 Signatures](https://book.peergos.org/security/bats.html)|
+| Specification  | Open source [specification and implementations](https://book.peergos.org/architecture/spec.html) |
+| Deployment     | Self Hosted or as a SaaS Multi-Tenant Service |
+| Identity       | [PKI](https://book.peergos.org/security/pki.html) + [random keypairs](https://book.peergos.org/security/login.html) |
+| Authentication |  Self-authenticated (signed and content addressed) & [S3 V4 Signatures for block level access control](https://book.peergos.org/security/bats.html)|
 | Authorization  | [Cryptree](https://book.peergos.org/security/cryptree.html) based encryption and [Block access controls](https://book.peergos.org/security/bats.html) |
-| Transport      | [HTTP RESTful APIs](https://book.peergos.org/features/apps.html) |
-| Schema / Data Representation | [DAG CBOR Encoded IPLD Objects and Raw Objects](https://book.peergos.org/security/bats.html). JSON Schema for configuration. |
+| Transport      | Transport agnostic. Apps have a local [HTTP RESTful API](https://book.peergos.org/features/apps.html) served from a ServiceWorker|
+| Schema / Data Representation | [DAG CBOR Encoded IPLD Objects and Raw Objects](https://book.peergos.org/security/bats.html). JSON Schema for app configuration. |
 | Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
 
 
