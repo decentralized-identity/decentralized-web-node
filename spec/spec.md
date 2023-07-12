@@ -185,7 +185,6 @@ The following process defines how a DID-Relative URL for a Decentralized Web Nod
 
 **DID-Relative URL example for passing messages:**
 
-::: note
 ***Note:** For example purposes, the `message` parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).*
 
 ```json
