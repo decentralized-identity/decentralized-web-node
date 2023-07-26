@@ -793,7 +793,6 @@ directory of the specification.
 <nav>
   <button type="button">Simple Records Read Example</button>
   <button type="button">Sample JSON Schema</button>
-
 </nav>
 
 <section>
@@ -863,8 +862,6 @@ directory of the specification.
 }
 ```
 </section>
-
-
 </tab-panels>
 
 #### `RecordsQuery`
