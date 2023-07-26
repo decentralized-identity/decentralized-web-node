@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/events-get.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/protocols-configure.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,26 +17,27 @@
       "required": [
         "interface",
         "method",
-        "messageTimestamp"
+        "messageTimestamp",
+        "definition"
       ],
       "properties": {
         "interface": {
           "enum": [
-            "Events"
+            "Protocols"
           ],
           "type": "string"
         },
         "method": {
           "enum": [
-            "Get"
+            "Configure"
           ],
           "type": "string"
         },
         "messageTimestamp": {
-          "type": "string"
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
         },
-        "watermark": {
-          "type": "string"
+        "definition": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/protocol-definition.json"
         }
       }
     }

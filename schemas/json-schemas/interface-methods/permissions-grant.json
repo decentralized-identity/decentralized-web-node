@@ -1,0 +1,74 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions-grant.json",
+  "type": "object",
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "delegationChain": {
+      "description": "the parent grant",
+      "$ref": "#"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "dateExpires"
+      ],
+      "properties": {
+        "messageTimestamp": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "dateExpires": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "description": {
+          "type": "string"
+        },
+        "grantedTo": {
+          "description": "DID of the grantee",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedTo"
+        },
+        "grantedBy": {
+          "description": "DID of the grantor",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedBy"
+        },
+        "grantedFor": {
+          "description": "DID of the DWN to which the grantee is given access",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedFor"
+        },
+        "permissionsRequestId": {
+          "description": "CID of an associated PermissionsRequest message",
+          "type": "string"
+        },
+        "interface": {
+          "enum": [
+            "Permissions"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Grant"
+          ],
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/scope"
+        },
+        "conditions": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/conditions"
+        }
+      }
+    }
+  }
+}

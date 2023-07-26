@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/events-get.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-delete.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -17,25 +17,26 @@
       "required": [
         "interface",
         "method",
-        "messageTimestamp"
+        "messageTimestamp",
+        "recordId"
       ],
       "properties": {
         "interface": {
           "enum": [
-            "Events"
+            "Records"
           ],
           "type": "string"
         },
         "method": {
           "enum": [
-            "Get"
+            "Delete"
           ],
           "type": "string"
         },
         "messageTimestamp": {
           "type": "string"
         },
-        "watermark": {
+        "recordId": {
           "type": "string"
         }
       }
