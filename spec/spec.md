@@ -220,17 +220,14 @@ Only DID URIs in the `nodes` array will be allowed to initiate sync activities w
 ```json
 POST https://dwn.example.com/
 
-BODY {
-  "messages": [
-    {
-      "descriptor": {
-        "interface": "Records",
-        "method": "Query",
-        "schema": "https://schema.org/SocialMediaPosting"
-      }
-    },
-    {...}
-  ]
+HEADER "dwn-message" = {
+  "message": {
+    "descriptor": {
+      "interface": "Records",
+      "method": "Query",
+      "schema": "https://schema.org/SocialMediaPosting"
+    }
+  }
 }
 ```
 
@@ -251,7 +248,7 @@ Request Objects are composed as follows:
 
 ## Messages
 
-All Decentralized Web Node messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPLD CIDs and DAG APIs.
+All Decentralized Web Node messaging is transacted via JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPLD CIDs and related APIs.
 
 ```json
 {  // Request Object
@@ -261,6 +258,7 @@ All Decentralized Web Node messaging is transacted via Messages JSON objects. Th
       "interface": INTERFACE_STRING,
       "method": METHOD_STRING,
       "dataCid": DATA_CID_STRING,
+      "dataSize": NUMBER_OF_BYTES,
       "dataFormat": DATA_FORMAT_STRING,
     }
   }
@@ -276,12 +274,11 @@ In order to enable data replication features for a [[ref: Decentralized Web Node
       - The `recordId` CID generation object ****MUST**** contain a `descriptorCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object.
   2. [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encode the composed object.
   3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object and output it in its stringified form.
-- Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a `base64Url` encoded string of the Message's data.
 - Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be a string that matches a Decentralized Web Node Interface.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Decentralized Web Node Interface method.
-  - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) or an external channel (e.g. IPFS fetch), the `descriptor` object ****MUST**** contain a `dataCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
-  - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
+  - If the [Message](#messages) has data associated with it, the `descriptor` object ****MUST**** contain a `dataCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
+  - If the [Message](#messages) has data associated with it, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
     - `application/vc+jwt` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
     - `application/vc+ldp` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
 
@@ -295,34 +292,32 @@ Some messages may require authorization material for processing them in accordan
 
 ```json
 {  // Request Object
-  "messages": [  // Message Objects
-      "data": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
-      "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
-      "descriptor": {
-        "interface": "Records",
-        "method": "Write",
-        "schema": "https://schema.org/SocialMediaPosting",
-        "dataCid": CID(data),
-        "dateCreated": 123456789,
-        "dataFormat": "application/json"
-      },
-      "attestation": {
-        "payload": "89f5hw458fhw958fq094j9jdq0943j58jfq09j49j40f5qj30jf",
-        "signatures": [{
-          "protected": "4d093qj5h3f9j204fq8h5398hf9j24f5q9h83402048h453q",
-          "signature": "49jq984h97qh3a49j98cq5h38j09jq9853h409jjq09h5q9j4"
-        }]
-      },
-      "authorization": {
-        "payload": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
-        "signatures": [{
-          "protected": "f454w56e57r68jrhe56gw45gw35w65w4f5i54c85j84wh5jj8h5",
-          "signature": "5678nr67e56g45wf546786n9t78r67e45657bern797t8r6e5"
-        }]
-      }
+  "target": "did:example:alice",
+  "message": {
+    "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+    "descriptor": {
+      "interface": "Records",
+      "method": "Write",
+      "schema": "https://schema.org/SocialMediaPosting",
+      "dataCid": CID(data),
+      "dateCreated": 123456789,
+      "dataFormat": "application/json"
     },
-    {...}
-  ]
+    "attestation": {
+      "payload": "89f5hw458fhw958fq094j9jdq0943j58jfq09j49j40f5qj30jf",
+      "signatures": [{
+        "protected": "4d093qj5h3f9j204fq8h5398hf9j24f5q9h83402048h453q",
+        "signature": "49jq984h97qh3a49j98cq5h38j09jq9853h409jjq09h5q9j4"
+      }]
+    },
+    "authorization": {
+      "payload": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+      "signatures": [{
+        "protected": "f454w56e57r68jrhe56gw45gw35w65w4f5i54c85j84wh5jj8h5",
+        "signature": "5678nr67e56g45wf546786n9t78r67e45657bern797t8r6e5"
+      }]
+    }
+  }
 }
 ```
 
@@ -336,17 +331,16 @@ Some messages may require authorization material for processing them in accordan
 
 ### Raw Data
 
-If there is no need or desire to sign or encrypt the content of a message (i.e. public repudiable data), the message `descriptor` object is the only property required in a [Message](#messages) (with any method-specific properties required). An optional `data` property may be passed at the [Message](#messages) level that contains the data associated with the message (when data is desired or required to be present for a given method invocation).
+If there is no need or desire to sign or encrypt the content of a message (i.e. public repudiable data), the message `descriptor` object is the only property required in a [Message](#messages) (with any method-specific properties required).
 
 ```json
 { // Message
-  "data": BASE64URL_STRING,
   "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
   "descriptor": {
     "interface": "Records",
     "method": "Write",
     "schema": "https://schema.org/InviteAction",
-    "dataCid": CID(data),
+    "dataCid": CID,
     "dateCreated": 123456789,
     "dataFormat": "application/json"
   }
@@ -518,16 +512,13 @@ If no results are found, the `status` remains `200`, and the implementation ****
 
 ```json
 {  // Request Object
-  "messages": [  // Message Objects
-    {
-      "descriptor": {
-        "interface": "Records",
-        "method": "Query",
-        "schema": "https://schema.org/SocialMediaPosting"
-      }
-    },
-    ...
-  ]
+  "message": {
+    "descriptor": {
+      "interface": "Records",
+      "method": "Query",
+      "schema": "https://schema.org/SocialMediaPosting"
+    }
+  }
 }
 ```
 
@@ -554,15 +545,13 @@ If a message is malformed or constructed with invalid properties/values, the imp
 
 ```json
 {  // Request Object
-  "messages": [  // Message Objects
-    {
-      "descriptorization": {
-        "interface": "Records",
-        "method": "Query",
-        "schemata": "https://schema.org/SocialMediaPosting"
-      }
+  "message": {
+    "descriptorization": {
+      "interface": "Records",
+      "method": "Query",
+      "schemata": "https://schema.org/SocialMediaPosting"
     }
-  ]
+  }
 }
 ```
 
@@ -588,21 +577,19 @@ If a message fails to meet authorization requirements during processing, the imp
 
 ```json
 {  // Request Object
-  "messages": [  // Message Objects
-    { // Message
-      "descriptor": {
-        "interface": "Records",
-        "method": "Write",
-        "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-        "dataCid": CID(data),
-        "dateCreated": 123456789,
-        "schema": "https://schema.org/SocialMediaPosting",
-        "dataFormat": "application/json"
-      }
-
-      ^  `authorization` PROPERTY MISSING
+  "message": { // Message
+    "descriptor": {
+      "interface": "Records",
+      "method": "Write",
+      "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "dataCid": CID(data),
+      "dateCreated": 123456789,
+      "schema": "https://schema.org/SocialMediaPosting",
+      "dataFormat": "application/json"
     }
-  ]
+
+    ^  `authorization` PROPERTY MISSING
+  }
 }
 ```
 
@@ -628,18 +615,16 @@ If a message attempts to invoke an interface `method` that is not the implementa
 
 ```json
 {  // Request Object
-  "messages": [  // Message Objects
-    { // Message
-      "descriptor": {
-        "interface": "Records",
-        "method": "Write",
-        "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
-        "dataCid": CID(data),
-        "schema": "https://schema.org/LikeAction",
-        "dataFormat": "application/json"
-      }
+  "message": {
+    "descriptor": {
+      "interface": "Records",
+      "method": "Write",
+      "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+      "dataCid": CID(data),
+      "schema": "https://schema.org/LikeAction",
+      "dataFormat": "application/json"
     }
-  ]
+  }
 }
 ```
 
@@ -969,7 +954,6 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
   "protocolVersion": "1.0.0", // required
   "definition": { PROTOCOL_DEFINITION_OBJ }, // optional
   "lastConfiguration": CID_OF_PREVIOUS_CONFIG, // required if previous exists
-  "retainedRecords": CHAMP_OF_INCLUDED_ENTRIES // optional
 }
 ```
 
@@ -982,8 +966,6 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
   - The object ****MAY**** contain a `description` property, and its value ****Must**** be a string that describes what the protocol is designed to do.
   - The object ****MUST**** contain a `definition` property, and its value ****Must**** be a [Protocol Definition](#protocol-definitions) object.
   - The object ****Must**** include a `lastConfiguration` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded generated record ID of the previous `ProtocolsConfigure` for that matches the `protocol` and `protocolVersion` tuple.
-  - The object ****MUST**** contain a `retainedRecords` property, and if present its value ****Must**** be a CHAMP encoded as a string.
-
 #### Protocol Definitions
 
 Protocol Definition objects are declarative rules within `ProtocolConfigure` messages that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.
@@ -992,11 +974,10 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
 {
   "interface": "Protocols",
   "method": "Configure",
-  "protocol": "https://decentralized-social-example.org/protocol/",
-  "protocolVersion": "1.0.0",
   "description": "...",
   "definition": {
-    "labels": {
+    "protocol": "https://decentralized-social-example.org/protocol/",
+    "types": {
       "post": {
         "schema": "https://decentralized-social-example.org/schemas/post",
         "dataFormat": ["application/json"],
@@ -1012,34 +993,25 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
         "purpose": "Attach images to posts and replies"
       }
     },
-    "records": {
+    "structure": {
       "post": {
-        "records": {
           "image": {},
           "reply": {
-            "recursive": true,
-            "records": {
-              "image": {
-                "allow": {
-                  "author": {
-                    "of": "post.reply",
-                    "to": {
-                      "create": {
-                        "publication": "required"
-                      }
-                    }
-                  }
-                }
+            "$recursive": true,
+            "$actions": [
+              {
+                "who": "anyone",
+                "can": "create"
               }
-            },
-            "allow": {
-              "anyone": {
-                "to": {
-                  "create": {
-                    "publication": "required"
-                  }
+            ],
+            "image": {
+              "$actions": [
+                {
+                  "who": "author",
+                  "of": "post/reply",
+                  "can": "create"
                 }
-              }
+              ]
             }
           }
         }
