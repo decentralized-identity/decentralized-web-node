@@ -643,6 +643,10 @@ Connection](https://identity.foundation/decentralized-web-node/spec/images/topol
   This will give users the ability to access encrypted data on a DWN for only a
   subset of a DWN, using a derived key. There is also a vision of DWNs being
   able to work using homomorphic entryption, however this is an area of research now.
+- **What's the point of the protocols property in the protocols specification?
+  Why does it need to exist?** It is the URI which items are bucketed under. You
+  create records under that uri namespace. Protocol and schema are required to be URIs
+- **No additional properties?** Becausae JSON Schema
 
 ### Reference Implementations
 
