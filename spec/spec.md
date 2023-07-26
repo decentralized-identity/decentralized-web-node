@@ -971,11 +971,8 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
 {
   "interface": "Protocols", // required
   "method": "Configure", // required
-  "protocol": "identity.foundation/protocols/credential-issuance", // required
   "protocolVersion": "1.0.0", // required
   "definition": { PROTOCOL_DEFINITION_OBJ }, // optional
-  "lastConfiguration": CID_OF_PREVIOUS_CONFIG, // required if previous exists
-  "retainedRecords": CHAMP_OF_INCLUDED_ENTRIES // optional
 }
 ```
 
@@ -983,12 +980,7 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Protocols`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Configure`.
-  - The object ****MUST**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol the configuration pertains to.
-  - The object ****MUST**** contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the configuration pertains to.
-  - The object ****MAY**** contain a `description` property, and its value ****Must**** be a string that describes what the protocol is designed to do.
   - The object ****MUST**** contain a `definition` property, and its value ****Must**** be a [Protocol Definition](#protocol-definitions) object.
-  - The object ****Must**** include a `lastConfiguration` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded generated record ID of the previous `ProtocolsConfigure` for that matches the `protocol` and `protocolVersion` tuple.
-  - The object ****MUST**** contain a `retainedRecords` property, and if present its value ****Must**** be a CHAMP encoded as a string.
 
 #### Protocol Definitions
 
@@ -998,85 +990,76 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
 {
   "interface": "Protocols",
   "method": "Configure",
-  "protocol": "https://decentralized-social-example.org/protocol/",
-  "protocolVersion": "1.0.0",
-  "description": "...",
   "definition": {
-    "labels": {
+    "protocol": "https://decentralized-social-example.org/protocol/",
+    "published": true,
+    "types": {
       "post": {
         "schema": "https://decentralized-social-example.org/schemas/post",
         "dataFormat": ["application/json"],
-        "purpose": "Enables you to post social messages others can read"
       },
       "reply": {
         "schema": "https://decentralized-social-example.org/schemas/reply",
         "dataFormat": ["application/json"],
-        "purpose": "Allows others to reply to your social posts"
       },
       "image": {
         "dataFormat": ["image/jpeg", "image/png", "image/gif"],
-        "purpose": "Attach images to posts and replies"
       }
     },
-    "records": {
+    "structure": {
       "post": {
-        "records": {
-          "image": {},
-          "reply": {
-            "recursive": true,
-            "records": {
-              "image": {
-                "allow": {
-                  "author": {
-                    "of": "post.reply",
-                    "to": {
-                      "create": {
-                        "publication": "required"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "allow": {
-              "anyone": {
-                "to": {
-                  "create": {
-                    "publication": "required"
-                  }
-                }
-              }
-            }
+        "$actions": [{
+          "who": "anyone",
+          "can": "read",
+        }],
+        "reply": {
+          "$actions":[{
+            "who": "anyone",
+            "can": "write",
+          }],
+          "image": {
+            "$actions": [{
+              "who": "anyone",
+              "can": "read",
+            },{
+              "who": "author",
+              "of": "reply",
+              "can": "write",
+            }]
           }
+        },
+        "image": {
+          "$actions":[{
+            "who": "anyone",
+            "can": "read",
+          }, {
+            "who": "author",
+            "of": "post",
+            "can": "write",
+          }]
         }
       }
     }
   }
 }
 ```
-
-- The _Protocols Definition_ object ****MUST**** contain a `labels` property, and its value ****MUST**** be an object composed as follows:
-  - The object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be an array of strings that indicate the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
-  - The object ****MAY**** contain a `schema` property, and if present its value ****MUST**** be a valid URI string that identifies the protocol the definition pertains to.
-  - The object ****MAY**** contain a `purpose` property, and if present its value ****MUST**** be a string that provides a description for how the data is being used in the protocol. This information will often be used by User Agent applications to display in user consent UI.  
-
-- The _Protocols Definition_ object ****MUST**** contain a `records` property, and its value ****MUST**** be a _Record Rules_ object whose keys match the labels defined in the _Protocols Definition_ object. This object is recursive, allowing subsequent record relationships to be defined within. Labeled members of the object are composed as follows:
-  - The object ****may**** contain an `allow` property, and its value ****MUST**** be an object that defines access, interaction, and data relationship rules. The object is composed as follows:
-    - The object ****MAY**** contain an `author` property, and if present its value ****must**** be an _Actor Object_ composed as follows:
-      - The object ****MAY**** contain an `of` property, and if present its value ****must**** be a dot delimited path reference to another record entry in the _Record Rules_ tree. A conforming implementer ****MUST**** regard the absence of this property as a reference to the author of the labeled member object of the _Record Rule_ it is contained within.
-      - The object ****MUST**** contain a `to` property, and if present its value ****must**** be an _Allowed Activity_ object composed as follows:
-        - The object ****MAY**** contain a `create` property, and if present its value ****MUST**** be an object composed as follows:
-          - The object ****MAY**** contain a `publication` property, and if present its value ****MUST**** be a boolean.
-          - The object ****MAY**** contain an `encryption` property, and if present its value ****MUST**** be one of the following string values:
-            - `optional` - the object ****MAY**** be encrypted using the key provided by the owner of a Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
-            - `required` - the object ****MUST**** be encrypted using the key provided by the owner of a Decentralized Web Node in the [[spec:rfc7516]] JSON Web Encryption (JWE) format.
-        - The object ****MAY**** contain a `update` property, and if present its value ****MUST**** be an object composed as follows:
-          - ...
-        - The object ****MAY**** contain a `delete` property, and if present its value ****MUST**** be an object composed as follows:
-          - ...
-    - The object ****MAY**** contain a `recipient` property, and if present its value ****must**** be an _Actor Object_ composed as follows:
-      - The object ****MAY**** contain an `of` property, and if present its value ****must**** be a dot delimited path reference to another record entry in the _Record Rules_ tree. A conforming implementer ****MUST**** regard the absence of this property as a reference to the recipient of the labeled member object of the _Record Rule_ it is contained within.
-
+- The _Protocols Definition_ object ****MUST****  contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol the configuration pertains to.
+- The _Protocols Definition_ ****MUST**** contain a `published` property, and its value ****Must**** be a boolean indicating the `ProtocolConfiguration`'s publication state. 
+- The _Protocols Definition_ object ****MUST**** contain a `types` property, and its value ****MUST**** be an object composed as follows:
+  - The keys of the object ****MUST**** be a string that represents the underlying type.
+  - The values representing those keys within the object ****MUST**** be an object composed as follows:
+    - The object ****MUST**** contain a `dataFormats` property, and its value ****MUST**** be an array of strings that indicate the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormats` property to `['application/json]`.
+    - The object ****MAY**** contain a `schema` property, and if present its value ****MUST**** be a valid URI string that identifies the protocol the definition pertains to.
+- The _Protocols Definition_ object ****MUST**** contain a `structure` property, and its value ****MUST**** be a _Record Rules_ object whose keys match the labels defined in the _Protocols Definition_ object. This object is recursive, allowing subsequent record relationships to be defined within. Labeled members of the object are composed as follows:
+  - The keys of the object ****MUST**** be a string that matches one of the `types`
+  - The values representing those keys within the object ****MUST**** be an object composed as follows:
+    - The object ****MAY**** contain an `$actions` property and its value ****MUST**** be an array of rule set objects described as follows:
+      - The object ****MUST**** contain a `who` property and it ****MUST**** have one of the following values:
+        - `anyone`
+        - `author`
+        - `recipient`
+      - The object ****MUST**** contain a `can` property and it ****MUST**** have a value of either `read` or `write`
+      - The object ****MAY**** contain a `of` property and it ****MUST**** have a string value that references one of the `types`
 
 
 ::: todo
