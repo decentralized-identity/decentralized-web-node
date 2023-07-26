@@ -789,6 +789,29 @@ A reference of the json schema can be found in the
 [schemas](https://github.com/decentralized-identity/decentralized-web-node/blob/main/schemas/json-schemas/records/records-read.json)
 directory of the specification.
 
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Simple Records Read Example</button>
+</nav>
+
+<section>
+
+::: example Records Read - Minimal Example
+
+```json
+{
+	"descriptor": {
+		"recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+		"date": "2002-10-02T10:00:00-05:00",
+		"method": "Read",
+		"interface": "Records"
+	}
+}
+```
+</section>
+
+</tab-panels>
+
 #### `RecordsQuery`
 
 `RecordsQuery` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
