@@ -792,6 +792,8 @@ directory of the specification.
 <tab-panels selected-index="0">
 <nav>
   <button type="button">Simple Records Read Example</button>
+  <button type="button">Sample JSON Schema</button>
+
 </nav>
 
 <section>
@@ -809,6 +811,59 @@ directory of the specification.
 }
 ```
 </section>
+
+<section>
+
+::: example Records Read - JSON Schema
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-read.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "date",
+        "recordId"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Records"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Read"
+          ],
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "recordId": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+```
+</section>
+
 
 </tab-panels>
 
