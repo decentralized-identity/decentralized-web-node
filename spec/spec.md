@@ -779,8 +779,8 @@ experience for users.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Read`.
-  - The object ****MUST**** contain a `date` property, and its value
-    ****MUST**** be of type string, and its value ****MUST**** be an
+  - The object ****MUST**** contain a `messageTimestamp` property, and its value
+    ****MUST**** be of type string property, and its value ****MUST**** be an
     [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
     as the time the `RecordsWrite` was created by the DID owner or another permitted party.
   - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record with which the entry corresponds.
