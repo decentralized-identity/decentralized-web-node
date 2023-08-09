@@ -870,6 +870,313 @@ Get all objects of a given schema type:
 }
 ```
 
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Simple Records Write Example</button>
+  <button type="button">Sample JSON Schema For Records Write</button>
+</nav>
+
+<section>
+
+::: Sample Records Write
+
+```json
+{ // Message
+  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+  "descriptor": { // Message Descriptor
+    "parentId": CID(PREVIOUS_DESCRIPTOR),
+    "dataCid": CID(data),
+    "dateCreated": 123456789,
+    "published": true,
+    "encryption": "jwe",
+    "interface": "Records",
+    "method": "Write",
+    "schema": "https://schema.org/SocialMediaPosting",
+    "commitStrategy": "json-merge",
+    "dataFormat": DATA_FORMAT
+  }
+}
+```
+</section>
+
+<section>
+
+::: example Records Write - JSON Schema
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-write.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorization",
+    "descriptor",
+    "recordId"
+  ],
+  "properties": {
+    "recordId": {
+      "type": "string"
+    },
+    "contextId": {
+      "type": "string"
+    },
+    "attestation": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "encryption": {
+      "type": "object",
+      "properties": {
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "A256CTR"
+          ]
+        },
+        "initializationVector": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/base64url"
+        },
+        "keyEncryption": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "properties": {
+              "rootKeyId": {
+                "type": "string"
+              },
+              "derivationScheme": {
+                "type": "string",
+                "enum": [
+                  "dataFormats",
+                  "protocols",
+                  "schemas"
+                ]
+              },
+              "algorithm": {
+                "type": "string",
+                "enum": [
+                  "ECIES-ES256K"
+                ]
+              },
+              "encryptedKey": {
+                "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/base64url"
+              },
+              "initializationVector": {
+                "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/base64url"
+              },
+              "ephemeralPublicKey": {
+                "$ref": "https://identity.foundation/dwn/json-schemas/public-jwk.json"
+              },
+              "messageAuthenticationCode": {
+                "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/base64url"
+              }
+            },
+            "additionalProperties": false,
+            "required": [
+              "rootKeyId",
+              "derivationScheme",
+              "algorithm",
+              "encryptedKey",
+              "initializationVector",
+              "ephemeralPublicKey",
+              "messageAuthenticationCode"
+            ]
+          }
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "algorithm",
+        "initializationVector",
+        "keyEncryption"
+      ]
+    },
+    "descriptor": {
+      "type": "object",
+      "properties": {
+        "interface": {
+          "enum": [
+            "Records"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Write"
+          ],
+          "type": "string"
+        },
+        "recipient": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+        },
+        "protocol": {
+          "type": "string"
+        },
+        "protocolPath": {
+          "type": "string",
+          "pattern": "^[a-zA-Z]+(\/[a-zA-Z]+)*$"
+        },
+        "schema": {
+          "type": "string"
+        },
+        "parentId": {
+          "type": "string"
+        },
+        "dataCid": {
+          "type": "string"
+        },
+        "dataSize": {
+          "type": "number"
+        },
+        "dateCreated": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "messageTimestamp": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "published": {
+          "type": "boolean"
+        },
+        "datePublished": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "dataFormat": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "dataCid",
+        "dataSize",
+        "dateCreated",
+        "messageTimestamp",
+        "dataFormat"
+      ],
+      "dependencies": {
+        "parentId": [
+          "protocol"
+        ]
+      },
+      "allOf": [
+        {
+          "$comment": "rule defining `published` and `datePublished` relationship",
+          "anyOf": [
+            {
+              "properties": {
+                "published": {
+                  "type": "boolean",
+                  "enum": [
+                    true
+                  ]
+                }
+              },
+              "required": [
+                "published",
+                "datePublished"
+              ]
+            },
+            {
+              "properties": {
+                "published": {
+                  "type": "boolean",
+                  "enum": [
+                    false
+                  ]
+                }
+              },
+              "not": {
+                "required": [
+                  "datePublished"
+                ]
+              }
+            },
+            {
+              "allOf": [
+                {
+                  "not": {
+                    "required": [
+                      "published"
+                    ]
+                  }
+                },
+                {
+                  "not": {
+                    "required": [
+                      "datePublished"
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "$comment": "rule defining `protocol` and `contextId` relationship",
+  "anyOf": [
+    {
+      "properties": {
+        "descriptor": {
+          "type": "object",
+          "required": [
+            "protocol",
+            "protocolPath",
+            "schema"
+          ]
+        }
+      },
+      "required": [
+        "contextId"
+      ]
+    },
+    {
+      "allOf": [
+        {
+          "not": {
+            "required": [
+              "contextId"
+            ]
+          }
+        },
+        {
+          "properties": {
+            "descriptor": {
+              "type": "object",
+              "not": {
+                "required": [
+                  "protocol"
+                ]
+              }
+            }
+          }
+        },
+        {
+          "properties": {
+            "descriptor": {
+              "type": "object",
+              "not": {
+                "required": [
+                  "protocolPath"
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
+```
+</section>
+</tab-panels>
+
 #### `RecordsCommit`
 
 `RecordsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
