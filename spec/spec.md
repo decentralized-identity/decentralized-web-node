@@ -782,7 +782,7 @@ experience for users.
   - The object ****MUST**** contain a `messageTimestamp` property, and its value
     ****MUST**** be of type string property, and its value ****MUST**** be an
     [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
-    as the time the `RecordsWrite` was created by the DID owner or another permitted party.
+    as the time the `RecordsRead` record itself was created by the requester.
   - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record with which the entry corresponds.
 
 A reference of the json schema can be found in the
