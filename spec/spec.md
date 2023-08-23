@@ -877,7 +877,7 @@ directory of the specification.
     as the time the `RecordsQuery` message was created by the requester.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
     - The object ****MAY**** contain a `attester` property representing the
-      creator of the record's did. If present its value ****Must**** be a string in the form of a did.
+      creator of the `Record(s)` did. If present its value ****MUST**** be a string in the form of a DID.
     - The object ****MAY**** contain a `receipient` property representing the
       recipient of the record's did If present its value ****Must**** be a string in the form of a did.
     - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
