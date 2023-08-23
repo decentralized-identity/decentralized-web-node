@@ -874,7 +874,7 @@ directory of the specification.
   - The object ****MUST**** contain a `messageTimestamp` property, and its value
     ****MUST**** be of type string property, and its value ****MUST**** be an
     [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
-    as the time the `RecordsWrite` was created by the DID owner or another permitted party.
+    as the time the `RecordsQuery` message was created by the requester.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
     - The object ****MAY**** contain a `attester` property representing the
       creator of the record's did. If present its value ****Must**** be a string in the form of a did.
