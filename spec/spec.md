@@ -890,7 +890,7 @@ directory of the specification.
       **MUST** include the `from` and `to` property described as a string range in the ISO 8601 format. 
       - The from properties value ****MUST**** be of type string property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp.
        - The to properties value ****MUST**** be of type string property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp.
-    - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part f.
+    - The object ****MAY**** contain a `protocol` property, and its value ****MUST**** be a URI that denotes the Protocol an object is a part of.
       - If the object contains a `protocol` property the object ****MUST**** also contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
     - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
     - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
