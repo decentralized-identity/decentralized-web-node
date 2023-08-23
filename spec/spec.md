@@ -912,7 +912,7 @@ Get all objects of a given schema type:
 
 <tab-panels selected-index="0">
 <nav>
-  <button type="button">Simple Records Write Example</button>
+  <button type="button">Simple Records Delete Example</button>
   <button type="button">Sample JSON Schema For Records Delete</button>
 </nav>
 
