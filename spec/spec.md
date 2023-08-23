@@ -871,11 +871,26 @@ directory of the specification.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Query`.
+  - The object ****MUST**** contain a `messageTimestamp` property, and its value
+    ****MUST**** be of type string property, and its value ****MUST**** be an
+    [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
+    as the time the `RecordsQuery` message was created by the requester.
   - The object ****MAY**** contain a `filter` property, and if present its value ****MUST**** be an object that ****MAY**** contain the following properties:
+    - The object ****MAY**** contain a `attester` property representing the
+      creator of the `Record(s)` did. If present its value ****MUST**** be a string in the form of a DID.
+    - The object ****MAY**** contain a `receipient` property representing the
+      recipient of the `Record(s)` DID If present its value ****MUST**** be a string in the form of a DID.
     - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a [_Computed Record ID_](#computed-record-ids).
+    - The object ****MAY**** contain a `parentId` property determined from the protocol definition, and if present its
+      value ****MUST**** be a string that represents the computed record of
+      the parent object.
     - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be the deterministic ID for a contextually linked set of objects.
-    - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
+    - The object ****MAY**** contain a `dateCreated` property. If present, it
+      **MUST** include the `from` and `to` property described as a string range in the ISO 8601 format. 
+      - The from properties value ****MUST**** be of type string property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp.
+       - The to properties value ****MUST**** be of type string property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp.
+    - The object ****MAY**** contain a `protocol` property, and its value ****MUST**** be a URI that denotes the Protocol an object is a part of.
       - If the object contains a `protocol` property the object ****MUST**** also contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
     - The object ****MAY**** contain a `dataFormat` property, and its value ****MUST**** be a string that indicates the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`.
     - The object ****MAY**** contain a `dateSort` field, and if present its value ****MUST**** be one of the following strings:
@@ -883,8 +898,18 @@ directory of the specification.
         - `createdDescending`: return results in order from the latest `dateCreated` value to the earliest.
         - `publishedAscending`: return results in order from the earliest `datePublished` value to the latest.
         - `publishedDescending`: return results in order from the latest `datePublished` value to the earliest.
+ 
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Simple Records Query Example</button>
+  <button type="button">Simple Records Query Example 2</button>
+  <button type="button">Simple Records Query Example 3</button>
+  <button type="button">Sample JSON Schema For Records Query</button>
+</nav>
 
-Get a single object by its ID reference:
+<section>
+
+::: Get a single object by its ID reference:
 
 ```json
 { // Message
@@ -897,8 +922,12 @@ Get a single object by its ID reference:
   }
 }
 ```
+</section>
 
-Get a objects of a given schema type:
+<section>
+
+::: Get an object of a given schema type:
+
 ```json
 { // Message
   "descriptor": {
@@ -910,8 +939,12 @@ Get a objects of a given schema type:
   }
 }
 ```
+</section>
 
-Get all objects of a given schema type:
+<section>
+
+::: Get all objects of a given schema type:
+
 ```json
 { // Message
   "descriptor": {
@@ -924,7 +957,112 @@ Get all objects of a given schema type:
   }
 }
 ```
- 
+</section>
+
+
+<section>
+
+::: example Records Query - JSON Schema
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-query.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "filter"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Records"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Query"
+          ],
+          "type": "string"
+        },
+        "messageTimestamp": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "filter": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "protocol": {
+              "type": "string"
+            },
+            "attester": {
+              "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+            },
+            "recipient": {
+              "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+            },
+            "contextId": {
+              "type": "string"
+            },
+            "schema": {
+              "type": "string"
+            },
+            "recordId": {
+              "type": "string"
+            },
+            "parentId": {
+              "type": "string"
+            },
+            "dataFormat": {
+              "type": "string"
+            },
+            "dateCreated": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+                },
+                "to": {
+                  "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+                }
+              }
+            }
+          }
+        },
+        "dateSort": {
+          "enum": [
+            "createdAscending",
+            "createdDescending",
+            "publishedAscending",
+            "publishedDescending"
+          ],
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+```
+</section>
+</tab-panels>
+
 #### `RecordsWrite`
 
 `RecordsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
