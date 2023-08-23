@@ -850,7 +850,7 @@ directory of the specification.
           ],
           "type": "string"
         },
-        "date": {
+        "messageTimestamp": {
           "type": "string"
         },
         "recordId": {
