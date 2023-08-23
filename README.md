@@ -4,6 +4,10 @@
 
 Latest Draft: https://identity.foundation/decentralized-web-node/spec/
 
+### Companion Guide
+
+Latest Draft: https://identity.foundation/decentralized-web-node/guide/
+
 ### Implementations
 
 | Implementer    | Language     | Repo                                       | Environments    |
