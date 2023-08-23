@@ -887,7 +887,7 @@ directory of the specification.
       the parent object.
     - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be the deterministic ID for a contextually linked set of objects.
     - The object ****MAY**** contain a `dateCreated` property. If present, it
-      **Must** include the `from` and `to` property.
+      **MUST** include the `from` and `to` property described as a string range in the ISO 8601 format. 
       - The from properties value ****MUST**** be of type string property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp.
        - The to properties value ****MUST**** be of type string property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp.
     - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part f.
