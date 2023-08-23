@@ -882,7 +882,7 @@ directory of the specification.
       recipient of the `Record(s)` DID If present its value ****MUST**** be a string in the form of a DID.
     - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a [_Computed Record ID_](#computed-record-ids).
-    - The object ****MAY**** contain a `parentId` property, and if present its
+    - The object ****MAY**** contain a `parentId` property determined from the protocol definition, and if present its
       value ****MUST**** be a string that represents the computed record of
       the parent object.
     - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be the deterministic ID for a contextually linked set of objects.
