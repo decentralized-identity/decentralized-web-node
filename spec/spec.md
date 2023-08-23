@@ -834,7 +834,7 @@ directory of the specification.
       "required": [
         "interface",
         "method",
-        "date",
+        "messageTimestamp",
         "recordId"
       ],
       "properties": {
