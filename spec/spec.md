@@ -994,21 +994,89 @@ Get all objects of a given schema type:
 
 `RecordsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
-- The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
-- If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Delete`.
+  - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
+  - The object ****MUST**** contain a `messageTimestamp` property, and its value
+    ****MUST**** be of type string property, and its value ****MUST**** be an  [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
+    as the time the `RecordsDelete` record itself was created by the requester.
+
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Simple Records Delete Example</button>
+  <button type="button">Sample JSON Schema For Records Delete</button>
+</nav>
+
+<section>
+
+::: Sample Records Delete
 
 ```json
-{ // Message
-  "descriptor": { // Message Descriptor
+{ 
+  "descriptor": { 
+    "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+    "messageTimestamp": 2002-10-02T10:00:00-05:00Z",
     "interface": "Records",
-    "method": "Delete",
-    "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e"
+    "method": "Delete"
   }
 }
 ```
+</section>
+
+<section>
+
+::: example Records Delete - JSON Schema
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-delete.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "recordId"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Records"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Delete"
+          ],
+          "type": "string"
+        },
+        "messageTimestamp": {
+          "type": "string"
+        },
+        "recordId": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+```
+</section>
+</tab-panels>
 
 #### Computed Context IDs
 
