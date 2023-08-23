@@ -772,6 +772,98 @@ given schema, which may be well-known in a given vertical or industry, apps and 
 the same datasets across one another, enabling a cohesive, cross-platform, cross-device, cross-app 
 experience for users.
 
+#### `Records Read`
+
+`RecordsRead` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****MUST**** be composed as follows:
+
+- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Read`.
+  - The object ****MUST**** contain a `messageTimestamp` property, and its value
+    ****MUST**** be of type string property, and its value ****MUST**** be an
+    [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
+    as the time the `RecordsRead` record itself was created by the requester.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record with which the entry corresponds.
+
+A reference of the json schema can be found in the
+[schemas](https://github.com/decentralized-identity/decentralized-web-node/blob/main/schemas/json-schemas/records/records-read.json)
+directory of the specification.
+
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Simple Records Read Example</button>
+  <button type="button">Sample JSON Schema</button>
+</nav>
+
+<section>
+
+::: example Records Read - Minimal Example
+
+```json
+{
+	"descriptor": {
+		"recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+		"messageTimestamp": "2002-10-02T10:00:00-05:00Z",
+		"method": "Read",
+		"interface": "Records"
+	}
+}
+```
+</section>
+
+<section>
+
+::: example Records Read - JSON Schema
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-read.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "recordId"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Records"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Read"
+          ],
+          "type": "string"
+        },
+        "messageTimestamp": {
+          "type": "string"
+        },
+        "recordId": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
+```
+</section>
+</tab-panels>
+
 #### `RecordsQuery`
 
 `RecordsQuery` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
