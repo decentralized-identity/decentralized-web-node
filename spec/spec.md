@@ -879,7 +879,7 @@ directory of the specification.
     - The object ****MAY**** contain a `attester` property representing the
       creator of the `Record(s)` did. If present its value ****MUST**** be a string in the form of a DID.
     - The object ****MAY**** contain a `receipient` property representing the
-      recipient of the record's did If present its value ****Must**** be a string in the form of a did.
+      recipient of the `Record(s)` DID If present its value ****MUST**** be a string in the form of a DID.
     - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data.
     - The object ****MAY**** contain a `recordId` property, and its value ****MUST**** be a [_Computed Record ID_](#computed-record-ids).
     - The object ****MAY**** contain a `parentId` property, and if present its
