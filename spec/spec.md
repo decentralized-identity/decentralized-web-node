@@ -835,7 +835,7 @@ Get all objects of a given schema type:
  
 #### `RecordsWrite`
 
-`RecordsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+`RecordsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****MUST**** be composed as follows:
 
 - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record with which the entry corresponds. If the message is the initial entry for a new record, the value ****MUST**** be set to the string resulting from the [_Record ID Generation Process_](#recordid-generation).
 - The object ****MAY**** contain a `contextId` property. If present, its value ****MUST**** be the deterministic ID for a contextually linked set of objects.
