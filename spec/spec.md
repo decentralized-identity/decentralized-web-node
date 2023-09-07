@@ -843,7 +843,7 @@ Get all objects of a given schema type:
 - If the message object is attached to a Protocol, the value of its `contextId` property ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
 - The message object ****MUST**** contain an `authorization` property, which ****MUST**** be a JSON object as defined by the [Message Authorization](#message-authorization)
   section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
-- The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be a string that matches one of the [Supported Encryption Formats](#supported-encryption-format), indicating the encryption format with which the data is encrypted. The absence of this property indicates the data is not encrypted.
+- The object ****MAY**** contain an `encryption` property. If present, its value ****MUST**** be a string that matches one of the [Supported Encryption Formats](#supported-encryption-format), indicating the encryption format with which the data is encrypted. The absence of this property indicates the data is not encrypted.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Write`.
