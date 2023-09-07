@@ -841,7 +841,7 @@ Get all objects of a given schema type:
 - The object ****MAY**** contain a `contextId` property, and its value ****MUST**** be the deterministic ID for a contextually linked set of objects.
 - The object ****MAY**** contain an `attestation` property, and if present its value ****Must**** be a `string` representing the signing conditions detailed below. If the property is not present it ****MUST**** be evaluated as if it were set to the value `optional`.
 - If the message object is attached to a Protocol, the value of its `contextId` property ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
-- The message object ****MAY**** contain an `authorization` property, which ****MUST**** be a JSON object as defined by the [Message Authorization](#message-authorization)
+- The message object ****MUST**** contain an `authorization` property, which ****MUST**** be a JSON object as defined by the [Message Authorization](#message-authorization)
   section of this specification, with the requirement that the `kid` and `signature` ****MUST**** match the DID of the requesting party.
 - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be a string that matches one of the [Supported Encryption Formats](#supported-encryption-format), indicating the encryption format with which the data is encrypted. The absence of this property indicates the data is not encrypted.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
