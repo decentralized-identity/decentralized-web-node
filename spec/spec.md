@@ -858,7 +858,7 @@ Get all objects of a given schema type:
   - The object ****MUST**** contain a `dataFormats` property, and its value ****MUST**** be an array of strings that indicate the format of the data in accordance with its MIME type designation. The most common format is JSON, which is indicated by setting the value of the `dataFormats` property to `['application/json]`.
   - The object ****MUST**** contain a messageTimestamp property, and its value MUST be of type string property, and its value MUST be an [[spec:rfc3339]] ISO 8601 timestamp that MUST be set and interpreted as the time the RecordsWrite record itself was created by the requester.
   - The object ****MUST**** contain a `dataCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
-  - The object ****MUST**** contain a `dataSize` property, and it's value must be equal to the number of bytes of the record.
+  - The object ****MUST**** contain a `dataSize` property, and its value must be equal to the number of bytes in the record.
 
 ```
 <tab-panels selected-index="0">
