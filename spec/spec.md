@@ -1398,8 +1398,10 @@ Decentralized Web Node.
     ],
   }
   ```
-  The filters specified MUST align with the scopes requested during the
-  Permissions Phase of the Subscriptions process.
+  The Request Object MAY contain a filter property. If no filter property is
+  specified, the entire scope of Subscriptions allocated to the **Sink Node**
+  will be provided. The filters specified MUST align with the scopes requested
+  during the Permissions Phase of the Subscriptions process.
 - **Authorization Verification**:
   - If the **Sink Node** is not authorized, the **Source Node** must send a Subscription Request Rejected object.
   - If the **Sink Node** is authorized, the **Source Node** MUST send a Subscription Accepted object.

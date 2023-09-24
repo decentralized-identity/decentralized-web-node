@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions-request.json",
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "rquired": [
+        "filters",
+        "interface",
+        "method"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Subscriptions"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Request"
+          ],
+          "type": "string"
+        },
+        "filters": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/subscriptions/defs.json#/definitions/filters"
+        }
+      }
+    }
+  }
+}
