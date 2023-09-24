@@ -1352,6 +1352,32 @@ The Subscriptions Protocol consists of two main phases: Permissions Phase (Part
 and managing subscriptions between a **Sink Node** and a **Source Node** node through
 a Decentralized Web Node (DWN).
 
+
+```mermaid
+sequenceDiagram
+    participant localDWN
+    participant remoteDWN
+    participant recordWrite
+
+    loop baseAuthorization
+        localDWN ->> remoteDWN : PermissionRequest
+        note right of remoteDWN: authorizes subscription scope.
+        remoteDWN ->> localDWN : PermissionGrant
+    end
+    loop subscriptionFlow
+        localDWN ->> remoteDWN : subscribe(targetDID, permissionGrant, filter, options).
+        note right of remoteDWN: message is parsed.
+        remoteDWN ->> localDWN : accept/reject
+        note right of remoteDWN : if reject, break connection
+        note left of remoteDWN : if accept, register connection in handler. installed over event stream
+
+        recordWrite ->> remoteDWN : record is written to DWN
+        note left of remoteDWN : check connections under context
+        remoteDWN ->> localDWN : forward subscription Event to localDWN
+    end
+        localDWN ->> remoteDWN: initiates sync against context.
+```
+
 #### Steps
 
 ##### Permissions Phase (Part 1)
