@@ -348,6 +348,7 @@ billion transactions per second (tps).
 | Transport      | HTTP/1.1 through `GET`, `PUT`, `POST`, `PATCH`, and `DELETE` HTTP Methods. |
 | Schema / Data Representation | Data is encoded in graphs using N3 notation (a superset of RDF triples). Schemas are innate in RDF semantic ontologies. Any graphed relationship denotes a schema in its definition. |
 | Query Capabilities | The HTTP `GET` method allows for N3 Path Syntax. It is very similar to SPARQL 1.1 Property Path Syntax. |
+| License | MIT license and the Creative Commons Attribution 4.0 |
 
 
 | Ceramic and ComposeDB | https://ceramic.network/ |
@@ -361,6 +362,9 @@ billion transactions per second (tps).
 | Transport                    | GraphQL API over HTTP/1.1 |
 | Schema / Data Representation |	API models are defined as GraphQL Schemas. The underlying data store uses graph nodes: Accounts and Documents. Relations are expressed as Edges. |
 | Query Capabilities           | Partial GraphQL Queries. As of this writing, a query cannot be made against any data attributes. |
+| License |
+| [MIT](https://github.com/ceramicnetwork/js-ceramic/blob/develop/LICENSE-MIT)
+| and [Apache](https://github.com/ceramicnetwork/js-ceramic/blob/develop/LICENSE-APACHE) |
 
 | Atomic Data and Atomic Server | https://docs.atomicdata.dev/ |
 | ----------------------------- | ------------------------------------------- |
@@ -373,6 +377,7 @@ billion transactions per second (tps).
 | Transport	                    | WebSockets, HTTP 1/1 |
 | Schema / Data Representation  |	JSON-AD (JSON-Atomic Data). A variation of JSON-LD which supports the definition of schemas to provide type-safety. |
 | Query Capabilities            |	Atomic Paths, SPARQL |
+| License            |	[MIT](https://github.com/atomicdata-dev/atomic-server/blob/develop/LICENSE)|
 
 
 | Encrypted Data Vaults | https://identity.foundation/edv-spec/ |
@@ -386,6 +391,7 @@ billion transactions per second (tps).
 | Transport             |	HTTP 1/1, gRPC, Bluetooth |
 | Schema / Data Representation | [Pending] |
 | Query Capabilities | The goal is to provide Indexing and Querying capabilities. The working group is in the process of how deciding how this will be done. |
+| License            |	[Apache 2.0](https://github.com/decentralized-identity/edv-spec/blob/main/LICENSE.md)|
 
 | MyDex Personal Data Store | https://dev.mydex.org/connection-api/personal-data-store.html |
 | ------------------------- | ----------------------------------------------- |
@@ -423,7 +429,7 @@ billion transactions per second (tps).
 | Transport      | Transport agnostic. Apps have a local [HTTP RESTful API](https://book.peergos.org/features/apps.html) served from a ServiceWorker|
 | Schema / Data Representation | [DAG CBOR Encoded IPLD Objects and Raw Objects](https://book.peergos.org/security/bats.html). JSON Schema for app configuration. |
 | Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
-
+| License            |	[GNU Affero General Public License v3.0](https://github.com/Peergos/Peergos/blob/master/Licence.txt)|
 
 | Decentralized Web Nodes	   | https://identity.foundation/decentralized-web-node/spec/ |
 | -------------- | ---------------------------------------------------------- |
@@ -436,6 +442,7 @@ billion transactions per second (tps).
 | Transport      | Transport Agnostic. Currently mostly implemented with HTTP. |
 | Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data) with attached JSON Schema|
 | Query Capabilities | Protocols, Hooks, Records, Permissions |
+| License            |	|
 
 ## Architecture and Components
 
