@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/events-get.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type"
+      ],
+      "properties": {
+        "recordId": {
+          "type": "string"
+        },
+        "contextId": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string"
+        },
+        "eventTimestamp": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "interface": {
+          "enum": [
+            "Events"
+          ],
+          "type": "string"
+        },
+        "additionalProperties": true
+      }
+    }
+  }
+}

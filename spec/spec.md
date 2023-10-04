@@ -11,6 +11,10 @@ Decentralized Web Node
 **Previous Draft:**
   [0.0.1-predraft](https://identity.foundation/decentralized-web-node/spec/0.0.1-predraft/)
 
+**Chairs:**
+~ [Andor Kesselman](https://www.linkedin.com/in/andorsk/)
+~ [Liran Cohen](https://www.linkedin.com/in/itsliran)
+
 **Editors:**
 ~ [Daniel Buchner](https://www.linkedin.com/in/dbuchner/) (Block)
 ~ [Tobias Looker](https://www.linkedin.com/in/tplooker) (Mattr)
@@ -1584,7 +1588,7 @@ The `PermissionQuery` method exists to facilitate lookup of any retained Permiss
 
 ```json
 { // Message
-  "descriptor": { // Message Descriptor
+  "descriptor": { // Message  Descriptor
     "interface": "Permissions",
     "method": "Query",
     "grantedTo": "did:example:bob"
@@ -1603,6 +1607,129 @@ The `PermissionQuery` method exists to facilitate lookup of any retained Permiss
     - `grantedTo`
     - `delegatedFrom`
     - all properties of `scope` objects
+
+### Subscriptions
+
+Subscriptions to a Decentralized Web Node (DWN) enable efficient data delivery
+between specific DWN clients. This feature is especially valuable in scenarios
+where you have a highly available node (the **source** node) and an ephemeral
+node (the **sink** node) and require the capability to relay real-time updates
+between them.
+
+Access to the subscription functionality is managed through the
+[Permissions](#permissions) interface. To enable or restrict subscription
+access, `Subscriptions` is designated as the interface for `PermissionRequest`,
+`PermissionsGrant`, and `PermissionsRevoke` operations.
+
+#### Terminology
+
+- **Source Node**: The node from which data updates are originated.
+- **Sink Node**: The node that receives and processes updates from the source node.
+
+#### Subscriptions Protocol
+
+The Subscriptions Protocol consists of two main phases: Permissions Phase (Part
+1) and Connection Phase (Part 2). These phases are essential for establishing
+and managing subscriptions between a **Sink Node** and a **Source Node** node through
+a Decentralized Web Node (DWN).
+
+
+```mermaid
+sequenceDiagram
+    participant localDWN
+    participant remoteDWN
+    participant recordWrite
+
+    loop baseAuthorization
+        localDWN ->> remoteDWN : PermissionRequest
+        note right of remoteDWN: authorizes subscription scope.
+        remoteDWN ->> localDWN : PermissionGrant
+    end
+    loop subscriptionFlow
+        localDWN ->> remoteDWN : subscribe(targetDID, permissionGrant, filter, options).
+        note right of remoteDWN: message is parsed.
+        remoteDWN ->> localDWN : accept/reject
+        note right of remoteDWN : if reject, break connection
+        note left of remoteDWN : if accept, register connection in handler. installed over event stream
+
+        recordWrite ->> remoteDWN : record is written to DWN
+        note left of remoteDWN : check connections under context
+        remoteDWN ->> localDWN : forward subscription Event to localDWN
+    end
+        localDWN ->> remoteDWN: initiates sync against context.
+```
+
+#### Steps
+
+##### Permissions Phase (Part 1)
+
+The Permissions Phase occurs once in a subscription lifecycle, unless new scopes are requested or a subscription request is revoked. It is a persistent phase.
+
+
+1. **Sink Node Request for Permissions**
+   - As a **sink** node, request permissions via the Permissions interface using a `Subscription` interface identifier with scope definitions.
+     ```json
+     {
+       "interface": "Subscriptions",
+       "scope": {
+
+       },
+       <others>
+     }
+2. **Source Node Authorization** : The **Source Node** may grant or reject the
+   subscription permission request.
+
+3a.**Rejection Handling** : If the request is rejected, the **Source Node**
+   sends a rejection message to the **sink**.
+
+3b. **Acceptance Handling**: If the request is accepted, a `PermissionGrant`
+object is sent to the **Sink Node** and stored in their ownDWN. These
+permissions are granted for the full scope of the requested `PermissionRequest`
+and persist until a `PermissionsRevoke` process is initiated.
+
+#### Connection Phase ( Part 2 )
+
+The connection phase is how a **sink** connects with a **source** via a
+Decentralized Web Node.
+
+- Step 0: An initial connection is established between the **Source Node** and the
+- **Sink Node**.
+- Step 1: The first message exchanged in this phase MUST be a Subscription
+  Request Object with the following properties:
+  ```json
+  {
+    "interface": "Subscriptions",
+    "method": "Request",
+    "filters": [
+        {},
+    ],
+  }
+  ```
+  The Request Object MAY contain a filter property. If no filter property is
+  specified, the entire scope of Subscriptions allocated to the **Sink Node**
+  will be provided. The filters specified MUST align with the scopes requested
+  during the Permissions Phase of the Subscriptions process.
+- **Authorization Verification**:
+  - If the **Sink Node** is not authorized, the **Source Node** must send a Subscription Request Rejected object.
+  - If the **Sink Node** is authorized, the **Source Node** MUST send a Subscription Accepted object.
+- **Subscription Event**
+  - During an event scoped to the filters provided in the Subscription Request object, a Subscription Event is sent from the **Source Node** to the **sink**.
+  - The specifications for transporting this event are shared below.
+    - If using web sockets, messages **MUST** be shared over an `event` topic.
+
+### Subscription Event
+
+* Schema
+```json
+{
+  "type": <>
+  "eventId": <>
+  "contextID": <>,
+  "protocolPath": <>,
+}
+```
+
+### Subscription Request Object
 
 ### Hooks
 
