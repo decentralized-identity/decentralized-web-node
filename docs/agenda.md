@@ -271,6 +271,33 @@ TODO: Check status on spec
 - Party at Bitcoin Conf: 
     - 18th 6PM Miami time. 
 
+## DIF Meeting April 5, 2023
+
+Most of today's agenda will be spent doing cleanup of old issues. 
+
+### Attendees
+
+- Andor Kesselman @andorsk
+- Liran Cohen
+- Dan Buchner @csuwildcat
+
+### Agenda
+
+| Item                     | Segment     | Time   | Owner                | Description                                                                        |
+| ------------------------ | ----------- | ------ | -------------------- | ---------------------------------------------------------------------------------- |
+| Intro                    | Intro       | 5 min  | @andorsk             | Quick Intro. New Members. DIF IPR agreement.                                       |
+| Spec Updates             | Updates     | 5 min  | @liran               |                                                                                    |
+| Companion Guide Updates  | Updates     | 5 min  | @andorsk             | Some work on security section. Local vs. Remote vs. Relay. Technology Comparision? |
+| TBD Updates              | Updates     | 10 min | @csuwildcat          | Sync and Encryption.                                                               |
+| PR Review                | Maintenence | 5 min  | @andorsk             |                                                                                    |
+| TBD Alignment Updates    | Discussions | 10 min | @csuwildcat @andorsk | Set for next call                                                                  |
+| Label Review and Tagging | Maintenence | 30 min | @liran               |                                                                                    |
+| Calls To Action          | Closing     | 5 min  | @andorsk             |                                                                                    |
+
+### Notes
+
+#### Action Items
+
 ## DIF Meeting March 22, 2023
 
 Again this week we are overbooked with content. That's because we have a lot of cleanup to do!
