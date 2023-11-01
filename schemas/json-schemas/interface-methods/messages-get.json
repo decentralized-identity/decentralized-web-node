@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/events-get.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/messages-get.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -22,7 +22,7 @@
       "properties": {
         "interface": {
           "enum": [
-            "Events"
+            "Messages"
           ],
           "type": "string"
         },
@@ -35,8 +35,12 @@
         "messageTimestamp": {
           "type": "string"
         },
-        "watermark": {
-          "type": "string"
+        "messageCids": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "minItems": 1
         }
       }
     }

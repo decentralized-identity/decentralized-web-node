@@ -1,10 +1,9 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/events-get.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/protocols-query.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "authorization",
     "descriptor"
   ],
   "properties": {
@@ -22,21 +21,31 @@
       "properties": {
         "interface": {
           "enum": [
-            "Events"
+            "Protocols"
           ],
           "type": "string"
         },
         "method": {
           "enum": [
-            "Get"
+            "Query"
           ],
           "type": "string"
         },
         "messageTimestamp": {
           "type": "string"
         },
-        "watermark": {
-          "type": "string"
+        "filter": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "protocol": {
+              "type": "string"
+            },
+            "recipient": {
+              "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+            }
+          }
         }
       }
     }
