@@ -1,12 +1,12 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/events-get.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions-revoke.json",
   "type": "object",
-  "additionalProperties": false,
   "required": [
     "authorization",
     "descriptor"
   ],
+  "additionalProperties": false,
   "properties": {
     "authorization": {
       "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
@@ -17,25 +17,26 @@
       "required": [
         "interface",
         "method",
-        "messageTimestamp"
+        "messageTimestamp",
+        "permissionsGrantId"
       ],
       "properties": {
+        "messageTimestamp": {
+          "type": "string"
+        },
+        "permissionsGrantId": {
+          "type": "string"
+        },
         "interface": {
           "enum": [
-            "Events"
+            "Permissions"
           ],
           "type": "string"
         },
         "method": {
           "enum": [
-            "Get"
+            "Revoke"
           ],
-          "type": "string"
-        },
-        "messageTimestamp": {
-          "type": "string"
-        },
-        "watermark": {
           "type": "string"
         }
       }
