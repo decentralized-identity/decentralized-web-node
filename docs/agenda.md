@@ -23,6 +23,78 @@ Bi-weekly DIF call notes on DWN specifications.
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
 
+## DIF Meeting November 15, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Alan Karp
+- Liran Cohen
+- Drummond Reed
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk | IIW Updates:                                 |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Slack Updates         | Discussion Alignment    | 10 min | @andorsk |                                              |
+| Tags to Records       | Discussion Alignment    | 10 min | @liran   |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+- Discussion: 
+ - Slack updates flooding discussions.
+ - Liran:
+   - Have it somewhere, but different place.
+   - Move to separate channel.
+ - Office hours on discord.
+   - Add tags to records.
+   - Index something by protocol path.
+ - Full search of data is not really obtainable in a way in which we want. 
+     - @Alan: likes it
+     - Tags:
+       - What problem are they solving?
+         -  Use Case: Chat Application. Within app, within the data, you have a hashtag. Data portion.
+         -  Client: can tag hashtags
+         -  Go get met all the hashtags.
+         -  Andor: why not record as protocol?
+           - How does it fit into protocols?
+         -  andor:
+           - Protocols: further consideration. defined there?
+           - Basic datastore.
+         - Liran: Tweets:
+           -  You have a tweet under a protocol path. Allowed tweets.
+           -  A hashtag per. Record for each hashtag. Tweets. RecordsID. Message.
+             - symbolic link in protocol. Some of that with protocol paths.
+             - A have a #awesome life
+               - Use case #1: #awesome <- all other tagged #awesome.
+                 -> bucket of #awesome
+                   /records/tags/#awesome
+                   /record/tags/
+               - Use case #2: Search for tag #awesome.
+                  - search metadata
+        - andor:
+          -  question: what is the right pattern to enable the use case and preserve as much of the privacy/security/interoperability intent of a PDS (DWN)?
+            - tags: include into the DWN.
+            - Lazy search indexing.
+        - Alan : Search is not relevant to Tags:
+        - Liran: tags: ability to index data.
+          - Help queries
+          - Search different
+          - Useful
+          - Like to think about downsides more.
+          - NOSTR similar 
+            
+### Action Items
+- @andorsk to finish addressing https://github.com/decentralized-identity/decentralized-web-node/pull/257
+- Stawman for tags or a position. 
+
+### Decisions 
+
+- Move dwn-sdk-js notifications to a separate channel. (reach out to Dan before implementing ) 
+
 ## DIF Meeting November 1, 2023
 
 - [Recording]()
@@ -87,8 +159,6 @@ Bi-weekly DIF call notes on DWN specifications.
     
 - Action Item:
   - [ ] Discuss on whether to add extra step to capabilities not roles.
-  - [ ] 
-  
   
 ## DIF Meeting October 18, 2023
 
