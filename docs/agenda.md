@@ -22,38 +22,290 @@ Bi-weekly DIF call notes on DWN specifications.
 
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
-- Alan Karp 
-- Kirill (mee.foundation)
 
-## DIF Meeting May 31, 2023
+## DIF Meeting November 15, 2023
 
-* [Recording](https://us02web.zoom.us/rec/share/UYcdp_7UO1ebQ4uFc84AnasAhSmW9Laxs1s2kVRgs48PLywyV12NqoyF800nHEV7.d0hxy8WiCovW8c_j)
+- [Recording]()
+- Andor Kesselman
+- Alan Karp
+- Liran Cohen
+- Drummond Reed
 
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk | IIW Updates:                                 |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Slack Updates         | Discussion Alignment    | 10 min | @andorsk |                                              |
+| Tags to Records       | Discussion Alignment    | 10 min | @liran   |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+- Discussion: 
+ - Slack updates flooding discussions.
+ - Liran:
+   - Have it somewhere, but different place.
+   - Move to separate channel.
+ - Office hours on discord.
+   - Add tags to records.
+   - Index something by protocol path.
+ - Full search of data is not really obtainable in a way in which we want. 
+     - @Alan: likes it
+     - Tags:
+       - What problem are they solving?
+         -  Use Case: Chat Application. Within app, within the data, you have a hashtag. Data portion.
+         -  Client: can tag hashtags
+         -  Go get met all the hashtags.
+         -  Andor: why not record as protocol?
+           - How does it fit into protocols?
+         -  andor:
+           - Protocols: further consideration. defined there?
+           - Basic datastore.
+         - Liran: Tweets:
+           -  You have a tweet under a protocol path. Allowed tweets.
+           -  A hashtag per. Record for each hashtag. Tweets. RecordsID. Message.
+             - symbolic link in protocol. Some of that with protocol paths.
+             - A have a #awesome life
+               - Use case #1: #awesome <- all other tagged #awesome.
+                 -> bucket of #awesome
+                   /records/tags/#awesome
+                   /record/tags/
+               - Use case #2: Search for tag #awesome.
+                  - search metadata
+        - andor:
+          -  question: what is the right pattern to enable the use case and preserve as much of the privacy/security/interoperability intent of a PDS (DWN)?
+            - tags: include into the DWN.
+            - Lazy search indexing.
+        - Alan : Search is not relevant to Tags:
+        - Liran: tags: ability to index data.
+          - Help queries
+          - Search different
+          - Useful
+          - Like to think about downsides more.
+          - NOSTR similar 
+            
+### Action Items
+- @andorsk to finish addressing https://github.com/decentralized-identity/decentralized-web-node/pull/257
+- Stawman for tags or a position. 
+
+### Decisions 
+
+- Move dwn-sdk-js notifications to a separate channel. (reach out to Dan before implementing ) 
+
+## DIF Meeting November 1, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Alan Karp
+- Liarn
+- Dan
+
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk | IIW Updates:                                 |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+- Discussion: 
+    - Alan Karp:
+      - Confused Deputy problem.
+      - Dan: Implicit
+      - Alan: Security risk
+      - Example:
+          - Alan: Only had read permission to Foo
+          - Dan: RW permission to foo
+      - Vulnerability:
+        - Alan: You may want to say 
+        - Alan: when you do an invocation, use a capability
+        - Can prove valid capability by evidence. 
+      - Dan: Always first fetch object that was there.
+      - Cannot just interact with a protocol.
+      - Alan: 
+        - Role cert: Delegate a specific permission to myself
+        - Alan: 10 objects to a collection
+        - Delegate to myself
+      - Dan: What is that look like?
+        - Anyone? 
+        - What is invocation of capability:
+        - Assign role certificate 
+        - Block everyone inband 
+        - Role held by verifier. 
+        - Wrap around capability for object foo.
+      - Without having certificate yourself, by proving your role.
+        - Dan: what are the bytes.
+      - Signing something that proves control of the did
+        - Proof of delegation is valid.
+      - Verifier: look at role and possible permissions
+      - Alan: Vulenerability: on lookup
+      - Invocation Today:
+        - Prove some role
+        - Separate cert: which object and permission
+    - Andor: How to move forward?
+     - Normative change: Verification changes
+     - Role is proof of delegation
+     - Capability creates a role. 
+     - When evaluating capabilities, force invoker but with specific action
+     - Good explanation: https://w3c-ccg.github.io/zcap-spec/
+     - Delegate to a program on behalf.
+    
+- Action Item:
+  - [ ] Discuss on whether to add extra step to capabilities not roles.
+  
+## DIF Meeting October 18, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Alan Karp
+
+Meeting agenda today is light. TBD team may not be available today and there has been no work happening since last two weeks. 
+
+Request for more contributions. 
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk | IIW Updates:                                 |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+Alan at IIW: 
+- Lots of conversation about authorization
+- OPA
+- Different UI's for expressing policy
+
+Action Item: Add a few issues related to high priority changes. 
+
+## DIF Meeting October 4, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Liran Cohen 
+- Ajay Jadhav
+
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk |                                              |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+Action Item: Add a few issues related to high priority changes. 
+
+## DIF Meeting September 30, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Liran Cohen 
+- Alan Karp
+- Henry Tsai
+- 
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk |                                              |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+## DIF Meeting September 16, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Liran Cohen 
+- Alan Karp
 
 | Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
 | ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
 | Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
-| Agenda                                    | Companion Guide Updates | 10 min | @andorsk/Moises | [added dwn and peergos to the comparison guide #229](https://github.com/decentralized-identity/decentralized-web-node/pull/229) <br>[Local, Remote, and Relay Nodes. #225](https://github.com/decentralized-identity/decentralized-web-node/pull/225) |
-| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     | protocols.preview.benri.io                                                                                  | 
-| Agenda                                    | Spec PR Review | 10 min | @csuwildcat | [update the Service Endpoint section of the spec #228](https://github.com/decentralized-identity/decentralized-web-node/pull/228) <br> [added JSON schemas for DWN specification #209](https://github.com/decentralized-identity/decentralized-web-node/pull/209) |
-| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       | Alignment                                                                       |
-| Issue Alignment | Issue Alignment         | 10 min | @liran         | Alignment                                                                       |
+| Agenda                                    | Companion Guide Updates | 10 min | @andorsk ||
+| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     |                                                | 
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       |                                                              |
+| Issue Alignment | Issue Alignment         | 10 min | @liran         |                                                                        |
 | Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
 
-### Issues Discussed:
+## DIF Meeting Aug 23, 2023
 
-- [Authorization layer should limit the amount of data permitted to be stored by a application #96](https://github.com/decentralized-identity/decentralized-web-node/issues/96)
-- [Add use cases link #83](https://github.com/decentralized-identity/decentralized-web-node/issues/83)
-- [Test Suite Design #213](https://github.com/decentralized-identity/decentralized-web-node/issues/213)
-- [Revocation Subtleties #138](https://github.com/decentralized-identity/decentralized-web-node/issues/138)
-- [Requiring fine-grained capabilities #142](https://github.com/decentralized-identity/decentralized-web-node/issues/142)
-- [as a developer, I can follow docs to run the reference implmentation, so I can test it out and then contribute improvements or passing test-suites #144](https://github.com/decentralized-identity/decentralized-web-node/issues/144)
-- [Support both folder based and schema based object storage #190](https://github.com/decentralized-identity/decentralized-web-node/issues/190)
+
+- [Recording]()
+- Andor Kesselman
+- Liran Cohen 
+- Alan Karp
+
+| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
+| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda                                    | Companion Guide Updates | 10 min | @andorsk ||
+| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     |                                                | 
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       |                                                              |
+| Issue Alignment | Issue Alignment         | 10 min | @liran         |                                                                        |
+| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
+### Issues Diccussed: 
+
+
+
+## DIF Meeting Aug 9, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Liran Cohen 
+- Dan Buchner
+- Alan Karp
+
+| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
+| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda                                    | Companion Guide Updates | 10 min | @andorsk ||
+| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     |                                                | 
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       |                                                              |
+| Issue Alignment | Issue Alignment         | 10 min | @liran         |                                                                        |
+| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
+### Issues Diccussed: 
+
+
+
+
+## DIF Meeting July 26, 2023
+
+[Recording](https://us02web.zoom.us/rec/share/Ru-733Ay07GGp4ezra82DFgj8Z9lOP_5Esv5yC6JWUBABxnLL954lHU0GgQMsgk.UypvAnC55W7ai0ML)
+
+- Andor Kesselman
+- Liran Cohen 
+- Moises Jaramillo
+- Alan Karp
+- Dan Bucher
+
+| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
+| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
+| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
+| Agenda                                    | Companion Guide Updates | 10 min | @andorsk ||
+| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     |                                                | 
+| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       | Review PR 250, 252, and 253                                                              |
+| Issue Alignment | Issue Alignment         | 10 min | @liran         |                                                                        |
+| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
+### Issues Diccussed: 
 
 
 ## DIF Meeting July 12, 2023
 
-* [Recording]()
+* [Recording](https://us02web.zoom.us/rec/share/abvaO-V7lvTT0NZhcb6PFdQKVbc3O41S4GfgxkLDz92SkDFccvhB2qDElGA5SdfJ.wpr79nv0ANt2j-d4)
 
 - Ian Preston
 - Dan Buchner
@@ -270,33 +522,6 @@ TODO: Check status on spec
 - Flag section 
 - Party at Bitcoin Conf: 
     - 18th 6PM Miami time. 
-
-## DIF Meeting April 5, 2023
-
-Most of today's agenda will be spent doing cleanup of old issues. 
-
-### Attendees
-
-- Andor Kesselman @andorsk
-- Liran Cohen
-- Dan Buchner @csuwildcat
-
-### Agenda
-
-| Item                     | Segment     | Time   | Owner                | Description                                                                        |
-| ------------------------ | ----------- | ------ | -------------------- | ---------------------------------------------------------------------------------- |
-| Intro                    | Intro       | 5 min  | @andorsk             | Quick Intro. New Members. DIF IPR agreement.                                       |
-| Spec Updates             | Updates     | 5 min  | @liran               |                                                                                    |
-| Companion Guide Updates  | Updates     | 5 min  | @andorsk             | Some work on security section. Local vs. Remote vs. Relay. Technology Comparision? |
-| TBD Updates              | Updates     | 10 min | @csuwildcat          | Sync and Encryption.                                                               |
-| PR Review                | Maintenence | 5 min  | @andorsk             |                                                                                    |
-| TBD Alignment Updates    | Discussions | 10 min | @csuwildcat @andorsk | Set for next call                                                                  |
-| Label Review and Tagging | Maintenence | 30 min | @liran               |                                                                                    |
-| Calls To Action          | Closing     | 5 min  | @andorsk             |                                                                                    |
-
-### Notes
-
-#### Action Items
 
 ## DIF Meeting March 22, 2023
 
