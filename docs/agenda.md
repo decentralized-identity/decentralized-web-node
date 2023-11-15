@@ -23,6 +23,73 @@ Bi-weekly DIF call notes on DWN specifications.
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
 
+## DIF Meeting November 1, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Alan Karp
+- Liarn
+- Dan
+
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk | IIW Updates:                                 |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+- Discussion: 
+    - Alan Karp:
+      - Confused Deputy problem.
+      - Dan: Implicit
+      - Alan: Security risk
+      - Example:
+          - Alan: Only had read permission to Foo
+          - Dan: RW permission to foo
+      - Vulnerability:
+        - Alan: You may want to say 
+        - Alan: when you do an invocation, use a capability
+        - Can prove valid capability by evidence. 
+      - Dan: Always first fetch object that was there.
+      - Cannot just interact with a protocol.
+      - Alan: 
+        - Role cert: Delegate a specific permission to myself
+        - Alan: 10 objects to a collection
+        - Delegate to myself
+      - Dan: What is that look like?
+        - Anyone? 
+        - What is invocation of capability:
+        - Assign role certificate 
+        - Block everyone inband 
+        - Role held by verifier. 
+        - Wrap around capability for object foo.
+      - Without having certificate yourself, by proving your role.
+        - Dan: what are the bytes.
+      - Signing something that proves control of the did
+        - Proof of delegation is valid.
+      - Verifier: look at role and possible permissions
+      - Alan: Vulenerability: on lookup
+      - Invocation Today:
+        - Prove some role
+        - Separate cert: which object and permission
+    - Andor: How to move forward?
+     - Normative change: Verification changes
+     - Role is proof of delegation
+     - Capability creates a role. 
+     - When evaluating capabilities, force invoker but with specific action
+     - Good explanation: https://w3c-ccg.github.io/zcap-spec/
+     - Delegate to a program on behalf.
+    
+- Action Item:
+  - [ ] Discuss on whether to add extra step to capabilities not roles.
+  - [ ] 
+  
+  
 ## DIF Meeting October 18, 2023
 
 - [Recording]()
@@ -33,14 +100,14 @@ Meeting agenda today is light. TBD team may not be available today and there has
 
 Request for more contributions. 
 
-| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
-| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
-| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
-| Agenda                                    | Companion Guide Updates | 10 min | @andorsk | IIW Updates:|
-| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     |                                                | 
-| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       |                                                              |
-| Issue Alignment | Issue Alignment         | 10 min | @liran         |                                                                        |
-| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                          
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk | IIW Updates:                                 |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
 
 ### Notes: 
 
@@ -48,8 +115,6 @@ Alan at IIW:
 - Lots of conversation about authorization
 - OPA
 - Different UI's for expressing policy
-- 
-
 
 Action Item: Add a few issues related to high priority changes. 
 
@@ -61,14 +126,14 @@ Action Item: Add a few issues related to high priority changes.
 - Ajay Jadhav
 
 
-| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
-| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
-| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
-| Agenda                                    | Companion Guide Updates | 10 min | @andorsk ||
-| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     |                                                | 
-| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       |                                                              |
-| Issue Alignment | Issue Alignment         | 10 min | @liran         |                                                                        |
-| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                          
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk |                                              |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
 
 Action Item: Add a few issues related to high priority changes. 
 
@@ -81,14 +146,14 @@ Action Item: Add a few issues related to high priority changes.
 - Henry Tsai
 - 
 
-| Item                                      | Segment                 | Time   | Owner           | Description                                                                     |
-| ----------------------------------------- | ----------------------- | ------ | --------------- | ------------------------------------------------------------------------------- |
-| Intro                                     | Intro                   | 5 min  | @liran          | Quick Intro. New Members. DIF IPR agreement.                                    |
-| Agenda                                    | Companion Guide Updates | 10 min | @andorsk ||
-| [Ecosystem Updates]()                           | Updates                 | 10 min | @andorsk     |                                                | 
-| Spec Alignment  | Spec Alignment          | 10 min | @andorsk       |                                                              |
-| Issue Alignment | Issue Alignment         | 10 min | @liran         |                                                                        |
-| Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk |                                              |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
 
 ## DIF Meeting September 16, 2023
 
