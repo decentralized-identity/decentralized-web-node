@@ -11,6 +11,11 @@ Decentralized Web Node
 **Previous Draft:**
   [0.0.1-predraft](https://identity.foundation/decentralized-web-node/spec/0.0.1-predraft/)
 
+**Chairs**
+
+~ [Andor Kesselman](https://www.linkedin.com/in/andorsk/)
+~ [Liran Cohen](https://www.linkedin.com/in/itsliran/)
+
 **Editors:**
 ~ [Daniel Buchner](https://www.linkedin.com/in/dbuchner/) (Block)
 ~ [Tobias Looker](https://www.linkedin.com/in/tplooker) (Mattr)

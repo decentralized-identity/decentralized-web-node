@@ -1,4 +1,29 @@
-# Decentralized Web Node Companion Guide (DWN)
+# Decentralized Web Node Companion Guide 
+
+========
+
+**Status:** Draft
+
+**Latest Draft:**
+  [identity.foundation/decentralized-web-node/guide](https://identity.foundation/decentralized-web-node/guide)
+<!-- -->
+
+**Chairs**
+- [Andor Kesselman](https://www.linkedin.com/in/andorsk/)
+- [Liran Cohen](https://www.linkedin.com/in/itsliran/)
+
+**Editors:**
+- [Daniel Buchner](https://www.linkedin.com/in/dbuchner/) (Block)
+
+**Contributors:**
+- [Moises Jaramillo](https://www.linkedin.com/in/moisesjaramillo/)
+
+**Participate:**
+- [GitHub repo](https://github.com/decentralized-identity/decentralized-web-node)
+- [File a bug](https://github.com/decentralized-identity/decentralized-web-node/issues)
+- [Commit history](https://github.com/decentralized-identity/decentralized-web-node/commits/main/docs/companion_guide.md)
+
+------------------------------------
 
 **Note: This document is a WORKING DOCUMENT and IN PROGRESS.**
 
