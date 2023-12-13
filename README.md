@@ -6,7 +6,7 @@ Latest Draft: https://identity.foundation/decentralized-web-node/spec/
 
 ### Companion Guide
 
-Latest Draft: Latest Draft: [https://identity.foundation/decentralized-web-node/build/guide/](https://identity.foundation/decentralized-web-node/build/guide/v0.0.1/)
+Latest Draft: [https://identity.foundation/decentralized-web-node/build/guide/](https://identity.foundation/decentralized-web-node/build/guide/v0.0.1/)
 
 ### Implementations
 
