@@ -1,5 +1,7 @@
 
 {
+  "public_root": "./build",
+  "resource_path": "./build",
   "specs": [
     {
       "title": "DIF Decentralized Web Node",
