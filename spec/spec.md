@@ -11,6 +11,9 @@ Decentralized Web Node
 **Previous Draft:**
   [0.0.1-predraft](https://identity.foundation/decentralized-web-node/spec/0.0.1-predraft/)
 
+**Companion Guide**
+  [0.0.1](https://identity.foundation/decentralized-web-node/build/guide/v0.0.1)
+
 **Chairs**
 
 ~ [Andor Kesselman](https://www.linkedin.com/in/andorsk/)
