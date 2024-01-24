@@ -23,6 +23,69 @@ Bi-weekly DIF call notes on DWN specifications.
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
 
+
+## DIF Meeting January 24, 2023
+
+- [Recording]()
+- Andor Kesselman
+- Alan Karp
+- Liran Cohen
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk |                                  |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Slack Updates         | Discussion Alignment    | 10 min | @andorsk |                                              |
+| Tags to Records       | Discussion Alignment    | 10 min | @liran   |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+- Discussion: 
+ 
+### Action Items
+
+- Roadmap:
+  - Status:
+    - TODO: Spec alignment.
+      - Subscription: PR
+      - Merged event subscribed. Event subscribe coming.
+    - Meet interop for MVP on spec. Not on sdk.
+    - Test Suite :
+      - Compliance test suites.
+       - Conformance Tests
+       - Finding a good balance in general
+       - dwn-sdk will have interfaces
+       - Test Vectors
+       - Avoid feature bloat. Document that specifies a minimum conformant system. 
+    - Transport
+      - Needs to address.
+  - Roadmap:
+    - How do we get more engagement with the spec work?
+    - Less opinions on how it should work.
+    - Deadlines:
+      - Hard to contribute to the spec when it's not aligned.
+        - spec alignment blocking.
+        - MVP walkthrough.
+        - commit needs to go
+        - sync updated
+        - feature detection
+        - transport documentation.
+      - Alan:
+        - is interoperating important?
+        - more stuff needs to be in the spec than if that was not the case
+      - Subscription:
+        -  Drop connection and then it won't renew and then reconnect drops it.
+        -  If someone creates a bunch of subscriptions that won't emit messages. DDOS. 
+      - Wrap up MVP spec.
+      
+### Decisions 
+
+- Move dwn-sdk-js notifications to a separate channel. (reach out to Dan before implementing ) 
+
 ## DIF Meeting November 15, 2023
 
 - [Recording]()
