@@ -27,7 +27,6 @@ Decentralized Web Node
 ~ [Henry Tsai](https://www.linkedin.com/in/henry-tsai-6b884014/) (Microsoft)
 ~ [XinAn Xu](https://www.linkedin.com/in/xinan-xu-b868a326/) (Microsoft)
 ~ [Moe Jangda](https://www.linkedin.com/in/moejangda/) (Block)
-~ [Andor Kesselman](https://www.linkedin.com/in/andorsk/) (Benri)
 
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/decentralized-web-node)
@@ -138,128 +137,15 @@ Object Signing / Encryption |
 
 ## Service Endpoints
 
-The following DID Document Service Endpoint entries ****MUST**** be present in the DID Document of a target DID for DID-relative URL resolution to properly locate the URI for addressing a DID owner's Decentralized Web Nodes:
-
-```json
-{
-  "id": "did:example:alice",
-  "service": [{
-    "id":"#dwn",
-    "type": "DecentralizedWebNode",
-    "serviceEndpoint": {
-      "nodes": ["did:example:host", "https://dwn.example.com"]
-    }
-  }]
-}
-```
-
-## Addressing
-
-A user's Decentralized Web Nodes can be addressed in many ways, but the mechanisms below ****MUST**** be supported by a compliant Decentralized Web Node implementation:
-
-### DID-Relative URLs
-
-The following DID URL constructions are used to address [[ref: Decentralized Web Nodes]] found to be associated 
-with a given DID, as located via the DID resolution process.
-
-#### Composition
-
-The following process defines how a DID-Relative URL is composed to address a Decentralized Web Node:
-
-1. Let the base URI authority portion of the DID URL string be the target DID being addressed.
-2. Append a `service` parameter to the DID URL string with the value `DecentralizedWebNode`.
-3. Assemble the desired [Message Descriptor](#message-descriptors) object.
-4. JSON stringify the [Message Descriptor](#message-descriptors) object from Step 3, then Base64Url encode the stringified output.
-5. Append a `message` parameter to the DID URL string with the value set to the JSON stringified, Base64Url encoded output of Step 4.
-
-**DID-relative URLs are composed of the following segments**
-
-`did:example:alice` + `?service=DecentralizedWebNode` + `&message=` + `toBase64Url( JSON.stringify( { MESSAGE } ) )`
-
-```json
-did:example:alice?service=DecentralizedWebNode&message=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
-```
-
-#### Resolution
-
-The following process defines how a DID-Relative URL for a Decentralized Web Node is resolved:
-
-1. Resolve the DID in the authority portion of the URL in accordance with the [W3C Decentralized Identifier Resolution](https://w3c.github.io/did-core/#resolution) process, which returns the DID Document for the resolved DID.
-2. As indicated by the presence of the `service` parameter, locate the `DecentralizedWebNode` entry in the DID Document's [Service Endpoint](https://w3c.github.io/did-core/#services) entries.
-3. Parse the `DecentralizedWebNode` Service Endpoint object and select the first URI present in the `serviceEndpoint` objects `nodes` array. NOTE: implementers ****SHOULD**** select from the URIs in the `nodes` array in index order.
-4. If the URI located in step 3 is not a DID URI, proceed to step 5. If the URI from step 3 is a DID, resolve the DID and follow steps 2 and 3 to select the first URI in the DID's `DecentralizedWebNode` Service Endpoint object `nodes` array that is not a DID URI. Do not iterate this loop more than once - if a non-DID URI cannot be located after one loop of recursive resolution, terminate resolution and produce an error.
-5. Assuming a non-DID URI was located in steps 2-4, let the located URI be the base URI of the [[ref: Decentralized Web Node]] request being constructed.
-
-#### Request Construction
-
-**DID-Relative URL example for passing messages:**
-
-***Note:** For example purposes, the `message` parameter value below is neither JSON stringified nor Base64Url encoded, but should be when using Decentralized Web Node URLs in practice (see the [DID-relative URL Composition](#composition) instructions above).*
-
-```json
-did:example:alice?service=DecentralizedWebNode&message={ "interface": "Records", "method": "Query", "schema": "https://schema.org/SocialMediaPosting" }
-```
-
-```json
-did:example:alice?service=DecentralizedWebNode&message=W3sgTUVTU0FHRV8xIH0sIHsgTUVTU0FHRV9OIH1d...
-```
-
-**Resolve DID to locate its Decentralized Web Node URIs:**
-
-`did:example:alice --> resolve DWN endpoint(s) --> `https://dwn.example.com`
-
-`did:example:alice`--> resolve DWN endpoint(s) --> `did:example:host` --> resolve DWN endpoint(s) --> `https://dwn.did-relative-host.com`
-
-::: note
-Only DID URIs in the `nodes` array will be allowed to initiate [sync](https://identity.foundation/decentralized-web-node/spec/#sync) activities with other DWeb Node instances.
+::: warning
+This will be updated
 :::
 
-**Construct the *Request Object*{id=request-object}:**
-
-1. Create a JSON object for the request.
-2. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be a [Message](#messages) object that is generated by parsing the DID-relative URL's `message` parameter value by performing the following steps:
-    1. Construct a [Message](#messages) object.
-    2. Set the `descriptor` property of the [Message](#messages) object to the `message` parameter's value, ensuring it is a valid [Message Descriptor](#message-descriptors) object.
-    3. Append the object to the [Request Object](#request-objects)'s `message` property.
-
-*HTTP POST example:*
-
-```json
-POST https://dwn.example.com/
-
-BODY {
-  "messages": [
-    {
-      "descriptor": {
-        "interface": "Records",
-        "method": "Query",
-        "schema": "https://schema.org/SocialMediaPosting"
-      }
-    },
-    {...}
-  ]
-}
-```
-
-## Request Objects
-
-Request Objects are JSON object envelopes used to pass messages to Decentralized Web Nodes.
-
-```json
-{  // Request Object
-  "messages": [  // Message Objects
-    {...},
-    {...},
-    {...}
-  ]
-}
-```
-
-Request Objects are composed as follows:
-
-1. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects.
-
 ## Messages
+
+::: warning
+All references to this section are out of date and will need to be updated.
+:::
 
 All Decentralized Web Node messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPLD CIDs and DAG APIs.
 
@@ -696,74 +582,6 @@ If the DWeb Node instance receiving the request has determined that the rate of 
 
 ## Interfaces
 
-### Feature Detection
-
-The Decentralized Web Node specification defines well-recognized Decentralized Web Node configurations to maximize 
-interoperability (see Configurations), but implementers may wish to support a custom 
-subset of the Interfaces and features. The Feature Detection interface is the means by 
-which a Decentralized Web Node expresses support for the Interfaces and features it implements.
-
-#### Data Model
-
-A compliant Decentralized Web Node ****MUST**** produce a Feature Detection object 
-defined as follows:
-
-```json
-{
-  "type": "FeatureDetection",
-  "interfaces": { ... }
-}
-```
-
-##### Properties & Values
-
-The following properties and values are defined for the Feature Detection object:
-
-- The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows:
-    - The object ****MAY**** contain a `protocols` property. If the property is not present, 
-    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `ProtocolsQuery`
-      - `ProtocolsConfigure`
-    - The object ****MAY**** contain a `records` property. If the property is not present, 
-    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `RecordsQuery`
-      - `RecordsWrite`
-      - `RecordsCommit`
-      - `RecordsDelete`
-    - The object ****MAY**** contain a `permissions` property. If the property is not present, 
-    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `PermissionsRequest`
-      - `PermissionsGrant`
-      - `PermissionsRevoke`
-- The object ****MAY**** contain a `messaging` property, and its value ****MAY**** be an object composed of the following:
-    - The object ****MAY**** contain a `batching` property, and if present its value ****MUST**** be a boolean indicating whether the Decentralized Web Node handles multiple messages in a single request. The absence of this property ****shall**** indicate that the Decentralized Web Node ****does**** support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they ****MUST**** include this property and explicitly set its value to `false`.
-  
-
-#### Read
-
-All compliant Decentralized Web Nodes ****MUST**** respond with a valid Feature Detection object when receiving 
-the following request object:
-
-```json
-{ // Message
-  "descriptor": { // Message Descriptor
-    "method": "FeatureDetectionRead"
-  }
-}
-```
-
 ### Records
 
 To maximize decentralized app and service interoperability, the Records interface of Decentralized Web Nodes 
@@ -772,7 +590,7 @@ given schema, which may be well-known in a given vertical or industry, apps and 
 the same datasets across one another, enabling a cohesive, cross-platform, cross-device, cross-app 
 experience for users.
 
-#### `Records Read`
+#### `RecordsRead`
 
 `RecordsRead` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****MUST**** be composed as follows:
 
@@ -1099,34 +917,11 @@ directory of the specification.
   }
 }
 ```
+#### `RecordsSubscribe`
 
-#### `RecordsCommit`
-
-`RecordsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
-- If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Commit`.
-  - The object ****Must**** include a `parentId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `RecordsWrite` or `RecordsCommit` ancestor in the record's lineage.
-  - The object ****MUST**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
-  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the commit was generated.
-
-```json
-{ // Message
-  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
-  "descriptor": { // Message Descriptor
-    "interface": "Records",
-    "method": "Commit",
-    "dataCid": CID(data),
-    "parentId": CID(ANCESTOR_CID),
-    "dateCreated": 123456789,
-    "commitStrategy": "json-merge",
-    "dataFormat": DATA_FORMAT
-  }
-}
-```
+::: todo 
+TODO
+:::
 
 #### `RecordsDelete`
 
@@ -1222,7 +1017,7 @@ directory of the specification.
 Detail how IDs are computed for record contexts.
 :::
 
-#### Retained Message Processing
+#### Retained Record Processing
 
 Retained messages in the Records interface are those that may be stored against the specific record they are associated with. Within the Records interface the `RecordsWrite`, `RecordsCommit`, `RecordsDelete` messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation ****MUST**** perform the following steps to process retained messages:
 
@@ -1240,15 +1035,6 @@ Retained messages in the Records interface are those that may be stored against 
 6. If an exiting `RecordsWrite` entry linked to the [_Latest Checkpoint Entry_](#latest-records-checkpoint) ****is**** present all of the following conditions ****must**** be true:
     - The `dateCreated` value of the inbound message is greater than the existing `RecordsWrite`, or if the `dateCreated` values are the same, the [_Entry ID_](#record-entry-id) of the inbound message is greater than the existing entry when the [_Entry IDs_](#record-entry-id) of the two are compared lexicographically.
 7. If all of the following conditions for Step 6 are true, store the inbound message as the _Latest Entry_ and discard the existing `RecordsWrite` entry that was attached to the [_Latest Checkpoint Entry_](#latest-records-checkpoint).
-
-##### If the message is a `RecordsCommit`:
-
-1. Retrieve the currently active `RecordsWrite` entry for the `recordId` specified in the inbound `RecordsCommit` message. If there is no currently active `RecordsWrite` entry, discard the inbound message and cease processing.
-2. Ensure all immutable values from the [_Initial Entry_](#initial-record-entry) remained unchanged if present in the inbound message. If any have been mutated, discard the message and cease processing.
-3. If the currently active `RecordsWrite` does not have a `commitStrategy` value, or the value does not match the `commitStrategy` value specified in the inbound message, discard the message and cease processing.
-4. The `parentId` of the message ****MUST**** match the currently active `RecordsWrite` message's [_Entry ID_](#record-entry-id) or that of another `RecordsCommit` that descends from it. If the `parentId` does not match any of the messages in the commit tree, discard the inbound message and cease processing.
-5. The inbound message's entry `dateCreated` value is less than the `dateCreated` value of the message in the commit tree its `parentId` references, discard the message and cease processing.
-6. If all of the above steps are successful, store the message in relation to the record.
 
 ##### If the message is a `RecordsDelete`:
 
@@ -1606,49 +1392,6 @@ The `PermissionQuery` method exists to facilitate lookup of any retained Permiss
 ### Sync
 
 The Sync interface and its methods allow different Decentralized Web Nodes to communicate and sync on the state of the data they contain, including replication of messages and files.
-
-
-## Commit Strategies
-
-Records interface records may operate under the data modification algorithms detailed below. A record may only operate under one commit strategy at a time, as indicated via the value set on the `strategy` property of the current `RecordsWrite` root.
-
-| Strategy Name | Notes                                                                                         |
-| ------------- | --------------------------------------------------------------------------------------------- |
-| ---           | Default strategy, no need to add a `commitStrategy` property is required.                     |
-| `json-patch`  | Delta-based JSON-type document patching, as defined in [spec:rfc6902]                         |
-| `json-merge`  | Simple deep-merge modification strategy for JSON-type documents, as defined in [spec:rfc7386] |
-
-
-### JSON Patch
-
-::: todo
-Detail JSON Patch as a commit strategy option.
-:::
-
-### JSON Merge Patch
-
-::: todo
-Detail JSON Merge Patch as a commit strategy option.
-:::
-
-## Configurations
-
-While it is strongly encouraged to implement the full set of Decentralized Web Node features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Decentralized Web Node feature sets that tend to serve different purposes.
-
-### Open Data Publication
-
-This Decentralized Web Node configuration is ideal for implementers who seek to expose intentionally public data via the Decentralized Web Node semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.
-
-```json
-{
-  "type": "FeatureDetection",
-  "interfaces": {
-    "records": {
-      "RecordsQuery": true
-    }
-  }
-}
-```
 
 ## Supported Encryption Schemes
 
