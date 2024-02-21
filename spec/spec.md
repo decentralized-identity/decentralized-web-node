@@ -137,13 +137,13 @@ Object Signing / Encryption |
 
 ## Service Endpoints
 
-::: Warning
+::: warning
 This will be updated
 :::
 
 ## Messages
 
-::: Warning
+::: warning
 All references to this section are out of date and will need to be updated.
 :::
 
@@ -919,7 +919,7 @@ directory of the specification.
 ```
 #### `RecordsSubscribe`
 
-:::warning 
+::: todo 
 TODO
 :::
 
