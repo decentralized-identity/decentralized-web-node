@@ -917,34 +917,11 @@ directory of the specification.
   }
 }
 ```
+#### `RecordsSubscribe`
 
-#### `RecordsCommit`
-
-`RecordsCommit` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
-
-- The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
-- If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
-- The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
-  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
-  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Commit`.
-  - The object ****Must**** include a `parentId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `RecordsWrite` or `RecordsCommit` ancestor in the record's lineage.
-  - The object ****MUST**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
-  - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the commit was generated.
-
-```json
-{ // Message
-  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
-  "descriptor": { // Message Descriptor
-    "interface": "Records",
-    "method": "Commit",
-    "dataCid": CID(data),
-    "parentId": CID(ANCESTOR_CID),
-    "dateCreated": 123456789,
-    "commitStrategy": "json-merge",
-    "dataFormat": DATA_FORMAT
-  }
-}
-```
+:::warning 
+TODO
+:::
 
 #### `RecordsDelete`
 
@@ -1058,15 +1035,6 @@ Retained messages in the Records interface are those that may be stored against 
 6. If an exiting `RecordsWrite` entry linked to the [_Latest Checkpoint Entry_](#latest-records-checkpoint) ****is**** present all of the following conditions ****must**** be true:
     - The `dateCreated` value of the inbound message is greater than the existing `RecordsWrite`, or if the `dateCreated` values are the same, the [_Entry ID_](#record-entry-id) of the inbound message is greater than the existing entry when the [_Entry IDs_](#record-entry-id) of the two are compared lexicographically.
 7. If all of the following conditions for Step 6 are true, store the inbound message as the _Latest Entry_ and discard the existing `RecordsWrite` entry that was attached to the [_Latest Checkpoint Entry_](#latest-records-checkpoint).
-
-##### If the message is a `RecordsCommit`:
-
-1. Retrieve the currently active `RecordsWrite` entry for the `recordId` specified in the inbound `RecordsCommit` message. If there is no currently active `RecordsWrite` entry, discard the inbound message and cease processing.
-2. Ensure all immutable values from the [_Initial Entry_](#initial-record-entry) remained unchanged if present in the inbound message. If any have been mutated, discard the message and cease processing.
-3. If the currently active `RecordsWrite` does not have a `commitStrategy` value, or the value does not match the `commitStrategy` value specified in the inbound message, discard the message and cease processing.
-4. The `parentId` of the message ****MUST**** match the currently active `RecordsWrite` message's [_Entry ID_](#record-entry-id) or that of another `RecordsCommit` that descends from it. If the `parentId` does not match any of the messages in the commit tree, discard the inbound message and cease processing.
-5. The inbound message's entry `dateCreated` value is less than the `dateCreated` value of the message in the commit tree its `parentId` references, discard the message and cease processing.
-6. If all of the above steps are successful, store the message in relation to the record.
 
 ##### If the message is a `RecordsDelete`:
 
