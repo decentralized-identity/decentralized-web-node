@@ -1393,49 +1393,6 @@ The `PermissionQuery` method exists to facilitate lookup of any retained Permiss
 
 The Sync interface and its methods allow different Decentralized Web Nodes to communicate and sync on the state of the data they contain, including replication of messages and files.
 
-
-## Commit Strategies
-
-Records interface records may operate under the data modification algorithms detailed below. A record may only operate under one commit strategy at a time, as indicated via the value set on the `strategy` property of the current `RecordsWrite` root.
-
-| Strategy Name | Notes                                                                                         |
-| ------------- | --------------------------------------------------------------------------------------------- |
-| ---           | Default strategy, no need to add a `commitStrategy` property is required.                     |
-| `json-patch`  | Delta-based JSON-type document patching, as defined in [spec:rfc6902]                         |
-| `json-merge`  | Simple deep-merge modification strategy for JSON-type documents, as defined in [spec:rfc7386] |
-
-
-### JSON Patch
-
-::: todo
-Detail JSON Patch as a commit strategy option.
-:::
-
-### JSON Merge Patch
-
-::: todo
-Detail JSON Merge Patch as a commit strategy option.
-:::
-
-## Configurations
-
-While it is strongly encouraged to implement the full set of Decentralized Web Node features and Interfaces, not all devices and providers may be capable of doing so. To allow for maximum reach and proliferation in the ecosystem, the following are well-recognized configurations of Decentralized Web Node feature sets that tend to serve different purposes.
-
-### Open Data Publication
-
-This Decentralized Web Node configuration is ideal for implementers who seek to expose intentionally public data via the Decentralized Web Node semantic data discovery Interfaces. This implementation is lightweight does not require the implementer to support any of the authentication, permissioning, or ingest mechanisms that other features and Interfaces do.
-
-```json
-{
-  "type": "FeatureDetection",
-  "interfaces": {
-    "records": {
-      "RecordsQuery": true
-    }
-  }
-}
-```
-
 ## Supported Encryption Schemes
 
 A conforming implementation ****MUST**** be capable of encrypting and decrypting data stored in Decentralized Web Nodes using the following combinations of cryptographic schemes. Each scheme is a pair, wherein the symmetric keys are used to encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric keys using the asymmetric key of each recipient.
