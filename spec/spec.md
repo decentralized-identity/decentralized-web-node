@@ -27,7 +27,6 @@ Decentralized Web Node
 ~ [Henry Tsai](https://www.linkedin.com/in/henry-tsai-6b884014/) (Microsoft)
 ~ [XinAn Xu](https://www.linkedin.com/in/xinan-xu-b868a326/) (Microsoft)
 ~ [Moe Jangda](https://www.linkedin.com/in/moejangda/) (Block)
-~ [Andor Kesselman](https://www.linkedin.com/in/andorsk/) (Benri)
 
 **Participate:**
 ~ [GitHub repo](https://github.com/decentralized-identity/decentralized-web-node)
@@ -142,75 +141,446 @@ Object Signing / Encryption |
 This will be updated
 :::
 
-## Interfaces
+## Messages
 
-### Feature Detection
+::: Warning
+All references to this section are out of date and will need to be updated.
+:::
 
-The Decentralized Web Node specification defines well-recognized Decentralized Web Node configurations to maximize 
-interoperability (see Configurations), but implementers may wish to support a custom 
-subset of the Interfaces and features. The Feature Detection interface is the means by 
-which a Decentralized Web Node expresses support for the Interfaces and features it implements.
-
-#### Data Model
-
-A compliant Decentralized Web Node ****MUST**** produce a Feature Detection object 
-defined as follows:
+All Decentralized Web Node messaging is transacted via Messages JSON objects. These objects contain message execution parameters, authorization material, authorization signatures, and signing/encryption information. For various purposes Messages rely on IPLD CIDs and DAG APIs.
 
 ```json
-{
-  "type": "FeatureDetection",
-  "interfaces": { ... }
+{  // Request Object
+  "messages": [  // Message Objects
+    {
+      "recordId": GENERATED_CID_STRING,
+      "descriptor": {
+        "interface": INTERFACE_STRING,
+        "method": METHOD_STRING,
+        "dataCid": DATA_CID_STRING,
+        "dataFormat": DATA_FORMAT_STRING,
+      }
+    },
+    {...}
+  ]
 }
 ```
 
-##### Properties & Values
+Messages objects ****MUST**** be composed as follows:
 
-The following properties and values are defined for the Feature Detection object:
+In order to enable data replication features for a [[ref: Decentralized Web Node]], all Messages MUST be committed to an IPLD DAG in a tree allocated to the DID of the owner after all subtrees are composed and committed. The top-level of Message objects MUST be committed as a [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object.
 
-- The object ****MUST**** include an `interfaces` property, and its value ****MUST**** be an object composed as follows:
-    - The object ****MAY**** contain a `protocols` property. If the property is not present, 
-    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `ProtocolsQuery`
-      - `ProtocolsConfigure`
-    - The object ****MAY**** contain a `records` property. If the property is not present, 
-    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `RecordsQuery`
-      - `RecordsWrite`
-      - `RecordsCommit`
-      - `RecordsDelete`
-    - The object ****MAY**** contain a `permissions` property. If the property is not present, 
-    it indicates the Decentralized Web Node implementation does not support any methods of the interface. If the 
-    property is present, its value ****MUST**** be an object that ****MAY**** include any of the 
-    following properties, wherein a boolean `true` value indicates support for the interface 
-    method, while a boolean `false` value or omission of the property indicates the interface 
-    method is not supported:
-      - `PermissionsRequest`
-      - `PermissionsGrant`
-      - `PermissionsRevoke`
-- The object ****MAY**** contain a `messaging` property, and its value ****MAY**** be an object composed of the following:
-    - The object ****MAY**** contain a `batching` property, and if present its value ****MUST**** be a boolean indicating whether the Decentralized Web Node handles multiple messages in a single request. The absence of this property ****shall**** indicate that the Decentralized Web Node ****does**** support multiple messages in a single request, thus if an implementer does not support multiple messages in a request, they ****MUST**** include this property and explicitly set its value to `false`.
-  
+- Message objects ****MUST**** contain a `recordId` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the initial entry for the logical record in question, generated by running the the following [_Record ID Generation Process_](#recordid-generation){id=recordid-generation} on the initial record entry:
+  1. Create a JSON object of the following composition:
+      - The `recordId` CID generation object ****MUST**** contain a `descriptorCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object.
+  2. [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encode the composed object.
+  3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded object and output it in its stringified form.
+- Message objects ****MAY**** contain a `data` property, and if present its value ****MUST**** be a `base64Url` encoded string of the Message's data.
+- Message objects ****MUST**** contain a `descriptor` property, and its value ****MUST**** be an object composed as follows:
+  - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be a string that matches a Decentralized Web Node Interface.
+  - The object ****MUST**** contain a `method` property, and its value ****MUST**** be a string that matches a Decentralized Web Node Interface method.
+  - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) or an external channel (e.g. IPFS fetch), the `descriptor` object ****MUST**** contain a `dataCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG PB](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-pb.md) encoded data.
+  - If the [Message](#messages) has data associated with it, passed directly via the `data` property of the [Message](#messages) object or through a channel external to the message object, the `descriptor` object ****MUST**** contain a `dataFormat` property, and its value ****MUST**** be a string that corresponds with a registered [IANA Media Type](https://www.iana.org/assignments/media-types/media-types.xhtml) data format (the most common being plain JSON, which is indicated by setting the value of the `dataFormat` property to `application/json`), or one of the following format strings pending registration:
+    - `application/vc+jwt` - the data is a JSON Web Token (JWT) [[spec:rfc7519]] formatted variant of a [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model/#json-web-token).
+    - `application/vc+ldp` - the data is a JSON-LD formatted [W3C Verifiable Credential](https://www.w3.org/TR/vc-data-model).
 
-#### Read
+::: note
+Individual Interface methods may describe additional properties that the `descriptor` object ****MUST**** or ****MAY**** contain, which are detailed in the [Interfaces](#interfaces) section of the specification.
+:::
 
-All compliant Decentralized Web Nodes ****MUST**** respond with a valid Feature Detection object when receiving 
-the following request object:
+### Message Authorization
+
+Some messages may require authorization material for processing them in accordance with the permissions a [[ref: Decentralized Web Node]] owner has specified. If a message requires authorization it ****MUST**** include an `authorization` property with a value that is a [[spec:rfc7515]] General JSON Web Signature (JWS), constructed as follows:
+
+```json
+{  // Request Object
+  "messages": [  // Message Objects
+      "data": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+      "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+      "descriptor": {
+        "interface": "Records",
+        "method": "Write",
+        "schema": "https://schema.org/SocialMediaPosting",
+        "dataCid": CID(data),
+        "dateCreated": 123456789,
+        "dataFormat": "application/json"
+      },
+      "attestation": {
+        "payload": "89f5hw458fhw958fq094j9jdq0943j58jfq09j49j40f5qj30jf",
+        "signatures": [{
+          "protected": "4d093qj5h3f9j204fq8h5398hf9j24f5q9h83402048h453q",
+          "signature": "49jq984h97qh3a49j98cq5h38j09jq9853h409jjq09h5q9j4"
+        }]
+      },
+      "authorization": {
+        "payload": "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi",
+        "signatures": [{
+          "protected": "f454w56e57r68jrhe56gw45gw35w65w4f5i54c85j84wh5jj8h5",
+          "signature": "5678nr67e56g45wf546786n9t78r67e45657bern797t8r6e5"
+        }]
+      }
+    },
+    {...}
+  ]
+}
+```
+
+- The JWS ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
+  - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
+  - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
+- The JWS ****MUST**** include a `payload` property, and its value ****must**** be an object composed of the following values:
+  - The object ****MUST**** include a `descriptorCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object.
+  - The object ****MAY**** include a `permissionsGrantCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded  [Permission Grant](#grant) being invoked.
+  - If attestation of an object is permitted, the `payload` ****MAY**** include an `attestationCid` property, and its value ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `attestation` string.
+
+### Raw Data
+
+If there is no need or desire to sign or encrypt the content of a message (i.e. public repudiable data), the message `descriptor` object is the only property required in a [Message](#messages) (with any method-specific properties required). An optional `data` property may be passed at the [Message](#messages) level that contains the data associated with the message (when data is desired or required to be present for a given method invocation).
 
 ```json
 { // Message
-  "descriptor": { // Message Descriptor
-    "method": "FeatureDetectionRead"
+  "data": BASE64URL_STRING,
+  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+  "descriptor": {
+    "interface": "Records",
+    "method": "Write",
+    "schema": "https://schema.org/InviteAction",
+    "dataCid": CID(data),
+    "dateCreated": 123456789,
+    "dataFormat": "application/json"
   }
 }
 ```
+
+### Signed Data
+
+If the object is to be attested by a signer (e.g the Node owner via signature with their DID key), the object ****MUST**** contain the following additional properties to produce a [[spec:rfc7515]] General JSON Web Signature (JWS):
+
+```json
+{ // Message
+  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+  "descriptor": {
+    "interface": "Records",
+    "method": "Write",
+    "schema": "https://schema.org/InviteAction",
+    "dataCid": CID(data),
+    "dateCreated": 123456789,
+    "dataFormat": "application/json"
+  },
+  "attestation": {
+    "payload": "89f5hw458fhw958fq094j9jdq0943j58jfq09j49j40f5qj30jf",
+    "signatures": [{
+      "protected": "4d093qj5h3f9j204fq8h5398hf9j24f5q9h83402048h453q",
+      "signature": "49jq984h97qh3a49j98cq5h38j09jq9853h409jjq09h5q9j4"
+    }]
+  }
+  ...
+}
+```
+
+The message generating party ****MUST**** construct the signed message object as follows:
+
+1. The [Message](#messages) object ****MUST**** contain an `attestation` property, and its value ****MUST**** be a General object representation of a [[spec:rfc7515]] JSON Web Signature composed as follows: 
+    - The object ****must**** include a `payload` property, and its value ****must**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object, whose composition is defined in the [Message Descriptor](#message-descriptors) section of this specification.
+    - The object ****MUST**** include a `protected` property, and its value ****must**** be an object composed of the following values:
+        - The object ****MUST**** include an `alg` property, and its value ****MUST**** be the string representing the algorithm used to verify the signature (as defined by the [[spec:rfc7515]] JSON Web Signature specification).
+        - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
+    - The object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
+
+### Encrypted Data
+
+If the object is to be encrypted (e.g the Node owner encrypting their data to keep it private), the `descriptor` object ****MUST**** be constructed as follows:
+
+```json
+{ // Message
+  "data": { 
+    "protected": ...,
+    "recipients": ...,
+    "ciphertext": ...,
+    "iv": ...,
+    "tag": ... 
+  },
+  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+  "descriptor": {
+    "interface": "Records",
+    "method": "Query",
+    "schema": "https://schema.org/SocialMediaPosting"
+  }
+  ...
+}
+```
+
+The message generating party ****MUST**** construct an encrypted message as follows:
+
+1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string label value of a [Supported Encryption Format](#supported-encryption-format).
+2. Generate an encrypted payload from the data conformant with the format specified in the `encryption` property..
+3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the payload produced in Step 2 and let the `dataCid` property of the `descriptor` object be the stringified representation of the CID.
+
+### Signed & Encrypted Data
+
+If the object is to be both attributed to a signer and encrypted encrypted, it ****MUST**** be structured as follows:
+
+```json
+{ // Message
+  "data": { 
+    "protected": ...,
+    "recipients": ...,
+    "ciphertext": ...,
+    "iv": ...,
+    "tag": ... 
+  },
+  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
+  "descriptor": {
+    "interface": "Records",
+    "method": "Query",
+    "schema": "https://schema.org/SocialMediaPosting"
+  },
+  "attestation": {
+    "payload": "89f5hw458fhw958fq094j9jdq0943j58jfq09j49j40f5qj30jf",
+    "signatures": [{
+      "protected": "4d093qj5h3f9j204fq8h5398hf9j24f5q9h83402048h453q",
+      "signature": "49jq984h97qh3a49j98cq5h38j09jq9853h409jjq09h5q9j4"
+    }]
+  },
+}
+```
+
+The message generating party ****MUST**** construct the signed and encrypted message as follows:
+
+1. Follow the instructions described in the [Encrypted Data](#encrypted-data) section to add the required properties to the `descriptor` and produce a [[spec:rfc7516]] JSON Web Encryption (JWE) object from the associated data.
+2. Follow the instructions described in the [Signed Data](#signed-data) section to add an `attestation` property with a General object representation of a [[spec:rfc7515]] JSON Web Signature as its value.
+
+### Response Objects
+
+Responses from Interface method invocations are JSON objects that ****MUST**** be constructed as follows:
+
+1. The object ****MAY**** have a `status` property if an error is produced from a general request-related issue, and if present its value ****MUST**** be an object composed of the following properties:
+    - The status object ****MUST**** have a `code` property, and its value ****MUST**** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
+    - The status object ****MAY**** have a `detail` property, and if present its value ****MUST**** be a string that describes a terse summary of the status. It is ****recommended**** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
+2. The object ****MAY**** have a `replies` property, and if present its value ****MUST**** be an array containing *Message Result Objects*{#message-results-objects} for all messages that were included in the initiating request object. The *Message Result Objects* ****MUST**** be put in the index order that matches the index of each result's corresponding request message. *Message Result Objects* are constructed as follows:
+    1. The object ****MUST**** have a `status` property, and its value ****MUST**** be an object composed of the following properties:
+        - The status object ****MUST**** have a `code` property, and its value ****MUST**** be an integer set to the [HTTP Status Code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) appropriate for the status of the response.
+        - The status object ****MAY**** have a `detail` property, and if present its value ****MUST**** be a string that describes a terse summary of the status. It is ****recommended**** that the implementer set the message text to the standard title of the HTTP Status Code, when a title/message has already been defined for that code.
+    2. The object ****MAY**** have a `entries` property if the message request was successful. If present, its value ****MUST**** be the resulting message entries returned from the invocation of the corresponding message.
+
+#### Request-Level Status Coding
+
+If any of the scenarios described in this section are encountered during general message processing, the implementation ****must**** include a request-level `status` property, and its value must be an object as defined below.
+
+**Target DID not found**
+
+If the DID targeted by a request object is not found within the Decentralized Web Node, the implementation ****MUST**** produce a request-level `status` with the code `404`, and ****SHOULD**** use `Target DID not found within the Decentralized Web Node` as the status `detail` value.
+
+*Response Example:*
+
+::: example Target DID is not found
+```json
+{
+  "status": {
+    "code": 404,
+    "detail": "Target DID not found within the Decentralized Web Node"
+  }
+}
+```
+:::
+
+**General request-level processing errors**
+
+If a general request-level error in processing occurs that is not covered by one of the specific status cases above and prevent the implementation from correctly evaluating the request, the implementation ****MUST**** produce a request-level `status` with the code `500`, and ****SHOULD**** use `The request cannot not be processed` as the status `detail` value.
+
+*Response Example:*
+
+::: example General request processing error
+```json
+{
+  "status": {
+    "code": 500,
+    "detail": "The request could not be processed correctly"
+  }
+}
+```
+:::
+
+#### Message-Level Status Coding
+
+If any of the scenarios described in this section are encountered during the processing of an individual message, the implementation ****must**** include a message-level `status` property, and its value must be an object as defined below.
+
+**Message succeeded for query/read-type interface that expects results**
+
+If a message is processed correctly and a set of result `entries` is expected, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `200`, and ****SHOULD**** use `The message was successfully processed` as the status `detail` value.
+
+::: note
+If no results are found, the `status` remains `200`, and the implementation ****MUST**** return an empty `entries` array.
+:::
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "messages": [  // Message Objects
+    {
+      "descriptor": {
+        "interface": "Records",
+        "method": "Query",
+        "schema": "https://schema.org/SocialMediaPosting"
+      }
+    },
+    ...
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "replies": [
+    {
+      "status": { "code": 200, "detail": "OK" },
+      "entries": [...]
+    }
+  ]
+}
+```
+:::
+
+**Improperly constructed message**
+
+If a message is malformed or constructed with invalid properties/values, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `400`, and ****SHOULD**** use `The message was malformed or improperly constructed` as the status `detail` value.
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "messages": [  // Message Objects
+    {
+      "descriptorization": {
+        "interface": "Records",
+        "method": "Query",
+        "schemata": "https://schema.org/SocialMediaPosting"
+      }
+    }
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "replies": [
+    {
+      "status": { "code": 400, "detail": "The message was malformed or improperly constructed" }
+    }
+  ]
+}
+```
+:::
+
+**Message failed authorization requirements**
+
+If a message fails to meet authorization requirements during processing, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `401`, and ****SHOULD**** use `The message failed authorization requirements` as the status `detail` value.
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "messages": [  // Message Objects
+    { // Message
+      "descriptor": {
+        "interface": "Records",
+        "method": "Write",
+        "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+        "dataCid": CID(data),
+        "dateCreated": 123456789,
+        "schema": "https://schema.org/SocialMediaPosting",
+        "dataFormat": "application/json"
+      }
+
+      ^  `authorization` PROPERTY MISSING
+    }
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "replies": [
+    {
+      "status": { "code": 401, "detail": "OK" }
+    }
+  ]
+}
+```
+:::
+
+**Interface is not implemented**
+
+If a message attempts to invoke an interface `method` that is not the implementation does not support, the implementation ****MUST**** include a message-level `status` object with its `code` property set to `501`, and ****SHOULD**** use `The interface method is not implemented` as the status `detail` value.
+
+*Request Example:*
+
+```json
+{  // Request Object
+  "messages": [  // Message Objects
+    { // Message
+      "descriptor": {
+        "interface": "Records",
+        "method": "Write",
+        "recordId": "b6464162-84af-4aab-aff5-f1f8438dfc1e",
+        "dataCid": CID(data),
+        "schema": "https://schema.org/LikeAction",
+        "dataFormat": "application/json"
+      }
+    }
+  ]
+}
+```
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "replies": [
+    {
+      "status": {
+        "code": 501,
+        "detail": "The interface method is not implemented"
+      }
+    }
+  ]
+}
+```
+:::
+
+**Resource consumption limit exceeded**
+
+If the DWeb Node instance receiving the request has determined that the rate of resource consumption has exceeded its tolerances and cannot process the request, the instance ****MUST**** respond with the following status entry:
+
+*Response Example:*
+
+::: example Example response object
+```json
+{
+  "replies": [
+    {
+      "status": {
+        "code": 429,
+        "detail": "Resource consumption has exceeded tolerances"
+      }
+    }
+  ]
+}
+```
+:::
+
+## Interfaces
 
 ### Records
 
@@ -220,7 +590,7 @@ given schema, which may be well-known in a given vertical or industry, apps and 
 the same datasets across one another, enabling a cohesive, cross-platform, cross-device, cross-app 
 experience for users.
 
-#### `Records Read`
+#### `RecordsRead`
 
 `RecordsRead` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****MUST**** be composed as follows:
 
