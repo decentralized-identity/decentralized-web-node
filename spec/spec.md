@@ -1017,7 +1017,7 @@ TODO
 Detail how IDs are computed for record contexts.
 :::
 
-#### Retained Message Processing
+#### Retained Record Processing
 
 Retained messages in the Records interface are those that may be stored against the specific record they are associated with. Within the Records interface the `RecordsWrite`, `RecordsCommit`, `RecordsDelete` messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation ****MUST**** perform the following steps to process retained messages:
 
