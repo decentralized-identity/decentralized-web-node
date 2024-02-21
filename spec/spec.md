@@ -241,24 +241,6 @@ BODY {
 }
 ```
 
-## Request Objects
-
-Request Objects are JSON object envelopes used to pass messages to Decentralized Web Nodes.
-
-```json
-{  // Request Object
-  "messages": [  // Message Objects
-    {...},
-    {...},
-    {...}
-  ]
-}
-```
-
-Request Objects are composed as follows:
-
-1. The *Request Object* ****MUST**** include a `messages` property, and its value ****MUST**** be an array composed of [Message](#messages) objects.
-
 ## Interfaces
 
 ### Feature Detection
