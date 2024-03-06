@@ -1166,10 +1166,7 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
       - The object ****MUST**** contain a `can` property and it ****MUST**** have a value of either `read` or `write`
       - The object ****MAY**** contain a `of` property and it ****MUST**** have a string value that references one of the `types`
 
-
-::: todo
-ADD PROTOCOL DEFINITION SPEC TEXT
-:::
+For details on the DWN Protocol language see [here](#dweb-protocol-language)
 
 <tab-panels selected-index="0">
 <nav>
@@ -1555,6 +1552,12 @@ The `PermissionQuery` method exists to facilitate lookup of any retained Permiss
     - `grantedTo`
     - `delegatedFrom`
     - all properties of `scope` objects
+
+### DWeb Protocol Language
+
+::: TODO
+
+:::
 
 ### Sync
 
