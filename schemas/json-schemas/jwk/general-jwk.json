@@ -1,0 +1,123 @@
+{
+  "$id": "https://identity.foundation/dwn/json-schemas/general-jwk.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["kty"],
+  "properties": {
+    "alg": {
+      "type": "string"
+    },
+    "kid": {
+      "type": "string"
+    },
+    "kty": {
+      "enum": ["EC", "RSA", "oct", "OKP"]
+    },
+    "crv": {
+      "type": "string"
+    },
+    "use": {
+      "type": "string"
+    },
+    "key_ops": {
+      "type": "string"
+    },
+    "x5u": {
+      "type": "string"
+    },
+    "x5c": {
+      "type": "string"
+    },
+    "x5t": {
+      "type": "string"
+    },
+    "x5t#S256": {
+      "type": "string"
+    }
+  },
+  "oneOf": [
+    {
+      "properties": {
+        "kty": {
+          "const": "EC"
+        },
+        "crv": {
+          "type": "string"
+        },
+        "x": {
+          "type": "string"
+        },
+        "y": {
+          "type": "string"
+        },
+        "d": {
+          "type": "string"
+        }
+      },
+      "required": ["crv", "x"]
+    },
+    {
+      "properties": {
+        "kty": {
+          "const": "OKP"
+        },
+        "crv": {
+          "type": "string"
+        },
+        "x": {
+          "type": "string"
+        },
+        "d": {
+          "type": "string"
+        }
+      },
+      "required": ["crv", "x"]
+    },
+    {
+      "properties": {
+        "kty": {
+          "const": "RSA"
+        },
+        "n": {
+          "type": "string"
+        },
+        "e": {
+          "type": "string"
+        },
+        "d": {
+          "type": "string"
+        },
+        "p": {
+          "type": "string"
+        },
+        "q": {
+          "type": "string"
+        },
+        "dp": {
+          "type": "string"
+        },
+        "dq": {
+          "type": "string"
+        },
+        "qi": {
+          "type": "string"
+        },
+        "oth": {
+          "type": "object"
+        }
+      },
+      "required": ["n", "e"]
+    },
+    {
+      "properties": {
+        "kty": {
+          "const": "oct"
+        },
+        "k": {
+          "type": "string"
+        }
+      },
+      "required": ["k"]
+    }
+  ]
+}

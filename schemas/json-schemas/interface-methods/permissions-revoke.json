@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions-revoke.json",
+  "type": "object",
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "permissionsGrantId"
+      ],
+      "properties": {
+        "messageTimestamp": {
+          "type": "string"
+        },
+        "permissionsGrantId": {
+          "type": "string"
+        },
+        "interface": {
+          "enum": [
+            "Permissions"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Revoke"
+          ],
+          "type": "string"
+        }
+      }
+    }
+  }
+}

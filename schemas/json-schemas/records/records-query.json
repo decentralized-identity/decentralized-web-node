@@ -1,0 +1,95 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-query.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "dateCreated",
+        "filter"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Records"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Query"
+          ],
+          "type": "string"
+        },
+        "dateCreated": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "filter": {
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": false,
+          "properties": {
+            "protocol": {
+              "type": "string"
+            },
+            "attester": {
+              "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+            },
+            "recipient": {
+              "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+            },
+            "contextId": {
+              "type": "string"
+            },
+            "schema": {
+              "type": "string"
+            },
+            "recordId": {
+              "type": "string"
+            },
+            "parentId": {
+              "type": "string"
+            },
+            "dataFormat": {
+              "type": "string"
+            },
+            "dateCreated": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": false,
+              "properties": {
+                "from": {
+                  "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+                },
+                "to": {
+                  "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+                }
+              }
+            }
+          }
+        },
+        "dateSort": {
+          "enum": [
+            "createdAscending",
+            "createdDescending",
+            "publishedAscending",
+            "publishedDescending"
+          ],
+          "type": "string"
+        }
+      }
+    }
+  }
+}

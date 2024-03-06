@@ -1,0 +1,66 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions-request.json",
+  "additionalProperties": false,
+  "type": "object",
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "grantedBy",
+        "grantedTo",
+        "grantedFor",
+        "scope"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Permissions"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Request"
+          ],
+          "type": "string"
+        },
+        "messageTimestamp": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "grantedTo": {
+          "description": "DID of the grantee",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedTo"
+        },
+        "grantedBy": {
+          "description": "DID of the grantor",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedBy"
+        },
+        "grantedFor": {
+          "description": "DID of the DWN to which the grantee is given access",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedFor"
+        },
+        "scope": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/scope"
+        },
+        "conditions": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/conditions"
+        }
+      }
+    }
+  }
+}

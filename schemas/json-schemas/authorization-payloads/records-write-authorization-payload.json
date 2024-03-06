@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/authorization-payloads/records-write-authorization-payload.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "descriptorCid",
+    "recordId"
+  ],
+  "properties": {
+    "descriptorCid": {
+      "type": "string"
+    },
+    "recordId": {
+      "type": "string"
+    },
+    "contextId": {
+      "type": "string"
+    },
+    "attestationCid": {
+      "type": "string"
+    },
+    "encryptionCid": {
+      "type": "string"
+    }
+  }
+}

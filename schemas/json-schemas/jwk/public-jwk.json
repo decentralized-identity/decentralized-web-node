@@ -1,0 +1,51 @@
+{
+  "$id": "https://identity.foundation/dwn/json-schemas/public-jwk.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$ref": "https://identity.foundation/dwn/json-schemas/general-jwk.json",
+  "not": {
+    "anyOf": [
+      {
+        "type": "object",
+        "properties": {
+          "kty": {
+            "const": "EC"
+          }
+        },
+        "anyOf": [{ "required": ["d"] }]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "kty": {
+            "const": "OKP"
+          }
+        },
+        "anyOf": [{ "required": ["d"] }]
+      },
+      {
+        "type": "object",
+        "properties": {
+          "kty": {
+            "const": "RSA"
+          },
+          "d": {},
+          "p": {},
+          "q": {},
+          "dp": {},
+          "dq": {},
+          "qi": {},
+          "oth": { "type": "object" }
+        },
+        "anyOf": [
+          { "required": ["d"] },
+          { "required": ["p"] },
+          { "required": ["q"] },
+          { "required": ["dp"] },
+          { "required": ["dq"] },
+          { "required": ["qi"] },
+          { "required": ["oth"] }
+        ]
+      }
+    ]
+  }
+}
