@@ -22,6 +22,45 @@ Bi-weekly DIF call notes on DWN specifications.
 
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
+- 
+## DIF Meeting March 6, 2024
+
+- [Recording]()
+- Andor Kesselman
+- Liran Cohen
+- Dan Buchner
+- Alan Karp
+- Lubna Dajani
+- Andrew Piscione 
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk | IIW Updates:                                 |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Slack Updates         | Discussion Alignment    | 10 min | @andorsk |                                              |
+| Tags to Records       | Discussion Alignment    | 10 min | @liran   |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+            
+### Action Items
+
+- @andorsk PR : https://github.com/decentralized-identity/decentralized-web-node/pull/288. Reviewed.
+    - Dan to add in protocol language to 288
+- Discussion :
+  - Improved Examples and Motivations in Intro of Document, with a focus on protocols being the key diffentiator.
+   - @andorsk : motivations
+   - @liran : simple protocol that highlights the ability to create roles and share data.
+   - @alankarp: will review. 
+ 
+### Decisions 
+
+- Move dwn-sdk-js notifications to a separate channel. (reach out to Dan before implementing ) 
+
 
 ## DIF Meeting November 15, 2023
 
