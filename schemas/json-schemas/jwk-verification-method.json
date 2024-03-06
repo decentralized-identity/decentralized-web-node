@@ -14,7 +14,10 @@
       "type": "string"
     },
     "type": {
-      "const": "JsonWebKey2020"
+      "enum": [
+        "JsonWebKey",
+        "JsonWebKey2020"
+      ]
     },
     "controller": {
       "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"

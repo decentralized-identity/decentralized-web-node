@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/pagination-cursor.json",
+  "type": "object",
+  "minProperties": 1,
+  "additionalProperties": false,
+  "required": [
+    "messageCid",
+    "value"
+  ],
+  "properties": {
+    "messageCid": {
+      "type": "string"
+    },
+    "value": {
+      "type": [ "string", "number" ]
+    }
+  }
+}

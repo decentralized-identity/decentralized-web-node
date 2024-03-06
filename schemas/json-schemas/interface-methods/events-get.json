@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/messages-get.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/events-get.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,19 +9,20 @@
   ],
   "properties": {
     "authorization": {
-      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization.json"
     },
     "descriptor": {
       "type": "object",
       "additionalProperties": false,
       "required": [
         "interface",
-        "method"
+        "method",
+        "messageTimestamp"
       ],
       "properties": {
         "interface": {
           "enum": [
-            "Messages"
+            "Events"
           ],
           "type": "string"
         },
@@ -31,12 +32,11 @@
           ],
           "type": "string"
         },
-        "messageCids": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "minItems": 1
+        "messageTimestamp": {
+          "type": "string"
+        },
+        "cursor": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/pagination-cursor.json"
         }
       }
     }

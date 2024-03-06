@@ -1,0 +1,51 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions/defs.json",
+  "type": "object",
+  "definitions": {
+    "grantedTo": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+    },
+    "grantedBy": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+    },
+    "grantedFor": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+    },
+    "scope": {
+      "oneOf": [
+        {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/scopes.json#/definitions/protocols-query-scope"
+        },
+        {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/scopes.json#/definitions/records-read-scope"
+        },
+        {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/scopes.json#/definitions/records-delete-scope"
+        },
+        {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/scopes.json#/definitions/records-write-scope"
+        },
+        {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/scopes.json#/definitions/records-query-scope"
+        },
+        {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/scopes.json#/definitions/records-subscribe-scope"
+        }
+      ]
+    },
+    "conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "publication": {
+          "enum": [
+            "Required",
+            "Prohibited"
+          ],
+          "type": "string"
+        }
+      }
+    }
+  }
+}

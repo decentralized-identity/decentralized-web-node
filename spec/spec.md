@@ -1072,61 +1072,82 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
 
 ```json
 {
-  "interface": "Protocols",
-  "method": "Configure",
-  "definition": {
-    "protocol": "https://decentralized-social-example.org/protocol/",
-    "published": true,
-    "types": {
-      "post": {
-        "schema": "https://decentralized-social-example.org/schemas/post",
-        "dataFormat": ["application/json"],
-      },
-      "reply": {
-        "schema": "https://decentralized-social-example.org/schemas/reply",
-        "dataFormat": ["application/json"],
-      },
-      "image": {
-        "dataFormat": ["image/jpeg", "image/png", "image/gif"],
-      }
-    },
-    "structure": {
-      "post": {
-        "$actions": [{
-          "who": "anyone",
-          "can": "read",
-        }],
-        "reply": {
-          "$actions":[{
-            "who": "anyone",
-            "can": "write",
-          }],
-          "image": {
-            "$actions": [{
-              "who": "anyone",
-              "can": "read",
-            },{
-              "who": "author",
-              "of": "reply",
-              "can": "write",
-            }]
-          }
-        },
-        "image": {
-          "$actions":[{
-            "who": "anyone",
-            "can": "read",
-          }, {
-            "who": "author",
-            "of": "post",
-            "can": "write",
-          }]
+    "descriptor": {
+        "interface": "Protocols",
+        "method": "Configure",
+        "definition": {
+            "protocol": "https://decentralized-social-example.org/protocol/",
+            "published": true,
+            "types": {
+                "post": {
+                    "schema": "https://decentralized-social-example.org/schemas/post",
+                    "dataFormat": [
+                        "application/json"
+                    ]
+                },
+                "reply": {
+                    "schema": "https://decentralized-social-example.org/schemas/reply",
+                    "dataFormat": [
+                        "application/json"
+                    ]
+                },
+                "image": {
+                    "dataFormat": [
+                        "image/jpeg",
+                        "image/png",
+                        "image/gif"
+                    ]
+                }
+            },
+            "structure": {
+                "post": {
+                    "$actions": [
+                        {
+                            "who": "anyone",
+                            "can": "read"
+                        }
+                    ],
+                    "reply": {
+                        "$actions": [
+                            {
+                                "who": "anyone",
+                                "can": "write"
+                            }
+                        ],
+                        "image": {
+                            "$actions": [
+                                {
+                                    "who": "anyone",
+                                    "can": "read"
+                                },
+                                {
+                                    "who": "author",
+                                    "of": "reply",
+                                    "can": "write"
+                                }
+                            ]
+                        }
+                    },
+                    "image": {
+                        "$actions": [
+                            {
+                                "who": "anyone",
+                                "can": "read"
+                            },
+                            {
+                                "who": "author",
+                                "of": "post",
+                                "can": "write"
+                            }
+                        ]
+                    }
+                }
+            }
         }
-      }
     }
-  }
 }
 ```
+
 - The _Protocols Definition_ object ****MUST****  contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol the configuration pertains to.
 - The _Protocols Definition_ ****MUST**** contain a `published` property, and its value ****Must**** be a boolean indicating the `ProtocolConfiguration`'s publication state. 
 - The _Protocols Definition_ object ****MUST**** contain a `types` property, and its value ****MUST**** be an object composed as follows:
@@ -1149,6 +1170,152 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
 ::: todo
 ADD PROTOCOL DEFINITION SPEC TEXT
 :::
+
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Simple Protocols Configure Example</button>
+  <button type="button">JSON Schema For Protocols Configure</button>
+</nav>
+
+<section>
+
+::: Get a single object by its ID reference:
+
+```json
+
+{
+    "authorization": <authorization-payload>,
+    "descriptor": {
+        "interface": "Protocols",
+        "method": "Configure",
+        "definition": {
+            "protocol": "https://decentralized-social-example.org/protocol/",
+            "published": true,
+            "types": {
+                "post": {
+                    "schema": "https://decentralized-social-example.org/schemas/post",
+                    "dataFormat": [
+                        "application/json"
+                    ]
+                },
+                "reply": {
+                    "schema": "https://decentralized-social-example.org/schemas/reply",
+                    "dataFormat": [
+                        "application/json"
+                    ]
+                },
+                "image": {
+                    "dataFormat": [
+                        "image/jpeg",
+                        "image/png",
+                        "image/gif"
+                    ]
+                }
+            },
+            "structure": {
+                "post": {
+                    "$actions": [
+                        {
+                            "who": "anyone",
+                            "can": "read"
+                        }
+                    ],
+                    "reply": {
+                        "$actions": [
+                            {
+                                "who": "anyone",
+                                "can": "write"
+                            }
+                        ],
+                        "image": {
+                            "$actions": [
+                                {
+                                    "who": "anyone",
+                                    "can": "read"
+                                },
+                                {
+                                    "who": "author",
+                                    "of": "reply",
+                                    "can": "write"
+                                }
+                            ]
+                        }
+                    },
+                    "image": {
+                        "$actions": [
+                            {
+                                "who": "anyone",
+                                "can": "read"
+                            },
+                            {
+                                "who": "author",
+                                "of": "post",
+                                "can": "write"
+                            }
+                        ]
+                    }
+                }
+            }
+        }
+    }
+}
+```
+</section>
+
+<section>
+
+::: Protocols Configure JSON Schema
+
+```json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/protocols-configure.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "definition"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Protocols"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Configure"
+          ],
+          "type": "string"
+        },
+        "messageTimestamp": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "definition": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/protocol-definition.json"
+        }
+      }
+    }
+  }
+}
+```
+</section>
+</tab-panels>
+
 
 ##### Processing Instructions
 

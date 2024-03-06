@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/events-filter.json",
+  "type": "object",
+  "additionalProperties": false,
+  "minProperties": 1,
+  "properties": {
+    "interface": {
+      "enum": [
+        "Permissions",
+        "Protocols",
+        "Records"
+      ],
+      "type": "string"
+    },
+    "method":{
+      "enum": [
+        "Configure",
+        "Delete",
+        "Grant",
+        "Revoke",
+        "Write"
+      ],
+      "type": "string"
+    },
+    "protocol": {
+      "type": "string"
+    },
+    "protocolPath": {
+      "type": "string"
+    },
+    "recipient": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+    },
+    "contextId": {
+      "type": "string"
+    },
+    "schema": {
+      "type": "string"
+    },
+    "recordId": {
+      "type": "string"
+    },
+    "parentId": {
+      "type": "string"
+    },
+    "dataFormat": {
+      "type": "string"
+    },
+    "dataSize": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/number-range-filter.json"
+    },
+    "dateCreated": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "to": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        }
+      }
+    },
+    "datePublished": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "to": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        }
+      }
+    },
+    "dateUpdated": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": false,
+      "properties": {
+        "from": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "to": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        }
+      }
+    }
+  },
+  "dependencies": {
+    "datePublished": {
+      "oneOf": [
+        {
+          "properties": {
+            "published": {
+              "enum": [true]
+            }
+          },
+          "required": ["published"]
+        },
+        {
+          "not": {
+            "required": ["published"]
+          }
+        }
+      ]
+    }
+  }
+}
