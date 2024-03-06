@@ -8,7 +8,7 @@
   ],
   "properties": {
     "authorization": {
-      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization-delegated-grant.json"
     },
     "descriptor": {
       "type": "object",
@@ -36,46 +36,18 @@
           "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
         },
         "filter": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/records-filter.json"
+        },
+        "pagination": {
           "type": "object",
-          "minProperties": 1,
           "additionalProperties": false,
           "properties": {
-            "protocol": {
-              "type": "string"
+            "limit": {
+              "type": "number",
+              "minimum": 1
             },
-            "attester": {
-              "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
-            },
-            "recipient": {
-              "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
-            },
-            "contextId": {
-              "type": "string"
-            },
-            "schema": {
-              "type": "string"
-            },
-            "recordId": {
-              "type": "string"
-            },
-            "parentId": {
-              "type": "string"
-            },
-            "dataFormat": {
-              "type": "string"
-            },
-            "dateCreated": {
-              "type": "object",
-              "minProperties": 1,
-              "additionalProperties": false,
-              "properties": {
-                "from": {
-                  "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
-                },
-                "to": {
-                  "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
-                }
-              }
+            "cursor": {
+              "$ref": "https://identity.foundation/dwn/json-schemas/pagination-cursor.json"
             }
           }
         },

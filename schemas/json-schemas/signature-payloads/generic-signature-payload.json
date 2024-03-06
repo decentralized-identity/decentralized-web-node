@@ -1,0 +1,24 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/signature-payloads/generic-signature-payload.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "descriptorCid"
+  ],
+  "properties": {
+    "descriptorCid": {
+      "type": "string"
+    },
+    "delegatedGrantId": {
+      "type": "string"
+    },
+    "permissionsGrantId": {
+      "type": "string"
+    },
+    "protocolRole": {
+      "$comment": "Used in the Records interface to authorize role-authorized actions for protocol records",
+      "type": "string"
+    }
+  }
+}

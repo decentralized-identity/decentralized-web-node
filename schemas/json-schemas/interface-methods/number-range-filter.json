@@ -1,0 +1,43 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/number-range-filter.json",
+  "type": "object",
+  "minProperties": 1,
+  "additionalProperties": false,
+  "properties": {
+    "gt": {
+      "type": "number"
+    },
+    "gte": {
+      "type": "number"
+    },
+    "lt": {
+      "type": "number"
+    },
+    "lte": {
+      "type": "number"
+    }
+  },
+  "dependencies": {
+    "gt": {
+      "not": {
+        "required": ["gte"]
+      }
+    },
+    "gte": {
+      "not": {
+        "required": ["gt"]
+      }
+    },
+    "lt": {
+      "not": {
+        "required": ["lte"]
+      }
+    },
+    "lte": {
+      "not": {
+        "required": ["lt"]
+      }
+    }
+  }
+}

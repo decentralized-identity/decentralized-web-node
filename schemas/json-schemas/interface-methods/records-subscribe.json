@@ -1,15 +1,14 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/records-delete.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/records-subscribe.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
-    "authorization",
     "descriptor"
   ],
   "properties": {
     "authorization": {
-      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization-delegated-grant.json"
     },
     "descriptor": {
       "type": "object",
@@ -17,8 +16,8 @@
       "required": [
         "interface",
         "method",
-        "dateModified",
-        "recordId"
+        "messageTimestamp",
+        "filter"
       ],
       "properties": {
         "interface": {
@@ -29,15 +28,15 @@
         },
         "method": {
           "enum": [
-            "Delete"
+            "Subscribe"
           ],
           "type": "string"
         },
-        "dateModified": {
-          "type": "string"
+        "messageTimestamp": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
         },
-        "recordId": {
-          "type": "string"
+        "filter": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/records-filter.json"
         }
       }
     }

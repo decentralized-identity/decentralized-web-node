@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/snapshots-create.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/events-query.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -9,7 +9,7 @@
   ],
   "properties": {
     "authorization": {
-      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization.json"
     },
     "descriptor": {
       "type": "object",
@@ -18,26 +18,33 @@
         "interface",
         "method",
         "messageTimestamp",
-        "definitionCid"
+        "filters"
       ],
       "properties": {
         "interface": {
           "enum": [
-            "Snapshots"
+            "Events"
           ],
           "type": "string"
         },
         "method": {
           "enum": [
-            "Create"
+            "Query"
           ],
           "type": "string"
         },
         "messageTimestamp": {
           "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
         },
-        "definitionCid": {
-          "type": "string"
+        "filters": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "https://identity.foundation/dwn/json-schemas/events-filter.json"
+          }
+        },
+        "cursor": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/pagination-cursor.json"
         }
       }
     }

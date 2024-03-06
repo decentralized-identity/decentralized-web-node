@@ -9,7 +9,7 @@
   "additionalProperties": false,
   "properties": {
     "authorization": {
-      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization.json"
     },
     "descriptor": {
       "type": "object",
@@ -22,7 +22,7 @@
       ],
       "properties": {
         "messageTimestamp": {
-          "type": "string"
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
         },
         "permissionsGrantId": {
           "type": "string"

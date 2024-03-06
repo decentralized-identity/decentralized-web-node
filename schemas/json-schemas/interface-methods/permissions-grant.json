@@ -9,7 +9,7 @@
   "additionalProperties": false,
   "properties": {
     "authorization": {
-      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization.json"
     },
     "delegationChain": {
       "description": "the parent grant",
@@ -33,6 +33,9 @@
         },
         "description": {
           "type": "string"
+        },
+        "delegated": {
+          "type": "boolean"
         },
         "grantedTo": {
           "description": "DID of the grantee",

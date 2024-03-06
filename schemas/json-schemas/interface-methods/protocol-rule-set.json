@@ -4,12 +4,24 @@
   "type": "object",
   "additionalProperties": false,
   "properties": {
+    "$encryption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rootKeyId": {
+          "type": "string"
+        },
+        "publicKeyJwk": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/public-jwk.json"
+        }
+      }
+    },
     "$actions": {
       "type": "array",
       "minItems": 1,
       "items": {
         "type": "object",
-        "anyOf": [
+        "oneOf": [
           {
             "required": [
               "who",
@@ -20,29 +32,7 @@
               "who": {
                 "type": "string",
                 "enum": [
-                  "anyone"
-                ]
-              },
-              "can": {
-                "type": "string",
-                "enum": [
-                  "read",
-                  "write"
-                ]
-              }
-            }
-          },
-          {
-            "required": [
-              "who",
-              "of",
-              "can"
-            ],
-            "additionalProperties": false,
-            "properties": {
-              "who": {
-                "type": "string",
-                "enum": [
+                  "anyone",
                   "author",
                   "recipient"
                 ]
@@ -53,6 +43,33 @@
               "can": {
                 "type": "string",
                 "enum": [
+                  "co-delete",
+                  "co-update",
+                  "create",
+                  "read",
+                  "write"
+                ]
+              }
+            }
+          },
+          {
+            "required": [
+              "role",
+              "can"
+            ],
+            "properties": {
+              "role": {
+                "$comment": "Must be the protocol path of a role record type",
+                "type": "string"
+              },
+              "can": {
+                "type": "string",
+                "enum": [
+                  "co-delete",
+                  "co-update",
+                  "create",
+                  "query",
+                  "subscribe",
                   "read",
                   "write"
                 ]
@@ -60,6 +77,24 @@
             }
           }
         ]
+      }
+    },
+    "$role": {
+      "$comment": "When `true`, this turns a record into `role` that may be used within a context/sub-context",
+      "type": "boolean"
+    },
+    "$size": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0
+        }
       }
     }
   },

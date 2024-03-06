@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://identity.foundation/dwn/json-schemas/authorization-payloads/records-write-authorization-payload.json",
+  "$id": "https://identity.foundation/dwn/json-schemas/signature-payloads/records-write-signature-payload.json",
   "type": "object",
   "additionalProperties": false,
   "required": [
@@ -21,6 +21,15 @@
       "type": "string"
     },
     "encryptionCid": {
+      "type": "string"
+    },
+    "delegatedGrantId": {
+      "type": "string"
+    },
+    "permissionsGrantId": {
+      "type": "string"
+    },
+    "protocolRole": {
       "type": "string"
     }
   }
