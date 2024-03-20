@@ -1144,12 +1144,7 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
         - `recipient`
       - The object ****MUST**** contain a `can` property and it ****MUST**** have a value of either `read` or `write`
       - The object ****MAY**** contain a `of` property and it ****MUST**** have a string value that references one of the `types`
-
-
-::: todo
-ADD PROTOCOL DEFINITION SPEC TEXT
-:::
-
+        
 ##### Processing Instructions
 
 When processing a `ProtocolsConfigure` message, a conforming implementation ****MUST**** perform the following steps:
@@ -1175,6 +1170,220 @@ The `ProtocolsQuery` interface method allows an outside entity to query for any 
 }
 ```
 
+#### Decentralized Web Node Protocol Languague
+
+Please see the following JSON Schema to describe the DWN Protocol Language: 
+
+- The protocol **MUST** have a `protocol` property, which represents a URI that uniquely identifies the protocol. 
+- The protocol **MAY** have a `published` property. Published attribute indicates whether the `protocol` should be public. 
+- The protocol **MUST** have a `types` section, which represents a set of objects, with their intended data format. 
+   -  Each type **MUST** have a `schema` property, which _MAY_ represent a resolvable URI for a JSON Schema of the object. For example, the post object _MAY_ resolve to https://social-media.xyz/schemas/postSchema. 
+   -  Each type **MUST** have a `dataFormats` property, which **MUST** be an array of size at least **1**. These `dataFormats` are recommended to be of the [IANA Media Types](https://www.iana.org/assignments/media-types/media-types.xhtml), for example `text/plain` or `application/json`.
+- The protocol **MUST** have a `structure` section. The structure section defines the interaction rules of the protocol, and it must be a set of objects. 
+  -  Each object in the structure has the following properties:
+    -  It **MUST** have an `$actions` property. The `$actions` property is an object that describes the interaction rules of the object. The `$actions` property **MUST** have the following definition:
+    - It **MUST** have a `who` property, which **MUST** be set to one of the following values:
+        -  `anyone`
+        -  `author`
+        -  `recipient`. 
+    - It **MUST** have an `of` property, which is a string property that represents the scope of the `$action`. For example, `anyone OF post` means that anyone scoped to the `post` object. 
+    - It **MUST** have an `can` property, which **MUST** be one of the following values:
+      - `create` 
+      - `delete`
+      - `query`
+      - `subscribe`
+      - `read`
+      - `updated`
+      - `co-delete`
+      - `co-update`
+
+
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Protocol Definition Structure</button>
+  <button type="button">Protocol Ruleset</button>
+</nav>
+
+<section>
+
+::: Protocol Definition Structure -- JSON Schema
+
+```json
+{
+  "$id": "https://identity.foundation/dwn/json-schemas/protocol-definition.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "published",
+    "types",
+    "structure"
+  ],
+  "properties": {
+    "protocol": {
+      "type": "string"
+    },
+    "published": {
+      "type": "boolean"
+    },
+    "types": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "schema": {
+              "type": "string"
+            },
+            "dataFormats": {
+              "type": "array",
+              "minItems": 1,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "structure": {
+      "type": "object",
+      "patternProperties": {
+        ".*": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/protocol-rule-set.json"
+        }
+      }
+    }
+}
+```
+</section>
+
+<section>
+
+::: Protocol Rule Set -- JSON Schema
+
+```json
+{
+  "$id": "https://identity.foundation/dwn/json-schemas/protocol-rule-set.json",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$encryption": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "rootKeyId": {
+          "type": "string"
+        },
+        "publicKeyJwk": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/public-jwk.json"
+        }
+      }
+    },
+    "$actions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "oneOf": [
+          {
+            "required": [
+              "who",
+              "can"
+            ],
+            "additionalProperties": false,
+            "properties": {
+              "who": {
+                "type": "string",
+                "enum": [
+                  "anyone",
+                  "author",
+                  "recipient"
+                ]
+              },
+              "of": {
+                "type": "string"
+              },
+              "can": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "co-delete",
+                    "co-update",
+                    "create",
+                    "delete",
+                    "read",
+                    "update"
+                  ]
+                }
+              }
+            }
+          },
+          {
+            "required": [
+              "role",
+              "can"
+            ],
+            "properties": {
+              "role": {
+                "$comment": "Must be the protocol path of a role record type",
+                "type": "string"
+              },
+              "can": {
+                "type": "array",
+                "minItems": 1,
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "co-delete",
+                    "co-update",
+                    "create",
+                    "delete",
+                    "query",
+                    "subscribe",
+                    "read",
+                    "update"
+                  ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "$role": {
+      "$comment": "When `true`, this turns a record into `role` that may be used within a context/sub-context",
+      "type": "boolean"
+    },
+    "$size": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min": {
+          "type": "number",
+          "minimum": 0
+        },
+        "max": {
+          "type": "number",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "patternProperties": {
+    "^[^$].*": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/protocol-rule-set.json"
+    }
+  }
+}
+```
+</section>
+</tab-panels>
 
 ### Permissions
 
