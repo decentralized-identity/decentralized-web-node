@@ -17,6 +17,7 @@
 
 **Contributors:**
 - [Moises Jaramillo](https://www.linkedin.com/in/moisesjaramillo/)
+- [Shobhit Srivastava](https://www.linkedin.com/in/sinisterlight/)
 
 **Participate:**
 - [GitHub repo](https://github.com/decentralized-identity/decentralized-web-node)
