@@ -22,7 +22,46 @@ Bi-weekly DIF call notes on DWN specifications.
 
 - Andor Kesselman @andorsk email: andor@benri.io
 - Liran Cohen @lirancohen
-- 
+
+
+## DIF Meeting March 20, 2024
+
+- [Recording]()
+- Andor Kesselman
+- Alan Karp
+- Liran Cohen
+- Dan Buchner
+- Henry Tsai
+- Brent Shambaugh
+
+| Item                  | Segment                 | Time   | Owner    | Description                                  |
+|-----------------------|-------------------------|--------|----------|----------------------------------------------|
+| Intro                 | Intro                   | 5 min  | @liran   | Quick Intro. New Members. DIF IPR agreement. |
+| Agenda                | Companion Guide Updates | 10 min | @andorsk |                                  |
+| [Ecosystem Updates]() | Updates                 | 10 min | @andorsk |                                              |
+| Spec Alignment        | Spec Alignment          | 10 min | @andorsk |                                              |
+| Slack Updates         | Discussion Alignment    | 10 min | @andorsk |                                              |
+| Tags to Records       | Discussion Alignment    | 10 min | @liran   |                                              |
+| Issue Alignment       | Issue Alignment         | 10 min | @liran   |                                              |
+| Calls To Action       | Closing                 | 5 min  | @andorsk |                                              |
+
+### Notes: 
+
+ - Dan:
+   - Change perms to be in-built permission layer.
+   - $tags:
+      - [ create, update, delete, co-update, co-delete ]
+      - Need to put a
+      - remove query
+   - Dan: https://github.com/decentralized-identity/decentralized-web-node/issues/292
+     -  https://hackmd.io/EWMImZ_8QTiz31fIOxlULw
+   - Henry : Concerned that this is a workaround. Increases size and requires decoding. Possibly use tags. 
+     
+### Action Items:
+     - Dan: Permission Protocol https://github.com/decentralized-identity/decentralized-web-node/issues/292
+     - Liran: Protocol Examples,  Service Endpoint Section: @liran 
+     - Protocol Language: @andorsk
+     
 ## DIF Meeting March 6, 2024
 
 - [Recording]()
@@ -61,7 +100,7 @@ Bi-weekly DIF call notes on DWN specifications.
 
 - Move dwn-sdk-js notifications to a separate channel. (reach out to Dan before implementing ) 
 
-
+### Action Items
 
 ## DIF Meeting January 24, 2023
 
@@ -127,7 +166,7 @@ Bi-weekly DIF call notes on DWN specifications.
 
 ## DIF Meeting November 15, 2023
 
-- [Recording]()
+- [Recording](https://us02web.zoom.us/rec/share/T7s-ufLj9OWL3cTTsOw_O-o8RgbFxjF0kWRP0o-YtTaBg28ZKrsjXt5zJwDrTLL5.axBhIjnneo7tbPWu)
 - Andor Kesselman
 - Alan Karp
 - Liran Cohen
@@ -199,7 +238,7 @@ Bi-weekly DIF call notes on DWN specifications.
 
 ## DIF Meeting November 1, 2023
 
-- [Recording]()
+- [Recording](https://us02web.zoom.us/rec/share/QjmY5jWW-oxvrb9yXpmUNJKgw2tim_m7Q_BRBPmtkfvd22gs2D2DDWigW8vMw45w.119ygJMQfc9o7p4V)
 - Andor Kesselman
 - Alan Karp
 - Liarn
@@ -264,7 +303,7 @@ Bi-weekly DIF call notes on DWN specifications.
   
 ## DIF Meeting October 18, 2023
 
-- [Recording]()
+- [Recording](https://us02web.zoom.us/rec/share/Cff9d6GG1mefl4MGr9NPMDwxXn13siPfjXksh0yNcTFsa1HgIXEBDK39wO2Gsb4x.ly3q-TOKVWP9rdd9)
 - Andor Kesselman
 - Alan Karp
 
@@ -292,7 +331,7 @@ Action Item: Add a few issues related to high priority changes.
 
 ## DIF Meeting October 4, 2023
 
-- [Recording]()
+- [Recording](https://us02web.zoom.us/rec/share/gAo9DMy_qj6DAwQAqDoXNQ4ZgR0x3WBuJ41I35oXiDoJR2QDdMGOei5LfLi5qgm-.V0spqrHtEtuuNovh)
 - Andor Kesselman
 - Liran Cohen 
 - Ajay Jadhav
@@ -311,7 +350,7 @@ Action Item: Add a few issues related to high priority changes.
 
 ## DIF Meeting September 30, 2023
 
-- [Recording]()
+- [Recording](https://us02web.zoom.us/rec/share/rmPIko5Nor-SSz2tHpMhKN9L76U_PRhFBUmeAFNzkJjMGp2lcrUSZBHvqXyKa-5O.GPM3lkx5W8JHPW9D)
 - Andor Kesselman
 - Liran Cohen 
 - Alan Karp
@@ -329,7 +368,7 @@ Action Item: Add a few issues related to high priority changes.
 
 ## DIF Meeting September 16, 2023
 
-- [Recording]()
+- [Recording](https://us02web.zoom.us/rec/share/rmPIko5Nor-SSz2tHpMhKN9L76U_PRhFBUmeAFNzkJjMGp2lcrUSZBHvqXyKa-5O.GPM3lkx5W8JHPW9D)
 - Andor Kesselman
 - Liran Cohen 
 - Alan Karp
@@ -344,7 +383,6 @@ Action Item: Add a few issues related to high priority changes.
 | Calls To Action | Closing                 | 5 min  | @andorsk       |                                                                                 |
 
 ## DIF Meeting Aug 23, 2023
-
 
 - [Recording]()
 - Andor Kesselman
