@@ -137,9 +137,36 @@ Object Signing / Encryption |
 
 ## Service Endpoints
 
-::: warning
-This will be updated
-:::
+The following DID Document Service Endpoint entries ****MUST**** be present in the DID Document of a target DID for resolution to properly locate the URI for addressing a DID owner's Decentralized Web Nodes:
+
+```json
+{
+  "id": "did:example:alice",
+  "service": [{
+    "id": "#dwn",
+    "type": "DecentralizedWebNode",
+    "enc": [
+      "#dwn-enc"
+    ],
+    "sig": [
+      "#dwn-sig"
+    ],
+    "serviceEndpoint": [
+      "did:example:host",
+      "https://dwn.example.com"
+    ]
+  }]
+}
+```
+
+- Service Endpoints ****MUST**** contain an `id` property and it ****MUST**** be set to `#dwn`.
+- Service Endpoints ****MUST**** contain a `type` property and it ****MUST**** be set to `DecentralizedWebNode`.
+- Service Endpoints ****MUST**** contain a `serviceEndpoint` property and it ****MAY**** be set to:
+  - either a `string` value which represents the `URL` associated with the `DWN`
+  - an array of `string` values which each value represents a `URL` associated with a `DWN`
+- Service Endpoints ****MUST**** contain an `enc` property and it ****MUST**** be a `string` value or an array of `string` values which represent the `keyId` associated with `encrypting` data.
+- Service Endpoints ****MUST**** contain a `sig`property and it ****MUST**** be a `string` value or an array of `string` values which represent the `keyId` associated with `signing` data.
+
 
 ## Messages
 
