@@ -168,7 +168,7 @@ The following property requirements apply to DWeb Node `service` entries:
 1. Perform DID resolution on the target entity's DID.
 2. Locate the `service` property and iterate its values to locate the DWeb Node entry.
 3. Include in your set of resolved DWeb Node locations any non-DID URLs; if any DIDs are found under the `serviceEndpoint` property, process them as follows:
-    1. Resolve the DID and locate its DWeb Node Service Endpoint.
+    1. Resolve the DID and locate its DWeb Node Service Endpoint entry.
     2. Retain any non-DID URLs found within the `serviceEndpoint` property.
     3. Discard any DIDs found within the `serviceEndpoint` property, preventing any further recursive resolution of DIDs.
 
