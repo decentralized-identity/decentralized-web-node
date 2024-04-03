@@ -6,6 +6,6 @@
     "edit": "node -e \"require('spec-up')()\""
   },
   "devDependencies": {
-    "spec-up": "0.10.5"
+    "spec-up": "0.10.7"
   }
 }

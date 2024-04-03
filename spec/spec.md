@@ -137,9 +137,40 @@ Object Signing / Encryption |
 
 ## Service Endpoints
 
-::: warning
-This will be updated
-:::
+The primary mechanism for locating a DWeb Node for a given entity is via Decentralized Identifiers and their associated routing metadata, called Service Endpoints. DID Service Endpoints are entries in a DID Document that contain pointers to the locations of services, content, and data the entity wishes to make discoverable. Service Endpoint entries for DWeb Nodes are composed as follows:
+
+```javascript
+{
+  "@context": [
+    "https://www.w3.org/ns/did/v1",
+    "https://w3id.org/security/suites/ed25519-2020/v1"
+  ],
+  "id": "did:dht:3u1m6ftqhqc4szux8fowkgin1wprzu4deugmyakyosmnjxcrnwzy",
+  "verificationMethod": [{
+    "id": "#key-1",
+    ...
+  }],
+  "service": [{
+    "id":"#dwn",
+    "type": "DWN", 
+    "serviceEndpoint": ["https://dwn.example.com"]
+  }]
+}
+```
+
+The following property requirements apply to DWeb Node `service` entries:
+
+- The `type` property ****MUST**** be set to the string `DWN`
+- The `serviceEndpoint` property ****must**** be a URL or DID string, or array of URL or DID strings, that specify the location of DWeb Node instances.
+
+### Processing Steps
+
+1. Perform DID resolution on the target entity's DID.
+2. Locate the `service` property and iterate its values to locate the DWeb Node entry.
+3. Include in your set of resolved DWeb Node locations any non-DID URLs; if any DIDs are found under the `serviceEndpoint` property, process them as follows:
+    1. Resolve the DID and locate its DWeb Node Service Endpoint.
+    2. Retain any non-DID URLs found within the `serviceEndpoint` property.
+    3. Discard any DIDs found within the `serviceEndpoint` property, preventing any further recursive resolution of DIDs.
 
 ## Messages
 
