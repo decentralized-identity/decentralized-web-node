@@ -17,6 +17,7 @@
 
 **Contributors:**
 - [Moises Jaramillo](https://www.linkedin.com/in/moisesjaramillo/)
+- [Shobhit Srivastava](https://www.linkedin.com/in/sinisterlight/)
 
 **Participate:**
 - [GitHub repo](https://github.com/decentralized-identity/decentralized-web-node)
@@ -391,6 +392,7 @@ billion transactions per second (tps).
 | [MIT](https://github.com/ceramicnetwork/js-ceramic/blob/develop/LICENSE-MIT)
 | and [Apache](https://github.com/ceramicnetwork/js-ceramic/blob/develop/LICENSE-APACHE) |
 
+
 | Atomic Data and Atomic Server | https://docs.atomicdata.dev/ |
 | ----------------------------- | ------------------------------------------- |
 | Description	                  | Atomic offers a specification and a server to build JSON-LD for building privacy preserving applications. |
@@ -418,6 +420,7 @@ billion transactions per second (tps).
 | Query Capabilities | The goal is to provide Indexing and Querying capabilities. The working group is in the process of how deciding how this will be done. |
 | License            |	[Apache 2.0](https://github.com/decentralized-identity/edv-spec/blob/main/LICENSE.md)|
 
+
 | MyDex Personal Data Store | https://dev.mydex.org/connection-api/personal-data-store.html |
 | ------------------------- | ----------------------------------------------- |
 | Description	| The MyDex Personal Data Store is a secure data vault residing in the cloud and hosted by MyDex Community Interest Company. An individual’s data is encrypted at rest using the individual’s key. MyDex does not have access to any key for decryption. | 
@@ -443,6 +446,7 @@ billion transactions per second (tps).
 | Schema / Data Representation | JSON Formatted |
 | Query Capabilities | [Not found in documentation] |
 
+
 | Peergos	   |  https://https://peergos.org/ |
 | -------------- | ---------------------------------------------------------- |
 | Description	   | Peergos is a decentralised protocol and open-source platform for storage, social media and applications |
@@ -456,6 +460,7 @@ billion transactions per second (tps).
 | Query Capabilities | Peergos offers a RESTFul API with various capabilities described [here](https://book.peergos.org/features/apps.html). A few endpoints are directly specified. |
 | License            |	[GNU Affero General Public License v3.0](https://github.com/Peergos/Peergos/blob/master/Licence.txt)|
 
+
 | Decentralized Web Nodes	   | https://identity.foundation/decentralized-web-node/spec/ |
 | -------------- | ---------------------------------------------------------- |
 | Description	   | Decentralized Web Nodes are a mesh-like datastore construction that enable an entity to operate multiple nodes that sync to the same state across one another, enabling the owning entity to secure, manage, and transact their data with others without reliance on location or provider-specific infrastructure, interfaces, or routing mechanisms. |
@@ -468,6 +473,21 @@ billion transactions per second (tps).
 | Schema / Data Representation | [Messages committed as IPLD DAG CBOR Encoded Object](https://identity.foundation/decentralized-web-node/spec/#signed-encrypted-data) with attached JSON Schema|
 | Query Capabilities | Protocols, Hooks, Records, Permissions |
 | License            |	|
+
+
+| WebNative Filesystem	   | https://github.com/wnfs-wg/spec |
+| -------------- | ---------------------------------------------------------- |
+| Description	   | The Web Native File System (WNFS) is a distributed file system. It is versioned, logged, programmable, has strong-yet-flexible security, and is fully controlled by the end user. Service providers can validate writes without reading the contents of the file system, and minimal metadata is leaked. |
+| Specification  |  [Open-Source Specification](https://github.com/wnfs-wg/spec) |
+| Deployment     | Self Hosted or as a SaaS Multi-Tenant Service |
+| Identity       | Decentralized Identifiers |
+| Authentication | Web3 Wallets and DIDs  |
+| Authorization  | Object Capabilities via UCANs  |
+| Transport      | IPFS |
+| Schema / Data Representation | Files |
+| Query Capabilities | Filesystem Like |
+| License            | Apache 2.0 and MIT	|
+
 
 ## Architecture and Components
 
