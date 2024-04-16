@@ -164,6 +164,7 @@ The following DID Document Service Endpoint entries ****MUST**** be present in t
 - Service Endpoints ****MUST**** contain a `serviceEndpoint` property and it ****MAY**** be set to:
   - either a `string` value which represents the `URL` associated with the `DWN`
   - an array of `string` values which each value represents a `URL` associated with a `DWN`
+- If a Service Endpoint `URL` is a `DID`, it ****MUST NOT**** not be followed more than 1 level deep when resolving.
 - Service Endpoints ****MUST**** contain an `enc` property and it ****MUST**** be a `string` value or an array of `string` values which represent the `keyId` associated with `encrypting` data.
 - Service Endpoints ****MUST**** contain a `sig`property and it ****MUST**** be a `string` value or an array of `string` values which represent the `keyId` associated with `signing` data.
 
