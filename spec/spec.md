@@ -845,7 +845,7 @@ directory of the specification.
       - The object ****MUST**** contain a `rootKeyId` property and it ****MUST**** have a string value representing the fully qualified key ID of the root key used in deriving the public key that encrypts the symmetric encryption key.
       - The object ****MUST**** contain an `algorithm` string property denoting the asymmetric encryption algorithm used to encrypt the symmetric encryption key.
       - The object ****MAY**** contain other custom properties needed by the encryption chosen algorithm, such as `ephemeralPublicKey`, `initializationVector`, `messageAuthenticationCode`, etc.
-      - The object ****MUST**** contain an `encryptedKey` property and its value ****MUST**** be a `base64Url` encoded string of encrypted symmetric key used to encrypt the data.
+      - The object ****MUST**** contain an `encryptedKey` property and its value ****MUST**** be a `base64Url` encoded string of the encrypted symmetric key used to encrypt the data.
       - The object ****MAY**** contain a `derivedPublicKey` property and its value ****MUST**** be an object representing the derived public key used to encrypt the symmetric key in JWK format as per [[spec:RFC7517]].
 
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was created by the DID owner or another permitted party.
