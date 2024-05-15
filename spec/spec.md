@@ -161,12 +161,12 @@ The following DID Document Service Endpoint entries ****MUST**** be present in t
 
 - Service Endpoints ****MUST**** contain an `id` property and it ****MUST**** be set to `#dwn`.
 - Service Endpoints ****MUST**** contain a `type` property and it ****MUST**** be set to `DecentralizedWebNode`.
-- Service Endpoints ****MUST**** contain a `serviceEndpoint` property and it ****MAY**** be set to:
-  - either a `string` value which represents the `URL` associated with the `DWN`
-  - an array of `string` values which each value represents a `URL` associated with a `DWN`
+- Service Endpoints ****MUST**** contain a `serviceEndpoint` property and it ****MUST**** be set to one of the following:
+  - a `string` value which represents the `URL` associated with the `DWN`
+  - an array of `string` values, each of which represents the `URL` associated with a `DWN`
 - If a Service Endpoint `URL` is a `DID`, it ****MUST NOT**** not be followed more than 1 level deep when resolving.
-- Service Endpoints ****MUST**** contain an `enc` property and it ****MUST**** be a `string` value or an array of `string` values which represent the `keyId` associated with `encrypting` data.
-- Service Endpoints ****MUST**** contain a `sig`property and it ****MUST**** be a `string` value or an array of `string` values which represent the `keyId` associated with `signing` data.
+- Service Endpoints ****MUST**** contain an `enc` property which ****MUST**** be a `string` value or an array of `string` values, each of which represents a `keyId` associated with `encrypting` data.
+- Service Endpoints ****MUST**** contain a `sig` property which ****MUST**** be a `string` value or an array of `string` values, each of which represents a `keyId` associated with `signing` data.
 
 
 ## Messages
