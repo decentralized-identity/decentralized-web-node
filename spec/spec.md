@@ -834,7 +834,7 @@ directory of the specification.
   - The object ****MAY**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
   - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the record ****MUST NOT**** be served in response to public queries that lack proper authorization.
 
-  - The object ****MAY**** contain an `encryption` property. The object ****MUST**** contain the `encryption` property if the data is encrypted. The absence of this property indicates the data is not encrypted. If present its value ****Must**** be a JSON object composed as follows:
+  - The object ****MAY**** contain an `encryption` property; the object ****MUST**** contain the `encryption` property if the data is encrypted. The absence of this property indicates the data is not encrypted. If present, its value ****MUST**** be a JSON object composed as follows:
     - The object ****MUST**** contain an `algorithm` string property denoting the symmetric encryption algorithm used to encrypt this message. Use the algorithm list names published in the [IANA
    JOSE Algorithms registry](https://www.iana.org/assignments/jose/jose.xhtml).
     - The object ****MUST**** contain an `initializationVector` property and its value ****MUST**** be a `base64Url` encoded string of initialization vector used for the symmetric encryption.
