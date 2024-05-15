@@ -1096,7 +1096,7 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
       - The object ****MUST**** contain a `can` property and it ****MUST**** have a value of either `read` or `write`
       - The object ****MAY**** contain a `of` property and it ****MUST**** have a string value that references one of the `types`
 
-    - The object ****MAY**** contain an `$encryption` property to enable record encryption using the [Protocol Path derivation scheme](#protocol-path-scheme). Its value ****MUST**** be an object composed as follows:
+    - The object ****MAY**** contain an `$encryption` property to enable record encryption using the [Protocol Path derivation scheme](#protocol-path-scheme). If present, its value ****MUST**** be an object composed as follows:
       - The object ****MUST**** contain a `publicKeyJwk` property representing a public key as per [[spec:RFC7517]].
         This is the public key that a sender uses to encrypt the symmetric private key used to encrypt the Decentralized Web Node message.
       - The object ****MUST**** contain a `rootKeyId` property and it ****MUST**** be the fully qualified key ID of the root key used to derive the `publicKeyJwk` using the protocol-path key derivation scheme.
