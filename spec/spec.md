@@ -1586,6 +1586,12 @@ Revocation of a permission is the act of closing off any additional or invalid i
 }
 ```
 
+##### Revocation Considerations
+
+_This section is non-normative_
+
+It is important to consider who has revocation capabilities in your application and how capability revocation can chain across your use case. All revocations should also revoke any associated delegated authorities. This document specifies the mechanics of revocation without prescribing how revocation policies should be implemented. Both full chain revocation and next delegate revocation have valid use cases. 
+
 #### `PermissionsQuery`
 
 The `PermissionQuery` method exists to facilitate lookup of any retained Permissions objects that exist in a given DID's DWeb Node instance. 
