@@ -1588,7 +1588,7 @@ This scheme allows the initiator of a new record context to derive and specify a
 
 Under this scheme, a recommended pattern for distributing the private key to a participant is to include the encrypted private key in the participant's _role record_ itself. This encryption uses the public key declared in the recipient's own instance of the configuration of the same protocol. This approach ensures that all essential cryptographic materials remain within the record context hierarchy.
 
-The derivation path segments of this scheme must the structure:
+The derivation path segments of this scheme must use the structure below:
 
 ```json
 ["protocolContext", <root-context-id>]
