@@ -837,7 +837,7 @@ directory of the specification.
   - The object ****MAY**** contain an `encryption` property; the object ****MUST**** contain the `encryption` property if the data is encrypted. The absence of this property indicates the data is not encrypted. If present, its value ****MUST**** be a JSON object composed as follows:
     - The object ****MUST**** contain an `algorithm` string property denoting the symmetric encryption algorithm used to encrypt this message. Use the algorithm list names published in the [IANA
    JOSE Algorithms registry](https://www.iana.org/assignments/jose/jose.xhtml).
-    - The object ****MUST**** contain an `initializationVector` property and its value ****MUST**** be a `base64Url` encoded string of initialization vector used for the symmetric encryption.
+    - The object ****MUST**** contain an `initializationVector` property and its value ****MUST**** be a `base64Url` encoded string of the initialization vector used for the symmetric encryption.
     - The object ****MUST**** contain a `keyEncryption` property and its value ****MUST**** be an array of encrypted key objects described as follows:
       - The object ****MUST**** contain a `derivationScheme` property and it ****MUST**** have one of the following values:
         - `protocolPath`
