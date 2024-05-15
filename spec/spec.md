@@ -849,7 +849,7 @@ directory of the specification.
       - The object ****MAY**** contain a `derivedPublicKey` property and its value ****MUST**** be an object representing the derived public key used to encrypt the symmetric key in JWK format as per [[spec:RFC7517]].
 
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was created by the DID owner or another permitted party.
-  - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was published by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `datePublished` property; if present, its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was published by the DID owner or another permitted party.
 
 ```json
 { // Message
