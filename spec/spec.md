@@ -287,69 +287,6 @@ The message generating party ****MUST**** construct the signed message object as
         - The object ****MUST**** include a `kid` property, and its value ****MUST**** be a [DID URL](https://w3c.github.io/did-core/#example-a-unique-verification-method-in-a-did-document) string identifying the key to be used in verifying the signature.
     - The object ****MUST**** include a `signature` property, and its value ****must**** be a signature string produced by signing the `protected` and `payload` values, in accordance with the [[spec:rfc7515]] JSON Web Signature specification.
 
-### Encrypted Data
-
-If the object is to be encrypted (e.g the Node owner encrypting their data to keep it private), the `descriptor` object ****MUST**** be constructed as follows:
-
-```json
-{ // Message
-  "data": { 
-    "protected": ...,
-    "recipients": ...,
-    "ciphertext": ...,
-    "iv": ...,
-    "tag": ... 
-  },
-  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
-  "descriptor": {
-    "interface": "Records",
-    "method": "Query",
-    "schema": "https://schema.org/SocialMediaPosting"
-  }
-  ...
-}
-```
-
-The message generating party ****MUST**** construct an encrypted message as follows:
-
-1. The `encryption` property of the `descriptor` object ****MUST**** be set to the string label value of a [Supported Encryption Format](#supported-encryption-format).
-2. Generate an encrypted payload from the data conformant with the format specified in the `encryption` property..
-3. Generate a [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) from the payload produced in Step 2 and let the `dataCid` property of the `descriptor` object be the stringified representation of the CID.
-
-### Signed & Encrypted Data
-
-If the object is to be both attributed to a signer and encrypted encrypted, it ****MUST**** be structured as follows:
-
-```json
-{ // Message
-  "data": { 
-    "protected": ...,
-    "recipients": ...,
-    "ciphertext": ...,
-    "iv": ...,
-    "tag": ... 
-  },
-  "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
-  "descriptor": {
-    "interface": "Records",
-    "method": "Query",
-    "schema": "https://schema.org/SocialMediaPosting"
-  },
-  "attestation": {
-    "payload": "89f5hw458fhw958fq094j9jdq0943j58jfq09j49j40f5qj30jf",
-    "signatures": [{
-      "protected": "4d093qj5h3f9j204fq8h5398hf9j24f5q9h83402048h453q",
-      "signature": "49jq984h97qh3a49j98cq5h38j09jq9853h409jjq09h5q9j4"
-    }]
-  },
-}
-```
-
-The message generating party ****MUST**** construct the signed and encrypted message as follows:
-
-1. Follow the instructions described in the [Encrypted Data](#encrypted-data) section to add the required properties to the `descriptor` and produce a [[spec:rfc7516]] JSON Web Encryption (JWE) object from the associated data.
-2. Follow the instructions described in the [Signed Data](#signed-data) section to add an `attestation` property with a General object representation of a [[spec:rfc7515]] JSON Web Signature as its value.
-
 ### Response Objects
 
 Responses from Interface method invocations are JSON objects that ****MUST**** be constructed as follows:
@@ -896,7 +833,21 @@ directory of the specification.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data and ****MUST**** be treated as an immutable value for the lifetime of the logical record.
   - The object ****MAY**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
   - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the record ****MUST NOT**** be served in response to public queries that lack proper authorization.
-  - The object ****MAY**** contain an `encryption` property, and if present its value ****Must**** be a string that matches one of the [Supported Encryption Formats](#supported-encryption-format), indicating the encryption format with which the data is encrypted. The absence of this property indicates the data is not encrypted.
+
+  - The object ****MAY**** contain an `encryption` property. The object ****MUST**** contain the `encryption` property if the data is encrypted. The absence of this property indicates the data is not encrypted. If present its value ****Must**** be a JSON object composed as follows:
+    - The object ****MUST**** contain an `algorithm` string property denoting the symmetric encryption algorithm used to encrypt this message. Use the algorithm list names published in the [IANA
+   JOSE Algorithms registry](https://www.iana.org/assignments/jose/jose.xhtml).
+    - The object ****MUST**** contain an `initializationVector` property and its value ****MUST**** be a `base64Url` encoded string of initialization vector used for the symmetric encryption.
+    - The object ****MUST**** contain a `keyEncryption` property and its value ****MUST**** be an array of encrypted key objects described as follows:
+      - The object ****MUST**** contain a `derivationScheme` property and it ****MUST**** have one of the following values:
+        - `protocolPath`
+        - `protocolContext`
+      - The object ****MUST**** contain a `rootKeyId` property and it ****MUST**** have a string value representing the fully qualified key ID of the root key used in deriving the public key that encrypts the symmetric encryption key.
+      - The object ****MUST**** contain an `algorithm` string property denoting the asymmetric encryption algorithm used to encrypt the symmetric encryption key.
+      - The object ****MAY**** contain other custom properties needed by the encryption algorithm chosen such as `ephemeralPublicKey`, `initializationVector`, and `messageAuthenticationCode` etc.
+      - The object ****MUST**** contain an `encryptedKey` property and its value ****MUST**** be a `base64Url` encoded string of encrypted symmetric key used to encrypt the data.
+      - The object ****MAY**** contain a `derivedPublicKey` property and its value ****MUST**** be an object representing the derived public key used to encrypt the symmetric key in JWK format as per [[spec:RFC7517]].
+
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was published by the DID owner or another permitted party.
 
@@ -1144,7 +1095,12 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
         - `recipient`
       - The object ****MUST**** contain a `can` property and it ****MUST**** have a value of either `read` or `write`
       - The object ****MAY**** contain a `of` property and it ****MUST**** have a string value that references one of the `types`
-        
+
+    - The object ****MAY**** contain an `$encryption` property to enable record encryption using the [Protocol Path derivation scheme](#protocol-path-scheme). Its value ****MUST**** be an object composed as follows:
+      - The object ****MUST**** contain a `publicKeyJwk` property representing a public key as per [[spec:RFC7517]].
+        This is the public key that a sender uses to encrypt the symmetric private key used to encrypt the Decentralized Web Node message.
+      - The object ****MUST**** contain a `rootKeyId` property and it ****MUST**** be the fully qualified key ID of the root key used to derive the `publicKeyJwk` using the protocol-path key derivation scheme.
+  
 ##### Processing Instructions
 
 When processing a `ProtocolsConfigure` message, a conforming implementation ****MUST**** perform the following steps:
@@ -1602,16 +1558,54 @@ The `PermissionQuery` method exists to facilitate lookup of any retained Permiss
 
 The Sync interface and its methods allow different Decentralized Web Nodes to communicate and sync on the state of the data they contain, including replication of messages and files.
 
-## Supported Encryption Schemes
+## Encryption
+
+Each Decentralized Web Node (DWN) supports encryption at the individual message level. Encryption of data is performed using a symmetric key unique to each message. The symmetric key is then encrypted with one or more public keys derived using HMAC-based Key Derivation Function as specified per [[spec:RFC5869]] together with one of the [key derivation path schemes](#key-derivation-path-schemes) defined in this specification.  Each key derivation path scheme is optimized for a particular usage pattern of the Decentralized Web Node. Application and protocol developers can select schemes that best fit their requirements.
+
+Encrypted messages must include an `encryption` property. This property contains the encrypted symmetric key(s) and metadata related to asymmetric key derivation. The `encryption` property allows the recipient, who possesses the corresponding private key, to decrypt the symmetric key and, consequently, the message data itself. For complete details on the `encryption` property, refer to [RecordsWrite](#recordswrite).
+
+To enable encryption within a protocol, developers must declare the `$encryption` property in the protocol's definition as detailed in [Protocol Definitions](#protocol-definitions).
+
+
+### Key Derivation Path Schemes
+
+#### Protocol Path Scheme
+
+This scheme enables the owner of a Decentralized Web Node to derive and specify public keys at each level of the protocol path hierarchy, facilitating incoming encrypted communication from others without the need for additional bootstrapping.
+
+Due to the hierarchical nature of the keys, the private key corresponding to any given protocol path can decrypt all records in the descending protocol paths. This feature allows protocol designers to strategically distribute the private key at specific protocol path levels based on their specific requirements.
+
+The hierarchical derivation path segments of this scheme must follow the structure:
+
+```json
+["protocolPath", <protocol-url>, <root-level-record-type>, <next-level-record-type>, ...]
+```
+
+
+#### Protocol Context Scheme
+
+This scheme allows the initiator of a new record context to derive and specify a public key that encrypts all symmetric keys within the context. The holder of the corresponding context derived private key can decrypt all messages within the context.
+
+Under this scheme, a recommended pattern for distributing the private key to a participant is to include the encrypted private key in the participant's _role record_ itself. This encryption uses the public key declared in the recipient's own instance of the configuration of the same protocol. This approach ensures that all essential cryptographic materials remain within the record context hierarchy.
+
+The derivation path segments of this scheme must the structure:
+
+```json
+["protocolContext", <root-context-id>]
+```
+
+
+### Supported Encryption Schemes
 
 A conforming implementation ****MUST**** be capable of encrypting and decrypting data stored in Decentralized Web Nodes using the following combinations of cryptographic schemes. Each scheme is a pair, wherein the symmetric keys are used to encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric keys using the asymmetric key of each recipient.
 
 | Asymmetric Key | Symmetric Key       |
 | -------------- | ------------------- |
+| `ECIES-ES256K` | `AES-CTR`           |
 | `X25519`       | `AES-GCM`           |
 | `X25519`       | `XSalsa20-Poly1305` |
 
-## Supported Encryption Formats
+### Supported Encryption Formats
 
 A conforming implementation ****MUST**** be capable of encrypting and decrypting data stored in Decentralized Web Nodes using the following combinations of cryptographic schemes. Each scheme is a pair, wherein the symmetric keys are used to encrypt the data being protected, then subsequently shared with permitted recipients via encryption of the symmetric keys using the asymmetric key of each recipient.
 
