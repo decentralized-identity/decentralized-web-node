@@ -363,18 +363,18 @@ billion transactions per second (tps).
 
 ### Personal Data Stores
 
-| Solid Pods	   | https://solidproject.org/ |
+| Solid Storage  | https://solidproject.org/ |
 | -------------- | ---------------------------------------------------------- |
-| Description	   | Decentralized Data Stores that rely on Linked Data to express identity and semantic data. The Pod is owned by an agent (Person, Organization, Group, Device, etc.) that is globally identified by a WebID. |
-| Specification  | Open Specification incubated by Inrupt and now the [W3C](https://github.com/solid/specification/). |
-| Deployment     | A Pod can be hosted by a Solid Pod Provider, or it can be user-deployed using any of its implementations in Node.js, PHP, or as a plugin for Nextcloud. |
-| Identity       | WebID and its corresponding WebID Profile document. The WebID comes in the form of an HTTP URI, and it allows the linking of many agents in a web of trust using vocabularies such as [Friend of a Friend (FOAF)](http://xmlns.com/foaf/0.1/) semantics. |
-| Authentication | An agent uses its WebID to authenticate using the [SOLID-OIDC specification](https://solidproject.org/TR/oidc). A Solid Pod server becomes an OpenID provider. |
-| Authorization  | Access to resources is managed by the Web Access Control system and its underlying Access Control List model. Authorizations are described using the ACL Ontology which is granular at the graph subject level. |
-| Transport      | HTTP/1.1 through `GET`, `PUT`, `POST`, `PATCH`, and `DELETE` HTTP Methods. |
-| Schema / Data Representation | Data is encoded in graphs using N3 notation (a superset of RDF triples). Schemas are innate in RDF semantic ontologies. Any graphed relationship denotes a schema in its definition. |
-| Query Capabilities | The HTTP `GET` method allows for N3 Path Syntax. It is very similar to SPARQL 1.1 Property Path Syntax. |
-| License | MIT license and the Creative Commons Attribution 4.0 |
+| Description    | A Solid Storage is a decentralised data store which affords agents controlled access to web resources. Applications conforming to the Solid Protocol can read or write (linked) data from one or more storages controlled by users or groups. |
+| Specification  | The [Solid Protocol](https://solidproject.org/ED/protocol) is an open specification incubated by the [W3C Solid CG](https://www.w3.org/groups/cg/solid/), alongside other [technical reports](https://solidproject.org/TR/) focusing on authentication, authorization, notifications, data models, and application interoperability. |
+| Deployment     | Solid servers and storage can be managed by organizations or self-hosted using any conforming implementation. Implemented in various programming languages such as Node.js, PHP, Rust, and Java. |
+| Identity       | Agents are globally identified by a [WebID](https://www.w3.org/2005/Incubator/webid/spec/identity/), and described in a WebID Profile Document. The WebID comes in the form of an HTTP URI, and it allows the linking of many agents in a web of trust using vocabularies such as [Friend of a Friend](http://xmlns.com/foaf/0.1/). |
+| Authentication | [Solid-OIDC](https://solid.github.io/solid-oidc/) is one of the authentication mechanisms used in Solid, allowing users to authenticate themselves, where a server can act as an identity provider. |
+| Authorization  | [Web Access Control](https://solid.github.io/web-access-control-spec/) (WAC) is one of the authorization mechanisms used in Solid providing a way for Linked Data systems to set authorization conditions on HTTP resources using the Access Control List (ACL) model. Authorizations are described using the [ACL ontology](http://www.w3.org/ns/auth/acl) to express and determine access privileges of a requested resource. |
+| Transport      | HTTP/1.1 Methods such as `GET`, `HEAD`, `OPTIONS`, `PUT`, `POST`, `PATCH`, and `DELETE`. |
+| Schema / Data Representation | The Solid Protocol uses concrete RDF syntaxes and the N3 notation for data representation and discovery. Any kind of data and schema can be hosted in a Solid storage as with a typical HTTP server. Application and domain-specific data models and shapes are also used. |
+| Query Capabilities | Solid servers can provide querying capabilities using standard query languages such as [SPARQL](http://www.w3.org/TR/sparql11-overview/). |
+| License | [W3C Community Contributor License Agreement (CLA)](https://www.w3.org/community/about/agreements/cla/). All code snippets are in the public domain, [CC0](https://creativecommons.org/public-domain/cc0/). |
 
 
 | Ceramic and ComposeDB | https://ceramic.network/ |
