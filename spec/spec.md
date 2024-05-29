@@ -135,6 +135,180 @@ Object Format |
 Object Signing / Encryption |
 [IPLD Multiformats](https://multiformats.io/) |
 
+
+## Protocols
+
+Protocols are used to describe common rules that DWNs will follow when dealing with specific types and structures of data. Through [Protocol Definitions](#protocol-definitions) a DWN Owner can define how a protocol should behave.
+
+The definition defines `types`, as well as their `structure` allowing for hierarchial relationships for data types, as well as roles, object capabilities, and enforced limitations such as data payload size.
+
+This will promote interoperability between users and apps, avoiding bespoke implementation details and interactivity often needed within traditional application development.
+
+<tab-panels selected-index="0">
+<nav>
+  <button type="button">Simple Protocol</button>
+  <button type="button">Protocol With Roles</button>
+</nav>
+
+<section>
+
+In this example, a DWN owner can write images and metadata to their own DWN.
+Some of the rules the protocol enforces:
+1. Images must have the schema `https://example.com/schemas/image`.
+2. Images must have a dataFormat of `image/png`, `image/jpeg` or `image/gif`.
+3. Images cannot exceed a size of `500MB`.
+4. Image Metadata must have a parent Image.
+5. Image Metadata must have the schema `https://example.com/schemas/metadata`.
+6. Image Metadata must have a dataFormat of `application/json`.
+7. Image Metadata cannot exceed a size of `100KB`.
+
+::: example Simple Protocol - Image Storage
+
+```json
+{
+  "protocol": "https://example.com/protocol/image-storage",
+  "types": {
+    "image": {
+      "schema": "https://example.com/schemas/image",
+      "dataFormats": [
+        "image/png",
+        "image/jpeg",
+        "image/gif"
+      ]
+    },
+    "metadata": {
+      "schema": "https://example.com/schemas/metadata",
+      "dataFormats": [
+        "application/json"
+      ]
+    }
+  },
+  "structure": {
+    "image": {
+      "$size": {
+        "max": 500000000
+      },
+      "metadata": {
+        "$size": {
+          "max": 100000
+        }
+      }
+    }
+  }
+}
+```
+</section>
+
+<section>
+
+In this example, we extend the simpler protocol with additional actors via roles.
+The protocol follows the same rules as the Image Storage protocol with the following additions:
+
+1. An Owner can assign a `viewer` role to an external actor.
+2. A Viewer must have the schema `https://example.com/schemas/viewer`.
+3. A Viewer must have the dataFormat of `application/json`.
+4. Only the DWN Owner can add a Viewer.
+5. A Viewer can `read` and `query` Images as well as Image Metadata.
+6. An Owner can assign a `writer` role to an external actor.
+7. A Writer must have the schema `https://example.com/schemas/writer`.
+8. A Writer must have the dataFormat of `application/json`.
+9. A Writer can `create` Images.
+10. A Writer can `delete` or `update` Images which they authored.
+11. The Author of an Image can `create` Image Metadata for that Image.
+12. The Author of an Image can `delete` or `update` the Image Metadata which they authored.
+
+::: example Protocol With Roles - Image Sharing
+
+```json
+{
+  "protocol": "https://example.com/protocol/image-sharing",
+  "types": {
+    "image": {
+      "schema": "https://example.com/schemas/image",
+      "dataFormats": [
+        "image/png",
+        "image/jpeg",
+        "image/gif"
+      ]
+    },
+    "metadata": {
+      "schema": "https://example.com/schemas/metadata",
+      "dataFormats": [
+        "application/json"
+      ]
+    },
+    "viewer": {
+      "schema": "https://example.com/schemas/viewer",
+      "dataFormats": [
+        "application/json"
+      ]
+    },
+    "writer": {
+      "schema": "https://example.com/schemas/writer",
+      "dataFormats": [
+        "application/json"
+      ]
+    }
+  },
+  "structure": {
+    "viewer": {
+      "$role": true
+    },
+    "writer": {
+      "$role": true
+    },
+    "image": {
+      "$size": {
+        "max": 500000000
+      },
+      "$actions": [
+        {
+          "role": "viewer",
+          "can": [
+            "read",
+            "query"
+          ]
+        },
+        {
+          "role": "writer",
+          "can": [
+            "create",
+            "update",
+            "delete"
+          ]
+        }
+      ],
+      "metadata": {
+        "$size": {
+          "max": 100000
+        },
+        "$actions": [
+          {
+            "role": "viewer",
+            "can": [
+              "read",
+              "query"
+            ]
+          },
+          {
+            "who": "author",
+            "of": "image",
+            "can": [
+              "create",
+              "update",
+              "delete"
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
+```
+</section>
+</tab-panels>
+
+
 ## Service Endpoints
 
 The following DID Document Service Endpoint entries ****MUST**** be present in the DID Document of a target DID for resolution to properly locate the URI for addressing a DID owner's Decentralized Web Nodes:
