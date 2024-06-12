@@ -1084,7 +1084,7 @@ TODO
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Delete`.
   - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
-  - The object ****MUST**** contain a `prune` property, and its value ****MUST**** be a boolean that signals if descendent records should be pruned.
+  - The object ****MUST**** contain a `prune` property, and its value ****MUST**** be a boolean that signals whether descendent records should be pruned.
   - The object ****MUST**** contain a `messageTimestamp` property, and its value
     ****MUST**** be of type string property, and its value ****MUST**** be an  [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
     as the time the `RecordsDelete` record itself was created by the requester.
