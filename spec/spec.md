@@ -1025,15 +1025,14 @@ directory of the specification.
 `RecordsWrite` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
 
 - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with. If the message is the initial entry for a new record, the value ****MUST**** be set to the resulting string from the [_Record ID Generation Process_](#recordid-generation).
-- If the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
+- The message object ****MUST**** contain a `contextId` property if the message object is attached to a Protocol, and its value ****MUST**** be a [_Computed Context ID_](#computed-context-ids). If the message is not attached to a Protocol, it ****MUST NOT**** contain a `contextId` property.
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Write`.
-  - The object ****MUST**** include a `parentId` property if the currently active entry for the record is a `RecordsDelete` or a `CollectionWrite` that has a declared a Commit Strategy. The object ****MUST NOT**** contain a `parentId` under any other circumstance. If present, the value of the `parentId` property ****MUST**** be the stringified [Version 1 CID](https://docs.ipfs.io/concepts/content-addressing/#identifier-formats) of the [DAG CBOR](https://github.com/ipld/specs/blob/master/block-layer/codecs/dag-cbor.md) encoded `descriptor` object of the previous `RecordsWrite` or `RecordsDelete` entry the message is intending to overwrite.
+  - The object ****MAY**** include a `parentId` property only if a `protocol` value is present. The value of the `parentId` ****MUST**** be the `recordId` of the referenced hierarchical parent for a given `protocolPath`.
   - The object ****MAY**** contain a `protocol` property, and its value ****Must**** be a URI that denotes the Protocol an object is a part of.
     - If the object contains a `protocol` property the object ****MUST**** also contain a `protocolVersion` property, and its value ****Must**** be a [SemVer](https://semver.org/) string that denotes the version of the Protocol the object is a part of.
   - The object ****MAY**** contain a `schema` property, and if present its value ****Must**** be a URI string that indicates the schema of the associated data and ****MUST**** be treated as an immutable value for the lifetime of the logical record.
-  - The object ****MAY**** contain a `commitStrategy` property, and if present its value ****Must**** be a string from the table of registered [Commit Strategies](#commit-strategies).
   - The object ****MAY**** contain a `published` property, and if present its value ****Must**** be a boolean indicating the record's publication state. A value of `true` indicates the record has been published for public queries and consumption without requiring authorization. A value of `false` or the absence of the property indicates the record ****MUST NOT**** be served in response to public queries that lack proper authorization.
 
   - The object ****MAY**** contain an `encryption` property; the object ****MUST**** contain the `encryption` property if the data is encrypted. The absence of this property indicates the data is not encrypted. If present, its value ****MUST**** be a JSON object composed as follows:
@@ -1065,7 +1064,6 @@ directory of the specification.
     "interface": "Records",
     "method": "Write",
     "schema": "https://schema.org/SocialMediaPosting",
-    "commitStrategy": "json-merge",
     "dataFormat": DATA_FORMAT
   }
 }
@@ -1172,7 +1170,7 @@ Detail how IDs are computed for record contexts.
 
 #### Retained Record Processing
 
-Retained messages in the Records interface are those that may be stored against the specific record they are associated with. Within the Records interface the `RecordsWrite`, `RecordsCommit`, `RecordsDelete` messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation ****MUST**** perform the following steps to process retained messages:
+Retained messages in the Records interface are those that may be stored against the specific record they are associated with. Within the Records interface the `RecordsWrite` and `RecordsDelete` messages are among the set that may be retained to determine the history and current data state of a record. A conforming implementation ****MUST**** perform the following steps to process retained messages:
 
 ##### If the message is a `RecordsWrite`:
 
