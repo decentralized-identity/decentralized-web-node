@@ -1,0 +1,56 @@
+
+{
+  "specs": [
+    {
+      "title": "DIF Decentralized Web Node",
+      "spec_directory": "./spec",
+      "output_path": "./spec/0.0.1-predraft",
+      "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
+      "logo_link": "https://identity.foundation",
+      "source": {
+        "host": "github",
+        "account": "decentralized-identity",
+        "repo": "decentralized-web-node"
+      }
+    },
+    {
+      "title": "DIF Decentralized Web Node",
+      "spec_directory": "./spec",
+      "output_path": "./spec",
+      "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
+      "logo_link": "https://identity.foundation",
+      "source": {
+        "host": "github",
+        "account": "decentralized-identity",
+        "repo": "decentralized-web-node"
+      }
+    },
+    {
+      "title": "DIF Decentralized Web Node",
+      "spec_directory": "./spec",
+      "output_path": "./",
+      "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
+      "logo_link": "https://identity.foundation",
+      "source": {
+        "host": "github",
+        "account": "decentralized-identity",
+        "repo": "decentralized-web-node"
+      }
+    },
+    {
+      "title": "Decentralized Web Node Companion Guide",
+      "spec_directory": "./docs",
+      "output_path": "./guide/v0.0.1",
+      "markdown_paths": [
+        "companion_guide.md"
+      ],
+      "logo": "https://rawcdn.githack.com/decentralized-identity/decentralized-identity.github.io/a3ca39717e440302d1fd99a796e7f00e1c42eb2d/images/logo-flat.svg",
+      "logo_link": "https://identity.foundation",
+      "source": {
+        "host": "github",
+        "account": "decentralized-identity",
+        "repo": "decentralized-web-node"
+      }
+    }
+  ]
+}
