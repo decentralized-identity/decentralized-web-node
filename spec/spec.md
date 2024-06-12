@@ -1083,7 +1083,8 @@ TODO
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
   - The object ****MUST**** contain a `method` property, and its value ****MUST**** be the string `Delete`.
-  - The message object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
+  - The object ****MUST**** contain a `recordId` property, and its value ****MUST**** be the `recordId` of the logical record the entry corresponds with.
+  - The object ****MUST**** contain a `prune` property, and its value ****MUST**** be a boolean that signals whether descendent records should be pruned.
   - The object ****MUST**** contain a `messageTimestamp` property, and its value
     ****MUST**** be of type string property, and its value ****MUST**** be an  [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted
     as the time the `RecordsDelete` record itself was created by the requester.
@@ -1116,7 +1117,7 @@ TODO
 
 ```json
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://identity.foundation/dwn/json-schemas/records-delete.json",
   "type": "object",
   "additionalProperties": false,
@@ -1126,7 +1127,7 @@ TODO
   ],
   "properties": {
     "authorization": {
-      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+      "$ref": "https://identity.foundation/dwn/json-schemas/authorization-delegated-grant.json"
     },
     "descriptor": {
       "type": "object",
@@ -1135,7 +1136,8 @@ TODO
         "interface",
         "method",
         "messageTimestamp",
-        "recordId"
+        "recordId",
+        "prune"
       ],
       "properties": {
         "interface": {
@@ -1155,6 +1157,9 @@ TODO
         },
         "recordId": {
           "type": "string"
+        },
+        "prune": {
+          "type": "boolean"
         }
       }
     }
@@ -1195,6 +1200,7 @@ Retained messages in the Records interface are those that may be stored against 
 2. Ensure all immutable values from the [_Initial Entry_](#initial-record-entry) remained unchanged if present in the inbound message. If any have been mutated, discard the message and cease processing.
 3. Fetch the active `RecordsDelete` entry that exists for the record. If no such entry is present, proceed to the next step. If an active `RecordsDelete` entry for the record is present, the `dateCreated` value of the inbound message ****MUST**** be greater than the active `RecordsDelete` entry; if it is not, discard the message and cease processing.  
 4. Store the message as the [_Latest Checkpoint Entry_](#latest-records-checkpoint), delete all messages back to the [_Initial Entry_](#initial-record-entry), including their data, and cease processing.
+5. If the `descriptor` property `prune` is set to the value `true`, delete all the descendent messages associated with the `recordId`.
 
 ### Protocols
 
