@@ -1079,6 +1079,7 @@ TODO
 #### `RecordsDelete`
 
 `RecordsDelete` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
+- The object ****MUST**** contain a `prune` property, and its value ****MUST**** be a boolean indicating whether to purge any children records (`true`) or to only tombstone the deleted record (`false`).
 
 - The message object ****MUST**** contain a `descriptor` property, and its value ****MUST**** be a JSON object composed as follows:
   - The object ****MUST**** contain an `interface` property, and its value ****MUST**** be the string `Records`.
@@ -1105,7 +1106,8 @@ TODO
     "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
     "messageTimestamp": 2002-10-02T10:00:00-05:00Z",
     "interface": "Records",
-    "method": "Delete"
+    "method": "Delete",
+    "prune": false 
   }
 }
 ```
