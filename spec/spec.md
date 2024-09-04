@@ -1052,6 +1052,9 @@ directory of the specification.
 
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property; if present, its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was published by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `tags` property; if present, its value ****MUST**** be an object with at least one and at most ten properties. Each property value in the `tags` object can be one of the following types: string, number, boolean, or an array of strings/numbers. Arrays must have at least one item and no more than ten items. These tags can be used for categorization and filtering. The `tags` field can be constrained by a protocol definition.
+
+
 
 ```json
 { // Message
