@@ -1104,7 +1104,7 @@ TODO
 { 
   "descriptor": { 
     "recordId": "b65b7r8n7bewv5w6eb7r8n7t78yj7hbevsv567n8r77bv65b7e6vwvd67b6",
-    "messageTimestamp": 2002-10-02T10:00:00-05:00Z",
+    "messageTimestamp": "2002-10-02T10:00:00-05:00Z",
     "interface": "Records",
     "method": "Delete",
     "prune": false 
