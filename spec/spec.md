@@ -144,6 +144,8 @@ The definition defines `types`, as well as their `structure` allowing for hierar
 
 This will promote interoperability between users and apps, avoiding bespoke implementation details and interactivity often needed within traditional application development.
 
+Protocols can define specific constraints for each tag using a subset of JSON schema. These constraints allow for the customization of allowed tag properties, such as the data type and structure for each tag.
+
 <tab-panels selected-index="0">
 <nav>
   <button type="button">Simple Protocol</button>
@@ -1299,8 +1301,6 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
       - `$requiredTags` (optional) is an array that lists required tag names.
       - `$allowUndefinedTags` (optional) is a boolean that defaults to false, and if set to false, undefined tags are not allowed.
       - The constraints are a subset of JSON Schema that may include properties such as `type`, `enum`, `minimum`, `maximum`, `minLength`, `maxLength`, and others.
-    - Protocols can define these constraints for each tag, ensuring adherence to the expected formats and usage guidelines specified within the protocol definition.
-
     - The object ****MAY**** contain an `$actions` property and its value ****MUST**** be an array of rule set objects described as follows:
       - The object ****MUST**** contain a `who` property and it ****MUST**** have one of the following values:
         - `anyone`
