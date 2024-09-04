@@ -1,0 +1,17 @@
+title: Identity Hub
+description: GitHub Documentation
+url: "https://identity.foundation/identity-hub"
+
+github:
+  private: false
+  license:
+    name: Apache-2.0
+  source:
+    branch: "main"
+    path: "/docs"
+  repository_url: "https://github.com/decentralized-identity/identity-hub"
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
