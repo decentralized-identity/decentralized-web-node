@@ -144,6 +144,8 @@ The definition defines `types`, as well as their `structure` allowing for hierar
 
 This will promote interoperability between users and apps, avoiding bespoke implementation details and interactivity often needed within traditional application development.
 
+Protocols can define specific constraints for each tag using a subset of JSON schema. These constraints allow for the customization of allowed tag properties, such as the data type and structure for each tag.
+
 <tab-panels selected-index="0">
 <nav>
   <button type="button">Simple Protocol</button>
@@ -1052,6 +1054,9 @@ directory of the specification.
 
   - The object ****MUST**** contain a `dateCreated` property, and its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was created by the DID owner or another permitted party.
   - The object ****MAY**** contain a `datePublished` property; if present, its value ****MUST**** be an [[spec:rfc3339]] ISO 8601 timestamp that ****MUST**** be set and interpreted as the time the `RecordsWrite` was published by the DID owner or another permitted party.
+  - The object ****MAY**** contain a `tags` property; if present, its value ****MUST**** be an object with at least one and at most ten properties. Each property value in the `tags` object can be one of the following types: string, number, boolean, or an array of strings/numbers. Arrays must have at least one item and no more than ten items. These tags can be used for categorization and filtering. The `tags` field can be constrained by a protocol definition.
+
+
 
 ```json
 { // Message
@@ -1208,6 +1213,8 @@ Retained messages in the Records interface are those that may be stored against 
 
 DWeb Nodes are designed to act the substrate upon which a wide variety of decentralized applications and services can be written. With an interface like [Records](#records) alone, a DWeb Node owner and those they permission can write isolated records, but that alone is not enough to support and facilitate decentralized apps. Protocols introduces a mechanism for declaratively encoding an app or service's underlying protocol rules, including segmentation of records, relationships between records, data-level requirements, and constraints on how participants interact with a protocol. With the DWeb Node Protocols mechanism, one can model the underpinning protocols for a vast array of use cases in a way that enables interop-by-default between app implementations that ride on top of them.
 
+
+
 #### `ProtocolsConfigure`
 
 `ProtocolsConfigure` messages are JSON objects that include general [Message Descriptor](#message-descriptors) properties and the following additional properties, which ****must**** be composed as follows:
@@ -1229,7 +1236,7 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
 
 #### Protocol Definitions
 
-Protocol Definition objects are declarative rules within `ProtocolConfigure` messages that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.
+Protocol Definitions specify the types, relationships, and interactions allowed under a given protocol within a Decentralized Web Node (DWeb Node). These definitions configure the rules that participants must follow when interacting with the protocol. The DWeb Nodes enforce these rules, ensuring protocol compliance.
 
 ```json
 {
@@ -1249,10 +1256,25 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
       },
       "image": {
         "dataFormat": ["image/jpeg", "image/png", "image/gif"],
-      }
+      }      }
     },
     "structure": {
       "post": {
+        "$tags": {
+          "$requiredTags": ["category", "priority"],
+          "category": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5
+            "items": {
+              "type": "string",
+            }
+          },
+          "priority" : {
+            "type": "string",
+            "enum": ["low", "medium", "high", "none"]
+          }
+        },
         "$actions": [{
           "who": "anyone",
           "can": "read",
@@ -1298,6 +1320,10 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
 - The _Protocols Definition_ object ****MUST**** contain a `structure` property, and its value ****MUST**** be a _Record Rules_ object whose keys match the labels defined in the _Protocols Definition_ object. This object is recursive, allowing subsequent record relationships to be defined within. Labeled members of the object are composed as follows:
   - The keys of the object ****MUST**** be a string that matches one of the `types`
   - The values representing those keys within the object ****MUST**** be an object composed as follows:
+    - The object ****MAY**** contain a `$tags` property; if present, its value ****MUST**** be an object with defined constraints:
+      - `$requiredTags` (optional) is an array that lists required tag names.
+      - `$allowUndefinedTags` (optional) is a boolean that defaults to false, and if set to false, undefined tags are not allowed.
+      - The constraints are a subset of JSON Schema that may include properties such as `type`, `enum`, `minimum`, `maximum`, `minLength`, `maxLength`, and others.
     - The object ****MAY**** contain an `$actions` property and its value ****MUST**** be an array of rule set objects described as follows:
       - The object ****MUST**** contain a `who` property and it ****MUST**** have one of the following values:
         - `anyone`
@@ -1363,6 +1389,11 @@ Please see the following JSON Schema to describe the DWN Protocol Language:
       - `co-delete`
       - `co-update`
 
+
+- The protocol **MAY** have a `$tags` section to define tag constraints within the protocol. The `$tags` section, if present, must have the following properties:
+  - `$requiredTags` (optional) is an array that lists required tag names.
+  - `$allowUndefinedTags` (optional) is a boolean that defaults to false, and if set to false, undefined tags are not allowed.
+  - The constraints are a subset of JSON Schema that may include properties such as `type`, `enum`, `minimum`, `maximum`, `minLength`, `maxLength`, and others.
 
 <tab-panels selected-index="0">
 <nav>
