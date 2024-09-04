@@ -1367,6 +1367,11 @@ Please see the following JSON Schema to describe the DWN Protocol Language:
       - `co-update`
 
 
+- The protocol **MAY** have a `$tags` section to define tag constraints within the protocol. The `$tags` section, if present, must have the following properties:
+  - `$requiredTags` (optional) is an array that lists required tag names.
+  - `$allowUndefinedTags` (optional) is a boolean that defaults to false, and if set to false, undefined tags are not allowed.
+  - The constraints are a subset of JSON Schema that may include properties such as `type`, `enum`, `minimum`, `maximum`, `minLength`, `maxLength`, and others.
+
 <tab-panels selected-index="0">
 <nav>
   <button type="button">Protocol Definition Structure</button>
