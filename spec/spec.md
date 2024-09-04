@@ -1228,7 +1228,7 @@ DWeb Nodes are designed to act the substrate upon which a wide variety of decent
 
 #### Protocol Definitions
 
-Protocol Definition objects are declarative rules within `ProtocolConfigure` messages that specify the types, relationships, and interactions that are permitted under a given protocol installed in a DWeb Node. Inbound callers who wish to interact with a protocol must adhere to these rules, which DWeb Nodes enforce.
+Protocol Definitions specify the types, relationships, and interactions allowed under a given protocol within a Decentralized Web Node (DWeb Node). These definitions configure the rules that participants must follow when interacting with the protocol. The DWeb Nodes enforce these rules, ensuring protocol compliance.
 
 ```json
 {
@@ -1248,10 +1248,25 @@ Protocol Definition objects are declarative rules within `ProtocolConfigure` mes
       },
       "image": {
         "dataFormat": ["image/jpeg", "image/png", "image/gif"],
-      }
+      }      }
     },
     "structure": {
       "post": {
+        "$tags": {
+          "$requiredTags": ["category", "priority"],
+          "category": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 5
+            "items": {
+              "type": "string",
+            }
+          },
+          "priority" : {
+            "type": "string",
+            "enum": ["low", "medium", "high", "none"]
+          }
+        },
         "$actions": [{
           "who": "anyone",
           "can": "read",
