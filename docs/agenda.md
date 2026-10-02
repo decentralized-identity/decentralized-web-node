@@ -7,6 +7,62 @@ Bi-weekly DIF call notes on DWN specifications.
 - [Github](https://github.com/decentralized-identity/decentralized-web-node)
 - [Wiki](https://identity.foundation/decentralized-web-node/spec/)
 
+## DIF Meeting October 2, 20246: Special topic call.
+Should we revive the working group
+### Attendees
+* Grace Rachmany
+* Markus Sabadello
+* Drummond Reed
+* Natural State (Ruben)
+* Dmitri
+* Fatih Kockesen
+* Bengo
+* Anton Tranellis
+
+### Question one: What are you doing here?
+* Alan: To make sure people don't make mistakes I've made. I participated in DWN before 
+* Anton: Working on local tgrust based on Decentralized Trust Graph and this could be a local storage solution. https://real-life-stack.de/
+* Fatih: We have some use cases that could use decentralized storage
+* Dmitri: Chairing a W3C group which is the evolution of DWN and other storage working groups, you are all welcome to join  https://github.com/trustoverip/dtgwg-general
+* Ruben: Working on NAOMS which could use the trust graph and could use DWN. https://solidus.network/protocol
+* Markus: Interested in how this can be implemented and brought to live
+* Bengo: Interested in secure data storage and was part of SDS WG and DIF back when. Confused about this as a working group, I don't think there was a WG to revive but it is a task force. The SDS working group is still there and Solidus also overlaps https://solidus.network/protocol
+
+## Are we talking about reviving the spec? What is the case for why we should do anything?
+
+Bengo: the W3C group is promising and this might fragment, and the spec never matured. This seems redundant with DTGWG.  
+Also
+* https://elfaconsortium.eu/
+* https://www.w3.org/TR/lws10-core/  )
+* https://datatracker.ietf.org/wg/atp/about/
+* https://www.w3.org/TR/lws10-core/
+* https://www.w3.org/groups/tf/capability-based-storage/
+Alan: the thing that distinguished this was the node, and part of DWN was how you keep those in sync. It's not just that it's distributed, it's also the structure of the nodes
+
+## How do people feel about Dmitri's generous invitation to include DWN in his Capabilities Based WG?
+
+Fans: Dmitri, Drummond
+Opposition: People shouldn't park the work item in the Capability-Based Task force and the DWNs do not support capability-based work
+
+Bengo: How can you have a unified identity experience across all of these things could be a DIF-based working group. That's where DIF could shine.
+
+Dmitri: What do you actually need to those who are here for other storage project.
+Anton: I see a connection of all the projects and the different properties of the solutions. 
+
+If people are interested in further calls, do people want to put emails in chat?
+
+Suggestion from Bengo: DIF will host discussion about how DIDs can be used with storage nodes. 
+Bumblefudge: Great idea, the main criteria is that meetings need to have an agenda. We could have meetings just for specific walk-throughs and use cases. It doesn't have to be a work item, it could be a few special topic calls to evaluate where their use cases fit. 
+
+Dmitri: How about a Special Topic call on "Distributed Storage Show and Tell"? 
+Michal joined late: has been working on use cases in the area of distributed storage
+Alan said it's not the best basis for further work.
+
+Bengo: IMHO We need to get DTG, Capability-based Storage TF @W3C, and Linked Web Storage WG @W3C in a meeting about replication/distribution, ie what Alan said was the intriguing (if incomplete) goal in DWN: Multiple physical nodes that make up your one logical node. i.e. a ‘personal cloud’ of devices, not just one ‘node’
+
+
+Conclusion: We will have a joint meeting with Dmitri, other W3C (CCG), DIF and discuss what next for distributed storage
+
 **Editors**
 
 - Dan Buchner @csuwildcat
