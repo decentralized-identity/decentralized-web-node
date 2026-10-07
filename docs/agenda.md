@@ -2,12 +2,12 @@
 
 ## Summary
 
-Bi-weekly DIF call notes on DWN specifications.
+Bi-weekly DIF call notes on DWN specifications. Notes for the broader [Secure Data Storage Working Group are here](https://github.com/decentralized-identity/confidential-storage/blob/master/agenda.md#secure-data-storage-wg---rolling-agenda--minutes)
 
 - [Github](https://github.com/decentralized-identity/decentralized-web-node)
 - [Wiki](https://identity.foundation/decentralized-web-node/spec/)
 
-## DIF Meeting October 2, 20246: Special topic call.
+## DIF Meeting October 2, 2026: Special topic call.
 Should we revive the working group
 ### Attendees
 * Grace Rachmany
@@ -62,6 +62,8 @@ Bengo: IMHO We need to get DTG, Capability-based Storage TF @W3C, and Linked Web
 
 
 Conclusion: We will have a joint meeting with Dmitri, other W3C (CCG), DIF and discuss what next for distributed storage
+
+Next call will be on the DIF Calendar as an SDS call, and minutes will be taken [over there in the SDS running agenda/minutes doc](https://github.com/decentralized-identity/confidential-storage/blob/master/agenda.md#secure-data-storage-wg---rolling-agenda--minutes)
 
 **Editors**
 
