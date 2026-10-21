@@ -8,8 +8,11 @@ Bi-weekly DIF call notes on DWN specifications. Notes for the broader [Secure Da
 - [Wiki](https://identity.foundation/decentralized-web-node/spec/)
 
 ## DIF Meeting October 2, 2026: Special topic call.
+
 Should we revive the working group
+
 ### Attendees
+
 * Grace Rachmany
 * Markus Sabadello
 * Drummond Reed
@@ -20,6 +23,7 @@ Should we revive the working group
 * Anton Tranellis
 
 ### Question one: What are you doing here?
+
 * Alan: To make sure people don't make mistakes I've made. I participated in DWN before 
 * Anton: Working on local tgrust based on Decentralized Trust Graph and this could be a local storage solution. https://real-life-stack.de/
 * Fatih: We have some use cases that could use decentralized storage
