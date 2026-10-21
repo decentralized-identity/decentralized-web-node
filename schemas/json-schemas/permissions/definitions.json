@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions/defs.json",
+  "type": "object",
+  "definitions": {
+    "conditions": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "attestation": {
+          "enum": [
+            "optional",
+            "required"
+          ],
+          "type": "string"
+        },
+        "delegation": {
+          "type": "boolean"
+        },
+        "encryption": {
+          "enum": [
+            "optional",
+            "required"
+          ],
+          "type": "string"
+        },
+        "publication": {
+          "type": "boolean"
+        },
+        "sharedAccess": {
+          "type": "boolean"
+        }
+      }
+    },
+    "grantedTo": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+    },
+    "grantedBy": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/did"
+    },
+    "scope": {
+      "properties": {
+        "method": {
+          "type": "string"
+        },
+        "objectId": {
+          "type": "string"
+        },
+        "schema": {
+          "type": "string"
+        }
+      },
+      "type": "object",
+      "additionalProperties": false
+    }
+  }
+}

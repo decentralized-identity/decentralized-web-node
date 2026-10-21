@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/permissions-grant.json",
+  "type": "object",
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "delegationChain": {
+      "description": "the parent grant",
+      "$ref": "#"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "dateCreated"
+      ],
+      "properties": {
+        "dateCreated": {
+          "type": "string"
+        },
+        "conditions": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/conditions"
+        },
+        "delegatedFrom": {
+          "description": "CID of the parent grant",
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "grantedTo": {
+          "description": "DID of the grantee",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedTo"
+        },
+        "grantedBy": {
+          "description": "DID of the grantor",
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/grantedBy"
+        },
+        "interface": {
+          "enum": [
+            "Permissions"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Grant"
+          ],
+          "type": "string"
+        },
+        "scope": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/permissions/defs.json#/definitions/scope"
+        },
+        "objectId": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/uuid"
+        }
+      }
+    }
+  }
+}

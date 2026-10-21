@@ -1,0 +1,11 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "render": "node -e \"require('spec-up')({ nowatch: true })\"",
+    "edit": "node -e \"require('spec-up')()\""
+  },
+  "devDependencies": {
+    "spec-up": "0.10.5"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://identity.foundation/dwn/json-schemas/snapshots-create.json",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "authorization",
+    "descriptor"
+  ],
+  "properties": {
+    "authorization": {
+      "$ref": "https://identity.foundation/dwn/json-schemas/general-jws.json"
+    },
+    "descriptor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "interface",
+        "method",
+        "messageTimestamp",
+        "definitionCid"
+      ],
+      "properties": {
+        "interface": {
+          "enum": [
+            "Snapshots"
+          ],
+          "type": "string"
+        },
+        "method": {
+          "enum": [
+            "Create"
+          ],
+          "type": "string"
+        },
+        "messageTimestamp": {
+          "$ref": "https://identity.foundation/dwn/json-schemas/defs.json#/definitions/date-time"
+        },
+        "definitionCid": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
